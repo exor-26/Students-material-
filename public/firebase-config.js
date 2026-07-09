@@ -4,13 +4,13 @@ import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.4.0/firebase
 
 // Your Firebase configuration object
 const firebaseConfig = {
-    apiKey: "AIzaSyCS4D3HMQnEDihCCkFEWnF8upVWuNxolXM",
+    apiKey: "....",
     authDomain: "employee-management-faa27.firebaseapp.com",
-    projectId: "employee-management-faa27",
-    storageBucket: "employee-management-faa27.firebasestorage.app",
-    messagingSenderId: "359482574331",
-    appId: "1:359482574331:web:30ce33787c55ef1eeef75e",
-    measurementId: "G-5W73G49HWK"
+    projectId: "....",
+    storageBucket: "...",
+    messagingSenderId: ".,..",
+    appId: "....",
+    measurementId: "..."
 };
 
 // Initialize Firebase
