@@ -1,0 +1,1259 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <title>AS Dashboard - Attendance</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/x-icon" href="logo2.ico" />
+  <link rel="stylesheet" type="text/css" href="supAttendance.css" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap-theme.min.css" />
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+
+  <style>
+    *, *::before, *::after {
+      cursor:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" viewBox="0 0 24 24"><path fill="%23FFF" stroke="%23FF2711" stroke-width="2" d="M5.5 3.21V20.8c0 .45.54.67.85.35l4.86-4.86a.5.5 0 0 1 .35-.15h6.87a.5.5 0 0 0 .35-.85L6.35 2.85a.5.5 0 0 0-.85.35Z"></path></svg>') 5 5, auto;
+    }
+
+    a, button, input[type="submit"], input[type="button"],
+    label, select, .dropbtn, .sub-btn, .btn, .cn,
+    .carousel-control, .hideMenuButton, .item a,
+    input[type="text"], input[type="search"], textarea {
+      cursor:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="%23FFF" stroke="%23FF2711" stroke-width="2" stroke-linejoin="round" d="M10 11V8.99c0-.88.59-1.64 1.44-1.86h.05A1.99 1.99 0 0 1 14 9.05V12v-2c0-.88.6-1.65 1.46-1.87h.05A1.98 1.98 0 0 1 18 10.06V13v-1.94a2 2 0 0 1 1.51-1.94h0A2 2 0 0 1 22 11.06V14c0 .6-.08 1.27-.21 1.97a7.96 7.96 0 0 1-7.55 6.48 54.98 54.98 0 0 1-4.48 0 7.96 7.96 0 0 1-7.55-6.48C2.08 15.27 2 14.59 2 14v-1.49c0-1.11.9-2.01 2.01-2.01h0a2 2 0 0 1 2.01 2.03l-.01.97v-10c0-1.1.9-2 2-2h0a2 2 0 0 1 2 2V11Z"></path></svg>') 5 5, auto;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --topbar-height: 78px;
+      --sidebar-width: 280px;
+      --bg-dark: #081523;
+      --bg-mid: #0e2238;
+      --card-bg: rgba(12, 25, 45, 0.88);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --text-main: #ffffff;
+      --text-soft: #c2d4ea;
+      --accent: #ff7a2f;
+      --accent-2: #1f77ff;
+      --success: #14b86a;
+      --danger: #ef4d4d;
+      --warning: #ffc048;
+      --shadow: 0 18px 40px rgba(0, 0, 0, 0.25);
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      background:
+        linear-gradient(135deg, rgba(7, 16, 30, 0.95), rgba(14, 34, 56, 0.92)),
+        url("https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1600&q=80") center/cover no-repeat fixed;
+      color: var(--text-main);
+    }
+
+    .app-shell {
+      height: 100vh;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    .topbar {
+      height: var(--topbar-height);
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(7, 16, 30, 0.88);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 2000;
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      min-width: 0;
+    }
+
+    .menu-toggle-top {
+      width: 46px;
+      height: 46px;
+      border: none;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
+      color: #fff;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: 0.25s ease;
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+
+    .menu-toggle-top:hover {
+      background: linear-gradient(135deg, rgba(255,122,47,0.18), rgba(31,119,255,0.16));
+      transform: translateY(-1px);
+    }
+
+    .brand-wrap {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-width: 0;
+    }
+
+    .brand-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: #fff;
+      text-decoration: none !important;
+      line-height: 1.1;
+    }
+
+    .brand-title:hover,
+    .brand-title:focus {
+      color: #fff;
+      text-decoration: none !important;
+    }
+
+    .brand-subtitle {
+      margin-top: 4px;
+      color: var(--text-soft);
+      font-size: 13px;
+      line-height: 1.3;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      position: relative;
+    }
+
+    #bellContainer {
+      position: relative;
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.07);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: 0.25s ease;
+    }
+
+    #bellContainer:hover {
+      background: rgba(255, 255, 255, 0.14);
+    }
+
+    #bellBadge {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      background: #ff4d4d;
+      color: #fff;
+      font-size: 10px;
+      min-width: 18px;
+      height: 18px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 5px;
+    }
+
+    .logout {
+      text-decoration: none !important;
+      color: #fff !important;
+      background: linear-gradient(135deg, #ff8a3c, #ff5a1f);
+      padding: 11px 18px;
+      border-radius: 12px;
+      font-weight: 700;
+      box-shadow: 0 10px 24px rgba(255, 90, 31, 0.24);
+      transition: 0.25s ease;
+    }
+
+    .logout:hover {
+      transform: translateY(-1px);
+    }
+
+    #notificationBox {
+      display: none;
+      position: absolute;
+      top: 58px;
+      right: 0;
+      width: 320px;
+      max-height: 320px;
+      overflow-y: auto;
+      background: rgba(10, 22, 40, 0.98);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 18px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      padding: 14px;
+      z-index: 2500;
+    }
+
+    .notification-item {
+      padding: 12px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      margin-bottom: 10px;
+    }
+
+    .notification-item p {
+      margin: 0 0 6px;
+      color: #dce8ff;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .notification-item p:last-child {
+      margin-bottom: 0;
+    }
+
+    .down-part {
+      width: 100%;
+      height: 100vh;
+    }
+
+    /* ===== ONLY NAVBAR / SIDEBAR CHANGED ===== */
+    nav {
+      width: var(--sidebar-width);
+      position: fixed;
+      top: var(--topbar-height);
+      left: 0;
+      bottom: 0;
+      padding: 20px 16px 22px;
+      background: linear-gradient(180deg, rgba(6, 16, 30, 0.98), rgba(8, 22, 40, 0.96));
+      backdrop-filter: blur(16px);
+      border-right: 1px solid rgba(255,255,255,0.06);
+      overflow-y: auto;
+      overflow-x: hidden;
+      z-index: 1500;
+      box-shadow: 18px 0 45px rgba(0, 0, 0, 0.24);
+    }
+
+    nav::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    nav::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,0.14);
+      border-radius: 999px;
+    }
+
+    .sidebar-top-card {
+      position: relative;
+      padding: 20px 18px 18px;
+      border-radius: 24px;
+      background:
+        linear-gradient(135deg, rgba(255,122,47,0.16), rgba(31,119,255,0.14)),
+        rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow:
+        0 16px 32px rgba(0,0,0,0.20),
+        inset 0 1px 0 rgba(255,255,255,0.06);
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+
+    .sidebar-top-card::after {
+      content: "";
+      position: absolute;
+      right: -30px;
+      top: -30px;
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,255,255,0.16), transparent 70%);
+    }
+
+    .sidebar-mini-label {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.4px;
+      color: #ffd8c2;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: 5px 10px;
+      border-radius: 999px;
+      margin-bottom: 12px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .sidebar-main-title {
+      font-size: 19px;
+      font-weight: 800;
+      color: #ffffff;
+      margin: 0 0 6px;
+      line-height: 1.2;
+      position: relative;
+      z-index: 1;
+    }
+
+    .sidebar-main-subtitle {
+      font-size: 13px;
+      color: #d5e2f1;
+      line-height: 1.7;
+      margin: 0 0 14px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .sidebar-status-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      position: relative;
+      z-index: 1;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .sidebar-status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #dfffe9;
+      background: rgba(20,184,106,0.14);
+      border: 1px solid rgba(20,184,106,0.22);
+    }
+
+    .sidebar-status-badge::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #4df39b;
+      box-shadow: 0 0 10px rgba(77,243,155,0.7);
+    }
+
+    .sidebar-status-text {
+      font-size: 11px;
+      color: #c6d8ec;
+      text-align: right;
+      line-height: 1.4;
+    }
+
+    .sidebar-section-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #8ea4c5;
+      margin: 0 8px 16px;
+      font-weight: 700;
+    }
+
+    #side-bar {
+      list-style: none;
+      padding-left: 0;
+      margin-bottom: 0;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    #side-bar li {
+      width: 100%;
+      margin: 0;
+    }
+
+    #side-bar a,
+    #side-bar summary {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      width: 100%;
+      padding: 15px 15px;
+      border-radius: 20px;
+      text-decoration: none !important;
+      color: #edf4ff !important;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.055), rgba(255,255,255,0.025));
+      border: 1px solid rgba(255,255,255,0.06);
+      transition: all 0.28s ease;
+      position: relative;
+      overflow: hidden;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+    }
+
+    #side-bar a::before,
+    #side-bar summary::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, rgba(255,122,47,0.13), rgba(31,119,255,0.11));
+      opacity: 0;
+      transition: opacity 0.28s ease;
+    }
+
+    #side-bar a::after,
+    #side-bar summary::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 18%;
+      width: 4px;
+      height: 64%;
+      border-radius: 999px;
+      background: linear-gradient(180deg, #ff8a3c, #1f77ff);
+      opacity: 0;
+      transition: opacity 0.28s ease;
+    }
+
+    #side-bar a:hover,
+    #side-bar summary:hover {
+      transform: translateX(6px);
+      border-color: rgba(255,255,255,0.10);
+      box-shadow: 0 14px 28px rgba(0,0,0,0.20);
+    }
+
+    #side-bar a:hover::before,
+    #side-bar summary:hover::before,
+    #side-bar a:hover::after,
+    #side-bar summary:hover::after {
+      opacity: 1;
+    }
+
+    #side-bar a.active,
+    #side-bar summary.active {
+      background: linear-gradient(135deg, rgba(255,122,47,0.18), rgba(31,119,255,0.16));
+      border-color: rgba(255,255,255,0.12);
+      box-shadow: 0 16px 30px rgba(0,0,0,0.24);
+    }
+
+    #side-bar a.active::before,
+    #side-bar summary.active::before,
+    #side-bar a.active::after,
+    #side-bar summary.active::after {
+      opacity: 1;
+    }
+
+    .nav-icon {
+      width: 44px;
+      height: 44px;
+      min-width: 44px;
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, rgba(255,255,255,0.13), rgba(255,255,255,0.05));
+      border: 1px solid rgba(255,255,255,0.08);
+      color: #fff;
+      font-size: 17px;
+      position: relative;
+      z-index: 1;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+    }
+
+    .nav-text {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .nav-text strong {
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.2;
+    }
+
+    .nav-text span {
+      margin-top: 4px;
+      font-size: 11px;
+      line-height: 1.45;
+      color: #aabed8;
+    }
+
+    .nav-arrow {
+      margin-left: auto;
+      font-size: 16px;
+      color: #93b2d8;
+      position: relative;
+      z-index: 1;
+      transition: transform 0.25s ease;
+    }
+
+    #side-bar a:hover .nav-arrow,
+    #side-bar summary:hover .nav-arrow {
+      transform: translateX(4px);
+    }
+    /* ===== END NAVBAR / SIDEBAR CHANGED ===== */
+
+    main {
+      position: fixed;
+      top: var(--topbar-height);
+      left: var(--sidebar-width);
+      right: 0;
+      bottom: 0;
+      overflow-y: auto;
+      padding: 28px 30px 40px;
+    }
+
+    .hero-card {
+      background: linear-gradient(135deg, rgba(22, 61, 112, 0.88), rgba(12, 27, 53, 0.92));
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 24px;
+      padding: 30px 34px;
+      box-shadow: var(--shadow);
+      margin-bottom: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-card::after {
+      content: "";
+      position: absolute;
+      right: -80px;
+      top: -80px;
+      width: 220px;
+      height: 220px;
+      background: radial-gradient(circle, rgba(255, 122, 47, 0.18), transparent 70%);
+      border-radius: 50%;
+    }
+
+    .page-tag {
+      display: inline-block;
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      color: #ffb88f;
+      background: rgba(255, 122, 47, 0.16);
+      border: 1px solid rgba(255, 122, 47, 0.2);
+      margin-bottom: 14px;
+    }
+
+    .hero-card h1 {
+      margin: 0 0 10px;
+      font-size: 32px;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.15;
+    }
+
+    .hero-card p {
+      margin: 0;
+      max-width: 850px;
+      font-size: 15px;
+      line-height: 1.8;
+      color: #d0def0;
+    }
+
+    .panel-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 28px;
+      box-shadow: var(--shadow);
+      margin-bottom: 24px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .section-header h2,
+    .section-header h3 {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .section-badge {
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #9ec3ff;
+      background: rgba(31, 119, 255, 0.14);
+      border: 1px solid rgba(31, 119, 255, 0.22);
+      white-space: nowrap;
+    }
+
+    .details-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(260px, 1fr));
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+
+    .details-grid.second {
+      grid-template-columns: repeat(2, minmax(260px, 1fr));
+      align-items: end;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #9db4d0;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+    }
+
+    .value-box,
+.field input,
+.field select {
+  width: 100%;
+  height: 60px;
+  min-height: 60px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  padding: 0 18px;
+  font-size: 16px;
+  line-height: 60px;
+  outline: none;
+  box-shadow: none;
+  transition: 0.25s ease;
+}
+
+.field select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' fill='white' viewBox='0 0 16 16'%3E%3Cpath d='M1.5 5.5l6 6 6-6' stroke='white' stroke-width='2' fill='none'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 18px center;
+  padding-right: 50px;
+}
+
+    .field input:focus,
+    .field select:focus {
+      border-color: rgba(31, 119, 255, 0.55);
+      box-shadow: 0 0 0 4px rgba(31, 119, 255, 0.12);
+    }
+
+    .field input::placeholder {
+      color: #9fb4cf;
+    }
+
+    .field select option {
+      color: #000;
+    }
+
+    .btn-primary.custom-btn {
+      border: none;
+      border-radius: 14px;
+      padding: 12px 24px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      cursor: pointer;
+      background: linear-gradient(135deg, #2d7dff, #1657cc);
+      box-shadow: 0 12px 26px rgba(45, 125, 255, 0.25);
+      transition: 0.25s ease;
+      min-height: 48px;
+      width: 100%;
+    }
+
+    .btn-primary.custom-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .table-box {
+      width: 100%;
+      overflow-x: auto;
+      border-radius: 16px;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 8px;
+    }
+
+    .table-box table {
+      width: 100%;
+      min-width: 900px;
+      border-collapse: collapse;
+      overflow: hidden;
+      border-radius: 16px;
+    }
+
+    .table-box thead tr {
+      background: linear-gradient(135deg, #183b6f, #102849);
+    }
+
+    .table-box thead th {
+      padding: 16px 14px;
+      color: #fff;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      border: none;
+      text-align: center;
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+
+    .table-box tbody tr {
+      background: rgba(255, 255, 255, 0.03);
+      transition: 0.2s ease;
+    }
+
+    .table-box tbody tr:nth-child(even) {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .table-box tbody tr:hover {
+      background: rgba(31, 119, 255, 0.10);
+    }
+
+    .table-box tbody td {
+      padding: 15px 14px;
+      color: #eaf2ff;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      vertical-align: middle;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .chip {
+      display: inline-block;
+      min-width: 64px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .chip.absent {
+      background: rgba(239, 77, 77, 0.16);
+      color: #ffb4b4;
+      border: 1px solid rgba(239, 77, 77, 0.22);
+    }
+
+    .chip.present {
+      background: rgba(20, 184, 106, 0.16);
+      color: #90efbd;
+      border: 1px solid rgba(20, 184, 106, 0.22);
+    }
+
+    .chip.total {
+      background: rgba(31, 119, 255, 0.14);
+      color: #a8cbff;
+      border: 1px solid rgba(31, 119, 255, 0.22);
+    }
+
+    .uid-pill {
+      display: inline-block;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: rgba(31, 119, 255, 0.14);
+      color: #cfe2ff;
+      font-size: 12px;
+      font-weight: 700;
+      border: 1px solid rgba(31, 119, 255, 0.22);
+      white-space: nowrap;
+    }
+
+    .attendance-checkbox {
+      transform: scale(1.25);
+      accent-color: #1dc06d;
+      pointer-events: none;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 28px !important;
+      color: #a8bdd8 !important;
+      font-style: italic;
+    }
+
+    @media (max-width: 768px) {
+  .field select {
+    height: 64px;
+    min-height: 64px;
+    font-size: 15px;
+    line-height: 64px;
+  }
+}
+
+    @media (max-width: 900px) {
+  html,
+  body {
+    width: 100%;
+    min-height: 100%;
+    height: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .app-shell,
+  .down-part {
+    height: auto;
+    min-height: 100vh;
+    overflow: visible;
+  }
+
+  .down-part {
+    padding-top: var(--topbar-height);
+  }
+
+  nav {
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+
+    /* FIX: Command Center scroll ke saath upar jayega */
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    bottom: auto;
+
+    height: auto;
+    max-height: none;
+    overflow: visible;
+
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 0 0 24px 24px;
+    z-index: 100;
+    padding: 14px;
+  }
+
+  .sidebar-section-title {
+    margin: 18px 6px 14px;
+  }
+
+  #side-bar {
+    display: none;
+    gap: 10px;
+  }
+
+  #side-bar.active {
+    display: flex;
+  }
+
+  .sidebar-status-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .sidebar-status-text {
+    text-align: left;
+  }
+
+  main {
+    /* FIX: main normal page scroll mein rahega */
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    bottom: auto;
+
+    width: 100%;
+    padding: 18px;
+    overflow: visible;
+  }
+
+  .hero-card h1 {
+    font-size: 24px;
+  }
+
+  .details-grid,
+  .details-grid.second {
+    grid-template-columns: 1fr;
+  }
+
+  .brand-subtitle {
+    display: none;
+  }
+}
+    @media (max-width: 600px) {
+      .topbar {
+        padding: 0 14px;
+      }
+
+      .brand-title {
+        font-size: 20px;
+      }
+
+      .logout {
+        padding: 9px 14px;
+        font-size: 13px;
+      }
+
+      #notificationBox {
+        width: 280px;
+        right: -40px;
+      }
+
+      .hero-card,
+      .panel-card {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="menu-toggle-top" onclick="toggleMenu()">☰</div>
+      <div class="brand-wrap">
+        <a href="#" class="brand-title">AS Dashboard</a>
+        <p class="brand-subtitle">Assistant Supervisor Attendance Control Panel</p>
+      </div>
+    </div>
+
+    <div class="header-right">
+      <div id="bellContainer">
+        <span class="glyphicon glyphicon-bell" style="font-size:24px;"></span>
+        <span id="bellBadge" class="badge" style="display:none;">0</span>
+      </div>
+      <div id="notificationBox"></div>
+      <a href="#" class="logout" onclick="logoutUser()">Logout</a>
+    </div>
+  </div>
+
+  <div class="down-part">
+    <nav>
+      <div class="sidebar-top-card">
+        <div class="sidebar-mini-label">AS Panel</div>
+        <h3 class="sidebar-main-title">Command Center</h3>
+        <p class="sidebar-main-subtitle">
+          Access attendance summaries, daily records, and important assistant supervisor sections from one clean navigation area.
+        </p>
+
+        <div class="sidebar-status-row">
+          <span class="sidebar-status-badge">Attendance Active</span>
+          <div class="sidebar-status-text">
+            Secure access<br />
+            Quick navigation
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-section-title">Navigation</div>
+      <ul id="side-bar"></ul>
+    </nav>
+
+    <main>
+      <section class="hero-card">
+        <span class="page-tag">ATTENDANCE CONTROL PANEL</span>
+        <h1>Attendance</h1>
+        <p>
+          Review monthly attendance status, check present and absent summaries,
+          and track attendance records clearly from the AS dashboard.
+        </p>
+      </section>
+
+      <section class="panel-card">
+        <div class="section-header">
+          <h2>AS Details</h2>
+          <span class="section-badge">Profile & Filters</span>
+        </div>
+
+        <div class="details-grid">
+          <div class="field">
+            <label>AS Name</label>
+            <div class="value-box" id="supNameDisplay">Loading...</div>
+          </div>
+
+          <div class="field">
+            <label>AS ID</label>
+            <div class="value-box" id="supIdDisplay">Loading...</div>
+          </div>
+
+          <div class="field">
+            <label>Job</label>
+            <select id="supJobSelect">
+              <option>Loading…</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label>Joining Year</label>
+            <div class="value-box" id="joiningYearDisplay">Loading...</div>
+          </div>
+        </div>
+
+        <div class="details-grid second">
+          <div class="field">
+            <label>Date</label>
+            <input type="date" id="supDate">
+          </div>
+
+          <div class="field">
+            <label>&nbsp;</label>
+            <button type="button" id="attendanceSubmit" class="btn btn-primary custom-btn">
+              Submit
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel-card">
+        <div class="section-header">
+          <h3>Attendance Summary</h3>
+          <span class="section-badge">Monthly Record</span>
+        </div>
+
+        <div class="table-box">
+          <table>
+            <thead>
+              <tr>
+                <th>No. of Absent</th>
+                <th>No. of Present</th>
+                <th>Total Days</th>
+                <th>UID</th>
+                <th>Name</th>
+                <th>Mark Attendance</th>
+              </tr>
+            </thead>
+            <tbody id="attendanceTableBody">
+              <tr>
+                <td colspan="6" class="empty-state">No attendance records loaded yet.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    function toggleMenu() {
+      const sidebar = document.getElementById("side-bar");
+      sidebar.classList.toggle("active");
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const currentPage = window.location.pathname.split("/").pop();
+      const navLinks = document.querySelectorAll("#side-bar a");
+
+      navLinks.forEach(link => {
+        const href = link.getAttribute("href");
+        if (href === currentPage) {
+          link.classList.add("active");
+        }
+      });
+    });
+  </script>
+
+  <script type="module" src="/public/control.js"></script>
+</body>
+</html>
+
+  <script type="module">
+    import {
+      getFirestore,
+      doc,
+      getDoc,
+      collection,
+      getDocs
+    } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+    import { app } from "/public/firebase-config.js";
+    const db = getFirestore(app);
+
+    const bell = document.getElementById("bellContainer");
+    const badge = document.getElementById("bellBadge");
+    const box = document.getElementById("notificationBox");
+
+    async function refreshNotifications() {
+      try {
+        const snap = await getDocs(collection(db, "Employee"));
+        const today = new Date();
+        const soon = new Date();
+        soon.setDate(today.getDate() + 3);
+
+        const items = [];
+        snap.forEach(docSnap => {
+          const d = docSnap.data();
+          if (!d.passes_end) return;
+          const end = new Date(d.passes_end);
+          if (end >= today && end <= soon) {
+            items.push({
+              name: d.fullName,
+              uid: d.uid,
+              pass: d.passes,
+              renew: d.passes_end
+            });
+          }
+        });
+
+        if (items.length) {
+          badge.innerText = items.length;
+          badge.style.display = "";
+        } else {
+          badge.style.display = "none";
+        }
+
+        box.innerHTML = "";
+        if (!items.length) {
+          box.innerHTML = "<div class='notification-item'><p>No passes expiring in 3 days.</p></div>";
+        } else {
+          for (const it of items) {
+            const div = document.createElement("div");
+            div.className = "notification-item";
+            div.innerHTML = `
+              <p><strong>Name:</strong> ${it.name}</p>
+              <p><strong>User ID:</strong> ${it.uid}</p>
+              <p><strong>Pass Type:</strong> ${it.pass}</p>
+              <p><strong>Renew Date:</strong> ${it.renew}</p>
+            `;
+            box.appendChild(div);
+          }
+        }
+      } catch (e) {
+        console.error("Notification load error:", e);
+      }
+    }
+
+    bell.addEventListener("click", () => {
+      box.style.display = box.style.display === "none" ? "block" : "none";
+    });
+
+    document.addEventListener("DOMContentLoaded", refreshNotifications);
+
+    let supDataGlobal = null;
+    const asEmail = localStorage.getItem("asEmail");
+    if (!asEmail) {
+      console.error("No AS email found in localStorage.");
+    } else {
+      const supDocRef = doc(db, "AS", asEmail);
+      getDoc(supDocRef)
+        .then(docSnap => {
+          if (!docSnap.exists()) {
+            console.error("No AS document found for email:", asEmail);
+            return;
+          }
+          supDataGlobal = docSnap.data();
+
+          document.getElementById("supNameDisplay").innerText = supDataGlobal.Name;
+          document.getElementById("supIdDisplay").innerText = supDataGlobal.uid;
+          document.getElementById("joiningYearDisplay").innerText = supDataGlobal.joiningDate || "N/A";
+
+          const jobSelect = document.getElementById("supJobSelect");
+          if (Array.isArray(supDataGlobal.jobs) && supDataGlobal.jobs.length) {
+            jobSelect.innerHTML = supDataGlobal.jobs
+              .map(job => `<option value="${job}">${job}</option>`)
+              .join("");
+          } else {
+            console.warn("No jobs array found for this supervisor");
+            jobSelect.innerHTML = `<option disabled>No jobs available</option>`;
+          }
+
+          fetchAttendanceByJob(jobSelect.value);
+          jobSelect.addEventListener("change", () => {
+            fetchAttendanceByJob(jobSelect.value);
+          });
+        })
+        .catch(err => console.error("Error fetching Supervisor details:", err));
+    }
+
+    const supDateInput = document.getElementById("supDate");
+    const today = new Date();
+    const todayStr = today.toISOString().split("T")[0];
+    supDateInput.max = todayStr;
+    const past7 = new Date(today);
+    past7.setDate(past7.getDate() - 7);
+    supDateInput.min = past7.toISOString().split("T")[0];
+    supDateInput.value = todayStr;
+
+    function formatDate(inputDate) {
+      const d = new Date(inputDate);
+      const dd = String(d.getDate()).padStart(2, "0");
+      const mm = String(d.getMonth() + 1).padStart(2, "0");
+      const yy = String(d.getFullYear()).slice(-2);
+      return `${dd}-${mm}-${yy}`;
+    }
+
+    const attendanceSubmitBtn = document.getElementById("attendanceSubmit"),
+      tableBody = document.getElementById("attendanceTableBody");
+
+    async function fetchAttendanceByJob(job) {
+      if (!supDataGlobal) return;
+      const formattedDate = formatDate(supDateInput.value),
+        monthSuffix = formattedDate.slice(3);
+
+      const allSnap = await getDocs(
+        collection(db, "Attendance", supDataGlobal.uid, "Records")
+      );
+      let present = 0, absent = 0;
+      allSnap.docs.forEach(d => {
+        const dateId = d.id;
+        if (dateId.endsWith(monthSuffix)) {
+          d.data().Marking === "Present" ? present++ : absent++;
+        }
+      });
+
+      tableBody.innerHTML = "";
+      if (!present && !absent) {
+        tableBody.innerHTML = `<tr><td colspan="6" class="empty-state">No records for ${monthSuffix}.</td></tr>`;
+        return;
+      }
+
+      const daySnap = await getDoc(
+        doc(db, "Attendance", supDataGlobal.uid, "Records", formattedDate)
+      );
+      const checked = (daySnap.exists() && daySnap.data().Marking === "Present") ? "checked" : "";
+
+      const trSum = document.createElement("tr");
+      trSum.innerHTML = `
+        <td><span class="chip absent">${absent}</span></td>
+        <td><span class="chip present">${present}</span></td>
+        <td><span class="chip total">${present + absent}</span></td>
+        <td><span class="uid-pill">${supDataGlobal.uid} (AS)</span></td>
+        <td>${supDataGlobal.Name}</td>
+        <td><input type="checkbox" class="attendance-checkbox" disabled ${checked}></td>
+      `;
+      tableBody.appendChild(trSum);
+    }
+
+    attendanceSubmitBtn.addEventListener("click", () => {
+      fetchAttendanceByJob(document.getElementById("supJobSelect").value);
+    });
+
+    document.addEventListener("DOMContentLoaded", () => {
+      attendanceSubmitBtn.click();
+    });
+  </script>
+</body>
+
+</html>

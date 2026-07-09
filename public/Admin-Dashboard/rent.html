@@ -1,0 +1,1717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Admin Dashboard - Staff Accommodation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/x-icon" href="logo2.ico" />
+    <link rel="stylesheet" type="text/css" href="Hremployeeattendence.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap-theme.min.css" />
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+
+    <style>
+        *, *::before, *::after {
+            cursor:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" viewBox="0 0 24 24"><path fill="%23FFF" stroke="%23FF2711" stroke-width="2" d="M5.5 3.21V20.8c0 .45.54.67.85.35l4.86-4.86a.5.5 0 0 1 .35-.15h6.87a.5.5 0 0 0 .35-.85L6.35 2.85a.5.5 0 0 0-.85.35Z"></path></svg>') 5 5, auto;
+        }
+
+        a, button, input[type="submit"], input[type="button"],
+        label, select, .dropbtn, .sub-btn, .btn, .cn,
+        .carousel-control, .hideMenuButton, .item a,
+        input[type="text"], input[type="search"], textarea {
+            cursor:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="%23FFF" stroke="%23FF2711" stroke-width="2" stroke-linejoin="round" d="M10 11V8.99c0-.88.59-1.64 1.44-1.86h.05A1.99 1.99 0 0 1 14 9.05V12v-2c0-.88.6-1.65 1.46-1.87h.05A1.98 1.98 0 0 1 18 10.06V13v-1.94a2 2 0 0 1 1.51-1.94h0A2 2 0 0 1 22 11.06V14c0 .6-.08 1.27-.21 1.97a7.96 7.96 0 0 1-7.55 6.48 54.98 54.98 0 0 1-4.48 0 7.96 7.96 0 0 1-7.55-6.48C2.08 15.27 2 14.59 2 14v-1.49c0-1.11.9-2.01 2.01-2.01h0a2 2 0 0 1 2.01 2.03l-.01.97v-10c0-1.1.9-2 2-2h0a2 2 0 0 1 2 2V11Z"></path></svg>') 5 5, auto;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --topbar-height: 78px;
+            --sidebar-width: 280px;
+            --card-bg: rgba(12, 25, 45, 0.85);
+            --text-main: #ffffff;
+            --text-soft: #b8c9df;
+            --accent: #ff7a2f;
+            --accent-2: #1f77ff;
+            --shadow: 0 18px 40px rgba(0, 0, 0, 0.25);
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background:
+                linear-gradient(135deg, rgba(7, 16, 30, 0.95), rgba(14, 34, 56, 0.92)),
+                url("https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1600&q=80") center/cover no-repeat fixed;
+            color: var(--text-main);
+        }
+
+        .app-shell {
+            height: 100vh;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .topbar {
+            height: var(--topbar-height);
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(7, 16, 30, 0.88);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 2000;
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            min-width: 0;
+        }
+
+        .menu-toggle {
+            width: 46px;
+            height: 46px;
+            border: none;
+            border-radius: 14px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
+            color: #fff;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.25s ease;
+            flex-shrink: 0;
+            box-shadow: 0 10px 22px rgba(0,0,0,0.16);
+        }
+
+        .menu-toggle:hover {
+            transform: translateY(-1px);
+            background: linear-gradient(135deg, rgba(255,122,47,0.18), rgba(31,119,255,0.16));
+        }
+
+        .brand-title {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 700;
+            color: #fff;
+            text-decoration: none !important;
+        }
+
+        .brand-subtitle {
+            margin: 2px 0 0;
+            color: var(--text-soft);
+            font-size: 13px;
+        }
+
+        .logout {
+            text-decoration: none !important;
+            color: #fff !important;
+            background: linear-gradient(135deg, #ff8a3c, #ff5a1f);
+            padding: 11px 18px;
+            border-radius: 12px;
+            font-weight: 700;
+            transition: 0.25s ease;
+            box-shadow: 0 10px 24px rgba(255, 90, 31, 0.24);
+            white-space: nowrap;
+        }
+
+        .logout:hover {
+            transform: translateY(-1px);
+            color: #fff !important;
+        }
+
+        .dashboard-layout {
+            display: block;
+            width: 100%;
+            height: 100vh;
+        }
+
+        nav.sidebar {
+            width: var(--sidebar-width);
+            min-width: var(--sidebar-width);
+            max-width: var(--sidebar-width);
+            position: fixed;
+            top: var(--topbar-height);
+            left: 0;
+            bottom: 0;
+            padding: 20px 16px 22px;
+            background:
+                linear-gradient(180deg, rgba(6, 16, 30, 0.98), rgba(8, 22, 40, 0.96));
+            backdrop-filter: blur(16px);
+            border-right: 1px solid rgba(255,255,255,0.06);
+            overflow-y: auto;
+            overflow-x: hidden;
+            z-index: 1500;
+            box-shadow: 18px 0 45px rgba(0, 0, 0, 0.24);
+        }
+
+        .sidebar-top-card {
+            position: relative;
+            padding: 20px 18px 18px;
+            border-radius: 24px;
+            background:
+                linear-gradient(135deg, rgba(255,122,47,0.16), rgba(31,119,255,0.14)),
+                rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            box-shadow:
+                0 16px 32px rgba(0,0,0,0.20),
+                inset 0 1px 0 rgba(255,255,255,0.06);
+            overflow: hidden;
+        }
+
+        .sidebar-mini-label {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.4px;
+            color: #ffd8c2;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.08);
+            padding: 5px 10px;
+            border-radius: 999px;
+            margin-bottom: 12px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .sidebar-main-title {
+            font-size: 19px;
+            font-weight: 800;
+            color: #ffffff;
+            margin: 0 0 6px;
+            line-height: 1.2;
+        }
+
+        .sidebar-main-subtitle {
+            font-size: 13px;
+            color: #d5e2f1;
+            line-height: 1.7;
+            margin: 0 0 14px;
+        }
+
+        .sidebar-status-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .sidebar-status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 700;
+            color: #dfffe9;
+            background: rgba(20,184,106,0.14);
+            border: 1px solid rgba(20,184,106,0.22);
+        }
+
+        .sidebar-status-badge::before {
+            content: "";
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #4df39b;
+            box-shadow: 0 0 10px rgba(77,243,155,0.7);
+        }
+
+        .sidebar-status-text {
+            font-size: 11px;
+            color: #c6d8ec;
+            text-align: right;
+            line-height: 1.4;
+        }
+
+        .sidebar-section-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #8ea4c5;
+            margin: 24px 8px 16px;
+            font-weight: 700;
+        }
+
+        #side-bar {
+            list-style: none;
+            padding-left: 0;
+            margin: 0;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        #side-bar li {
+            margin-bottom: 0;
+            width: 100%;
+        }
+
+        #side-bar a,
+        #side-bar summary {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            width: 100%;
+            padding: 15px 15px;
+            border-radius: 20px;
+            text-decoration: none !important;
+            color: #edf4ff !important;
+            background:
+                linear-gradient(135deg, rgba(255,255,255,0.055), rgba(255,255,255,0.025));
+            border: 1px solid rgba(255,255,255,0.06);
+            transition: all 0.28s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        main {
+            position: fixed;
+            top: var(--topbar-height);
+            left: var(--sidebar-width);
+            right: 0;
+            bottom: 0;
+            min-width: 0;
+            padding: 28px 30px;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .hero-card {
+            background: linear-gradient(135deg, rgba(22, 61, 112, 0.88), rgba(12, 27, 53, 0.92));
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 24px;
+            padding: 30px 34px;
+            box-shadow: var(--shadow);
+            margin-bottom: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-tag {
+            display: inline-block;
+            padding: 7px 12px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.8px;
+            color: #ffb88f;
+            background: rgba(255, 122, 47, 0.16);
+            border: 1px solid rgba(255, 122, 47, 0.2);
+            margin-bottom: 14px;
+        }
+
+        .hero-card h1 {
+            margin: 0 0 10px;
+            font-size: 32px;
+            font-weight: 800;
+            color: #fff;
+            line-height: 1.15;
+        }
+
+        .hero-card p {
+            margin: 0;
+            max-width: 850px;
+            font-size: 15px;
+            line-height: 1.8;
+            color: #d0def0;
+        }
+
+        .panel-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 22px;
+            padding: 24px;
+            box-shadow: var(--shadow);
+            width: 100%;
+            min-width: 0;
+            margin-bottom: 24px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .section-header h2,
+        .section-header h3 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 800;
+            color: #fff;
+        }
+
+        .section-badge {
+            padding: 6px 12px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #9ec3ff;
+            background: rgba(31, 119, 255, 0.14);
+            border: 1px solid rgba(31, 119, 255, 0.22);
+            white-space: nowrap;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(220px, 1fr));
+            gap: 18px;
+        }
+
+        .entry-grid {
+            display: grid;
+            grid-template-columns: 1.1fr 1fr 1fr 1.2fr;
+            gap: 18px;
+        }
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr auto;
+            gap: 18px;
+            align-items: end;
+        }
+
+        .info-item label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #9db4d0;
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+        }
+
+        .info-value,
+        .modern-input,
+        .modern-select {
+            width: 100%;
+            min-height: 48px;
+            border-radius: 14px;
+            border: 1px solid rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.05);
+            color: #fff;
+            padding: 12px 14px;
+            font-size: 14px;
+            outline: none;
+            transition: 0.25s ease;
+        }
+
+        .modern-input:focus,
+        .modern-select:focus {
+            border-color: rgba(31, 119, 255, 0.55);
+            box-shadow: 0 0 0 4px rgba(31, 119, 255, 0.12);
+        }
+
+        .modern-input::placeholder {
+            color: rgba(216, 229, 247, 0.55);
+        }
+
+        .modern-select option {
+            color: #000;
+        }
+
+        .btn-primary.custom-btn,
+        .btn-orange.custom-btn {
+            border: none;
+            border-radius: 14px;
+            padding: 12px 22px;
+            font-size: 14px;
+            font-weight: 700;
+            color: #fff;
+            transition: 0.25s ease;
+            min-height: 48px;
+            white-space: nowrap;
+        }
+
+        .btn-primary.custom-btn {
+            background: linear-gradient(135deg, #2d7dff, #1657cc);
+            box-shadow: 0 12px 26px rgba(45, 125, 255, 0.25);
+        }
+
+        .btn-orange.custom-btn {
+            background: linear-gradient(135deg, #ff8a3c, #ff5a1f);
+            box-shadow: 0 12px 26px rgba(255, 90, 31, 0.24);
+        }
+
+        .btn-secondary.custom-btn {
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 14px;
+            padding: 12px 22px;
+            font-size: 14px;
+            font-weight: 700;
+            color: #fff;
+            background: rgba(255,255,255,0.06);
+            min-height: 48px;
+            transition: 0.25s ease;
+            white-space: nowrap;
+        }
+
+        .btn-danger.custom-btn {
+            border: none;
+            border-radius: 12px;
+            padding: 9px 16px;
+            font-size: 13px;
+            font-weight: 700;
+            color: #fff;
+            background: linear-gradient(135deg, #ff615a, #db3d37);
+            transition: 0.25s ease;
+            white-space: nowrap;
+        }
+
+        .btn-primary.custom-btn:hover,
+        .btn-orange.custom-btn:hover,
+        .btn-secondary.custom-btn:hover,
+        .btn-danger.custom-btn:hover {
+            transform: translateY(-1px);
+            color: #fff;
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .status-message {
+            margin-top: 14px;
+            font-size: 13px;
+            font-weight: 700;
+            color: #d0def0;
+        }
+
+        .status-success {
+            color: #67f0a5;
+        }
+
+        .status-error {
+            color: #ff8a8a;
+        }
+
+        .status-info {
+            color: #9ec3ff;
+        }
+
+        .table-container {
+            margin: 0;
+            padding: 0;
+            max-width: 100%;
+        }
+
+        .table-box {
+            width: 100%;
+            overflow-x: auto;
+            border-radius: 16px;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: 8px;
+        }
+
+        .table-box table {
+            width: 100%;
+            min-width: 950px;
+            border-collapse: collapse;
+            overflow: hidden;
+            border-radius: 16px;
+        }
+
+        .table-box thead tr {
+            background: linear-gradient(135deg, #183b6f, #102849);
+        }
+
+        .table-box thead th {
+            padding: 16px 14px;
+            color: #fff;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            border: none;
+            text-align: left;
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+
+        .table-box tbody tr {
+            background: rgba(255,255,255,0.03);
+            transition: 0.2s ease;
+        }
+
+        .table-box tbody tr:nth-child(even) {
+            background: rgba(255,255,255,0.05);
+        }
+
+        .table-box tbody tr:hover {
+            background: rgba(31, 119, 255, 0.10);
+        }
+
+        .table-box tbody td {
+            padding: 15px 14px;
+            color: #eaf2ff;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            vertical-align: middle;
+        }
+
+        .uid-pill {
+            display: inline-block;
+            padding: 7px 12px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.08);
+            color: #e6f0ff;
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .reason-chip {
+            display: inline-block;
+            padding: 7px 12px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+            white-space: nowrap;
+            background: rgba(255, 192, 72, 0.16);
+            color: #ffd77f;
+            border: 1px solid rgba(255, 192, 72, 0.22);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 28px !important;
+            color: #a8bdd8 !important;
+            font-style: italic;
+        }
+
+        @media (max-width: 1200px) {
+            .entry-grid {
+                grid-template-columns: repeat(2, minmax(220px, 1fr));
+            }
+
+            .filter-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 900px) {
+    html,
+    body {
+        width: 100%;
+        min-height: 100%;
+        height: auto;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .app-shell {
+        height: auto;
+        min-height: 100vh;
+        overflow: visible;
+    }
+
+    .dashboard-layout {
+        height: auto;
+        min-height: 100vh;
+        padding-top: var(--topbar-height);
+    }
+
+    nav.sidebar {
+        width: 100%;
+        min-width: 100%;
+        max-width: 100%;
+
+        /* FIX: Command Center scroll ke saath upar jayega */
+        position: relative;
+        top: auto;
+        left: auto;
+        right: auto;
+        bottom: auto;
+
+        height: auto;
+        max-height: none;
+        overflow: visible;
+
+        border-right: none;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+        border-radius: 0 0 24px 24px;
+        z-index: 100;
+        padding: 14px;
+    }
+
+    .sidebar-section-title {
+        margin: 18px 6px 14px;
+    }
+
+    #side-bar {
+        display: none;
+        gap: 10px;
+    }
+
+    #side-bar.active {
+        display: flex;
+    }
+
+    .sidebar-status-row {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .sidebar-status-text {
+        text-align: left;
+    }
+
+    main {
+        /* FIX: main normal page scroll mein rahega */
+        position: relative;
+        top: auto;
+        left: auto;
+        right: auto;
+        bottom: auto;
+
+        width: 100%;
+        padding: 18px;
+        overflow: visible;
+    }
+
+    .hero-card h1 {
+        font-size: 24px;
+    }
+
+    .info-grid,
+    .entry-grid,
+    .filter-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .brand-subtitle {
+        display: none;
+    }
+}
+
+        @media (max-width: 600px) {
+            .topbar {
+                padding: 0 14px;
+            }
+
+            .logout {
+                padding: 9px 14px;
+                font-size: 13px;
+            }
+
+            .hero-card,
+            .panel-card {
+                padding: 18px;
+                border-radius: 18px;
+            }
+
+            .btn-primary.custom-btn,
+            .btn-orange.custom-btn,
+            .btn-secondary.custom-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-shell">
+        <header class="topbar">
+            <div class="topbar-left">
+                <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+                <div>
+                    <a href="/public/AdminHome.html" class="brand-title">Admin Dashboard</a>
+                    <p class="brand-subtitle">Staff Accommodation Management Panel</p>
+                </div>
+            </div>
+
+            <div class="topbar-right">
+                <a href="#" class="logout" onclick="logoutUser()">Logout</a>
+            </div>
+        </header>
+
+        <div class="dashboard-layout">
+            <nav class="sidebar">
+                <div class="sidebar-top-card">
+                    <div class="sidebar-mini-label">Admin Panel</div>
+                    <h3 class="sidebar-main-title">Command Center</h3>
+                    <p class="sidebar-main-subtitle">
+                        Add, update and delete one staff accommodation record per ID.
+                    </p>
+
+                    <div class="sidebar-status-row">
+                        <span class="sidebar-status-badge">Accommodation Active</span>
+                        <div class="sidebar-status-text">
+                            Single record<br />
+                            Edit enabled
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sidebar-section-title">Navigation</div>
+                <ul id="side-bar"></ul>
+            </nav>
+
+            <main>
+                <section class="hero-card">
+                    <span class="page-tag">STAFF ACCOMMODATION PANEL</span>
+                    <h1>Staff Accommodation</h1>
+                    <p>
+                        One ID can have only one accommodation record. If the record already exists,
+                        amount and reason will auto-fill for update. Records can also be deleted from the table.
+                    </p>
+                </section>
+
+                <section class="panel-card">
+                    <div class="section-header">
+                        <h2>Admin Details</h2>
+                        <span class="section-badge">Profile</span>
+                    </div>
+
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <label>Admin Name</label>
+                            <div class="info-value" id="adminNameDisplay">Loading...</div>
+                        </div>
+
+                        <div class="info-item">
+                            <label>Admin ID</label>
+                            <div class="info-value" id="adminIdDisplay">Loading...</div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="panel-card">
+                    <div class="section-header">
+                        <h3>Staff Accommodation Entry</h3>
+                        <span class="section-badge" id="entryModeBadge">Save Data</span>
+                    </div>
+
+                    <div class="entry-grid">
+                        <div class="info-item">
+                            <label>Name</label>
+                            <input type="text" id="entryEmployeeName" class="modern-input" placeholder="Type Employee / SI / Supervisor / AS name" autocomplete="off" />
+                        </div>
+
+                        <div class="info-item">
+                            <label>ID</label>
+                            <input type="text" id="entryEmployeeIdInput" class="modern-input" placeholder="ID" readonly />
+                            <select id="entryEmployeeIdSelect" class="modern-select" style="display:none;">
+                                <option value="">Select ID</option>
+                            </select>
+                        </div>
+
+                        <div class="info-item">
+                            <label>Amount</label>
+                            <input type="number" id="entryAmount" class="modern-input" placeholder="Enter amount" />
+                        </div>
+
+                        <div class="info-item">
+                            <label>Reason</label>
+                            <select id="entryReason" class="modern-select">
+                                <option value="">Select Reason</option>
+                                <option value="Staff Accommodation">Staff Accommodation</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="btn-row">
+                        <button type="button" id="saveAccommodationBtn" class="btn btn-orange custom-btn">
+                            Submit
+                        </button>
+
+                        <button type="button" id="resetEntryBtn" class="btn btn-secondary custom-btn">
+                            Reset
+                        </button>
+                    </div>
+
+                    <div id="entryStatus" class="status-message"></div>
+                </section>
+
+                <section class="panel-card">
+                    <div class="section-header">
+                        <h3>Filter Staff Accommodation Records</h3>
+                        <span class="section-badge">Show Data</span>
+                    </div>
+
+                    <div class="filter-grid">
+                        <div class="info-item">
+                            <label>Name</label>
+                            <input type="text" id="filterEmployeeName" class="modern-input" placeholder="Type Employee / SI / Supervisor / AS name" autocomplete="off" />
+                        </div>
+
+                        <div class="info-item">
+                            <label>ID</label>
+                            <input type="text" id="filterEmployeeIdInput" class="modern-input" placeholder="ID" readonly />
+                            <select id="filterEmployeeIdSelect" class="modern-select" style="display:none;">
+                                <option value="">Select ID</option>
+                            </select>
+                        </div>
+
+                        <button type="button" id="filterAccommodationBtn" class="btn btn-primary custom-btn">
+                            Submit
+                        </button>
+                    </div>
+
+                    <div class="btn-row">
+                        <button type="button" id="resetFilterBtn" class="btn btn-secondary custom-btn">
+                            Reset
+                        </button>
+                    </div>
+
+                    <div id="filterStatus" class="status-message"></div>
+                </section>
+
+                <section class="panel-card">
+                    <div class="section-header">
+                        <h3>Accommodation Records</h3>
+                        <span class="section-badge" id="recordCountBadge">Total: 0</span>
+                    </div>
+
+                    <div class="table-container">
+                        <div class="table-box">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th style="width: 20%;">ID</th>
+                                        <th style="width: 28%;">Name</th>
+                                        <th style="width: 15%;">Amount</th>
+                                        <th style="width: 22%;">Reason</th>
+                                        <th style="width: 15%;">Action</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody id="accommodationTableBody">
+                                    <tr>
+                                        <td colspan="5" class="empty-state">No records found.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        function toggleMenu() {
+            const sidebar = document.getElementById("side-bar");
+            sidebar.classList.toggle("active");
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const currentPage = window.location.pathname.split("/").pop();
+            const navLinks = document.querySelectorAll("#side-bar a");
+
+            navLinks.forEach(link => {
+                const href = link.getAttribute("href");
+                if (href === currentPage) {
+                    link.classList.add("active");
+                }
+            });
+        });
+    </script>
+
+    <script type="module" src="/public/control.js"></script>
+
+    <script type="module">
+    import {
+        getFirestore,
+        doc,
+        getDoc,
+        collection,
+        getDocs,
+        query,
+        orderBy,
+        serverTimestamp,
+        setDoc,
+        deleteDoc,
+        limit
+    } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+
+    import { app } from "/public/firebase-config.js";
+
+    const db = getFirestore(app);
+
+    const FIXED_RECORD_ID = "StaffAccommodation";
+
+    const adminNameDisplay = document.getElementById("adminNameDisplay");
+    const adminIdDisplay = document.getElementById("adminIdDisplay");
+
+    const entryEmployeeName = document.getElementById("entryEmployeeName");
+    const entryEmployeeIdInput = document.getElementById("entryEmployeeIdInput");
+    const entryEmployeeIdSelect = document.getElementById("entryEmployeeIdSelect");
+    const entryAmount = document.getElementById("entryAmount");
+    const entryReason = document.getElementById("entryReason");
+    const saveAccommodationBtn = document.getElementById("saveAccommodationBtn");
+    const resetEntryBtn = document.getElementById("resetEntryBtn");
+    const entryStatus = document.getElementById("entryStatus");
+    const entryModeBadge = document.getElementById("entryModeBadge");
+
+    const filterEmployeeName = document.getElementById("filterEmployeeName");
+    const filterEmployeeIdInput = document.getElementById("filterEmployeeIdInput");
+    const filterEmployeeIdSelect = document.getElementById("filterEmployeeIdSelect");
+    const filterAccommodationBtn = document.getElementById("filterAccommodationBtn");
+    const resetFilterBtn = document.getElementById("resetFilterBtn");
+    const filterStatus = document.getElementById("filterStatus");
+
+    const accommodationTableBody = document.getElementById("accommodationTableBody");
+    const recordCountBadge = document.getElementById("recordCountBadge");
+
+    let currentAdminName = "";
+    let currentAdminId = "";
+
+    let entryMatchedPersons = [];
+    let filterMatchedPersons = [];
+    let entrySearchTimer = null;
+    let filterSearchTimer = null;
+
+    let allPeopleCache = [];
+    let isPeopleCacheLoaded = false;
+    let peopleCachePromise = null;
+
+    let currentEntryRecordDocId = FIXED_RECORD_ID;
+    let currentEntryMode = "create";
+
+    function normalizeText(text) {
+        return String(text || "")
+            .toLowerCase()
+            .replace(/\s+/g, " ")
+            .trim();
+    }
+
+    function getValue(data, keys) {
+        for (const key of keys) {
+            if (
+                data[key] !== undefined &&
+                data[key] !== null &&
+                String(data[key]).trim() !== ""
+            ) {
+                return data[key];
+            }
+        }
+
+        return "";
+    }
+
+    function setStatus(element, message, type) {
+        element.innerText = message || "";
+        element.className = "status-message";
+
+        if (type === "success") element.classList.add("status-success");
+        if (type === "error") element.classList.add("status-error");
+        if (type === "info") element.classList.add("status-info");
+    }
+
+    function showEmptyTable(message) {
+        accommodationTableBody.innerHTML = `
+            <tr>
+                <td colspan="5" class="empty-state">${message}</td>
+            </tr>
+        `;
+
+        recordCountBadge.innerText = "Total: 0";
+    }
+
+    function setEntryMode(mode) {
+        currentEntryMode = mode;
+
+        if (mode === "edit") {
+            entryModeBadge.innerText = "Edit Mode";
+            saveAccommodationBtn.innerText = "Update";
+        } else {
+            entryModeBadge.innerText = "Save Data";
+            saveAccommodationBtn.innerText = "Submit";
+        }
+    }
+
+    const adminEmail = localStorage.getItem("adminEmail");
+
+    if (!adminEmail) {
+        console.error("No Admin email found in localStorage.");
+        adminNameDisplay.innerText = "N/A";
+        adminIdDisplay.innerText = "N/A";
+    } else {
+        const adminDocRef = doc(db, "Admin", adminEmail);
+
+        getDoc(adminDocRef)
+            .then(docSnap => {
+                if (!docSnap.exists()) {
+                    console.error("No Admin document found for email:", adminEmail);
+                    adminNameDisplay.innerText = "N/A";
+                    adminIdDisplay.innerText = "N/A";
+                    return;
+                }
+
+                const adminData = docSnap.data();
+
+                currentAdminName = adminData.Name || adminData.name || "N/A";
+                currentAdminId = adminData.uid || adminData.id || "N/A";
+
+                adminNameDisplay.innerText = currentAdminName;
+                adminIdDisplay.innerText = currentAdminId;
+            })
+            .catch(err => {
+                console.error("Error fetching Admin details:", err);
+                adminNameDisplay.innerText = "N/A";
+                adminIdDisplay.innerText = "N/A";
+            });
+    }
+
+    async function getPeopleFromCollection(collectionName, roleType) {
+        const list = [];
+
+        try {
+            const snap = await getDocs(collection(db, collectionName));
+
+            snap.forEach(docSnap => {
+                const data = docSnap.data();
+
+                const name = getValue(data, [
+                    "Name",
+                    "name",
+                    "fullName",
+                    "FullName",
+                    "full_name",
+                    "Full Name",
+                    "employeeName",
+                    "EmployeeName",
+                    "employee_name",
+                    "Employee Name",
+                    "supervisorName",
+                    "SupervisorName",
+                    "siName",
+                    "SIName",
+                    "asName",
+                    "ASName",
+                    "hrName",
+                    "HRName"
+                ]);
+
+                const id = getValue(data, [
+                    "uid",
+                    "UID",
+                    "id",
+                    "ID",
+                    "employeeId",
+                    "employeeID",
+                    "EmployeeID",
+                    "Employee Id",
+                    "Employee ID",
+                    "empId",
+                    "EmpID",
+                    "supervisorId",
+                    "supervisorID",
+                    "SupervisorID",
+                    "Supervisor Id",
+                    "Supervisor ID",
+                    "siId",
+                    "siID",
+                    "SIID",
+                    "SI Id",
+                    "SI ID",
+                    "asId",
+                    "asID",
+                    "ASID",
+                    "AS Id",
+                    "AS ID"
+                ]) || docSnap.id;
+
+                if (!name || !id) return;
+
+                list.push({
+                    id: String(id).trim(),
+                    name: String(name).trim(),
+                    type: roleType,
+                    collection: collectionName
+                });
+            });
+        } catch (error) {
+            console.warn(collectionName + " skipped:", error);
+        }
+
+        return list;
+    }
+
+    async function loadAllPeopleOnce() {
+        if (isPeopleCacheLoaded) return allPeopleCache;
+
+        if (peopleCachePromise) {
+            await peopleCachePromise;
+            return allPeopleCache;
+        }
+
+        peopleCachePromise = (async () => {
+            const sources = [
+                { collection: "start", type: "Employee" },
+                { collection: "Employee", type: "Employee" },
+                { collection: "Employees", type: "Employee" },
+                { collection: "employees", type: "Employee" },
+                { collection: "Staff", type: "Employee" },
+                { collection: "staff", type: "Employee" },
+                { collection: "Joining", type: "Employee" },
+                { collection: "joining", type: "Employee" },
+                { collection: "JoiningForm", type: "Employee" },
+                { collection: "EmployeeList", type: "Employee" },
+
+                { collection: "SI", type: "SI" },
+                { collection: "SiteIncharge", type: "SI" },
+                { collection: "Site-Incharge", type: "SI" },
+                { collection: "SiteIncharges", type: "SI" },
+
+                { collection: "Supervisor", type: "Supervisor" },
+                { collection: "Supervisors", type: "Supervisor" },
+
+                { collection: "AS", type: "AS" },
+                { collection: "AssistantSupervisor", type: "AS" },
+                { collection: "Assistant-Supervisor", type: "AS" },
+                { collection: "AssistantSupervisors", type: "AS" }
+            ];
+
+            let tempPeople = [];
+
+            for (const source of sources) {
+                const result = await getPeopleFromCollection(source.collection, source.type);
+                tempPeople = tempPeople.concat(result);
+            }
+
+            const unique = [];
+
+            tempPeople.forEach(person => {
+                const alreadyExists = unique.some(item => item.id === person.id);
+
+                if (!alreadyExists) {
+                    unique.push(person);
+                }
+            });
+
+            allPeopleCache = unique;
+            isPeopleCacheLoaded = true;
+        })();
+
+        await peopleCachePromise;
+        return allPeopleCache;
+    }
+
+    function sortByPriority(list) {
+        const order = {
+            Employee: 1,
+            SI: 2,
+            Supervisor: 3,
+            AS: 4
+        };
+
+        return list.sort((a, b) => {
+            return (order[a.type] || 9) - (order[b.type] || 9);
+        });
+    }
+
+    function searchPersonFromCache(searchText) {
+        const keyword = normalizeText(searchText);
+
+        if (!keyword || keyword.length < 2) return [];
+
+        const exactMatches = allPeopleCache.filter(person =>
+            normalizeText(person.name) === keyword
+        );
+
+        if (exactMatches.length > 0) {
+            return sortByPriority(exactMatches);
+        }
+
+        const startsWithMatches = allPeopleCache.filter(person =>
+            normalizeText(person.name).startsWith(keyword)
+        );
+
+        if (startsWithMatches.length > 0) {
+            return sortByPriority(startsWithMatches);
+        }
+
+        const includesMatches = allPeopleCache.filter(person =>
+            normalizeText(person.name).includes(keyword)
+        );
+
+        return sortByPriority(includesMatches);
+    }
+
+    function resetEntryStaffId() {
+        entryMatchedPersons = [];
+        entryEmployeeIdInput.value = "";
+        entryEmployeeIdInput.style.display = "block";
+        entryEmployeeIdSelect.style.display = "none";
+        entryEmployeeIdSelect.innerHTML = `<option value="">Select ID</option>`;
+        currentEntryRecordDocId = FIXED_RECORD_ID;
+        setEntryMode("create");
+    }
+
+    function resetFilterStaffId() {
+        filterMatchedPersons = [];
+        filterEmployeeIdInput.value = "";
+        filterEmployeeIdInput.style.display = "block";
+        filterEmployeeIdSelect.style.display = "none";
+        filterEmployeeIdSelect.innerHTML = `<option value="">Select ID</option>`;
+    }
+
+    function getEntryStaffId() {
+        if (entryEmployeeIdSelect.style.display === "block") {
+            return entryEmployeeIdSelect.value.trim();
+        }
+
+        return entryEmployeeIdInput.value.trim();
+    }
+
+    function getFilterStaffId() {
+        if (filterEmployeeIdSelect.style.display === "block") {
+            return filterEmployeeIdSelect.value.trim();
+        }
+
+        return filterEmployeeIdInput.value.trim();
+    }
+
+    function showEntryDropdown(list) {
+        entryEmployeeIdInput.style.display = "none";
+        entryEmployeeIdSelect.style.display = "block";
+        entryEmployeeIdSelect.innerHTML = `<option value="">Select ID</option>`;
+
+        list.forEach(person => {
+            const option = document.createElement("option");
+            option.value = person.id;
+            option.textContent = `${person.id} - ${person.name} (${person.type})`;
+            entryEmployeeIdSelect.appendChild(option);
+        });
+    }
+
+    function showFilterDropdown(list) {
+        filterEmployeeIdInput.style.display = "none";
+        filterEmployeeIdSelect.style.display = "block";
+        filterEmployeeIdSelect.innerHTML = `<option value="">Select ID</option>`;
+
+        list.forEach(person => {
+            const option = document.createElement("option");
+            option.value = person.id;
+            option.textContent = `${person.id} - ${person.name} (${person.type})`;
+            filterEmployeeIdSelect.appendChild(option);
+        });
+    }
+
+    async function loadExistingAccommodationForEntry(personId) {
+        try {
+            currentEntryRecordDocId = FIXED_RECORD_ID;
+            setEntryMode("create");
+
+            const fixedDocRef = doc(db, "Accommodation", personId, "Records", FIXED_RECORD_ID);
+            const fixedSnap = await getDoc(fixedDocRef);
+
+            if (fixedSnap.exists()) {
+                const data = fixedSnap.data();
+
+                currentEntryRecordDocId = FIXED_RECORD_ID;
+                entryAmount.value = data.amount || "";
+                entryReason.value = data.reason || "Staff Accommodation";
+
+                setEntryMode("edit");
+                setStatus(entryStatus, "Existing accommodation found. You can update it.", "info");
+                return;
+            }
+
+            const recordsRef = collection(db, "Accommodation", personId, "Records");
+            const recordsQuery = query(recordsRef, orderBy("createdAt", "desc"), limit(1));
+            const recordsSnap = await getDocs(recordsQuery);
+
+            if (!recordsSnap.empty) {
+                const oldDoc = recordsSnap.docs[0];
+                const data = oldDoc.data();
+
+                currentEntryRecordDocId = oldDoc.id;
+                entryAmount.value = data.amount || "";
+                entryReason.value = data.reason || "Staff Accommodation";
+
+                setEntryMode("edit");
+                setStatus(entryStatus, "Existing old record found. Submit will update it.", "info");
+                return;
+            }
+
+            entryAmount.value = "";
+            entryReason.value = "";
+            currentEntryRecordDocId = FIXED_RECORD_ID;
+            setEntryMode("create");
+            setStatus(entryStatus, "ID fetched. New accommodation can be added.", "success");
+
+        } catch (error) {
+            console.error("Existing accommodation load error:", error);
+            setStatus(entryStatus, "Existing record check karne mein problem aa raha hai.", "error");
+        }
+    }
+
+    async function handleEntryNameSearch() {
+        const typedName = entryEmployeeName.value.trim();
+
+        resetEntryStaffId();
+
+        if (!typedName) {
+            setStatus(entryStatus, "", "");
+            return;
+        }
+
+        try {
+            setStatus(entryStatus, "Searching name...", "info");
+
+            if (!isPeopleCacheLoaded) {
+                await loadAllPeopleOnce();
+            }
+
+            entryMatchedPersons = searchPersonFromCache(typedName);
+
+            if (entryMatchedPersons.length === 0) {
+                setStatus(entryStatus, "No matching name found.", "error");
+                return;
+            }
+
+            if (entryMatchedPersons.length === 1) {
+                const person = entryMatchedPersons[0];
+
+                entryEmployeeIdInput.value = person.id;
+
+                if (normalizeText(person.name) === normalizeText(typedName)) {
+                    entryEmployeeName.value = person.name;
+                }
+
+                setStatus(entryStatus, `${person.type} found. Checking accommodation...`, "info");
+                await loadExistingAccommodationForEntry(person.id);
+                return;
+            }
+
+            showEntryDropdown(entryMatchedPersons);
+            setStatus(entryStatus, "Multiple matching names found. Please select correct ID.", "info");
+
+        } catch (error) {
+            console.error("Entry search error:", error);
+            setStatus(entryStatus, "Name search karne mein problem aa raha hai.", "error");
+        }
+    }
+
+    async function handleFilterNameSearch() {
+        const typedName = filterEmployeeName.value.trim();
+
+        resetFilterStaffId();
+
+        if (!typedName) {
+            setStatus(filterStatus, "", "");
+            return;
+        }
+
+        try {
+            setStatus(filterStatus, "Searching name...", "info");
+
+            if (!isPeopleCacheLoaded) {
+                await loadAllPeopleOnce();
+            }
+
+            filterMatchedPersons = searchPersonFromCache(typedName);
+
+            if (filterMatchedPersons.length === 0) {
+                setStatus(filterStatus, "No matching name found.", "error");
+                return;
+            }
+
+            if (filterMatchedPersons.length === 1) {
+                const person = filterMatchedPersons[0];
+
+                filterEmployeeIdInput.value = person.id;
+
+                if (normalizeText(person.name) === normalizeText(typedName)) {
+                    filterEmployeeName.value = person.name;
+                }
+
+                setStatus(filterStatus, `${person.type} found.`, "success");
+                return;
+            }
+
+            showFilterDropdown(filterMatchedPersons);
+            setStatus(filterStatus, "Multiple matching names found. Please select correct ID.", "info");
+
+        } catch (error) {
+            console.error("Filter search error:", error);
+            setStatus(filterStatus, "Name search karne mein problem aa raha hai.", "error");
+        }
+    }
+
+    entryEmployeeName.addEventListener("input", () => {
+        clearTimeout(entrySearchTimer);
+
+        entrySearchTimer = setTimeout(() => {
+            handleEntryNameSearch();
+        }, 120);
+    });
+
+    entryEmployeeName.addEventListener("paste", () => {
+        setTimeout(() => {
+            handleEntryNameSearch();
+        }, 80);
+    });
+
+    entryEmployeeIdSelect.addEventListener("change", async () => {
+        const selectedId = entryEmployeeIdSelect.value;
+        const selectedPerson = entryMatchedPersons.find(person => person.id === selectedId);
+
+        if (selectedPerson) {
+            entryEmployeeName.value = selectedPerson.name;
+            setStatus(entryStatus, `${selectedPerson.type} selected. Checking accommodation...`, "info");
+            await loadExistingAccommodationForEntry(selectedPerson.id);
+        }
+    });
+
+    filterEmployeeName.addEventListener("input", () => {
+        clearTimeout(filterSearchTimer);
+
+        filterSearchTimer = setTimeout(() => {
+            handleFilterNameSearch();
+        }, 120);
+    });
+
+    filterEmployeeName.addEventListener("paste", () => {
+        setTimeout(() => {
+            handleFilterNameSearch();
+        }, 80);
+    });
+
+    filterEmployeeIdSelect.addEventListener("change", () => {
+        const selectedId = filterEmployeeIdSelect.value;
+        const selectedPerson = filterMatchedPersons.find(person => person.id === selectedId);
+
+        if (selectedPerson) {
+            filterEmployeeName.value = selectedPerson.name;
+            setStatus(filterStatus, `${selectedPerson.type} selected.`, "success");
+        }
+    });
+
+    saveAccommodationBtn.addEventListener("click", async () => {
+        const personName = entryEmployeeName.value.trim();
+        const personId = getEntryStaffId();
+        const amount = entryAmount.value.trim();
+        const reason = entryReason.value.trim();
+
+        if (!personName) {
+            setStatus(entryStatus, "Please enter name.", "error");
+            return;
+        }
+
+        if (!personId) {
+            setStatus(entryStatus, "Please fetch or select ID.", "error");
+            return;
+        }
+
+        if (!amount || Number(amount) <= 0) {
+            setStatus(entryStatus, "Please enter valid amount.", "error");
+            return;
+        }
+
+        if (!reason) {
+            setStatus(entryStatus, "Please select reason.", "error");
+            return;
+        }
+
+        try {
+            saveAccommodationBtn.disabled = true;
+            saveAccommodationBtn.innerText = currentEntryMode === "edit" ? "Updating..." : "Saving...";
+
+            const recordDocId = currentEntryRecordDocId || FIXED_RECORD_ID;
+
+            await setDoc(doc(db, "Accommodation", personId, "Records", recordDocId), {
+                recordId: recordDocId,
+
+                id: personId,
+                name: personName,
+
+                employeeId: personId,
+                employeeName: personName,
+
+                amount: Number(amount),
+                reason: reason,
+
+                adminId: currentAdminId || adminIdDisplay.innerText || "",
+                adminName: currentAdminName || adminNameDisplay.innerText || "",
+
+                updatedAt: serverTimestamp(),
+                createdAt: serverTimestamp()
+            }, { merge: true });
+
+            setStatus(
+                entryStatus,
+                currentEntryMode === "edit"
+                    ? "Staff accommodation record updated successfully."
+                    : "Staff accommodation record saved successfully.",
+                "success"
+            );
+
+            setEntryMode("edit");
+
+        } catch (error) {
+            console.error("Accommodation save/update error:", error);
+            setStatus(entryStatus, "Staff accommodation data save/update karne mein problem aa raha hai.", "error");
+        } finally {
+            saveAccommodationBtn.disabled = false;
+            saveAccommodationBtn.innerText = currentEntryMode === "edit" ? "Update" : "Submit";
+        }
+    });
+
+    async function deleteAccommodationRecord(personId, recordDocId) {
+        const confirmDelete = confirm("Are you sure you want to delete this accommodation record?");
+
+        if (!confirmDelete) return;
+
+        try {
+            await deleteDoc(doc(db, "Accommodation", personId, "Records", recordDocId));
+
+            setStatus(filterStatus, "Accommodation record deleted successfully.", "success");
+            filterAccommodationBtn.click();
+
+            const entryId = getEntryStaffId();
+
+            if (entryId === personId) {
+                entryAmount.value = "";
+                entryReason.value = "";
+                currentEntryRecordDocId = FIXED_RECORD_ID;
+                setEntryMode("create");
+                setStatus(entryStatus, "Record deleted. You can add new accommodation now.", "info");
+            }
+
+        } catch (error) {
+            console.error("Accommodation delete error:", error);
+            setStatus(filterStatus, "Accommodation record delete karne mein problem aa raha hai.", "error");
+        }
+    }
+
+    filterAccommodationBtn.addEventListener("click", async () => {
+        const personName = filterEmployeeName.value.trim();
+        const personId = getFilterStaffId();
+
+        if (!personName) {
+            setStatus(filterStatus, "Please enter name.", "error");
+            return;
+        }
+
+        if (!personId) {
+            setStatus(filterStatus, "Please fetch or select ID.", "error");
+            return;
+        }
+
+        try {
+            filterAccommodationBtn.disabled = true;
+            filterAccommodationBtn.innerText = "Loading...";
+            setStatus(filterStatus, "Loading accommodation records...", "info");
+
+            showEmptyTable("Loading records...");
+
+            const recordsRef = collection(db, "Accommodation", personId, "Records");
+            const recordsQuery = query(recordsRef, orderBy("createdAt", "desc"));
+            const recordsSnap = await getDocs(recordsQuery);
+
+            accommodationTableBody.innerHTML = "";
+
+            if (recordsSnap.empty) {
+                showEmptyTable("No records found.");
+                setStatus(filterStatus, "No records found.", "error");
+                return;
+            }
+
+            let count = 0;
+
+            recordsSnap.forEach(docSnap => {
+                const data = docSnap.data();
+                count++;
+
+                const recordDocId = docSnap.id;
+
+                const tr = document.createElement("tr");
+
+                tr.innerHTML = `
+                    <td><span class="uid-pill">${data.id || data.employeeId || personId}</span></td>
+                    <td>${data.name || data.employeeName || personName}</td>
+                    <td>₹ ${data.amount || 0}</td>
+                    <td><span class="reason-chip">${data.reason || "Staff Accommodation"}</span></td>
+                    <td>
+                        <button type="button" class="btn btn-danger custom-btn delete-record-btn">
+                            Delete
+                        </button>
+                    </td>
+                `;
+
+                const deleteBtn = tr.querySelector(".delete-record-btn");
+
+                deleteBtn.addEventListener("click", () => {
+                    deleteAccommodationRecord(personId, recordDocId);
+                });
+
+                accommodationTableBody.appendChild(tr);
+            });
+
+            recordCountBadge.innerText = `Total: ${count}`;
+            setStatus(filterStatus, "Records loaded successfully.", "success");
+
+        } catch (error) {
+            console.error("Accommodation fetch error:", error);
+            showEmptyTable("Staff accommodation data load karne mein problem aa raha hai.");
+            setStatus(filterStatus, "Staff accommodation data load karne mein problem aa raha hai.", "error");
+        } finally {
+            filterAccommodationBtn.disabled = false;
+            filterAccommodationBtn.innerText = "Submit";
+        }
+    });
+
+    resetEntryBtn.addEventListener("click", () => {
+        entryEmployeeName.value = "";
+        entryAmount.value = "";
+        entryReason.value = "";
+        resetEntryStaffId();
+        currentEntryRecordDocId = FIXED_RECORD_ID;
+        setEntryMode("create");
+        setStatus(entryStatus, "", "");
+    });
+
+    resetFilterBtn.addEventListener("click", () => {
+        filterEmployeeName.value = "";
+        resetFilterStaffId();
+        setStatus(filterStatus, "", "");
+        showEmptyTable("No records found.");
+    });
+
+    setStatus(entryStatus, "Loading staff list...", "info");
+    setStatus(filterStatus, "Loading staff list...", "info");
+
+    loadAllPeopleOnce()
+        .then(() => {
+            setStatus(entryStatus, "", "");
+            setStatus(filterStatus, "", "");
+            console.log("Staff list loaded:", allPeopleCache.length);
+        })
+        .catch(error => {
+            console.error("Staff cache load error:", error);
+            setStatus(entryStatus, "Staff list load karne mein problem aa raha hai.", "error");
+            setStatus(filterStatus, "Staff list load karne mein problem aa raha hai.", "error");
+        });
+</script>
+</body>
+</html>

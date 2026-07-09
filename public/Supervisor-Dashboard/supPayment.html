@@ -1,0 +1,1338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Supervisor Dashboard - Payment Management</title>
+  <link rel="icon" type="image/x-icon" href="logo2.ico" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap-theme.min.css" />
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --topbar-height: 78px;
+      --sidebar-width: 280px;
+      --bg-dark: #081523;
+      --card-bg: rgba(12, 25, 45, 0.88);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --text-main: #ffffff;
+      --text-soft: #c9d9ee;
+      --text-muted: #8ea4c5;
+      --orange-1: #ff8a3c;
+      --orange-2: #ff5a1f;
+      --shadow: 0 18px 40px rgba(0, 0, 0, 0.25);
+    }
+
+    html, body {
+      width: 100%;
+      min-height: 100%;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background:
+        linear-gradient(135deg, rgba(7, 16, 30, 0.95), rgba(14, 34, 56, 0.92)),
+        url("https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1600&q=80") center/cover no-repeat fixed;
+      color: var(--text-main);
+      overflow-x: hidden;
+    }
+
+    .app-shell { width: 100%; min-height: 100vh; }
+
+    .topbar {
+      height: var(--topbar-height);
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(7, 16, 30, 0.88);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 2000;
+    }
+
+    .topbar-left { display: flex; align-items: center; gap: 16px; min-width: 0; }
+    .menu-toggle {
+      width: 46px; height: 46px; border: none; border-radius: 14px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
+      color: #fff; font-size: 20px; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: 0.25s ease; flex-shrink: 0;
+    }
+    .menu-toggle:hover { background: linear-gradient(135deg, rgba(255,122,47,0.18), rgba(31,119,255,0.16)); transform: translateY(-1px); }
+
+    .brand-wrap { display: flex; flex-direction: column; justify-content: center; min-width: 0; }
+    .brand-title { margin: 0; font-size: 24px; font-weight: 700; color: #fff; text-decoration: none !important; line-height: 1.1; }
+    .brand-subtitle { margin: 2px 0 0; color: var(--text-soft); font-size: 13px; }
+
+    .topbar-right { display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
+    .logout, .download-btn {
+      text-decoration: none !important;
+      color: #fff !important;
+      border: none;
+      padding: 11px 18px;
+      border-radius: 12px;
+      font-weight: 700;
+      transition: 0.25s ease;
+      white-space: nowrap;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .logout {
+      background: linear-gradient(135deg, var(--orange-1), var(--orange-2));
+      box-shadow: 0 10px 24px rgba(255, 90, 31, 0.24);
+    }
+    .download-btn {
+      background: linear-gradient(135deg, #2f7cff, #1f5fd6);
+      box-shadow: 0 10px 24px rgba(31, 95, 214, 0.22);
+    }
+    .logout:hover, .download-btn:hover { transform: translateY(-1px); color: #fff !important; }
+
+    .dashboard-layout { width: 100%; min-height: 100vh; }
+
+    nav.sidebar {
+      width: var(--sidebar-width);
+      min-width: var(--sidebar-width);
+      max-width: var(--sidebar-width);
+      position: fixed;
+      top: var(--topbar-height); left: 0; bottom: 0;
+      padding: 20px 16px 22px;
+      background: linear-gradient(180deg, rgba(6, 16, 30, 0.98), rgba(8, 22, 40, 0.96));
+      backdrop-filter: blur(16px);
+      border-right: 1px solid rgba(255,255,255,0.06);
+      overflow-y: auto;
+      z-index: 1500;
+      box-shadow: 18px 0 45px rgba(0, 0, 0, 0.24);
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      transform: translateX(0);
+      transition: transform 0.28s ease;
+    }
+
+    nav.sidebar::-webkit-scrollbar { width: 6px; }
+    nav.sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.14); border-radius: 999px; }
+
+    .sidebar-top-card {
+      position: relative; padding: 20px 18px 18px; border-radius: 24px;
+      background: linear-gradient(135deg, rgba(255,122,47,0.16), rgba(31,119,255,0.14)), rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 16px 32px rgba(0,0,0,0.20), inset 0 1px 0 rgba(255,255,255,0.06);
+      overflow: hidden; margin-bottom: 24px;
+    }
+    .sidebar-mini-label {
+      display: inline-block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.4px;
+      color: #ffd8c2; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.08);
+      padding: 5px 10px; border-radius: 999px; margin-bottom: 12px;
+    }
+    .sidebar-main-title { font-size: 19px; font-weight: 800; color: #ffffff; margin: 0 0 6px; line-height: 1.2; }
+    .sidebar-main-subtitle { font-size: 13px; color: #d5e2f1; line-height: 1.7; margin: 0 0 14px; }
+    .sidebar-status-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.08); }
+    .sidebar-status-badge {
+      display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 999px;
+      font-size: 11px; font-weight: 700; color: #dfffe9; background: rgba(20,184,106,0.14); border: 1px solid rgba(20,184,106,0.22);
+    }
+    .sidebar-status-badge::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: #4df39b; }
+    .sidebar-status-text { font-size: 11px; color: #c6d8ec; text-align: right; line-height: 1.4; }
+    .sidebar-section-title { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: #8ea4c5; margin: 0 8px 16px; font-weight: 700; }
+    #side-bar { list-style: none; padding-left: 0; margin-bottom: 0; width: 100%; display: flex; flex-direction: column; gap: 12px; flex: 1; }
+    #side-bar li { width: 100%; margin: 0; }
+    #side-bar a {
+      display: flex; align-items: center; gap: 14px; width: 100%; padding: 15px;
+      border-radius: 20px; text-decoration: none !important; color: #edf4ff !important;
+      background: linear-gradient(135deg, rgba(255,255,255,0.055), rgba(255,255,255,0.025));
+      border: 1px solid rgba(255,255,255,0.06); transition: all 0.28s ease; position: relative; overflow: hidden;
+    }
+    #side-bar a:hover, #side-bar a.active { transform: translateX(6px); background: linear-gradient(135deg, rgba(255,122,47,0.18), rgba(31,119,255,0.16)); }
+    .nav-icon { width: 44px; height: 44px; min-width: 44px; border-radius: 15px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.10); }
+    .nav-text { display: flex; flex-direction: column; min-width: 0; flex: 1; }
+    .nav-text strong { font-size: 14px; font-weight: 700; color: #fff; }
+    .nav-text span { margin-top: 4px; font-size: 11px; color: #aabed8; }
+    .nav-arrow {
+      margin-left: auto;
+      color: rgba(255,255,255,0.65);
+      font-size: 22px;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    main {
+      position: fixed;
+      top: var(--topbar-height); left: var(--sidebar-width); right: 0; bottom: 0;
+      padding: 40px 30px 30px 30px; overflow-y: auto; overflow-x: hidden;
+    }
+
+    .hero-card, .panel-card, .table-card {
+      background: rgba(12, 25, 45, 0.88); border: 1px solid var(--card-border);
+      border-radius: 24px; padding: 24px; box-shadow: var(--shadow); margin-bottom: 32px;
+    }
+    .hero-card { background: linear-gradient(135deg, rgba(22, 61, 112, 0.88), rgba(12, 27, 53, 0.92)); position: relative; overflow: hidden; }
+    .page-tag { display: inline-block; padding: 7px 12px; border-radius: 999px; font-size: 12px; font-weight: 700; letter-spacing: 0.8px; color: #ffb88f; background: rgba(255, 122, 47, 0.16); border: 1px solid rgba(255, 122, 47, 0.2); margin-bottom: 14px; }
+    .hero-card h1 { margin: 0 0 10px; font-size: 32px; font-weight: 800; color: #fff; line-height: 1.15; }
+    .hero-card p { margin: 0; max-width: 900px; font-size: 15px; line-height: 1.8; color: #d0def0; }
+
+    .section-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+    .section-header h2, .table-header h3 { margin: 0; color: #fff; }
+    .section-header h2 { font-size: 26px; font-weight: 800; }
+    .section-badge { padding: 6px 12px; border-radius: 999px; font-size: 12px; font-weight: 700; color: #9ec3ff; background: rgba(31, 119, 255, 0.14); border: 1px solid rgba(31, 119, 255, 0.22); white-space: nowrap; }
+
+    .details-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+    .field.month-field { grid-column: 1 / -1; }
+    .field label { display: block; margin-bottom: 8px; font-size: 12px; font-weight: 700; color: var(--text-muted); letter-spacing: 0.3px; text-transform: uppercase; }
+    .value-box, .field input {
+      width: 100%; min-height: 48px; border-radius: 14px !important; border: 1px solid rgba(255,255,255,0.08) !important;
+      background: rgba(255,255,255,0.05) !important; color: #fff !important; padding: 12px 14px !important; font-size: 14px;
+      outline: none; box-shadow: none !important;
+    }
+    .field input:focus { border-color: rgba(31,119,255,0.55) !important; box-shadow: 0 0 0 4px rgba(31,119,255,0.12) !important; }
+    .field input::placeholder { color: #9fb4cf; }
+
+    .date-submit-row { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: end; }
+    .submit-btn {
+      min-height: 48px; border: none; border-radius: 14px !important; background: linear-gradient(135deg, var(--orange-1), var(--orange-2)) !important;
+      color: #fff !important; font-size: 15px; font-weight: 700; padding: 12px 18px !important; box-shadow: 0 10px 24px rgba(255, 90, 31, 0.24);
+      transition: 0.25s ease;
+    }
+    .submit-btn:hover { transform: translateY(-1px); }
+    .submit-btn.is-loading {
+      position: relative;
+      pointer-events: none;
+      opacity: 0.92;
+    }
+    .submit-btn.is-loading::after {
+      content: "";
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      margin-left: 10px;
+      border: 2px solid rgba(255,255,255,0.45);
+      border-top-color: #ffffff;
+      border-radius: 50%;
+      vertical-align: middle;
+      animation: spinBtn 0.75s linear infinite;
+    }
+    @keyframes spinBtn {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .meta-box { padding: 14px 16px; border-radius: 16px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); min-height: 112px; display: flex; flex-direction: column; justify-content: center; }
+    .meta-title { font-size: 12px; text-transform: uppercase; letter-spacing: 0.4px; color: var(--text-muted); margin-bottom: 8px; font-weight: 700; }
+    .meta-value { font-size: 18px; font-weight: 700; color: #fff; line-height: 1.4; }
+
+    .table-card { padding: 24px; }
+    .table-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 18px; flex-wrap: wrap; }
+    .table-header h3 { font-size: 24px; font-weight: 800; }
+    .table-wrap { width: 100%; overflow-x: auto; border-radius: 18px; -webkit-overflow-scrolling: touch; }
+    .table-wrap table { width: 100%; min-width: 1600px; border-collapse: collapse; background: rgba(255,255,255,0.02); }
+    .table-wrap th, .table-wrap td { text-align: center; vertical-align: middle; padding: 14px 12px !important; white-space: nowrap; }
+    .table-wrap th { color: #fff4cc; font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; border: none !important; }
+    .table-wrap td { color: #dce9f7; border-top: 1px solid rgba(255,255,255,0.05) !important; background: rgba(255,255,255,0.02); }
+    .table-wrap tbody tr:hover td { background: rgba(63, 131, 248, 0.08); }
+    .group-head-blue { background: rgba(63, 131, 248, 0.18) !important; color: #dcebff !important; }
+    .group-head-cyan { background: rgba(34, 211, 238, 0.18) !important; color: #d7fbff !important; }
+    .empty-state, .loading-state { text-align: center; color: #9fb1c7; padding: 28px !important; font-weight: 700; }
+
+    .chip { display: inline-block; padding: 5px 9px; border-radius: 999px; font-size: 12px; font-weight: 800; }
+    .chip.blue { background: rgba(31,119,255,0.16); color: #8dbbff; }
+    .chip.green { background: rgba(20,184,106,0.16); color: #67e3a7; }
+    .chip.yellow { background: rgba(255,192,72,0.16); color: #ffd37b; }
+
+.payroll-footer {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  padding-top: 6px;
+}
+.payment-mode {
+  font-size: 14px;
+  font-weight: 700;
+  color: #dce9f7;
+}
+.authorized-block {
+  margin-left: auto;
+  text-align: right;
+  padding-bottom: 34px; /* space for stamp/signature */
+  min-height: 68px;
+}
+.authorized-by {
+  font-size: 12px;
+  font-weight: 700;
+  color: #dce9f7;
+  line-height: 1.3;
+}
+.authorized-gap {
+  height: 18px;
+}
+.authorized-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  margin-top: 0;
+  line-height: 1.35;
+}
+.stamp-space {
+  height: 36px; /* extra blank space for stamp */
+  width: 100%;
+}
+
+body.export-mode {
+  background: #ffffff !important;
+}
+
+body.export-mode main {
+  position: relative !important;
+  top: auto !important;
+  left: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  width: 100% !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  overflow: visible !important;
+}
+
+body.export-mode .hero-card,
+body.export-mode .panel-card,
+body.export-mode .table-card {
+  background: #ffffff !important;
+  color: #000000 !important;
+  border: 1px solid #d9d9d9 !important;
+  box-shadow: none !important;
+}
+
+body.export-mode .details-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+}
+
+body.export-mode .field.month-field {
+  grid-column: 1 / -1 !important;
+}
+
+body.export-mode .payroll-footer {
+  padding-top: 10px !important;
+}
+
+
+    @media (max-width: 991px) {
+      html, body { overflow-y: auto; overflow-x: hidden; }
+      nav.sidebar {
+        width: min(360px, 88vw);
+        min-width: min(360px, 88vw);
+        max-width: min(360px, 88vw);
+        position: fixed;
+        top: var(--topbar-height);
+        left: 0;
+        bottom: 0;
+        height: calc(100vh - var(--topbar-height));
+        overflow-y: auto;
+        border-right: 1px solid rgba(255,255,255,0.06);
+        border-bottom: none;
+        border-radius: 0 24px 24px 0;
+        z-index: 1900;
+        padding: 14px;
+        transform: translateX(-102%);
+      }
+      nav.sidebar.mobile-open { transform: translateX(0); }
+      #side-bar { display: flex; }
+      main { position: relative; top: auto; left: auto; right: auto; bottom: auto; width: 100%; padding: 110px 18px 18px 18px; overflow: visible; }
+    }
+
+    @media (min-width: 992px) {
+      nav.sidebar { transform: translateX(0) !important; }
+    }
+    @media (max-width: 600px) {
+      .topbar { padding: 0 14px; }
+      .brand-title { font-size: 21px; }
+      .logout { padding: 9px 14px; font-size: 13px; }
+      .hero-card, .panel-card, .table-card { padding: 18px; border-radius: 18px; }
+      .hero-card h1 { font-size: 26px; }
+      .date-submit-row { grid-template-columns: 1fr; }
+      .details-grid { grid-template-columns: 1fr; }
+      .field.month-field { grid-column: auto; }
+      #notificationBox { width: 280px; right: 16px; }
+    }
+
+    @page {
+      size: A4 portrait;
+      margin: 12mm;
+    }
+
+    @media print {
+      * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        box-shadow: none !important;
+        text-shadow: none !important;
+      }
+
+      html, body {
+        width: 210mm;
+        min-height: 297mm;
+        overflow: visible !important;
+        background: #ffffff !important;
+        color: #000000 !important;
+      }
+
+      body {
+        margin: 0;
+      }
+
+      .topbar,
+      nav.sidebar,
+      .menu-toggle,
+      .logout,
+      .download-btn,
+      #adminSubmitBtn {
+        display: none !important;
+      }
+
+      .dashboard-layout {
+        display: block !important;
+        min-height: auto !important;
+      }
+
+      main {
+        position: static !important;
+        top: auto !important;
+        left: auto !important;
+        right: auto !important;
+        bottom: auto !important;
+        width: 100% !important;
+        padding: 0 !important;
+        overflow: visible !important;
+      }
+
+      .hero-card,
+      .panel-card,
+      .table-card {
+        background: #ffffff !important;
+        border: 1px solid #d9d9d9 !important;
+        border-radius: 10px !important;
+        margin-bottom: 12mm !important;
+        padding: 10mm !important;
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+
+      .hero-card h1,
+      .section-header h2,
+      .table-header h3,
+      .field label,
+      .value-box,
+      .brand-title,
+      .brand-subtitle,
+      .page-tag,
+      .section-badge,
+      .sidebar-mini-label,
+      .sidebar-main-title,
+      .sidebar-main-subtitle,
+      .sidebar-status-badge,
+      .sidebar-status-text,
+      .sidebar-section-title {
+        color: #000000 !important;
+      }
+
+      .hero-card p {
+        color: #222222 !important;
+      }
+
+      .page-tag,
+      .section-badge,
+      .sidebar-mini-label,
+      .sidebar-status-badge,
+      .chip {
+        background: #f4f4f4 !important;
+        border: 1px solid #bcbcbc !important;
+      }
+
+      .details-grid {
+        gap: 10mm;
+      }
+
+      .value-box,
+      .field input {
+        background: #ffffff !important;
+        border: 1px solid #bcbcbc !important;
+        color: #000000 !important;
+        min-height: 40px;
+      }
+
+      .date-submit-row {
+        grid-template-columns: 1fr !important;
+      }
+
+      .table-wrap {
+        overflow: visible !important;
+      }
+
+      .table-wrap table {
+        width: 100% !important;
+        min-width: 100% !important;
+        table-layout: fixed !important;
+      }
+
+      .table-wrap th,
+      .table-wrap td {
+        white-space: normal !important;
+        word-break: break-word !important;
+        overflow-wrap: anywhere !important;
+        padding: 5px 4px !important;
+        font-size: 8.5pt !important;
+        color: #000000 !important;
+        background: #ffffff !important;
+      }
+
+      .table-wrap th {
+        background: #f1f1f1 !important;
+      }
+
+      .table-wrap tbody tr:hover td {
+        background: #ffffff !important;
+      }
+
+      .empty-state,
+      .loading-state {
+        color: #000000 !important;
+      }
+
+      .payroll-footer {
+        padding-top: 8mm !important;
+        align-items: flex-start !important;
+      }
+
+      .authorized-block {
+        padding-bottom: 18mm !important;
+        min-height: 26mm !important;
+      }
+
+      .authorized-gap {
+        height: 24mm !important;
+      }
+
+      .stamp-space {
+        height: 22mm !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+        <div class="brand-wrap">
+          <a href="#" class="brand-title">Supervisor Dashboard</a>
+          <p class="brand-subtitle">Payment Management & Wage Record Overview</p>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <button class="download-btn" id="downloadPayslipBtn" type="button">Download</button>
+        <a href="/public/login.html" class="logout" onclick="logoutUser()">Logout</a>
+      </div>
+    </header>
+
+    <div class="dashboard-layout">
+      <nav class="sidebar">
+        <div class="sidebar-top-card">
+          <div class="sidebar-mini-label">Supervisor Panel</div>
+          <h3 class="sidebar-main-title">Command Center</h3>
+          <p class="sidebar-main-subtitle">Access payment records and related supervisor sections from one clean navigation area.</p>
+          <div class="sidebar-status-row">
+            <span class="sidebar-status-badge">Payment Active</span>
+            <div class="sidebar-status-text">Secure access<br />Quick navigation</div>
+          </div>
+        </div>
+
+        <div class="sidebar-section-title">Navigation</div>
+        <ul id="side-bar">
+          <li>
+            <a href="/public/supervisor-dashboard.html">
+              <span class="nav-icon">🏠</span>
+              <span class="nav-text"><strong>Dashboard</strong><span>Overview</span></span>
+              <span class="nav-arrow">›</span>
+            </a>
+          </li>
+          <li>
+            <a href="/public/supPayment.html">
+              <span class="nav-icon">💰</span>
+              <span class="nav-text"><strong>Payment</strong><span>Monthly records</span></span>
+              <span class="nav-arrow">›</span>
+            </a>
+          </li>
+          <li>
+            <a href="/public/supervisor-attendance.html">
+              <span class="nav-icon">📅</span>
+              <span class="nav-text"><strong>Attendance</strong><span>Daily status</span></span>
+              <span class="nav-arrow">›</span>
+            </a>
+          </li>
+          <li>
+            <a href="/public/supervisor-profile.html">
+              <span class="nav-icon">👤</span>
+              <span class="nav-text"><strong>Profile</strong><span>Supervisor info</span></span>
+              <span class="nav-arrow">›</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <main>
+        <section class="hero-card">
+          <span class="page-tag">PAYMENT MANAGEMENT</span>
+          <h1>Payment Management</h1>
+          <p>
+            Supervisor ka personal payment record dekho. Month & year choose karke submit dabane par sirf logged-in supervisor ka hi record aayega.
+          </p>
+        </section>
+
+        <section class="panel-card">
+          <div class="section-header">
+            <h2>Supervisor Details</h2>
+            <span class="section-badge">Profile & Date Control</span>
+          </div>
+
+          <div class="details-grid">
+            <div class="field">
+              <label>Supervisor Name</label>
+              <div class="value-box" id="supNameDisplay">Loading...</div>
+            </div>
+            <div class="field">
+              <label>Supervisor Id</label>
+              <div class="value-box" id="supIdDisplay">Loading...</div>
+            </div>
+            <div class="field">
+              <label>Site</label>
+              <div class="value-box" id="supSiteDisplay">Loading...</div>
+            </div>
+            <div class="field month-field">
+              <label>Month & Year</label>
+              <div class="date-submit-row">
+                <input type="month" id="adminDateInput" />
+                <button id="adminSubmitBtn" class="btn btn-primary submit-btn" type="button">Submit</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="table-card" id="detailedPaymentTable">
+          <div class="table-header">
+            <h3>Payment Record</h3>
+            <span class="section-badge">Detailed Wage Table</span>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th rowspan="2">Sl No.</th>
+                  <th rowspan="2">UID</th>
+                  <th rowspan="2">Name</th>
+                  <th rowspan="2">Site</th>
+                  <th rowspan="2">Total Day</th>
+                  <th colspan="6" class="group-head-blue">Amount of Wages Earned</th>
+                  <th colspan="5" class="group-head-cyan">Deduction</th>
+                  <th rowspan="2">Total Amount</th>
+                </tr>
+                <tr>
+                  <th>Wages/@m</th>
+                  <th>Basic Wages</th>
+                  <th>PH Amount</th>
+                  <th>Leave</th>
+                  <th>Bonus @8.33%</th>
+                  <th>Total Wages</th>
+                  <th>EPF @12%</th>
+                  <th>ESIC @0.75%</th>
+                  <th>Advance Wages Payment</th>
+                  <th>Food</th>
+                  <th>Total Deduction</th>
+                </tr>
+              </thead>
+              <tbody id="detailedPaymentBody">
+                <tr><td colspan="17" class="empty-state">No payment records loaded yet.</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="payroll-footer">
+            <div class="payment-mode">Payment Mode: Bank Transfer</div>
+            <div class="authorized-block">
+              <div class="authorized-by">Authorized by:</div>
+              <div class="authorized-gap"></div>
+              <div class="authorized-name">Finance Manager – KIEPL</div>
+            </div>
+          </div>
+          <div class="stamp-space"></div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    function toggleMenu() {
+      const sidebar = document.querySelector("nav.sidebar");
+      sidebar.classList.toggle("mobile-open");
+    }
+
+
+    function prepareExportMode() {
+      document.body.classList.add("export-mode");
+      document.documentElement.classList.add("export-mode");
+    }
+
+    function cleanupExportMode() {
+      document.body.classList.remove("export-mode");
+      document.documentElement.classList.remove("export-mode");
+    }
+
+    function setSubmitButtonState(isLoading, label = "Submitting...") {
+      const btn = document.getElementById("adminSubmitBtn");
+      if (!btn) return;
+      if (isLoading) {
+        btn.disabled = true;
+        btn.classList.add("is-loading");
+        btn.dataset.originalLabel = btn.dataset.originalLabel || btn.textContent || "Submit";
+        btn.textContent = label;
+        btn.setAttribute("aria-busy", "true");
+      } else {
+        btn.disabled = false;
+        btn.classList.remove("is-loading");
+        btn.textContent = btn.dataset.originalLabel || "Submit";
+        btn.removeAttribute("aria-busy");
+      }
+    }
+
+    async function downloadPayslip() {
+      if (!adminDateInput.value) {
+        alert("Please select Month & Year.");
+        return;
+      }
+
+      const downloadBtn = document.getElementById("downloadPayslipBtn");
+      const oldLabel = downloadBtn ? downloadBtn.textContent : "Download";
+      if (downloadBtn) {
+        downloadBtn.disabled = true;
+        downloadBtn.textContent = "Preparing...";
+      }
+
+      try {
+        prepareExportMode();
+        await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+
+        if (!window.html2pdf) {
+          throw new Error("PDF library not loaded");
+        }
+
+        const monthValue = adminDateInput.value || "current";
+        const fileName = `payroll-slip-${monthValue}.pdf`;
+
+        const options = {
+          margin: [0, 0, 0, 0],
+          filename: fileName,
+          image: { type: "jpeg", quality: 0.98 },
+          html2canvas: {
+            scale: 2,
+            useCORS: true,
+            scrollY: 0,
+            windowWidth: 1440,
+            backgroundColor: "#ffffff"
+          },
+          jsPDF: {
+            unit: "mm",
+            format: "a4",
+            orientation: "portrait"
+          },
+          pagebreak: {
+            mode: ["css", "legacy", "avoid-all"]
+          }
+        };
+
+        await window.html2pdf().set(options).from(document.querySelector("main")).save();
+      } catch (error) {
+        console.error("PDF export failed:", error);
+        alert("PDF download failed. Please try again.");
+      } finally {
+        cleanupExportMode();
+        if (downloadBtn) {
+          downloadBtn.disabled = false;
+          downloadBtn.textContent = oldLabel;
+        }
+      }
+    }
+
+    window.addEventListener("beforeprint", prepareExportMode);
+    window.addEventListener("afterprint", cleanupExportMode);
+
+    function logoutUser() {
+      try {
+        localStorage.removeItem("supEmail");
+        localStorage.removeItem("supUid");
+        localStorage.removeItem("supName");
+        localStorage.removeItem("supSite");
+      } catch (_) {}
+      window.location.href = "/public/login.html";
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const currentPage = window.location.pathname.split("/").pop();
+      const navLinks = document.querySelectorAll("#side-bar a");
+      navLinks.forEach(link => {
+        const href = link.getAttribute("href") || "";
+        const hrefPage = href.split("/").pop();
+        if (hrefPage === currentPage) link.classList.add("active");
+      });
+
+      const downloadBtn = document.getElementById("downloadPayslipBtn");
+      if (downloadBtn) {
+        downloadBtn.addEventListener("click", downloadPayslip);
+      }
+    });
+  </script>
+  <script type="module" src="/public/control.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script type="module">
+    import {
+      getFirestore,
+      collection,
+      doc,
+      getDoc,
+      getDocs,
+      setDoc,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+    import { app } from "/public/firebase-config.js";
+
+    const db = getFirestore(app);
+
+    let supervisorData = null;
+    let isSearching = false;
+    let activeSearchToken = 0;
+
+    const presentDatesCache = new Map();
+    const holidayCache = { loaded: false, dates: [] };
+    const advanceCache = new Map();
+    const foodCache = new Map();
+
+    const supEmail = localStorage.getItem("supEmail");
+
+    const supNameDisplay = document.getElementById("supNameDisplay");
+    const supIdDisplay = document.getElementById("supIdDisplay");
+    const supSiteDisplay = document.getElementById("supSiteDisplay");
+    const adminDateInput = document.getElementById("adminDateInput");
+    const adminSubmitBtn = document.getElementById("adminSubmitBtn");
+    const detailedBody = document.getElementById("detailedPaymentBody");
+
+    function safeValue(...values) {
+      for (const value of values) {
+        if (value !== undefined && value !== null && String(value).trim() !== "") return String(value).trim();
+      }
+      return "";
+    }
+
+    function normalizeText(value = "") {
+      return String(value || "").trim().toLowerCase().replace(/\s+/g, " ");
+    }
+
+    function normalizeId(value = "") {
+      return String(value || "").trim().toLowerCase().replace(/\s+/g, "").replace(/[-_]/g, "");
+    }
+
+    function formatMoney(value) {
+      return (Number(value) || 0).toFixed(2);
+    }
+
+    function parseDateToISO(value) {
+      if (!value) return "";
+      if (typeof value === "object" && typeof value.toDate === "function") {
+        const d = value.toDate();
+        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+      }
+      const str = String(value).trim();
+      if (/^\d{4}-\d{2}-\d{2}$/.test(str)) return str;
+      if (/^\d{2}-\d{2}-\d{4}$/.test(str)) {
+        const [dd, mm, yyyy] = str.split("-");
+        return `${yyyy}-${mm}-${dd}`;
+      }
+      if (/^\d{2}-\d{2}-\d{2}$/.test(str)) {
+        const [dd, mm, yy] = str.split("-");
+        return `20${yy}-${mm}-${dd}`;
+      }
+      const d = new Date(str);
+      if (!isNaN(d.getTime())) {
+        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+      }
+      return "";
+    }
+
+    function addDays(isoDate, days) {
+      const [yyyy, mm, dd] = isoDate.split("-").map(Number);
+      const d = new Date(yyyy, mm - 1, dd);
+      d.setDate(d.getDate() + days);
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+    }
+
+    function basicRate(cardTypeValue) {
+      const normalized = normalizeText(cardTypeValue).replace(/\s+/g, "-");
+      const rates = {
+        "un-skilled": 462,
+        "unskilled": 462,
+        "semi-skilled": 512,
+        "semiskilled": 512,
+        skilled: 562,
+        "high-skilled": 612,
+        highskilled: 612
+      };
+      return rates[normalized] || 0;
+    }
+
+    function showEmpty(message) {
+      detailedBody.innerHTML = `<tr><td colspan="17" class="empty-state">${message}</td></tr>`;
+    }
+
+    async function loadSupervisor() {
+      if (!supEmail) {
+        supNameDisplay.textContent = "Supervisor email not found";
+        supIdDisplay.textContent = "Supervisor email not found";
+        supSiteDisplay.textContent = "Supervisor email not found";
+        throw new Error("No supEmail in localStorage");
+      }
+
+      const snap = await getDoc(doc(db, "Supervisor", supEmail));
+      if (!snap.exists()) {
+        supNameDisplay.textContent = "Not Found";
+        supIdDisplay.textContent = "Not Found";
+        supSiteDisplay.textContent = "Not Found";
+        throw new Error(`Supervisor document not found for ${supEmail}`);
+      }
+
+      const d = snap.data() || {};
+      supervisorData = {
+        raw: d,
+        uid: safeValue(d.uid, d.UID, d.id, d.adminId, d.AdminId),
+        Name: safeValue(d.Name, d.fullName, d.FullName, d.name),
+        Site: safeValue(d.Site, d.site, d.siteSelect, d.industrySelect),
+        CardType: safeValue(d.CardType, d.cardType),
+        gross_amount: Number(safeValue(d.gross_amount, d.grossAmount, d.monthlySalary, d.salary)) || 0,
+        workingType: safeValue(d.workingType, d.WorkingType, d.workType, d.WorkType)
+      };
+
+      supNameDisplay.textContent = supervisorData.Name || "N/A";
+      supIdDisplay.textContent = supervisorData.uid || "N/A";
+      supSiteDisplay.textContent = supervisorData.Site || "N/A";
+    }
+
+    async function loadEmployeeFallback(uid) {
+      try {
+        const snap = await getDoc(doc(db, "Employee", uid));
+        if (!snap.exists()) return {};
+        return snap.data() || {};
+      } catch (err) {
+        console.warn("Employee fallback lookup failed:", err);
+        return {};
+      }
+    }
+
+    async function getClmsPresentDates(uid) {
+      if (presentDatesCache.has(uid)) return presentDatesCache.get(uid);
+      const presentSet = new Set();
+
+      async function scan(pathParts) {
+        try {
+          const snap = await getDocs(collection(db, ...pathParts));
+          snap.forEach(docSnap => {
+            const data = docSnap.data() || {};
+            const dateIso = parseDateToISO(safeValue(data.date, data.attendanceDate, data.clmsDate, data.day, data.Date, data.AttendanceDate, docSnap.id));
+            const marking = safeValue(data.Marking, data.marking, data.status, data.Status, data.attendance, data.presentStatus);
+            if (dateIso && normalizeText(marking) === "present") presentSet.add(dateIso);
+          });
+        } catch (err) {
+          console.warn("CLMS path skipped:", pathParts.join("/"), err);
+        }
+      }
+
+      await Promise.all([
+        scan(["CLMS Attendance", uid, "Records"]),
+        scan(["CLMS_Attendance", uid, "Records"]),
+        scan(["CLMSAttendance", uid, "Records"])
+      ]);
+
+      const arr = [...presentSet].sort();
+      presentDatesCache.set(uid, arr);
+      return arr;
+    }
+
+    async function getHolidayDates() {
+      if (holidayCache.loaded) return holidayCache.dates;
+      const out = [];
+      try {
+        const snap = await getDocs(collection(db, "Holiday"));
+        snap.forEach(docSnap => {
+          const d = docSnap.data() || {};
+          const iso = parseDateToISO(safeValue(d.date, d.holidayDate, d.HolidayDate, d.day, d.Date, docSnap.id));
+          if (iso) out.push(iso);
+        });
+      } catch (err) {
+        console.error("Holiday read failed:", err);
+      }
+      holidayCache.loaded = true;
+      holidayCache.dates = [...new Set(out)].sort();
+      return holidayCache.dates;
+    }
+
+    async function computePaidHolidaysFromDates(presentDates, monthKey, rate) {
+      if (!rate) return 0;
+      const presentSet = new Set(presentDates);
+      const holidayDates = await getHolidayDates();
+      let amount = 0;
+      for (const holidayIso of holidayDates.filter(x => x.startsWith(monthKey))) {
+        const prevDay = addDays(holidayIso, -1);
+        const nextDay = addDays(holidayIso, 1);
+        if (presentSet.has(prevDay) || presentSet.has(holidayIso) || presentSet.has(nextDay)) amount += rate;
+      }
+      return amount;
+    }
+
+    function computeLeaveCountFromDates(presentDates, monthKey) {
+      const beforeThisMonth = presentDates.filter(iso => iso.slice(0, 7) < monthKey).length;
+      const untilThisMonth = presentDates.filter(iso => iso.slice(0, 7) <= monthKey).length;
+      return Math.floor(untilThisMonth / 20) - Math.floor(beforeThisMonth / 20);
+    }
+
+    function parseDeductionPlan(plan = "") {
+      const cleanPlan = String(plan || "").trim();
+      const monthMatch = cleanPlan.match(/^(\d+)m/i);
+      const months = monthMatch ? Number(monthMatch[1]) : Number(cleanPlan[0]) || 1;
+      const splits = cleanPlan.split("-").slice(1).map(x => Number(String(x).replace(/[^0-9.]/g, ""))).filter(x => !Number.isNaN(x));
+      return { months, splits };
+    }
+
+    function monthDiff(fromIsoDate, toMonthKey) {
+      if (!fromIsoDate || !toMonthKey) return -999;
+      const fromIso = parseDateToISO(fromIsoDate) || fromIsoDate;
+      const [fy, fm] = fromIso.slice(0, 7).split("-").map(Number);
+      const [ty, tm] = toMonthKey.split("-").map(Number);
+      return (ty - fy) * 12 + (tm - fm);
+    }
+
+    async function computeAdvanceDeduction(uid, isoDate) {
+      const monthKey = isoDate.slice(0, 7);
+      const cacheKey = `${normalizeId(uid)}_${monthKey}`;
+      if (advanceCache.has(cacheKey)) return advanceCache.get(cacheKey);
+      let deduction = 0;
+      try {
+        const recs = await getDocs(collection(db, "AdPayment", uid, "Records"));
+        for (const r of recs.docs) {
+          const data = r.data() || {};
+          const transferType = safeValue(data.transferType, data.paymentType, data.type);
+          if (transferType && normalizeText(transferType) !== normalizeText("Account Transfer")) continue;
+          const amount = Number(safeValue(data.amount, data.amounts, data.advanceAmount)) || 0;
+          const paymentDate = safeValue(data.paymentDate, data.date, r.id);
+          const deductionPlan = safeValue(data.deductionPlan, data.plan);
+          const { months, splits } = parseDeductionPlan(deductionPlan);
+          const idx = monthDiff(paymentDate, monthKey);
+          if (idx >= 0 && idx < months) {
+            if (splits.length) deduction += (amount * (splits[idx] ?? 0)) / 100;
+            else deduction += amount / months;
+          }
+        }
+      } catch (err) {
+        console.warn("Advance deduction fetch failed:", uid, err);
+      }
+      advanceCache.set(cacheKey, deduction);
+      return deduction;
+    }
+
+    async function computeFoodDeduction(uid, monthKey, site = "") {
+      const cacheKey = `${normalizeId(uid)}_${monthKey}_${normalizeText(site)}`;
+      if (foodCache.has(cacheKey)) return foodCache.get(cacheKey);
+
+      let total = 0;
+      const checked = new Set();
+      const [year, mon] = monthKey.split("-");
+      const monthDoc1 = monthKey;
+      const monthDoc2 = `${mon}-${year}`;
+      const monthDoc3 = `${mon}-${year.slice(-2)}`;
+      const oldCombinedDoc = `${uid}_${monthKey}`;
+
+      function getFoodAmount(data) {
+        return Number(safeValue(data.totalAmount, data.TotalAmount, data.total_amount, data.amount, data.Amount, data.foodAmount, data.FoodAmount, data.total, data.Total)) || 0;
+      }
+
+      async function addFoodDoc(pathParts) {
+        const key = pathParts.join("/");
+        if (checked.has(key)) return;
+        checked.add(key);
+        try {
+          const snap = await getDoc(doc(db, ...pathParts));
+          if (snap.exists()) total += getFoodAmount(snap.data() || {});
+        } catch (err) {
+          console.warn("FoodAllowance doc read failed:", key, err);
+        }
+      }
+
+      async function addFoodCollection(pathParts) {
+        const key = pathParts.join("/");
+        if (checked.has(key)) return;
+        checked.add(key);
+        try {
+          const snap = await getDocs(collection(db, ...pathParts));
+          snap.forEach(docSnap => {
+            const data = docSnap.data() || {};
+            const docId = docSnap.id;
+            const recordMonth = normalizeText(safeValue(data.monthKey, data.month, data.monthYear, data.date, data.paymentMonth, docId));
+            const recordUid = normalizeId(safeValue(data.uid, data.UID, data.employeeId, data.employeeID, data.id));
+            const recordSite = normalizeText(safeValue(data.site, data.Site, data.siteSelect, data.industrySelect));
+            const monthOk =
+              recordMonth === normalizeText(monthDoc1) ||
+              recordMonth === normalizeText(monthDoc2) ||
+              recordMonth === normalizeText(monthDoc3) ||
+              recordMonth.includes(normalizeText(monthDoc1)) ||
+              recordMonth.includes(normalizeText(monthDoc2)) ||
+              recordMonth.includes(normalizeText(monthDoc3));
+            const uidOk = !recordUid || recordUid === normalizeId(uid);
+            const siteOk = !recordSite || !site || recordSite === normalizeText(site);
+            if (monthOk && uidOk && siteOk) total += getFoodAmount(data);
+          });
+        } catch (err) {
+          console.warn("FoodAllowance collection read failed:", key, err);
+        }
+      }
+
+      await Promise.all([
+        addFoodDoc(["FoodAllowance", "Records", uid, monthDoc1]),
+        addFoodDoc(["FoodAllowance", "Records", uid, monthDoc2]),
+        addFoodDoc(["FoodAllowance", "Records", uid, monthDoc3]),
+        addFoodDoc(["FoodAllowance", "Records", uid, "Records", monthDoc1]),
+        addFoodDoc(["FoodAllowance", "Records", uid, "Records", monthDoc2]),
+        addFoodDoc(["FoodAllowance", "Records", uid, "Records", monthDoc3]),
+        addFoodDoc(["FoodAllowance", uid, "Records", monthDoc1]),
+        addFoodDoc(["FoodAllowance", uid, "Records", monthDoc2]),
+        addFoodDoc(["FoodAllowance", uid, "Records", monthDoc3]),
+        addFoodDoc(["FoodAllowance", site || "NA", "Records", oldCombinedDoc]),
+        addFoodDoc(["FoodAllowance", "Records", oldCombinedDoc]),
+        addFoodCollection(["FoodAllowance", uid, "Records"]),
+        addFoodCollection(["FoodAllowance", "Records", uid]),
+        addFoodCollection(["FoodAllowance", "Records", uid, "Records"])
+      ]);
+
+      foodCache.set(cacheKey, total);
+      return total;
+    }
+
+    async function getEmployeeCardType(person) {
+      const uid = person.uid;
+      const fallback = await loadEmployeeFallback(uid);
+      return safeValue(person.CardType, person.cardType, fallback.CardType, fallback.cardType, fallback.cardtype, fallback.category, fallback.skillType, fallback.skill, fallback.workerType);
+    }
+
+    async function getEmployeeWorkingType(person) {
+      const uid = person.uid;
+      const fallback = await loadEmployeeFallback(uid);
+      return safeValue(person.workingType, person.WorkingType, fallback.workingType, fallback.WorkingType, fallback.workType, fallback.WorkType, fallback.typeOfWork, fallback.TypeOfWork);
+    }
+
+    async function getEmployeeGrossAmount(person) {
+      const uid = person.uid;
+      const fallback = await loadEmployeeFallback(uid);
+      return Number(safeValue(person.gross_amount, person.grossAmount, fallback.gross_amount, fallback.grossAmount, fallback.GrossAmount, fallback.gross, fallback.Gross, fallback.monthlyAmount, fallback.monthlySalary, fallback.salary)) || 0;
+    }
+
+    async function buildPayrollRow(person, monthKey) {
+      const uid = person.uid;
+      const site = person.Site || person.site || supervisorData?.Site || "";
+      const cardType = await getEmployeeCardType(person);
+      const wages = basicRate(cardType);
+
+      const presentDates = await getClmsPresentDates(uid);
+      const presentDays = presentDates.filter(iso => iso.startsWith(monthKey)).length;
+
+      const basicWages = presentDays * wages;
+      const phAmount = await computePaidHolidaysFromDates(presentDates, monthKey, wages);
+      const leaveCount = computeLeaveCountFromDates(presentDates, monthKey);
+      const bonusAmount = basicWages * 8.33 / 100;
+      const totalWages = basicWages + phAmount;
+      const epf = totalWages * 12 / 100;
+      const esic = totalWages * 0.75 / 100;
+      const advDeduct = await computeAdvanceDeduction(uid, `${monthKey}-01`);
+      const foodDeduction = await computeFoodDeduction(uid, monthKey, site);
+      const totalDeduction = epf + esic + advDeduct + foodDeduction;
+      const netPay = totalWages - totalDeduction;
+
+      return {
+        slNo: 1,
+        uid,
+        fullName: person.Name || person.fullName || "",
+        site,
+        presentDays,
+        wages,
+        basicWages,
+        phAmount,
+        leaveCount,
+        bonusAmount,
+        totalWages,
+        epf,
+        esic,
+        advDeduct,
+        foodDeduction,
+        totalDeduction,
+        netPay
+      };
+    }
+
+    function appendRowDetailed(d) {
+      detailedBody.innerHTML = `
+        <tr>
+          <td>${d.slNo}</td>
+          <td><span class="chip blue">${d.uid}</span></td>
+          <td>${d.fullName}</td>
+          <td>${d.site}</td>
+          <td>${d.presentDays}</td>
+          <td>${formatMoney(d.wages)}</td>
+          <td>${formatMoney(d.basicWages)}</td>
+          <td>${formatMoney(d.phAmount)}</td>
+          <td>${d.leaveCount}</td>
+          <td>${formatMoney(d.bonusAmount)}</td>
+          <td><span class="chip green">${formatMoney(d.totalWages)}</span></td>
+          <td>${formatMoney(d.epf)}</td>
+          <td>${formatMoney(d.esic)}</td>
+          <td>${formatMoney(d.advDeduct)}</td>
+          <td>${formatMoney(d.foodDeduction)}</td>
+          <td><span class="chip yellow">${formatMoney(d.totalDeduction)}</span></td>
+          <td><span class="chip green">${formatMoney(d.netPay)}</span></td>
+        </tr>
+      `;
+    }
+
+    async function runPayrollFor(monthKey) {
+      const token = ++activeSearchToken;
+      isSearching = true;
+      showEmpty("Loading payment records...");
+
+      try {
+        const row = await buildPayrollRow(supervisorData, monthKey);
+        if (token !== activeSearchToken) return null;
+        appendRowDetailed(row);
+        return row;
+      } catch (err) {
+        console.error("Payment load error:", err);
+        if (token === activeSearchToken) showEmpty("Error loading payment records.");
+        return null;
+      } finally {
+        if (token === activeSearchToken) {
+          isSearching = false;
+        }
+      }
+    }
+
+    async function saveBonusAndLeaveRecords({ uid, fullName, site, monthKey, totalDay, wagesRate, basicWages, bonusAmount, leaveEarned }) {
+      const year = monthKey.split("-")[0];
+      const bonusData = {
+        uid,
+        name: fullName || "",
+        site: site || "",
+        adminId: supervisorData?.uid || "",
+        adminName: supervisorData?.Name || "",
+        month: monthKey,
+        year,
+        totalDay: Number(totalDay) || 0,
+        wagesRate: Number(wagesRate) || 0,
+        basicWages: Number(basicWages) || 0,
+        bonusPercent: 8.33,
+        bonusAmount: Number(bonusAmount) || 0,
+        generatedFrom: "SUPERVISOR_PAYMENT",
+        status: "AUTO_GENERATED",
+        updatedAt: serverTimestamp()
+      };
+      const leaveData = {
+        uid,
+        name: fullName || "",
+        site: site || "",
+        adminId: supervisorData?.uid || "",
+        adminName: supervisorData?.Name || "",
+        month: monthKey,
+        year,
+        totalDay: Number(totalDay) || 0,
+        leaveEarned: Number(leaveEarned) || 0,
+        leaveRule: "1 leave per 20 present days",
+        generatedFrom: "SUPERVISOR_PAYMENT",
+        status: "AUTO_GENERATED",
+        updatedAt: serverTimestamp()
+      };
+      await Promise.all([
+        setDoc(doc(db, "BonusRecords", uid, "Records", monthKey), bonusData, { merge: true }),
+        setDoc(doc(db, "LeaveRecords", uid, "Records", monthKey), leaveData, { merge: true })
+      ]);
+    }
+
+    document.getElementById("adminSubmitBtn").addEventListener("click", async () => {
+      if (isSearching) return;
+
+      if (!adminDateInput.value) {
+        alert("Please select Month & Year.");
+        return;
+      }
+
+      setSubmitButtonState(true, "Submitting...");
+
+      try {
+        if (!supervisorData) {
+          await loadSupervisor();
+        }
+
+        const monthKey = adminDateInput.value;
+        const rowData = await runPayrollFor(monthKey);
+
+        if (rowData && supervisorData) {
+          await saveBonusAndLeaveRecords({
+            uid: rowData.uid,
+            fullName: rowData.fullName,
+            site: rowData.site,
+            monthKey,
+            totalDay: rowData.presentDays,
+            wagesRate: rowData.wages,
+            basicWages: rowData.basicWages,
+            bonusAmount: rowData.bonusAmount,
+            leaveEarned: rowData.leaveCount
+          });
+        }
+      } catch (e) {
+        console.warn("Payroll submit failed:", e);
+        showEmpty("Error loading payment records.");
+      } finally {
+        if (supervisorData && adminDateInput.value && !isSearching) {
+          setSubmitButtonState(false);
+        } else {
+          // keep the button usable even after a failure
+          setSubmitButtonState(false);
+        }
+      }
+    });
+
+    async function initPage() {
+      const submitBtn = document.getElementById("adminSubmitBtn");
+      if (submitBtn) {
+        submitBtn.dataset.originalLabel = "Submit";
+        submitBtn.disabled = true;
+      }
+
+      try {
+        await loadSupervisor();
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        const mm = String(today.getMonth() + 1).padStart(2, "0");
+        adminDateInput.value = `${yyyy}-${mm}`;
+        showEmpty("Please select month & year, then click Submit.");
+      } catch (err) {
+        console.error(err);
+        showEmpty("Supervisor login data not found.");
+      } finally {
+        if (submitBtn) submitBtn.disabled = false;
+      }
+    }
+
+    initPage();
+  </script>
+</body>
+</html>

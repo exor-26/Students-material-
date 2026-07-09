@@ -1,0 +1,2200 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <title>SI Dashboard - Payment Management</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/x-icon" href="logo2.ico" />
+  <link rel="stylesheet" type="text/css" href="sipayment.css" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap-theme.min.css" />
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+
+  <style>
+    *,
+    *::before,
+    *::after {
+      cursor: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" viewBox="0 0 24 24"><path fill="%23FFF" stroke="%23FF2711" stroke-width="2" d="M5.5 3.21V20.8c0 .45.54.67.85.35l4.86-4.86a.5.5 0 0 1 .35-.15h6.87a.5.5 0 0 0 .35-.85L6.35 2.85a.5.5 0 0 0-.85.35Z"></path></svg>') 5 5, auto;
+    }
+
+    a,
+    button,
+    input[type="submit"],
+    input[type="button"],
+    label,
+    select,
+    .dropbtn,
+    .sub-btn,
+    .btn,
+    .cn,
+    .carousel-control,
+    .hideMenuButton,
+    .item a,
+    input[type="text"],
+    input[type="search"],
+    textarea,
+    input[type="month"] {
+      cursor: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="%23FFF" stroke="%23FF2711" stroke-width="2" stroke-linejoin="round" d="M10 11V8.99c0-.88.59-1.64 1.44-1.86h.05A1.99 1.99 0 0 1 14 9.05V12v-2c0-.88.6-1.65 1.46-1.87h.05A1.98 1.98 0 0 1 18 10.06V13v-1.94a2 2 0 0 1 1.51-1.94h0A2 2 0 0 1 22 11.06V14c0 .6-.08 1.27-.21 1.97a7.96 7.96 0 0 1-7.55 6.48 54.98 54.98 0 0 1-4.48 0 7.96 7.96 0 0 1-7.55-6.48C2.08 15.27 2 14.59 2 14v-1.49c0-1.11.9-2.01 2.01-2.01h0a2 2 0 0 1 2.01 2.03l-.01.97v-10c0-1.1.9-2 2-2h0a2 2 0 0 1 2 2V11Z"></path></svg>') 5 5, auto;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    :root {
+      --topbar-height: 78px;
+      --sidebar-width: 280px;
+      --card-bg: rgba(12, 25, 45, 0.86);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --text-main: #ffffff;
+      --text-soft: #c9d9ee;
+      --text-muted: #8ea4c5;
+      --orange-1: #ff8a3c;
+      --orange-2: #ff5a1f;
+      --blue-1: #2d7dff;
+      --blue-2: #1657cc;
+      --green-1: #19c37d;
+      --green-2: #119b62;
+      --shadow: 0 18px 40px rgba(0, 0, 0, 0.25);
+    }
+
+    html,
+    body {
+      width: 100%;
+      min-height: 100%;
+      margin: 0;
+      padding: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background:
+        linear-gradient(135deg, rgba(7, 16, 30, 0.95), rgba(14, 34, 56, 0.92)),
+        url("https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1600&q=80") center/cover no-repeat fixed;
+      color: var(--text-main);
+      overflow: hidden;
+    }
+
+    .app-shell {
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .topbar {
+      height: var(--topbar-height);
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(7, 16, 30, 0.88);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 2000;
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      min-width: 0;
+    }
+
+    .menu-toggle {
+      width: 46px;
+      height: 46px;
+      border: none;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
+      color: #fff;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: 0.25s ease;
+      flex-shrink: 0;
+    }
+
+    .menu-toggle:hover {
+      background: linear-gradient(135deg, rgba(255, 122, 47, 0.18), rgba(31, 119, 255, 0.16));
+      transform: translateY(-1px);
+    }
+
+    .brand-wrap {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-width: 0;
+    }
+
+    .brand-title {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 700;
+      color: #fff;
+      text-decoration: none !important;
+      line-height: 1.1;
+    }
+
+    .brand-subtitle {
+      margin: 2px 0 0;
+      color: var(--text-soft);
+      font-size: 13px;
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-shrink: 0;
+    }
+
+    .logout {
+      text-decoration: none !important;
+      color: #fff !important;
+      background: linear-gradient(135deg, var(--orange-1), var(--orange-2));
+      padding: 11px 18px;
+      border-radius: 12px;
+      font-weight: 700;
+      transition: 0.25s ease;
+      box-shadow: 0 10px 24px rgba(255, 90, 31, 0.24);
+      white-space: nowrap;
+    }
+
+    .logout:hover {
+      transform: translateY(-1px);
+      color: #fff !important;
+      text-decoration: none !important;
+    }
+
+    .dashboard-layout {
+      width: 100%;
+      height: 100vh;
+    }
+
+    nav.sidebar {
+      width: var(--sidebar-width);
+      min-width: var(--sidebar-width);
+      max-width: var(--sidebar-width);
+      position: fixed;
+      top: var(--topbar-height);
+      left: 0;
+      bottom: 0;
+      padding: 20px 16px 22px;
+      background: linear-gradient(180deg, rgba(6, 16, 30, 0.98), rgba(8, 22, 40, 0.96));
+      backdrop-filter: blur(16px);
+      border-right: 1px solid rgba(255, 255, 255, 0.06);
+      overflow-y: auto;
+      overflow-x: hidden;
+      z-index: 1500;
+      box-shadow: 18px 0 45px rgba(0, 0, 0, 0.24);
+    }
+
+    nav.sidebar::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    nav.sidebar::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.14);
+      border-radius: 999px;
+    }
+
+    .sidebar-top-card {
+      position: relative;
+      padding: 20px 18px 18px;
+      border-radius: 24px;
+      background:
+        linear-gradient(135deg, rgba(255, 122, 47, 0.16), rgba(31, 119, 255, 0.14)),
+        rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow:
+        0 16px 32px rgba(0, 0, 0, 0.20),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06);
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+
+    .sidebar-top-card::after {
+      content: "";
+      position: absolute;
+      right: -30px;
+      top: -30px;
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.16), transparent 70%);
+    }
+
+    .sidebar-mini-label {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.4px;
+      color: #ffd8c2;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 5px 10px;
+      border-radius: 999px;
+      margin-bottom: 12px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .sidebar-main-title {
+      font-size: 19px;
+      font-weight: 800;
+      color: #ffffff;
+      margin: 0 0 6px;
+      line-height: 1.2;
+      position: relative;
+      z-index: 1;
+    }
+
+    .sidebar-main-subtitle {
+      font-size: 13px;
+      color: #d5e2f1;
+      line-height: 1.7;
+      margin: 0 0 14px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .sidebar-status-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      position: relative;
+      z-index: 1;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .sidebar-status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #dfffe9;
+      background: rgba(20, 184, 106, 0.14);
+      border: 1px solid rgba(20, 184, 106, 0.22);
+    }
+
+    .sidebar-status-badge::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #4df39b;
+      box-shadow: 0 0 10px rgba(77, 243, 155, 0.7);
+    }
+
+    .sidebar-status-text {
+      font-size: 11px;
+      color: #c6d8ec;
+      text-align: right;
+      line-height: 1.4;
+    }
+
+    .sidebar-section-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #8ea4c5;
+      margin: 0 8px 16px;
+      font-weight: 700;
+    }
+
+    #side-bar {
+      list-style: none;
+      padding-left: 0;
+      margin-bottom: 0;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    #side-bar li {
+      width: 100%;
+      margin: 0;
+    }
+
+    #side-bar a,
+    #side-bar summary {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      width: 100%;
+      padding: 15px 15px;
+      border-radius: 20px;
+      text-decoration: none !important;
+      color: #edf4ff !important;
+      background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.025));
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      transition: all 0.28s ease;
+      position: relative;
+      overflow: hidden;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    }
+
+    #side-bar a::before,
+    #side-bar summary::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, rgba(255, 122, 47, 0.13), rgba(31, 119, 255, 0.11));
+      opacity: 0;
+      transition: opacity 0.28s ease;
+    }
+
+    #side-bar a::after,
+    #side-bar summary::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 18%;
+      width: 4px;
+      height: 64%;
+      border-radius: 999px;
+      background: linear-gradient(180deg, #ff8a3c, #1f77ff);
+      opacity: 0;
+      transition: opacity 0.28s ease;
+    }
+
+    #side-bar a:hover,
+    #side-bar summary:hover {
+      transform: translateX(6px);
+      border-color: rgba(255, 255, 255, 0.10);
+      box-shadow: 0 14px 28px rgba(0, 0, 0, 0.20);
+    }
+
+    #side-bar a:hover::before,
+    #side-bar summary:hover::before,
+    #side-bar a:hover::after,
+    #side-bar summary:hover::after {
+      opacity: 1;
+    }
+
+    #side-bar a.active,
+    #side-bar summary.active {
+      background: linear-gradient(135deg, rgba(255, 122, 47, 0.18), rgba(31, 119, 255, 0.16));
+      border-color: rgba(255, 255, 255, 0.12);
+      box-shadow: 0 16px 30px rgba(0, 0, 0, 0.24);
+    }
+
+    #side-bar a.active::before,
+    #side-bar summary.active::before,
+    #side-bar a.active::after,
+    #side-bar summary.active::after {
+      opacity: 1;
+    }
+
+    .nav-icon {
+      width: 44px;
+      height: 44px;
+      min-width: 44px;
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.13), rgba(255, 255, 255, 0.05));
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: #fff;
+      font-size: 17px;
+      position: relative;
+      z-index: 1;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    }
+
+    .nav-text {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .nav-text strong {
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.2;
+    }
+
+    .nav-text span {
+      margin-top: 4px;
+      font-size: 11px;
+      line-height: 1.45;
+      color: #aabed8;
+    }
+
+    .nav-arrow {
+      margin-left: auto;
+      font-size: 16px;
+      color: #93b2d8;
+      position: relative;
+      z-index: 1;
+      transition: transform 0.25s ease;
+    }
+
+    #side-bar a:hover .nav-arrow,
+    #side-bar summary:hover .nav-arrow {
+      transform: translateX(4px);
+    }
+
+    main {
+      position: fixed;
+      top: var(--topbar-height);
+      left: var(--sidebar-width);
+      right: 0;
+      bottom: 0;
+      padding: 28px 30px;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    .hero-card {
+      background: linear-gradient(135deg, rgba(22, 61, 112, 0.88), rgba(12, 27, 53, 0.92));
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 24px;
+      padding: 30px 34px;
+      box-shadow: var(--shadow);
+      margin-bottom: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-card::after {
+      content: "";
+      position: absolute;
+      right: -80px;
+      top: -80px;
+      width: 220px;
+      height: 220px;
+      background: radial-gradient(circle, rgba(255, 122, 47, 0.18), transparent 70%);
+      border-radius: 50%;
+    }
+
+    .page-tag {
+      display: inline-block;
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      color: #ffb88f;
+      background: rgba(255, 122, 47, 0.16);
+      border: 1px solid rgba(255, 122, 47, 0.2);
+      margin-bottom: 14px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-card h1 {
+      margin: 0 0 10px;
+      font-size: 32px;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.15;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-card p {
+      margin: 0;
+      max-width: 900px;
+      font-size: 15px;
+      line-height: 1.8;
+      color: #d0def0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .panel-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+      margin-bottom: 24px;
+    }
+
+    .filter-panel-card {
+      background: linear-gradient(135deg, rgba(16, 37, 64, 0.95), rgba(10, 24, 44, 0.95));
+      border: 1px solid rgba(31, 119, 255, 0.18);
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+      margin-bottom: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .filter-panel-card::after {
+      content: "";
+      position: absolute;
+      right: -60px;
+      bottom: -60px;
+      width: 180px;
+      height: 180px;
+      background: radial-gradient(circle, rgba(31, 119, 255, 0.18), transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .section-header h2,
+    .section-header h3 {
+      margin: 0;
+      font-size: 26px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .section-badge {
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #9ec3ff;
+      background: rgba(31, 119, 255, 0.14);
+      border: 1px solid rgba(31, 119, 255, 0.22);
+      white-space: nowrap;
+    }
+
+    .details-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(220px, 1fr));
+      gap: 18px;
+      margin-bottom: 0;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+    }
+
+    .value-box,
+    .field input,
+    .field select {
+      width: 100%;
+      min-height: 48px;
+      border-radius: 14px !important;
+      border: 1px solid rgba(255, 255, 255, 0.08) !important;
+      background: rgba(255, 255, 255, 0.05) !important;
+      color: #fff !important;
+      padding: 12px 14px !important;
+      font-size: 14px;
+      outline: none;
+      box-shadow: none !important;
+      transition: 0.25s ease;
+    }
+
+    .field input:focus,
+    .field select:focus {
+      border-color: rgba(31, 119, 255, 0.55) !important;
+      box-shadow: 0 0 0 4px rgba(31, 119, 255, 0.12) !important;
+    }
+
+    .field input::placeholder {
+      color: #9fb4cf;
+    }
+
+    .field select option {
+      color: #000;
+    }
+
+    .helper-text {
+      margin-top: 6px;
+      font-size: 12px;
+      color: #9fb4cf;
+    }
+
+    .btn-primary.custom-btn {
+      border: none;
+      border-radius: 14px;
+      padding: 12px 24px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      cursor: pointer;
+      background: linear-gradient(135deg, var(--blue-1), var(--blue-2));
+      box-shadow: 0 12px 26px rgba(45, 125, 255, 0.25);
+      transition: 0.25s ease;
+      min-height: 48px;
+      width: 100%;
+    }
+
+    .btn-primary.custom-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn-primary.custom-btn:disabled {
+      opacity: 0.72;
+    }
+
+    .btn-reset {
+      min-height: 48px;
+      border-radius: 14px;
+      padding: 12px 24px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #ffffff, #dfe8f5);
+      color: #123;
+      border: none;
+      min-width: 140px;
+      transition: 0.25s ease;
+    }
+
+    .btn-reset:hover {
+      transform: translateY(-1px);
+    }
+
+    .mode-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .mode-box {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .mode-label {
+      font-size: 14px;
+      font-weight: 700;
+      color: #dce8ff;
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 54px;
+      height: 30px;
+      margin: 0;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background: rgba(255, 255, 255, 0.14);
+      transition: .3s;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 22px;
+      width: 22px;
+      left: 3px;
+      top: 3px;
+      background: #fff;
+      transition: .3s;
+      border-radius: 50%;
+    }
+
+    .switch input:checked+.slider {
+      background: linear-gradient(135deg, var(--blue-1), var(--blue-2));
+    }
+
+    .switch input:checked+.slider:before {
+      transform: translateX(24px);
+    }
+
+    .table-card {
+      background: rgba(10, 24, 42, 0.82);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 26px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .table-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .table-header h3 {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      border-radius: 16px;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 8px;
+    }
+
+    .table-wrap table {
+      width: 100%;
+      min-width: 1700px;
+      border-collapse: collapse;
+      overflow: hidden;
+      border-radius: 16px;
+    }
+
+    .table-wrap.small table {
+      min-width: 1100px;
+    }
+
+    .table-wrap thead tr {
+      background: linear-gradient(135deg, #183b6f, #102849);
+    }
+
+    .table-wrap thead td,
+    .table-wrap thead th {
+      padding: 16px 14px;
+      color: #fff;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      border: none;
+      text-align: center;
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+
+    .table-wrap tbody tr {
+      background: rgba(255, 255, 255, 0.03);
+      transition: 0.2s ease;
+    }
+
+    .table-wrap tbody tr:nth-child(even) {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .table-wrap tbody tr:hover {
+      background: rgba(31, 119, 255, 0.10);
+    }
+
+    .table-wrap tbody td {
+      padding: 15px 14px;
+      color: #eaf2ff;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      vertical-align: middle;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .earned-head {
+      background: rgba(25, 195, 125, 0.18) !important;
+      color: #b6ffd5 !important;
+    }
+
+    .deduct-head {
+      background: rgba(255, 192, 72, 0.18) !important;
+      color: #ffe8a8 !important;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 28px !important;
+      color: #a8bdd8 !important;
+      font-style: italic;
+    }
+
+    .loading-state {
+      text-align: center;
+      padding: 28px !important;
+      color: #d2e0f3 !important;
+      font-weight: 700;
+    }
+
+    @media (max-width: 1200px) {
+      .details-grid {
+        grid-template-columns: repeat(2, minmax(220px, 1fr));
+      }
+    }
+
+    @media (max-width: 991px) {
+  html,
+  body {
+    width: 100%;
+    min-height: 100%;
+    height: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .app-shell {
+    width: 100%;
+    height: auto;
+    min-height: 100vh;
+    overflow: visible;
+  }
+
+  .dashboard-layout {
+    width: 100%;
+    height: auto;
+    min-height: 100vh;
+    padding-top: var(--topbar-height);
+  }
+
+  nav.sidebar {
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+
+    /* FIX: Command Center scroll ke saath upar jayega */
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    bottom: auto;
+
+    height: auto;
+    max-height: none;
+    overflow: visible;
+
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 0 0 24px 24px;
+    z-index: 100;
+    padding: 14px;
+  }
+
+  .sidebar-top-card {
+    margin-bottom: 18px;
+  }
+
+  .sidebar-section-title {
+    margin: 18px 8px 14px;
+  }
+
+  #side-bar {
+    display: none;
+    gap: 10px;
+  }
+
+  #side-bar.active {
+    display: flex;
+    flex-direction: column;
+    margin-top: 12px;
+  }
+
+  .sidebar-status-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .sidebar-status-text {
+    text-align: left;
+  }
+
+  main {
+    /* FIX: main normal page scroll mein rahega */
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    bottom: auto;
+
+    width: 100%;
+    padding: 18px;
+    overflow: visible;
+  }
+
+  .hero-card h1 {
+    font-size: 24px;
+  }
+
+  .details-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .brand-subtitle {
+    display: none;
+  }
+}
+    @media (max-width: 600px) {
+      .topbar {
+        padding: 0 14px;
+      }
+
+      .logout {
+        padding: 9px 14px;
+        font-size: 13px;
+      }
+
+      .hero-card,
+      .panel-card,
+      .filter-panel-card,
+      .table-card {
+        padding: 18px;
+        border-radius: 18px;
+      }
+    }
+    /* iPhone / iPad Dropdown Fix */
+@media screen and (max-width: 1024px) {
+
+  .field select,
+  .field input,
+  .field .form-control {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+
+    -webkit-appearance: none;
+    appearance: none;
+
+    display: block !important;
+  }
+
+  .details-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Safari (iPhone/iPad) specific fix */
+.field select.form-control {
+  width: 100% !important;
+  min-height: 48px !important;
+  padding-right: 40px !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+  </style>
+</head>
+
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+        <div class="brand-wrap">
+          <a href="#" class="brand-title">SI Dashboard</a>
+          <p class="brand-subtitle">Employee Payment & Wage Record Panel</p>
+        </div>
+      </div>
+
+      <div class="topbar-right">
+        <a href="#" class="logout" onclick="logoutUser()">Logout</a>
+      </div>
+    </header>
+
+    <div class="dashboard-layout">
+      <nav class="sidebar">
+        <div class="sidebar-top-card">
+          <div class="sidebar-mini-label">SI Panel</div>
+          <h3 class="sidebar-main-title">Command Center</h3>
+          <p class="sidebar-main-subtitle">
+            Access payment records, wage sheet details, and important SI sections from one clean navigation area.
+          </p>
+
+          <div class="sidebar-status-row">
+            <span class="sidebar-status-badge">Payment Active</span>
+            <div class="sidebar-status-text">
+              Secure access<br />
+              Quick navigation
+            </div>
+          </div>
+        </div>
+
+        <div class="sidebar-section-title">Navigation</div>
+        <ul id="side-bar"></ul>
+      </nav>
+
+      <main>
+        <section class="hero-card">
+          <span class="page-tag">PAYMENT MANAGEMENT PANEL</span>
+          <h1>Payment Management</h1>
+          <p>
+            View payment records site-wise with premium filter control and detailed or alternate payment mode.
+          </p>
+        </section>
+
+        <section class="panel-card">
+          <div class="section-header">
+            <h2>SI Details</h2>
+            <span class="section-badge">Profile</span>
+          </div>
+
+          <div class="details-grid">
+            <div class="field">
+              <label>SI Name</label>
+              <div class="value-box" id="supNameDisplay">Loading...</div>
+            </div>
+
+            <div class="field">
+              <label>SI ID</label>
+              <div class="value-box" id="supIdDisplay">Loading...</div>
+            </div>
+
+            <div class="field">
+              <label>Site</label>
+              <div class="value-box" id="supSiteDisplay">Loading...</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="filter-panel-card">
+          <div class="section-header">
+            <h2>Payment Filters</h2>
+            <span class="section-badge">Search & Filter</span>
+          </div>
+
+          <div class="details-grid">
+            <div class="field">
+              <label>Month & Year</label>
+              <input type="month" id="adminDateInput" class="form-control" />
+            </div>
+
+            <div class="field">
+              <label>Department</label>
+              <select id="departmentSelect" class="form-control">
+                <option value="">Select Department</option>
+              </select>
+              <div class="helper-text">SI ke assigned departments yahan aayenge.</div>
+            </div>
+
+            <div class="field">
+              <label>Role</label>
+              <select id="roleSelect" class="form-control">
+                <option value="">All Roles</option>
+                <option value="Employee">Employee</option>
+                <option value="Supervisor">Supervisor</option>
+                <option value="AS">AS</option>
+              </select>
+              <div class="helper-text">Department ke andar role-wise filter karega.</div>
+            </div>
+
+            <div class="field">
+              <label>Employee Name</label>
+              <input type="text" id="employeeNameInput" class="form-control" placeholder="Optional employee name"
+                autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" list="no-list" />
+              <div class="helper-text">Exact name milte hi Employee ID aur Department auto fill ho jayega.</div>
+            </div>
+
+            <div class="field">
+              <label>Employee ID</label>
+              <input type="text" id="uidFilterInput" class="form-control" placeholder="Optional employee ID"
+                autocomplete="off" />
+            </div>
+
+            <div class="field" id="duplicateIdField" style="display:none;">
+              <label>Select Employee ID</label>
+              <select id="duplicateIdSelect" class="form-control">
+                <option value="">Select Employee ID</option>
+              </select>
+              <div class="helper-text">Same name ke multiple records mile hain. ID choose karo.</div>
+            </div>
+
+            <div class="field" style="grid-column: 1 / -1;">
+              <div style="display:flex; gap:12px; flex-wrap:wrap;">
+                <button id="adminSubmitBtn" class="btn btn-primary custom-btn" type="button"
+                  style="flex:1;">Submit</button>
+                <button id="resetFiltersBtn" type="button" class="btn-reset">Reset</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="table-card">
+          <div class="mode-row">
+            <div class="table-header" style="margin-bottom:0;">
+              <h3>Payment Record</h3>
+              <span class="section-badge">Detailed / Alternate View</span>
+            </div>
+
+            <div class="mode-box">
+              <label class="switch">
+                <input type="checkbox" id="paymentModeToggle" />
+                <span class="slider"></span>
+              </label>
+              <span class="mode-label">Alternate Payment Mode</span>
+            </div>
+          </div>
+
+          <div class="table-wrap" id="detailedPaymentTable">
+            <table>
+              <thead>
+                <tr>
+                  <td rowspan="2"><b>Sl No.</b></td>
+                  <td rowspan="2"><b>UID</b></td>
+                  <td rowspan="2"><b>Name</b></td>
+                  <td rowspan="2"><b>Site</b></td>
+                  <td rowspan="2"><b>Total Day</b></td>
+                  <td colspan="6" class="earned-head"><b>Amount of Wages Earned</b></td>
+                  <td colspan="5" class="deduct-head"><b>Deduction</b></td>
+                  <td rowspan="2"><b>Total Amount</b></td>
+                </tr>
+                <tr>
+                  <td><b>Wages/@m</b></td>
+                  <td><b>Basic Wages</b></td>
+                  <td><b>PH Amount</b></td>
+                  <td><b>Leave</b></td>
+                  <td><b>Bonus @8.33%</b></td>
+                  <td class="earned-head"><b>Total Wages</b></td>
+                  <td><b>EPF@ 12%</b></td>
+                  <td><b>ESIC @0.75%</b></td>
+                  <td><b>Advance Wages Payment</b></td>
+                  <td><b>Food</b></td>
+                  <td class="deduct-head"><b>Total Deduction</b></td>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td colspan="17" class="empty-state">No payment records loaded yet.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="table-wrap small" id="alternatePaymentTable" style="display:none; margin-top:18px;">
+  <table>
+    <thead>
+      <tr>
+        <td><b>Sl No.</b></td>
+        <td><b>UID</b></td>
+        <td><b>Name</b></td>
+        <td><b>Site</b></td>
+        <td><b>Working Type</b></td>
+        <td><b>Total Day</b></td>
+        <td><b>Left Wages</b></td>
+        <td><b>Allowance</b></td>
+        <td><b>Advance Wages Payment</b></td>
+        <td><b>OT</b></td>
+        <td><b>Staff Accommodation Price</b></td>
+        <td><b>Paid Leave</b></td>
+        <td><b>Total Amount</b></td>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td colspan="13" class="empty-state">No alternate payment records loaded yet.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    function toggleMenu() {
+      const sidebar = document.getElementById("side-bar");
+      sidebar.classList.toggle("active");
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const currentPage = window.location.pathname.split("/").pop();
+      const navLinks = document.querySelectorAll("#side-bar a");
+
+      navLinks.forEach(link => {
+        const href = link.getAttribute("href");
+        if (href === currentPage) {
+          link.classList.add("active");
+        }
+      });
+    });
+  </script>
+
+  <script type="module" src="/public/control.js"></script>
+
+  
+
+  <script type="module">
+    import {
+      getFirestore,
+      collection,
+      doc,
+      getDoc,
+      getDocs
+    } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+
+    import { app } from "/public/firebase-config.js";
+
+    const db = getFirestore(app);
+
+    const siEmail =
+      localStorage.getItem("siEmail") ||
+      localStorage.getItem("siteInchargeEmail") ||
+      localStorage.getItem("supervisorEmail") ||
+      localStorage.getItem("userEmail");
+
+    const supNameDisplay = document.getElementById("supNameDisplay");
+    const supIdDisplay = document.getElementById("supIdDisplay");
+    const supSiteDisplay = document.getElementById("supSiteDisplay");
+
+    const departmentSelect = document.getElementById("departmentSelect");
+    const roleSelect = document.getElementById("roleSelect");
+    const adminDateInput = document.getElementById("adminDateInput");
+    const employeeNameInput = document.getElementById("employeeNameInput");
+    const uidFilterInput = document.getElementById("uidFilterInput");
+    const duplicateIdField = document.getElementById("duplicateIdField");
+    const duplicateIdSelect = document.getElementById("duplicateIdSelect");
+    const adminSubmitBtn = document.getElementById("adminSubmitBtn");
+    const resetFiltersBtn = document.getElementById("resetFiltersBtn");
+    const paymentModeToggle = document.getElementById("paymentModeToggle");
+
+    let siDataGlobal = null;
+    let allPeopleCache = [];
+    let duplicateMatches = [];
+    let isProgrammaticFill = false;
+    let isSearching = false;
+    let activeSearchToken = 0;
+
+    function safeValue(...values) {
+      for (const value of values) {
+        if (value !== undefined && value !== null && String(value).trim() !== "") {
+          return String(value).trim();
+        }
+      }
+      return "";
+    }
+
+    function normalizeText(value = "") {
+      return String(value || "")
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g, " ");
+    }
+
+    function normalizeId(value = "") {
+      return String(value || "")
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g, "")
+        .replace(/[-_]/g, "");
+    }
+
+    function formatMoney(value) {
+      const num = Number(value);
+      return Number.isFinite(num) ? num.toFixed(2) : "0.00";
+    }
+
+    function parseDateToISO(value) {
+      if (!value) return "";
+
+      if (typeof value === "object" && typeof value.toDate === "function") {
+        const d = value.toDate();
+        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+      }
+
+      const str = String(value).trim();
+
+      if (/^\d{4}-\d{2}-\d{2}$/.test(str)) return str;
+
+      if (/^\d{4}-\d{2}$/.test(str)) return `${str}-01`;
+
+      if (/^\d{2}-\d{2}-\d{4}$/.test(str)) {
+        const [dd, mm, yyyy] = str.split("-");
+        return `${yyyy}-${mm}-${dd}`;
+      }
+
+      if (/^\d{2}\/\d{2}\/\d{4}$/.test(str)) {
+        const [dd, mm, yyyy] = str.split("/");
+        return `${yyyy}-${mm}-${dd}`;
+      }
+
+      const d = new Date(str);
+      if (!Number.isNaN(d.getTime())) {
+        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+      }
+
+      return "";
+    }
+
+    function getMonthLabel(monthKey) {
+      if (!/^\d{4}-\d{2}$/.test(monthKey)) return monthKey || "";
+      const [year, month] = monthKey.split("-");
+      const date = new Date(Number(year), Number(month) - 1, 1);
+      return new Intl.DateTimeFormat("en-US", { month: "long", year: "numeric" }).format(date);
+    }
+
+    function getReleaseLabel(monthKey) {
+      if (!/^\d{4}-\d{2}$/.test(monthKey)) return "";
+      const [year, month] = monthKey.split("-");
+      const releaseDate = new Date(Number(year), Number(month), 10); // next month 10th
+      return new Intl.DateTimeFormat("en-US", {
+        day: "numeric",
+        month: "long",
+        year: "numeric"
+      }).format(releaseDate);
+    }
+
+    function buildMonthHintMessage(monthKey, collectionName) {
+      const monthLabel = getMonthLabel(monthKey);
+      const releaseLabel = getReleaseLabel(monthKey);
+      return `${monthLabel} payment data is not saved yet in ${collectionName}. It will show after ${releaseLabel}.`;
+    }
+
+    function getMonthKeyFromRecord(data, docId = "") {
+      const yearField = safeValue(data.year, data.Year);
+      const monthField = safeValue(data.month, data.Month, data.monthKey, data.paymentMonth, data.monthYear);
+      const dateFields = [
+        data.date,
+        data.Date,
+        data.recordDate,
+        data.recordMonth,
+        data.paymentDate,
+        data.paymentMonthDate,
+        docId
+      ];
+
+      if (/^\d{4}-\d{2}$/.test(monthField)) return monthField;
+      if (/^\d{2}-\d{4}$/.test(monthField)) {
+        const [mm, yyyy] = monthField.split("-");
+        return `${yyyy}-${mm}`;
+      }
+
+      if (yearField && monthField && /^\d{1,2}$/.test(monthField)) {
+        return `${yearField}-${String(monthField).padStart(2, "0")}`;
+      }
+
+      for (const value of dateFields) {
+        const iso = parseDateToISO(value);
+        if (iso && /^\d{4}-\d{2}-\d{2}$/.test(iso)) {
+          return iso.slice(0, 7);
+        }
+      }
+
+      const monthText = normalizeText(monthField || "");
+      const yearText = normalizeText(yearField || "");
+
+      if (monthText && yearText) {
+        const monthMap = {
+          january: "01",
+          jan: "01",
+          february: "02",
+          feb: "02",
+          march: "03",
+          mar: "03",
+          april: "04",
+          apr: "04",
+          may: "05",
+          june: "06",
+          jun: "06",
+          july: "07",
+          jul: "07",
+          august: "08",
+          aug: "08",
+          september: "09",
+          sep: "09",
+          october: "10",
+          oct: "10",
+          november: "11",
+          nov: "11",
+          december: "12",
+          dec: "12"
+        };
+
+        for (const [name, mm] of Object.entries(monthMap)) {
+          if (monthText.includes(name)) return `${yearText}-${mm}`;
+        }
+      }
+
+      return "";
+    }
+
+    function recordMatchesMonth(data, docId, monthKey) {
+      const recordMonthKey = getMonthKeyFromRecord(data, docId);
+      if (recordMonthKey && recordMonthKey === monthKey) return true;
+
+      const monthLabel = getMonthLabel(monthKey).toLowerCase();
+      const year = monthKey.slice(0, 4);
+      const month = monthKey.slice(5, 7);
+      const yearShort = year.slice(-2);
+      const monthAliases = new Set([
+        monthKey,
+        `${month}-${year}`,
+        `${month}-${yearShort}`,
+        monthLabel,
+        `${monthLabel} ${year}`,
+        `${year} ${monthLabel}`
+      ]);
+
+      const recordText = normalizeText(
+        [
+          data.month,
+          data.Month,
+          data.monthKey,
+          data.paymentMonth,
+          data.monthYear,
+          data.date,
+          data.Date,
+          docId
+        ]
+          .filter(Boolean)
+          .join(" ")
+      );
+
+      for (const alias of monthAliases) {
+        if (!alias) continue;
+        if (recordText.includes(normalizeText(alias))) return true;
+      }
+
+      return false;
+    }
+
+    function extractReadableText(value) {
+      if (value === undefined || value === null) return "";
+
+      if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") {
+        return String(value).trim();
+      }
+
+      if (Array.isArray(value)) {
+        for (const item of value) {
+          const text = extractReadableText(item);
+          if (text) return text;
+        }
+        return "";
+      }
+
+      if (typeof value === "object") {
+        const candidates = [
+          value.name,
+          value.Name,
+          value.department,
+          value.Department,
+          value.value,
+          value.Value,
+          value.label,
+          value.Label,
+          value.title,
+          value.Title,
+          value.dept,
+          value.Dept,
+          value.job,
+          value.Job,
+          value.text,
+          value.Text
+        ];
+
+        for (const candidate of candidates) {
+          const text = extractReadableText(candidate);
+          if (text) return text;
+        }
+      }
+
+      return "";
+    }
+
+    function getPersonDepartments(data) {
+      const departments = [];
+      const possibleValues = [
+        data.departmentSelect,
+        data.department,
+        data.Department,
+        data.jobDepartment,
+        data.job,
+        data.Job,
+        data.jobCode,
+        data.JobCode,
+        data.departmentName,
+        data.DepartmentName,
+        data.dept,
+        data.Dept,
+        data.departmentList,
+        data.departments
+      ];
+
+      possibleValues.forEach((value) => {
+        const text = extractReadableText(value);
+        if (text) departments.push(text);
+      });
+
+      if (Array.isArray(data.jobs)) {
+        data.jobs.forEach((job) => {
+          if (typeof job === "string" && job.trim()) departments.push(job.trim());
+        });
+      }
+
+      const uniqueDepartments = [];
+      const seen = new Set();
+
+      departments.forEach((dept) => {
+        const cleanDept = String(dept).trim();
+        if (!cleanDept) return;
+        const key = normalizeText(cleanDept);
+        if (!seen.has(key)) {
+          seen.add(key);
+          uniqueDepartments.push(cleanDept);
+        }
+      });
+
+      return uniqueDepartments;
+    }
+
+    function getPersonSites(data) {
+      const sites = [];
+      const possibleValues = [
+        data.siteSelect,
+        data.site,
+        data.Site,
+        data.industrySelect,
+        data.location,
+        data.siteName,
+        data.industry
+      ];
+
+      possibleValues.forEach((value) => {
+        if (value !== undefined && value !== null && String(value).trim() !== "") {
+          sites.push(String(value).trim());
+        }
+      });
+
+      if (Array.isArray(data.Site)) {
+        data.Site.forEach((site) => {
+          if (site !== undefined && site !== null && String(site).trim() !== "") {
+            sites.push(String(site).trim());
+          }
+        });
+      }
+
+      if (Array.isArray(data.sites)) {
+        data.sites.forEach((site) => {
+          if (site !== undefined && site !== null && String(site).trim() !== "") {
+            sites.push(String(site).trim());
+          }
+        });
+      }
+
+      const uniqueSites = [];
+      const seen = new Set();
+      sites.forEach((site) => {
+        const key = normalizeText(site);
+        if (!seen.has(key)) {
+          seen.add(key);
+          uniqueSites.push(site);
+        }
+      });
+
+      return uniqueSites;
+    }
+
+    function mapPerson(data, roleType) {
+      const departments = getPersonDepartments(data);
+      const sites = getPersonSites(data);
+
+      return {
+        uid: safeValue(
+          data.uid,
+          data.UID,
+          data.employeeId,
+          data.employeeID,
+          data.empId,
+          data.empID,
+          data.id
+        ),
+        fullName: safeValue(
+          data.fullName,
+          data.FullName,
+          data.Name,
+          data.name,
+          data.employeeName,
+          data.EmployeeName
+        ),
+        department: departments[0] || "",
+        departments,
+        site: sites[0] || "",
+        sites,
+        roleType,
+        raw: data
+      };
+    }
+
+    function getAssignedSites() {
+      return getPersonSites(siDataGlobal || {});
+    }
+
+    function getAssignedDepartments() {
+      return getPersonDepartments(siDataGlobal || {});
+    }
+
+    function populateDepartmentDropdown() {
+      const departments = getAssignedDepartments().filter(Boolean).sort((a, b) => a.localeCompare(b));
+      departmentSelect.innerHTML = `<option value="">Select Department</option>`;
+      departments.forEach((dept) => {
+        const opt = document.createElement("option");
+        opt.value = dept;
+        opt.textContent = dept;
+        departmentSelect.appendChild(opt);
+      });
+    }
+
+    async function loadSIDetails() {
+      if (!siEmail) {
+        supNameDisplay.textContent = "Not Found";
+        supIdDisplay.textContent = "Not Found";
+        supSiteDisplay.textContent = "Not Found";
+        return;
+      }
+
+      try {
+        const siRef = doc(db, "Site-Incharge", siEmail);
+        const siSnap = await getDoc(siRef);
+
+        if (!siSnap.exists()) {
+          supNameDisplay.textContent = "Not Found";
+          supIdDisplay.textContent = "Not Found";
+          supSiteDisplay.textContent = "Not Found";
+          return;
+        }
+
+        siDataGlobal = siSnap.data() || {};
+        supNameDisplay.textContent = siDataGlobal.Name || siDataGlobal.name || siDataGlobal.fullName || "-";
+        supIdDisplay.textContent = siDataGlobal.uid || siDataGlobal.employeeId || "-";
+        supSiteDisplay.textContent = getAssignedSites().join(", ") ||
+          siDataGlobal.site || siDataGlobal.Site || siDataGlobal.siteSelect || "-";
+        populateDepartmentDropdown();
+      } catch (error) {
+        console.error("SI details load error:", error);
+        supNameDisplay.textContent = "Error";
+        supIdDisplay.textContent = "Error";
+        supSiteDisplay.textContent = "Error";
+      }
+    }
+
+    async function loadAllPeople() {
+      const collectionsToRead = [
+        { name: "Employee", role: "Employee" },
+        { name: "Supervisor", role: "Supervisor" },
+        { name: "AS", role: "AS" }
+      ];
+
+      const merged = new Map();
+
+      for (const item of collectionsToRead) {
+        try {
+          const snap = await getDocs(collection(db, item.name));
+          snap.forEach((docSnap) => {
+            const person = mapPerson(docSnap.data() || {}, item.role);
+            if (person.uid && person.fullName) {
+              merged.set(`${item.role}-${normalizeId(person.uid)}`, person);
+            }
+          });
+        } catch (err) {
+          console.warn(`Unable to read collection ${item.name}:`, err);
+        }
+      }
+
+      allPeopleCache = Array.from(merged.values());
+    }
+
+    function getCurrentScopePeople() {
+      const selectedDepartment = departmentSelect.value.trim();
+      const selectedRole = roleSelect.value.trim();
+      const assignedSites = getAssignedSites();
+      const assignedDepartments = getAssignedDepartments();
+
+      let scoped = [...allPeopleCache];
+
+      if (assignedSites.length) {
+        scoped = scoped.filter((person) => {
+          const personSites = Array.isArray(person.sites) && person.sites.length ? person.sites : [person.site];
+          return personSites.some((site) =>
+            assignedSites.some((allowed) => normalizeText(allowed) === normalizeText(site))
+          );
+        });
+      }
+
+      if (assignedDepartments.length) {
+        scoped = scoped.filter((person) => {
+          const personDepartments = Array.isArray(person.departments) && person.departments.length
+            ? person.departments
+            : [person.department];
+
+          return personDepartments.some((dept) =>
+            assignedDepartments.some((allowedDept) => normalizeText(allowedDept) === normalizeText(dept))
+          );
+        });
+      }
+
+      if (selectedDepartment) {
+        scoped = scoped.filter((person) => {
+          const personDepartments = Array.isArray(person.departments) && person.departments.length
+            ? person.departments
+            : [person.department];
+          return personDepartments.some((dept) => normalizeText(dept) === normalizeText(selectedDepartment));
+        });
+      }
+
+      if (selectedRole && normalizeText(selectedRole) !== "all") {
+        scoped = scoped.filter((person) => normalizeText(person.roleType) === normalizeText(selectedRole));
+      }
+
+      const enteredName = normalizeText(employeeNameInput.value);
+      const enteredId = normalizeId(uidFilterInput.value);
+
+      if (enteredName) {
+        scoped = scoped.filter((person) => normalizeText(person.fullName) === enteredName);
+      }
+
+      if (enteredId) {
+        scoped = scoped.filter((person) => normalizeId(person.uid) === enteredId);
+      }
+
+      return scoped;
+    }
+
+    function resetDuplicateDropdown() {
+      duplicateMatches = [];
+      duplicateIdField.style.display = "none";
+      duplicateIdSelect.innerHTML = `<option value="">Select Employee ID</option>`;
+    }
+
+    function resetAllFilters() {
+      isProgrammaticFill = true;
+      departmentSelect.value = "";
+      roleSelect.value = "";
+      employeeNameInput.value = "";
+      uidFilterInput.value = "";
+      resetDuplicateDropdown();
+      isProgrammaticFill = false;
+    }
+
+    function clearTables(message = "No payment records loaded yet.") {
+      document.querySelector("#detailedPaymentTable table tbody").innerHTML =
+        `<tr><td colspan="17" class="empty-state">${message}</td></tr>`;
+
+      document.querySelector("#alternatePaymentTable table tbody").innerHTML =
+        `<tr><td colspan="13" class="empty-state">${message}</td></tr>`;
+    }
+
+    function setLoadingState() {
+      document.querySelector("#detailedPaymentTable table tbody").innerHTML =
+        `<tr><td colspan="17" class="loading-state">Loading payment records...</td></tr>`;
+
+      document.querySelector("#alternatePaymentTable table tbody").innerHTML =
+        `<tr><td colspan="13" class="loading-state">Loading alternate payment records...</td></tr>`;
+    }
+
+    function resetSubmitButton() {
+      isSearching = false;
+      adminSubmitBtn.disabled = false;
+      adminSubmitBtn.textContent = "Submit";
+    }
+
+    function showValidationError(message) {
+      alert(message);
+      clearTables(message);
+      resetSubmitButton();
+    }
+
+    async function fetchPaymentRecords(collectionName, uid, monthKey) {
+      try {
+        const snap = await getDocs(collection(db, collectionName, uid, "PaymentRecords"));
+        const rows = [];
+
+        snap.forEach((docSnap) => {
+          const data = docSnap.data() || {};
+          if (recordMatchesMonth(data, docSnap.id, monthKey)) {
+            rows.push({ id: docSnap.id, data });
+          }
+        });
+
+        return rows;
+      } catch (error) {
+        console.warn(`Payment read failed for ${collectionName}/${uid}:`, error);
+        return [];
+      }
+    }
+
+    function pickValue(data, keys = []) {
+      for (const key of keys) {
+        const value = data?.[key];
+        if (value !== undefined && value !== null && String(value).trim() !== "") {
+          return value;
+        }
+      }
+      return "";
+    }
+
+    function buildDetailedRow(record, person, slNo) {
+      const data = record.data || {};
+      return {
+        slNo,
+        uid: safeValue(data.uid, data.UID, person.uid),
+        fullName: safeValue(data.name, data.Name, data.fullName, data.FullName, person.fullName),
+        site: safeValue(data.site, data.Site, person.site),
+        totalDay: safeValue(data.totalDay, data.totalDays, data.presentDays, data.days, data.day),
+        wages: pickValue(data, ["wages", "wage", "wagesRate", "wagesPerDay", "rate"]),
+        basicWages: pickValue(data, ["basicWages", "basic_wages", "basic"]),
+        phAmount: pickValue(data, ["phAmount", "PHAmount", "paidHolidayAmount", "holidayAmount"]),
+        leaveCount: safeValue(data.leaveCount, data.leave, data.paidLeave, data.leaveDays),
+        bonusAmount: pickValue(data, ["bonusAmount", "bonus", "BonusAmount"]),
+        totalWages: pickValue(data, ["totalWages", "totalWage", "earnedAmount", "grossAmount"]),
+        epf: pickValue(data, ["epf", "EPF"]),
+        esic: pickValue(data, ["esic", "ESIC"]),
+        advDeduct: pickValue(data, ["advDeduct", "advanceWagesPayment", "advancePayment", "advance"]),
+        foodDeduction: pickValue(data, ["foodDeduction", "food", "foodAmount"]),
+        totalDeduction: pickValue(data, ["totalDeduction", "deduction", "deductAmount"]),
+        netPay: pickValue(data, ["netPay", "totalAmount", "amount", "netAmount"])
+      };
+    }
+
+    function buildAlternateRow(record, person, slNo) {
+      const data = record.data || {};
+      return {
+        slNo,
+        uid: safeValue(data.uid, data.UID, person.uid),
+        fullName: safeValue(data.name, data.Name, data.fullName, data.FullName, person.fullName),
+        site: safeValue(data.site, data.Site, person.site),
+        workingType: safeValue(data.workingType, data.WorkingType, data.workType, data.typeOfWork),
+        totalDays: safeValue(data.totalDay, data.totalDays, data.presentDays, data.days, data.day),
+        leftWages: pickValue(data, ["leftWages", "leftWage", "leftAmount"]),
+        allowanceDisplay: safeValue(data.allowanceDisplay, data.allowance, data.allowanceAmount, data.Allowance),
+        advDeduct: pickValue(data, ["advDeduct", "advanceWagesPayment", "advancePayment", "advance"]),
+        ot: pickValue(data, ["ot", "OT", "otAmount"]),
+        accommodationPrice: pickValue(data, ["accommodationPrice", "staffAccommodationPrice", "accommodation", "roomRent"]),
+        paidLeaveAmount: pickValue(data, ["paidLeaveAmount", "paidLeave", "leaveAmount"]),
+        altNetPay: pickValue(data, ["altNetPay", "netPay", "totalAmount", "amount"])
+      };
+    }
+
+    function appendRowDetailed(d) {
+      const tbody = document.querySelector("#detailedPaymentTable table tbody");
+      const tr = document.createElement("tr");
+
+      tr.innerHTML = `
+        <td>${d.slNo}</td>
+        <td>${d.uid || "-"}</td>
+        <td>${d.fullName || "-"}</td>
+        <td>${d.site || "-"}</td>
+        <td>${d.totalDay || "-"}</td>
+        <td>${d.wages ? formatMoney(d.wages) : "-"}</td>
+        <td>${d.basicWages ? formatMoney(d.basicWages) : "-"}</td>
+        <td>${d.phAmount ? formatMoney(d.phAmount) : "-"}</td>
+        <td>${d.leaveCount || "-"}</td>
+        <td>${d.bonusAmount ? formatMoney(d.bonusAmount) : "-"}</td>
+        <td><strong>${d.totalWages ? formatMoney(d.totalWages) : "-"}</strong></td>
+        <td>${d.epf ? formatMoney(d.epf) : "-"}</td>
+        <td>${d.esic ? formatMoney(d.esic) : "-"}</td>
+        <td>${d.advDeduct ? formatMoney(d.advDeduct) : "-"}</td>
+        <td>${d.foodDeduction ? formatMoney(d.foodDeduction) : "-"}</td>
+        <td>${d.totalDeduction ? formatMoney(d.totalDeduction) : "-"}</td>
+        <td><strong>${d.netPay ? formatMoney(d.netPay) : "-"}</strong></td>
+      `;
+
+      tbody.appendChild(tr);
+    }
+
+    function appendRowAlternate(d) {
+      const tbody = document.querySelector("#alternatePaymentTable table tbody");
+      const tr = document.createElement("tr");
+
+      tr.innerHTML = `
+        <td>${d.slNo}</td>
+        <td>${d.uid || "-"}</td>
+        <td>${d.fullName || "-"}</td>
+        <td>${d.site || "-"}</td>
+        <td>${d.workingType || "-"}</td>
+        <td>${d.totalDays || "-"}</td>
+        <td>${d.leftWages ? formatMoney(d.leftWages) : "-"}</td>
+        <td>${d.allowanceDisplay || "-"}</td>
+        <td>${d.advDeduct ? formatMoney(d.advDeduct) : "-"}</td>
+        <td>${d.ot ? formatMoney(d.ot) : "-"}</td>
+        <td>${d.accommodationPrice ? formatMoney(d.accommodationPrice) : "-"}</td>
+        <td>${d.paidLeaveAmount ? formatMoney(d.paidLeaveAmount) : "-"}</td>
+        <td><strong>${d.altNetPay ? formatMoney(d.altNetPay) : "-"}</strong></td>
+      `;
+
+      tbody.appendChild(tr);
+    }
+
+    function ensureEmptyStates(monthKey, detailedCount, alternateCount) {
+      if (!detailedCount) {
+        document.querySelector("#detailedPaymentTable table tbody").innerHTML =
+          `<tr><td colspan="17" class="empty-state">${buildMonthHintMessage(monthKey, "First Payment")}</td></tr>`;
+      }
+
+      if (!alternateCount) {
+        document.querySelector("#alternatePaymentTable table tbody").innerHTML =
+          `<tr><td colspan="13" class="empty-state">${buildMonthHintMessage(monthKey, "Second Payment")}</td></tr>`;
+      }
+    }
+
+    async function processInBatches(items, batchSize, worker) {
+      const results = [];
+
+      for (let i = 0; i < items.length; i += batchSize) {
+        if (!isSearching) break;
+
+        const batch = items.slice(i, i + batchSize);
+        const batchResults = await Promise.all(batch.map((item, idx) => worker(item, i + idx)));
+        results.push(...batchResults);
+      }
+
+      return results;
+    }
+
+    function autofillFieldsFromPerson(person) {
+      if (!person) return;
+      isProgrammaticFill = true;
+
+      employeeNameInput.value = person.fullName || "";
+      uidFilterInput.value = person.uid || "";
+
+      const firstDepartment = Array.isArray(person.departments) && person.departments.length
+        ? person.departments[0]
+        : person.department || "";
+
+      if (firstDepartment) {
+        const exactDept = Array.from(departmentSelect.options).find(
+          (opt) => normalizeText(opt.value) === normalizeText(firstDepartment)
+        );
+        if (exactDept) departmentSelect.value = exactDept.value;
+      }
+
+      const exactRole = Array.from(roleSelect.options).find(
+        (opt) => normalizeText(opt.value) === normalizeText(person.roleType || "")
+      );
+      if (exactRole) roleSelect.value = exactRole.value;
+
+      isProgrammaticFill = false;
+    }
+
+    async function runPaymentSearch(monthInputValue) {
+      const monthKey = monthInputValue.slice(0, 7);
+      const people = getCurrentScopePeople();
+
+      if (!people.length) {
+        clearTables("Selected filters ke hisaab se koi employee record nahi mila.");
+        resetSubmitButton();
+        return;
+      }
+
+      activeSearchToken += 1;
+      const searchToken = activeSearchToken;
+      isSearching = true;
+      adminSubmitBtn.disabled = true;
+      adminSubmitBtn.textContent = "Searching...";
+      setLoadingState();
+
+      const detailedBody = document.querySelector("#detailedPaymentTable table tbody");
+      const alternateBody = document.querySelector("#alternatePaymentTable table tbody");
+      detailedBody.innerHTML = "";
+      alternateBody.innerHTML = "";
+
+      try {
+        const rows = await processInBatches(people, 25, async (person, index) => {
+          if (searchToken !== activeSearchToken) return null;
+
+          const [detailedRecords, alternateRecords] = await Promise.all([
+            fetchPaymentRecords("First Payment", person.uid, monthKey),
+            fetchPaymentRecords("Second Payment", person.uid, monthKey)
+          ]);
+
+          return {
+            detailedRows: detailedRecords.map((record, i) => buildDetailedRow(record, person, `${index + 1}.${i + 1}`)),
+            alternateRows: alternateRecords.map((record, i) => buildAlternateRow(record, person, `${index + 1}.${i + 1}`))
+          };
+        });
+
+        if (searchToken !== activeSearchToken) return;
+
+        let detailedCount = 0;
+        let alternateCount = 0;
+
+        rows.filter(Boolean).forEach((group) => {
+          group.detailedRows.forEach((row) => {
+            appendRowDetailed(row);
+            detailedCount += 1;
+          });
+
+          group.alternateRows.forEach((row) => {
+            appendRowAlternate(row);
+            alternateCount += 1;
+          });
+        });
+
+        ensureEmptyStates(monthKey, detailedCount, alternateCount);
+      } catch (error) {
+        console.error("Payment search error:", error);
+        detailedBody.innerHTML =
+          `<tr><td colspan="17" class="empty-state">Error loading First Payment records.</td></tr>`;
+        alternateBody.innerHTML =
+          `<tr><td colspan="13" class="empty-state">Error loading Second Payment records.</td></tr>`;
+      } finally {
+        if (searchToken === activeSearchToken) {
+          resetSubmitButton();
+        }
+      }
+    }
+
+    function setupEvents() {
+      employeeNameInput.addEventListener("input", () => {
+        if (isProgrammaticFill) return;
+        uidFilterInput.value = "";
+        resetDuplicateDropdown();
+      });
+
+      employeeNameInput.addEventListener("blur", () => {
+        if (isProgrammaticFill) return;
+
+        const enteredName = normalizeText(employeeNameInput.value);
+        if (!enteredName) return;
+
+        const scopePeople = getCurrentScopePeople();
+        const exactMatches = scopePeople.filter(
+          (person) => normalizeText(person.fullName) === enteredName
+        );
+
+        if (exactMatches.length === 1) {
+          autofillFieldsFromPerson(exactMatches[0]);
+          resetDuplicateDropdown();
+        } else if (exactMatches.length > 1) {
+          duplicateMatches = exactMatches;
+          duplicateIdField.style.display = "block";
+          duplicateIdSelect.innerHTML = `<option value="">Select Employee ID</option>`;
+
+          exactMatches.forEach((person) => {
+            const opt = document.createElement("option");
+            opt.value = person.uid;
+            opt.textContent = `${person.uid} - ${person.fullName} - ${person.department || "No Department"} - ${person.roleType || "-"}`;
+            duplicateIdSelect.appendChild(opt);
+          });
+        }
+      });
+
+      uidFilterInput.addEventListener("input", () => {
+        if (isProgrammaticFill) return;
+
+        const enteredId = normalizeId(uidFilterInput.value);
+        if (!enteredId) return;
+
+        const scopePeople = getCurrentScopePeople();
+        const person = scopePeople.find((item) => normalizeId(item.uid) === enteredId);
+
+        if (person) {
+          autofillFieldsFromPerson(person);
+          resetDuplicateDropdown();
+        }
+      });
+
+      duplicateIdSelect.addEventListener("change", () => {
+        const selectedId = duplicateIdSelect.value.trim();
+        if (!selectedId) return;
+
+        const person = duplicateMatches.find(
+          (item) => normalizeId(item.uid) === normalizeId(selectedId)
+        );
+
+        if (person) {
+          autofillFieldsFromPerson(person);
+          resetDuplicateDropdown();
+        }
+      });
+
+      departmentSelect.addEventListener("change", () => {
+        if (isProgrammaticFill) return;
+        resetDuplicateDropdown();
+      });
+
+      roleSelect.addEventListener("change", () => {
+        if (isProgrammaticFill) return;
+        resetDuplicateDropdown();
+      });
+
+      resetFiltersBtn.addEventListener("click", () => {
+        activeSearchToken += 1;
+        resetAllFilters();
+        clearTables();
+        resetSubmitButton();
+      });
+
+      adminSubmitBtn.addEventListener("click", async () => {
+        if (isSearching) return;
+
+        if (!adminDateInput.value) {
+          showValidationError("Please select Month & Year.");
+          return;
+        }
+
+        if (
+          !departmentSelect.value.trim() &&
+          !roleSelect.value.trim() &&
+          !employeeNameInput.value.trim() &&
+          !uidFilterInput.value.trim()
+        ) {
+          showValidationError("Please select department, role, employee name, or employee ID.");
+          return;
+        }
+
+        await runPaymentSearch(adminDateInput.value);
+      });
+
+      paymentModeToggle.addEventListener("change", () => {
+        const detailedDiv = document.getElementById("detailedPaymentTable");
+        const alternateDiv = document.getElementById("alternatePaymentTable");
+
+        if (paymentModeToggle.checked) {
+          detailedDiv.style.display = "none";
+          alternateDiv.style.display = "";
+        } else {
+          alternateDiv.style.display = "none";
+          detailedDiv.style.display = "";
+        }
+      });
+    }
+
+    async function initPage() {
+      await loadSIDetails();
+      await loadAllPeople();
+      populateDepartmentDropdown();
+
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      const mm = String(today.getMonth() + 1).padStart(2, "0");
+      adminDateInput.value = `${yyyy}-${mm}`;
+
+      setupEvents();
+      resetSubmitButton();
+      clearTables();
+    }
+
+    initPage();
+  </script>
+</body>
+</html>

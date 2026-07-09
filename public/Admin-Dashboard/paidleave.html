@@ -1,0 +1,2364 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <title>Admin Dashboard - Paid Leave</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/x-icon" href="logo2.ico" />
+  <link rel="stylesheet" type="text/css" href="Hremployeelist.css" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap-theme.min.css" />
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+
+  <style>
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --topbar-height: 78px;
+      --sidebar-width: 280px;
+      --card-bg: rgba(12, 25, 45, 0.86);
+      --text-main: #ffffff;
+      --text-soft: #b8c9df;
+      --accent: #ff7a2f;
+      --accent-2: #1f77ff;
+      --danger: #ef4d4d;
+      --shadow: 0 18px 40px rgba(0, 0, 0, 0.25);
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      background:
+        linear-gradient(135deg, rgba(7, 16, 30, 0.95), rgba(14, 34, 56, 0.92)),
+        url("https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1600&q=80") center/cover no-repeat fixed;
+      color: var(--text-main);
+    }
+
+    .app-shell {
+      height: 100vh;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    .topbar {
+      height: var(--topbar-height);
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(7, 16, 30, 0.88);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 2000;
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      min-width: 0;
+    }
+
+    .menu-toggle {
+      width: 46px;
+      height: 46px;
+      border: none;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
+      color: #fff;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: 0.25s ease;
+      flex-shrink: 0;
+    }
+
+    .menu-toggle:hover {
+      background: linear-gradient(135deg, rgba(255,122,47,0.18), rgba(31,119,255,0.16));
+      transform: translateY(-1px);
+    }
+
+    .brand-title {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 700;
+      color: #fff;
+      text-decoration: none !important;
+    }
+
+    .brand-subtitle {
+      margin: 2px 0 0;
+      color: var(--text-soft);
+      font-size: 13px;
+    }
+
+    .logout {
+      text-decoration: none !important;
+      color: #fff !important;
+      background: linear-gradient(135deg, #ff8a3c, #ff5a1f);
+      padding: 11px 18px;
+      border-radius: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    /* ===== ONLY NAVBAR / SIDEBAR CHANGED ===== */
+    nav.sidebar {
+      width: var(--sidebar-width);
+      min-width: var(--sidebar-width);
+      max-width: var(--sidebar-width);
+      position: fixed;
+      top: var(--topbar-height);
+      left: 0;
+      bottom: 0;
+      padding: 20px 16px 22px;
+      background: linear-gradient(180deg, rgba(6, 16, 30, 0.98), rgba(8, 22, 40, 0.96));
+      backdrop-filter: blur(16px);
+      border-right: 1px solid rgba(255, 255, 255, 0.06);
+      overflow-y: auto;
+      overflow-x: hidden;
+      z-index: 1500;
+      box-shadow: 18px 0 45px rgba(0, 0, 0, 0.24);
+    }
+
+    nav.sidebar::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    nav.sidebar::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,0.14);
+      border-radius: 999px;
+    }
+
+    .sidebar-top-card {
+      position: relative;
+      padding: 20px 18px 18px;
+      border-radius: 24px;
+      background:
+        linear-gradient(135deg, rgba(255,122,47,0.16), rgba(31,119,255,0.14)),
+        rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow:
+        0 16px 32px rgba(0,0,0,0.20),
+        inset 0 1px 0 rgba(255,255,255,0.06);
+      overflow: hidden;
+    }
+
+    .sidebar-top-card::after {
+      content: "";
+      position: absolute;
+      right: -30px;
+      top: -30px;
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,255,255,0.16), transparent 70%);
+    }
+
+    .sidebar-mini-label {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.4px;
+      color: #ffd8c2;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: 5px 10px;
+      border-radius: 999px;
+      margin-bottom: 12px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .sidebar-main-title {
+      font-size: 19px;
+      font-weight: 800;
+      color: #ffffff;
+      margin: 0 0 6px;
+      line-height: 1.2;
+      position: relative;
+      z-index: 1;
+    }
+
+    .sidebar-main-subtitle {
+      font-size: 13px;
+      color: #d5e2f1;
+      line-height: 1.7;
+      margin: 0 0 14px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .sidebar-status-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      position: relative;
+      z-index: 1;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .sidebar-status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #dfffe9;
+      background: rgba(20,184,106,0.14);
+      border: 1px solid rgba(20,184,106,0.22);
+    }
+
+    .sidebar-status-badge::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #4df39b;
+      box-shadow: 0 0 10px rgba(77,243,155,0.7);
+    }
+
+    .sidebar-status-text {
+      font-size: 11px;
+      color: #c6d8ec;
+      text-align: right;
+      line-height: 1.4;
+    }
+
+    .sidebar-section-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #8ea4c5;
+      margin: 24px 8px 16px;
+      font-weight: 700;
+    }
+
+    #side-bar {
+      list-style: none;
+      padding-left: 0;
+      margin: 0;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    #side-bar li {
+      margin-bottom: 0;
+      width: 100%;
+    }
+
+    #side-bar a,
+    #side-bar summary {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      width: 100%;
+      padding: 15px 15px;
+      border-radius: 20px;
+      text-decoration: none !important;
+      color: #edf4ff !important;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.055), rgba(255,255,255,0.025));
+      border: 1px solid rgba(255,255,255,0.06);
+      transition: all 0.28s ease;
+      position: relative;
+      overflow: hidden;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+    }
+
+    #side-bar a::before,
+    #side-bar summary::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, rgba(255,122,47,0.13), rgba(31,119,255,0.11));
+      opacity: 0;
+      transition: opacity 0.28s ease;
+    }
+
+    #side-bar a::after,
+    #side-bar summary::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 18%;
+      width: 4px;
+      height: 64%;
+      border-radius: 999px;
+      background: linear-gradient(180deg, #ff8a3c, #1f77ff);
+      opacity: 0;
+      transition: opacity 0.28s ease;
+    }
+
+    #side-bar a:hover,
+    #side-bar summary:hover {
+      transform: translateX(6px);
+      border-color: rgba(255,255,255,0.10);
+      box-shadow: 0 14px 28px rgba(0,0,0,0.20);
+    }
+
+    #side-bar a:hover::before,
+    #side-bar summary:hover::before,
+    #side-bar a:hover::after,
+    #side-bar summary:hover::after {
+      opacity: 1;
+    }
+
+    #side-bar a.active,
+    #side-bar summary.active {
+      background: linear-gradient(135deg, rgba(255,122,47,0.18), rgba(31,119,255,0.16));
+      border-color: rgba(255,255,255,0.12);
+      box-shadow: 0 16px 30px rgba(0,0,0,0.24);
+    }
+
+    #side-bar a.active::before,
+    #side-bar summary.active::before,
+    #side-bar a.active::after,
+    #side-bar summary.active::after {
+      opacity: 1;
+    }
+
+    .nav-icon {
+      width: 44px;
+      height: 44px;
+      min-width: 44px;
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, rgba(255,255,255,0.13), rgba(255,255,255,0.05));
+      border: 1px solid rgba(255,255,255,0.08);
+      color: #fff;
+      font-size: 17px;
+      position: relative;
+      z-index: 1;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+    }
+
+    .nav-text {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .nav-text strong {
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.2;
+    }
+
+    .nav-text span {
+      margin-top: 4px;
+      font-size: 11px;
+      line-height: 1.45;
+      color: #aabed8;
+    }
+
+    .nav-arrow {
+      margin-left: auto;
+      font-size: 16px;
+      color: #93b2d8;
+      position: relative;
+      z-index: 1;
+      transition: transform 0.25s ease;
+    }
+
+    #side-bar a:hover .nav-arrow,
+    #side-bar summary:hover .nav-arrow {
+      transform: translateX(4px);
+    }
+    /* ===== END NAVBAR / SIDEBAR CHANGED ===== */
+
+    main {
+      position: fixed;
+      top: var(--topbar-height);
+      left: var(--sidebar-width);
+      right: 0;
+      bottom: 0;
+      min-width: 0;
+      padding: 28px 30px;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    .hero-card {
+      background: linear-gradient(135deg, rgba(22, 61, 112, 0.88), rgba(12, 27, 53, 0.92));
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 24px;
+      padding: 30px 34px;
+      box-shadow: var(--shadow);
+      margin-bottom: 24px;
+    }
+
+    .page-tag {
+      display: inline-block;
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      color: #ffb88f;
+      background: rgba(255, 122, 47, 0.16);
+      border: 1px solid rgba(255, 122, 47, 0.2);
+      margin-bottom: 14px;
+    }
+
+    .hero-card h1 {
+      margin: 0 0 10px;
+      font-size: 32px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .hero-card p {
+      margin: 0;
+      max-width: 850px;
+      font-size: 15px;
+      line-height: 1.8;
+      color: #d0def0;
+    }
+
+    .panel-card {
+      background: var(--card-bg);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 22px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+      width: 100%;
+      margin-bottom: 24px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .section-header h2,
+    .section-header h3 {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .section-badge {
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #9ec3ff;
+      background: rgba(31, 119, 255, 0.14);
+      border: 1px solid rgba(31, 119, 255, 0.22);
+      white-space: nowrap;
+    }
+
+    .details-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .filter-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(220px, 1fr));
+      gap: 18px;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #9db4d0;
+      text-transform: uppercase;
+    }
+
+    .value-box,
+    .field input,
+    .field select {
+      width: 100%;
+      min-height: 48px;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.05);
+      color: #fff;
+      padding: 12px 14px;
+      font-size: 14px;
+      outline: none;
+    }
+
+    .field input::placeholder {
+      color: #9fb4cf;
+    }
+
+    .field select option {
+      color: #000;
+    }
+
+    .btn-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+
+    .action-btn {
+      border: none;
+      padding: 12px 22px;
+      border-radius: 14px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      transition: 0.25s ease;
+    }
+
+    .action-btn.primary {
+      background: linear-gradient(135deg, #1f77ff, #144fc6);
+      box-shadow: 0 12px 24px rgba(31, 119, 255, 0.25);
+    }
+
+    .action-btn.secondary {
+      background: linear-gradient(135deg, #ff8a3c, #ff5a1f);
+      box-shadow: 0 12px 24px rgba(255, 90, 31, 0.24);
+    }
+
+    .action-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .error-box {
+      display: none;
+      margin-top: 16px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: rgba(239, 77, 77, 0.12);
+      border: 1px solid rgba(239, 77, 77, 0.25);
+      color: #ffd3d3;
+      font-weight: 600;
+    }
+
+    .table-box {
+      width: 100%;
+      overflow-x: auto;
+      border-radius: 16px;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 8px;
+    }
+
+    .table-box table {
+      width: 100%;
+      min-width: 1200px;
+      border-collapse: collapse;
+      overflow: hidden;
+      border-radius: 16px;
+    }
+
+    .table-box thead tr {
+      background: linear-gradient(135deg, #183b6f, #102849);
+    }
+
+    .table-box thead th {
+      padding: 16px 14px;
+      color: #fff;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .table-box tbody tr {
+      background: rgba(255, 255, 255, 0.03);
+      transition: 0.2s ease;
+    }
+
+    .table-box tbody tr:nth-child(even) {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .table-box tbody tr:hover {
+      background: rgba(31, 119, 255, 0.10);
+    }
+
+    .table-box tbody td {
+      padding: 15px 14px;
+      color: #eaf2ff;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .uid-pill {
+      display: inline-block;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: rgba(31, 119, 255, 0.14);
+      color: #cfe2ff;
+      font-size: 12px;
+      font-weight: 700;
+      border: 1px solid rgba(31, 119, 255, 0.22);
+      white-space: nowrap;
+    }
+
+    .email-pill {
+      display: inline-block;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      color: #e6f0ff;
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 28px !important;
+      color: #a8bdd8 !important;
+      font-style: italic;
+    }
+
+    .loading-text {
+      color: #9ec3ff !important;
+      font-style: normal;
+      font-weight: 700;
+    }
+
+    @media (max-width: 1200px) {
+      .filter-grid {
+        grid-template-columns: repeat(2, minmax(220px, 1fr));
+      }
+    }
+
+    @media (max-width: 900px) {
+  html,
+  body {
+    width: 100%;
+    min-height: 100%;
+    height: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .app-shell {
+    height: auto;
+    min-height: 100vh;
+    overflow: visible;
+  }
+
+  .dashboard-layout {
+    height: auto;
+    min-height: 100vh;
+    padding-top: var(--topbar-height);
+  }
+
+  nav.sidebar {
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+
+    /* FIX: Command Center scroll ke saath upar jayega */
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    bottom: auto;
+
+    height: auto;
+    max-height: none;
+    overflow: visible;
+
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 0 0 24px 24px;
+    z-index: 100;
+    padding: 14px;
+  }
+
+  .sidebar-section-title {
+    margin: 18px 6px 14px;
+  }
+
+  #side-bar {
+    display: none;
+    gap: 10px;
+  }
+
+  #side-bar.active {
+    display: flex;
+  }
+
+  .sidebar-status-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .sidebar-status-text {
+    text-align: left;
+  }
+
+  main {
+    /* FIX: main normal page scroll mein rahega */
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    bottom: auto;
+
+    width: 100%;
+    padding: 18px;
+    overflow: visible;
+  }
+
+  .details-grid-2,
+  .filter-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .brand-subtitle {
+    display: none;
+  }
+}
+  
+
+    .panel-card.hidden-panel {
+      display: none;
+    }
+
+    .small-help {
+      margin-top: 10px;
+      color: #a8bdd8;
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .table-box table.leave-table {
+      min-width: 1600px;
+    }
+
+    .cell-select,
+    .cell-input {
+      width: 100%;
+      min-height: 44px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.05);
+      color: #fff;
+      padding: 10px 12px;
+      font-size: 13px;
+      outline: none;
+    }
+
+    .cell-select option {
+      color: #000;
+    }
+
+    .mini-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 82px;
+      min-height: 40px;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 12px;
+      color: #fff;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      transition: 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .mini-btn:disabled,
+    .action-btn:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+
+    .mini-btn.view {
+      background: linear-gradient(135deg, #1f77ff, #144fc6);
+    }
+
+    .mini-btn.submit {
+      background: linear-gradient(135deg, #ff8a3c, #ff5a1f);
+    }
+
+    .mini-btn:hover:not(:disabled) {
+      transform: translateY(-1px);
+    }
+
+    .summary-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 100px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(31, 119, 255, 0.14);
+      color: #d7e7ff;
+      font-size: 12px;
+      font-weight: 700;
+      border: 1px solid rgba(31, 119, 255, 0.22);
+    }
+
+    .amount-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 92px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255, 122, 47, 0.14);
+      color: #ffd7c2;
+      font-size: 12px;
+      font-weight: 700;
+      border: 1px solid rgba(255, 122, 47, 0.22);
+    }
+
+    .history-note {
+      color: #a8bdd8;
+      font-size: 12px;
+      margin-top: 6px;
+    }
+
+    .row-status {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 700;
+      color: #a5ffc5;
+    }
+
+    .row-status.off {
+      color: #ffd3d3;
+    }
+
+    .search-locked {
+      opacity: 0.68;
+      pointer-events: none;
+    }
+
+  </style>
+</head>
+
+
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="topbar-left">
+        <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+        <div>
+          <a href="#" class="brand-title">Admin Dashboard</a>
+          <p class="brand-subtitle">Paid Leave & Employee Filter</p>
+        </div>
+      </div>
+
+      <div class="topbar-right">
+        <a href="#" class="logout" onclick="logoutUser()">Logout</a>
+      </div>
+    </header>
+
+    <div class="dashboard-layout">
+      <nav class="sidebar">
+        <div class="sidebar-top-card">
+          <div class="sidebar-mini-label">Admin Panel</div>
+          <h3 class="sidebar-main-title">Command Center</h3>
+          <p class="sidebar-main-subtitle">
+            Access the paid leave dashboard, site and department filters, employee search, and monthly leave records from one clean navigation area.
+          </p>
+
+          <div class="sidebar-status-row">
+            <span class="sidebar-status-badge">Paid Leave Active</span>
+            <div class="sidebar-status-text">
+              Secure access<br />
+              Quick navigation
+            </div>
+          </div>
+        </div>
+
+        <div class="sidebar-section-title">Navigation</div>
+        <ul id="side-bar"></ul>
+      </nav>
+
+      <main>
+        <section class="hero-card">
+          <span class="page-tag">PAID LEAVE DASHBOARD</span>
+          <h1>Employee Paid Leave Control</h1>
+          <p>
+            Site, department, name, and employee ID se matching supervisor, AS, aur Site-Incharge records filter honge.
+            Month-wise paid leave entry, rate-based amount calculation, aur year renewal April cycle ke hisaab se auto manage hoga.
+          </p>
+        </section>
+
+        <section class="panel-card">
+          <div class="section-header">
+            <h2>Admin Details</h2>
+            <span class="section-badge">Profile</span>
+          </div>
+
+          <div class="details-grid-2">
+            <div class="field">
+              <label>Admin Name</label>
+              <div class="value-box" id="adminNameDisplay">Loading...</div>
+            </div>
+
+            <div class="field">
+              <label>Admin ID</label>
+              <div class="value-box" id="adminIdDisplay">Loading...</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel-card">
+          <div class="section-header">
+            <h2>Filter Employee List</h2>
+            <span class="section-badge">Search Panel</span>
+          </div>
+
+          <div class="filter-grid">
+            <div class="field">
+              <label>Site</label>
+              <select id="siteFilter">
+                <option value="">Select Site</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>Department</label>
+              <select id="departmentFilter">
+                <option value="">Select Department</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>Employee Name</label>
+              <input type="text" id="employeeNameFilter" placeholder="Reset ke baad type karein" disabled list="employeeNameSuggestions" />
+              <datalist id="employeeNameSuggestions"></datalist>
+            </div>
+
+            <div class="field">
+              <label>Employee ID</label>
+              <input type="text" id="employeeIdFilter" placeholder="Reset ke baad select karein" disabled list="employeeIdSuggestions" />
+              <datalist id="employeeIdSuggestions"></datalist>
+            </div>
+          </div>
+
+          <div class="btn-row">
+            <button class="action-btn primary" id="submitBtn">Submit</button>
+            <button class="action-btn secondary" id="resetBtn">Reset</button>
+          </div>
+
+          <div class="small-help">
+            Site/department submit ke baad name aur ID search lock rahega. Reset dabane par manual name/ID search unlock hoga.
+          </div>
+
+          <div class="error-box" id="errorBox"></div>
+        </section>
+
+        <section class="panel-card">
+          <div class="section-header">
+            <h3>Paid Leave List</h3>
+            <span class="section-badge" id="masterListBadge">List = 0</span>
+          </div>
+
+          <div class="table-box">
+            <table class="leave-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Designation</th>
+                  <th>Name</th>
+                  <th>Card Type</th>
+                  <th>Use Paid Leave / Total Paid Leave</th>
+                  <th>Calendar</th>
+                  <th>Paid Leave Input</th>
+                  <th>Total Amount</th>
+                  <th>View</th>
+                  <th>Submit</th>
+                </tr>
+              </thead>
+              <tbody id="employeeTableBody">
+                <tr>
+                  <td colspan="10" class="empty-state">Loading employee database...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="history-note">
+            Paid leave renewal har April cycle me auto reset hoga (Apr–Mar financial cycle).
+          </div>
+        </section>
+
+        <section class="panel-card hidden-panel" id="historyCard">
+          <div class="section-header">
+            <h3>Paid Leave History</h3>
+            <span class="section-badge" id="historyBadge">No employee selected</span>
+          </div>
+
+          <div class="table-box">
+            <table>
+              <thead>
+                <tr>
+                  <th>Month</th>
+                  <th>Leave Days</th>
+                  <th>Rate</th>
+                  <th>Total Amount</th>
+                  <th>Cycle</th>
+                  <th>Submitted On</th>
+                </tr>
+              </thead>
+              <tbody id="historyTableBody">
+                <tr>
+                  <td colspan="6" class="empty-state">View button dabakar history dekhein</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    window.toggleMenu = function () {
+      const sidebar = document.getElementById("side-bar");
+      sidebar.classList.toggle("active");
+    };
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const currentPage = window.location.pathname.split("/").pop();
+      const navLinks = document.querySelectorAll("#side-bar a");
+
+      navLinks.forEach(link => {
+        const href = link.getAttribute("href");
+        if (href === currentPage) {
+          link.classList.add("active");
+        }
+      });
+    });
+  </script>
+
+  <script type="module" src="/public/control.js"></script>
+
+  <script type="module">
+    import {
+      getFirestore,
+      doc,
+      getDoc,
+      collection,
+      getDocs,
+      setDoc,
+      addDoc,
+      updateDoc,
+      serverTimestamp,
+      query,
+      where,
+      orderBy
+    } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+
+    import { app } from "/public/firebase-config.js";
+
+    const db = getFirestore(app);
+
+    const TOTAL_PAID_LEAVE = 12;
+    const MANUAL_CYCLE_MONTH_START = 4; // April
+    const CARD_RATES = {
+      "un-skilled": 472,
+      "unskilled": 472,
+      "un skilled": 472,
+      "semi-skilled": 522,
+      "semiskilled": 522,
+      "semi skilled": 522,
+      "skilled": 572,
+      "high-skilled": 622,
+      "highskilled": 622,
+      "high skilled": 622
+    };
+
+    const adminEmail = localStorage.getItem("adminEmail");
+
+    
+    const adminId = localStorage.getItem("adminId");
+const adminNameDisplay = document.getElementById("adminNameDisplay");
+    const adminIdDisplay = document.getElementById("adminIdDisplay");
+    const siteFilter = document.getElementById("siteFilter");
+    const departmentFilter = document.getElementById("departmentFilter");
+    const employeeNameFilter = document.getElementById("employeeNameFilter");
+    const employeeIdFilter = document.getElementById("employeeIdFilter");
+    const employeeNameSuggestions = document.getElementById("employeeNameSuggestions");
+    const employeeIdSuggestions = document.getElementById("employeeIdSuggestions");
+    const submitBtn = document.getElementById("submitBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const tbody = document.getElementById("employeeTableBody");
+    const errorBox = document.getElementById("errorBox");
+    const masterListBadge = document.getElementById("masterListBadge");
+    const historyCard = document.getElementById("historyCard");
+    const historyBadge = document.getElementById("historyBadge");
+    const historyTableBody = document.getElementById("historyTableBody");
+
+    let allEmployees = [];
+    let visibleEmployees = [];
+    let siteDepartmentMap = {};
+    let paidLeaveRecords = [];
+    let currentCycleKey = "";
+    let currentCycleLabel = "";
+    let usageByUid = new Map();
+    let historyByUid = new Map();
+
+    function showError(message) {
+      errorBox.style.display = "block";
+      errorBox.textContent = message;
+    }
+
+    function hideError() {
+      errorBox.style.display = "none";
+      errorBox.textContent = "";
+    }
+
+    function normalizeText(value = "") {
+      return String(value || "").trim().toLowerCase();
+    }
+
+    function safeValue(...values) {
+      for (const value of values) {
+        if (value !== undefined && value !== null && String(value).trim() !== "") {
+          return String(value).trim();
+        }
+      }
+      return "";
+    }
+
+    function uniqueNonEmpty(values = []) {
+      return [...new Set(
+        values
+          .map((value) => String(value || "").trim())
+          .filter(Boolean)
+      )];
+    }
+
+    function getDeepValue(source, paths = []) {
+      if (!source || typeof source !== "object") return "";
+      for (const path of paths) {
+        const parts = String(path || "").split(".");
+        let current = source;
+        let ok = true;
+        for (const part of parts) {
+          if (!current || typeof current !== "object" || !(part in current)) {
+            ok = false;
+            break;
+          }
+          current = current[part];
+        }
+        if (ok && current !== undefined && current !== null && String(current).trim() !== "") {
+          return String(current).trim();
+        }
+      }
+      return "";
+    }
+
+    function getFirstValue(source, paths = []) {
+      if (!source || typeof source !== "object") return "";
+      for (const path of paths) {
+        const value = getDeepValue(source, [path]);
+        if (value) return value;
+      }
+      return "";
+    }
+
+    function getLocalStorageValue(keys = []) {
+      for (const key of keys) {
+        const value = localStorage.getItem(key);
+        if (value !== undefined && value !== null && String(value).trim() !== "") {
+          return String(value).trim();
+        }
+      }
+      return "";
+    }
+
+    function formatLabel(text = "") {
+      const raw = String(text || "").trim();
+      if (!raw) return "-";
+      return raw
+        .replace(/[_]+/g, " ")
+        .replace(/\s+/g, " ")
+        .replace(/\b\w/g, (m) => m.toUpperCase());
+    }
+
+    function normalizeCardType(text = "") {
+      return String(text || "")
+        .trim()
+        .toLowerCase()
+        .replace(/[_\s]+/g, "-");
+    }
+
+    function getCardRate(cardType = "") {
+      const key = normalizeCardType(cardType);
+      return CARD_RATES[key] ?? 0;
+    }
+
+    function getMonthName(index = 0) {
+      const months = [
+        "January", "February", "March", "April",
+        "May", "June", "July", "August",
+        "September", "October", "November", "December"
+      ];
+      return months[index - 1] || "-";
+    }
+
+    function getMonthNumberFromValue(value = "") {
+      const monthMap = {
+        january: 1, february: 2, march: 3, april: 4,
+        may: 5, june: 6, july: 7, august: 8,
+        september: 9, october: 10, november: 11, december: 12
+      };
+      const normalized = normalizeText(value);
+      if (!normalized) return 0;
+      if (/^\d+$/.test(normalized)) return Number(normalized);
+      return monthMap[normalized] || 0;
+    }
+
+    function getMonthOptionsHtml() {
+      const months = [
+        "Select Month",
+        "January", "February", "March", "April",
+        "May", "June", "July", "August",
+        "September", "October", "November", "December"
+      ];
+      return months.map((month, idx) => {
+        if (idx === 0) return `<option value="">${month}</option>`;
+        return `<option value="${idx}">${month}</option>`;
+      }).join("");
+    }
+
+    function getLeaveDayOptionsHtml(maxDays = TOTAL_PAID_LEAVE) {
+      const safeMax = Math.max(0, Math.min(4, Number(maxDays) || 0));
+      const options = [`<option value="">Select Days</option>`];
+
+      for (let i = 1; i <= 4; i++) {
+        const disabled = i > safeMax ? ' disabled="disabled"' : "";
+        const note = i > safeMax ? ` data-locked="true"` : "";
+        options.push(`<option value="${i}"${disabled}${note}>${i}</option>`);
+      }
+
+      return options.join("");
+    }
+
+    function getFinancialCycle(date = new Date()) {
+      const month = date.getMonth() + 1;
+      const year = date.getFullYear();
+      const startYear = month >= MANUAL_CYCLE_MONTH_START ? year : year - 1;
+      const endYear = startYear + 1;
+      return {
+        startYear,
+        endYear,
+        cycleKey: `${startYear}-${endYear}`,
+        cycleLabel: `Apr ${startYear} - Mar ${endYear}`
+      };
+    }
+
+    function setManualSearchEnabled(enabled) {
+      employeeNameFilter.disabled = !enabled;
+      employeeIdFilter.disabled = !enabled;
+
+      if (enabled) {
+        employeeNameFilter.classList.remove("search-locked");
+        employeeIdFilter.classList.remove("search-locked");
+      } else {
+        employeeNameFilter.classList.add("search-locked");
+        employeeIdFilter.classList.add("search-locked");
+      }
+    }
+
+    function extractDepartmentsFromJobs(jobs) {
+      const out = [];
+      if (!Array.isArray(jobs)) return out;
+
+      for (const item of jobs) {
+        if (typeof item === "string" && item.trim()) {
+          out.push(item.trim());
+          continue;
+        }
+
+        if (item && typeof item === "object") {
+          const keys = Object.keys(item);
+          for (const key of keys) {
+            if (key && key.trim()) out.push(key.trim());
+          }
+        }
+      }
+
+      return uniqueNonEmpty(out);
+    }
+
+    function extractSiteInchargeJobs(data) {
+      const out = [];
+      const jobs = data?.jobs;
+
+      if (!Array.isArray(jobs)) return out;
+
+      for (const item of jobs) {
+        if (typeof item === "string" && item.trim()) {
+          out.push(item.trim());
+          continue;
+        }
+
+        if (item && typeof item === "object") {
+          const keys = Object.keys(item);
+          for (const key of keys) {
+            if (key && key.trim()) out.push(key.trim());
+          }
+        }
+      }
+
+      return uniqueNonEmpty(out);
+    }
+
+    function getDesignation(roleType = "", data = {}) {
+      const explicit = safeValue(data.designation, data.role, data.post);
+      if (explicit) return explicit;
+      if (roleType === "si") return "Site-Incharge";
+      if (roleType === "supervisor") return "Supervisor";
+      if (roleType === "as") return "AS";
+      return "-";
+    }
+
+    function getCardType(data = {}) {
+      return safeValue(
+        getDeepValue(data, [
+          "CardType",
+          "CARDTYPE",
+          "cardType",
+          "cardtype",
+          "card_type",
+          "Card Type",
+          "card type",
+          "skillType",
+          "skilltype",
+          "SkillType",
+          "skill",
+          "card",
+          "category",
+          "payroll.CardType",
+          "payroll.cardType",
+          "payroll.card_type",
+          "salary.CardType",
+          "salary.cardType",
+          "salary.card_type",
+          "details.CardType",
+          "details.cardType",
+          "profile.CardType",
+          "profile.cardType"
+        ])
+      );
+    }
+
+    function getEffectiveCardType(emp = {}) {
+      return safeValue(
+        emp.cardType,
+        getCardType(emp.raw || {}),
+        emp.raw?.skillType,
+        emp.raw?.skill
+      );
+    }
+
+    function mapPerson(data, roleType, forcedDepartment = "") {
+      const jobDepartments = extractDepartmentsFromJobs(data.jobs).join(", ");
+
+      const person = {
+        uid: safeValue(data.uid, data.employeeId, data.id),
+        fullName: safeValue(data.fullName, data.Name, data.name, data.employeeName),
+        telephone: safeValue(data.telephone, data.contactNumber, data.mobile, data.phone),
+        designation: getDesignation(roleType, data),
+        department: safeValue(
+          forcedDepartment,
+          data.departmentSelect,
+          data.department,
+          data.jobDepartment,
+          data.job,
+          jobDepartments
+        ),
+        site: safeValue(
+          data.siteSelect,
+          data.site,
+          data.Site,
+          data.industrySelect,
+          data.location,
+          data.siteName,
+          data.industry
+        ),
+        cardType: normalizeCardType(getCardType(data)),
+        roleType,
+        raw: data
+      };
+
+      if (!person.cardType && roleType) {
+        person.cardType = normalizeCardType(data.skillType || data.skill || "");
+      }
+
+      return person;
+    }
+
+    function getEmployeeName(emp) {
+      return safeValue(emp.fullName, emp.name, emp.employeeName, emp.Name) || "-";
+    }
+
+    function getDepartment(emp) {
+      return safeValue(emp.departmentSelect, emp.department, emp.jobDepartment, emp.job) || "-";
+    }
+
+    function getDesignationDisplay(emp) {
+      return safeValue(emp.designation) || getDesignation(emp.roleType, emp.raw || {});
+    }
+
+    function getCurrentCycleUsedDays(uid = "") {
+      return Number(usageByUid.get(uid)?.usedDays || 0);
+    }
+
+    function getRemainingPaidLeave(uid = "") {
+      return Math.max(0, TOTAL_PAID_LEAVE - getCurrentCycleUsedDays(uid));
+    }
+
+    function getUsageSummary(emp) {
+      const used = getCurrentCycleUsedDays(emp.uid);
+      return `${used}/${TOTAL_PAID_LEAVE}`;
+    }
+
+    function getCycleHistory(uid) {
+      return (historyByUid.get(uid) || []).filter((record) => record.cycleKey === currentCycleKey);
+    }
+
+    function buildEmployeeSuggestions() {
+      const names = uniqueNonEmpty(allEmployees.map((emp) => getEmployeeName(emp)));
+      employeeNameSuggestions.innerHTML = names.map((name) => `<option value="${name}"></option>`).join("");
+    }
+
+    function buildEmployeeIdSuggestions(list = []) {
+      const ids = uniqueNonEmpty(list.map((emp) => safeValue(emp.uid)));
+      employeeIdSuggestions.innerHTML = ids.map((uid) => `<option value="${uid}"></option>`).join("");
+    }
+
+    function populateSearchFromName(value) {
+      const typed = normalizeText(value);
+      if (!typed) {
+        employeeIdFilter.value = "";
+        return;
+      }
+
+      const matches = allEmployees.filter((emp) => normalizeText(getEmployeeName(emp)) === typed);
+
+      if (matches.length === 1) {
+        const emp = matches[0];
+        employeeIdFilter.value = emp.uid || "";
+        siteFilter.value = emp.site || "";
+        updateDepartmentDropdown(siteFilter.value);
+        departmentFilter.value = emp.department || "";
+      } else if (matches.length > 1) {
+        buildEmployeeIdSuggestions(matches);
+        const exactIds = uniqueNonEmpty(matches.map((emp) => emp.uid));
+        if (exactIds.length === 1) {
+          employeeIdFilter.value = exactIds[0];
+        } else {
+          employeeIdFilter.value = "";
+        }
+      } else {
+        employeeIdFilter.value = "";
+      }
+    }
+
+    function populateSearchFromId(value) {
+      const typed = normalizeText(value);
+      if (!typed) return;
+
+      const match = allEmployees.find((emp) => normalizeText(emp.uid) === typed);
+      if (!match) return;
+
+      employeeNameFilter.value = getEmployeeName(match);
+      siteFilter.value = match.site || "";
+      updateDepartmentDropdown(siteFilter.value);
+      departmentFilter.value = match.department || "";
+    }
+
+    function updateDepartmentDropdown(selectedSite) {
+      departmentFilter.innerHTML = `<option value="">Select Department</option>`;
+
+      if (!selectedSite) return;
+
+      const departments = siteDepartmentMap[selectedSite];
+
+      if (!departments) return;
+
+      [...departments]
+        .sort((a, b) => a.localeCompare(b))
+        .forEach((dept) => {
+          const option = document.createElement("option");
+          option.value = dept;
+          option.textContent = dept;
+          departmentFilter.appendChild(option);
+        });
+    }
+
+    function clearHistoryPanel() {
+      historyCard.style.display = "none";
+      historyBadge.textContent = "No employee selected";
+      historyTableBody.innerHTML = `
+        <tr>
+          <td colspan="6" class="empty-state">View button dabakar history dekhein</td>
+        </tr>
+      `;
+    }
+
+    function renderHistory(uid) {
+      const records = getCycleHistory(uid).slice().sort((a, b) => {
+        const monthDiff = (a.monthIndex || 0) - (b.monthIndex || 0);
+        if (monthDiff !== 0) return monthDiff;
+        const atA = a.createdAtMillis || 0;
+        const atB = b.createdAtMillis || 0;
+        return atB - atA;
+      });
+
+      const emp = allEmployees.find((item) => item.uid === uid);
+
+      historyCard.style.display = "block";
+      historyBadge.textContent = `${getEmployeeName(emp || {})} • ${currentCycleLabel}`;
+
+      if (!records.length) {
+        historyTableBody.innerHTML = `
+          <tr>
+            <td colspan="6" class="empty-state">No paid leave records found for this cycle</td>
+          </tr>
+        `;
+        return;
+      }
+
+      historyTableBody.innerHTML = "";
+
+      records.forEach((record) => {
+        const tr = document.createElement("tr");
+        const submitted = record.createdAtText || "-";
+        tr.innerHTML = `
+          <td>${record.monthName || "-"}</td>
+          <td>${record.usedPaidLeave ?? "-"}</td>
+          <td>${record.rate ?? "-"}</td>
+          <td>${record.totalAmount ?? "-"}</td>
+          <td>${record.cycleKey || "-"}</td>
+          <td>${submitted}</td>
+        `;
+        historyTableBody.appendChild(tr);
+      });
+    }
+
+    function renderEmployees(data) {
+      visibleEmployees = data.slice();
+
+      if (!data.length) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="10" class="empty-state">No employee found</td>
+          </tr>
+        `;
+        masterListBadge.textContent = `List = 0`;
+        clearHistoryPanel();
+        return;
+      }
+
+      masterListBadge.textContent = `List = ${data.length}`;
+      tbody.innerHTML = "";
+
+      data.forEach((emp) => {
+        const tr = document.createElement("tr");
+        const uid = safeValue(emp.uid);
+        const designation = getDesignationDisplay(emp);
+        const name = getEmployeeName(emp);
+        const effectiveCardType = getEffectiveCardType(emp);
+        const cardType = effectiveCardType ? formatLabel(effectiveCardType) : "-";
+        const usedSummary = getUsageSummary(emp);
+        const rate = getCardRate(effectiveCardType);
+        const remainingPaidLeave = getRemainingPaidLeave(uid);
+        const rowKey = `${uid}-${designation}-${name}`;
+
+        tr.innerHTML = `
+          <td><span class="uid-pill">${uid || "-"}</span></td>
+          <td>${designation || "-"}</td>
+          <td>${name}</td>
+          <td><span class="email-pill">${cardType}</span></td>
+          <td><span class="summary-pill">${usedSummary}</span></td>
+          <td>
+            <select class="cell-select month-select" data-uid="${rowKey}" data-employee-uid="${uid}">
+              ${getMonthOptionsHtml()}
+            </select>
+          </td>
+          <td>
+            <select class="cell-select days-select" data-uid="${rowKey}" data-employee-uid="${uid}" data-remaining="${remainingPaidLeave}">
+              ${getLeaveDayOptionsHtml(remainingPaidLeave)}
+            </select>
+          </td>
+          <td>
+            <span class="amount-pill" id="amount-${rowKey}">0</span>
+          </td>
+          <td>
+            <button class="mini-btn view" data-action="view" data-employee-uid="${uid}">View</button>
+          </td>
+          <td>
+            <button class="mini-btn submit" data-action="submit" data-employee-uid="${uid}" disabled>Submit</button>
+          </td>
+        `;
+
+        tbody.appendChild(tr);
+      });
+
+      tbody.querySelectorAll(".month-select, .days-select").forEach((selectEl) => {
+        selectEl.addEventListener("change", handleRowSelectionChange);
+      });
+
+      tbody.querySelectorAll('button[data-action="view"]').forEach((btn) => {
+        btn.addEventListener("click", () => {
+          renderHistory(btn.dataset.employeeUid);
+          historyCard.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+      });
+
+      tbody.querySelectorAll('button[data-action="submit"]').forEach((btn) => {
+        btn.addEventListener("click", handleRowSubmit);
+      });
+
+      updateRowStates();
+      clearHistoryPanel();
+    }
+
+    function updateRowStates() {
+      tbody.querySelectorAll("tr").forEach((tr) => {
+        const monthSelect = tr.querySelector(".month-select");
+        const daysSelect = tr.querySelector(".days-select");
+        const submitButton = tr.querySelector('button[data-action="submit"]');
+        if (!monthSelect || !daysSelect || !submitButton) return;
+
+        const empUid = submitButton.dataset.employeeUid;
+        const emp = allEmployees.find((item) => item.uid === empUid);
+        const rate = getCardRate(getEffectiveCardType(emp || {}));
+        const maxAllowed = syncLeaveDaysControl(tr, empUid);
+
+        const monthIndex = Number(monthSelect.value || 0);
+        const leaveDays = Number(daysSelect.value || 0);
+        const amount = monthIndex && leaveDays ? leaveDays * rate : 0;
+
+        const amountCell = tr.querySelector(`#amount-${CSS.escape(monthSelect.dataset.uid)}`);
+        if (amountCell) amountCell.textContent = amount || 0;
+
+        submitButton.disabled = !(monthIndex > 0 && leaveDays > 0 && rate > 0 && leaveDays <= maxAllowed);
+      });
+    }
+
+function syncLeaveDaysControl(tr, empUid) {
+      const daysSelect = tr.querySelector(".days-select");
+      if (!daysSelect) return 0;
+
+      const remaining = getRemainingPaidLeave(empUid);
+      const maxAllowed = Math.max(0, Math.min(4, remaining));
+
+      daysSelect.disabled = maxAllowed === 0;
+
+      Array.from(daysSelect.options).forEach((option) => {
+        const optionValue = Number(option.value || 0);
+        if (!optionValue) {
+          option.disabled = false;
+          return;
+        }
+        option.disabled = optionValue > maxAllowed;
+      });
+
+      const selectedValue = Number(daysSelect.value || 0);
+      if (selectedValue > maxAllowed) {
+        daysSelect.value = "";
+      }
+
+      return maxAllowed;
+    }
+
+
+    function handleRowSelectionChange(event) {
+      const selectEl = event.target;
+      const tr = selectEl.closest("tr");
+      if (!tr) return;
+
+      const monthSelect = tr.querySelector(".month-select");
+      const daysSelect = tr.querySelector(".days-select");
+      const submitButton = tr.querySelector('button[data-action="submit"]');
+      const empUid = submitButton?.dataset.employeeUid;
+      const emp = allEmployees.find((item) => item.uid === empUid);
+      const rate = getCardRate(getEffectiveCardType(emp || {}));
+      const maxAllowed = syncLeaveDaysControl(tr, empUid);
+
+      const monthIndex = Number(monthSelect?.value || 0);
+      const leaveDays = Number(daysSelect?.value || 0);
+      const totalAmount = monthIndex && leaveDays ? leaveDays * rate : 0;
+
+      const amountCell = tr.querySelector(`#amount-${CSS.escape(monthSelect.dataset.uid)}`);
+      if (amountCell) amountCell.textContent = totalAmount || 0;
+
+      if (submitButton) {
+        submitButton.disabled = !(monthIndex > 0 && leaveDays > 0 && rate > 0 && leaveDays <= maxAllowed);
+      }
+    }
+
+    function getAdminDisplayName(data = {}) {
+      return safeValue(
+        getDeepValue(data, [
+          "adminName",
+          "AdminName",
+          "admin_name",
+          "Admin Name",
+          "fullName",
+          "FullName",
+          "full_name",
+          "Full Name",
+          "name",
+          "Name",
+          "displayName",
+          "display_name",
+          "username",
+          "userName",
+          "user_name",
+          "profile.name",
+          "user.profile.name"
+        ]),
+        getLocalStorageValue([
+          "adminName",
+          "AdminName",
+          "fullName",
+          "name",
+          "username",
+          "displayName"
+        ]),
+        "Admin"
+      );
+    }
+
+    function getAdminDisplayId(data = {}) {
+      return safeValue(
+        getDeepValue(data, [
+          "adminId",
+          "AdminId",
+          "admin_id",
+          "Admin ID",
+          "uid",
+          "Uid",
+          "employeeId",
+          "employeeID",
+          "employee_id",
+          "id",
+          "ID",
+          "adminCode",
+          "admin_code",
+          "code",
+          "profile.id",
+          "user.id"
+        ]),
+        getLocalStorageValue([
+          "adminId",
+          "AdminId",
+          "uid",
+          "employeeId",
+          "id"
+        ]),
+        data?.id || data?.ID || "-"
+      );
+    }
+
+    async function loadAdminDetails() {
+      try {
+        const localEmail = getLocalStorageValue(["adminEmail", "email", "userEmail"]);
+        const localAdminId = getLocalStorageValue(["adminId", "uid", "employeeId", "id"]);
+        const searchKeys = uniqueNonEmpty([
+          adminEmail,
+          adminId,
+          localEmail,
+          localAdminId
+        ]);
+
+        const adminCollections = [
+          "Admin",
+          "Admins",
+          "admin",
+          "admins",
+          "Admin Details",
+          "AdminDetails"
+        ];
+
+        let adminData = null;
+
+        for (const collectionName of adminCollections) {
+          if (adminData) break;
+
+          for (const key of searchKeys) {
+            try {
+              const adminRef = doc(db, collectionName, key);
+              const adminSnap = await getDoc(adminRef);
+              if (adminSnap.exists()) {
+                adminData = adminSnap.data();
+                break;
+              }
+            } catch (e) {
+              console.warn(`Admin doc lookup failed for ${collectionName}/${key}:`, e);
+            }
+          }
+        }
+
+        if (!adminData) {
+          for (const collectionName of adminCollections) {
+            try {
+              const adminSnap = await getDocs(collection(db, collectionName));
+              for (const docSnap of adminSnap.docs) {
+                const data = docSnap.data();
+                const candidateEmail = safeValue(
+                  getDeepValue(data, ["email", "adminEmail", "mail", "gmail", "user.email"])
+                );
+                const candidateId = safeValue(
+                  getDeepValue(data, [
+                    "adminId",
+                    "AdminId",
+                    "uid",
+                    "employeeId",
+                    "employeeID",
+                    "id",
+                    "ID",
+                    "adminCode",
+                    "code"
+                  ])
+                );
+
+                const emailMatch = adminEmail && normalizeText(candidateEmail) === normalizeText(adminEmail);
+                const idMatch = uniqueNonEmpty([adminId, localAdminId]).some((value) => normalizeText(candidateId) === normalizeText(value));
+
+                if (emailMatch || idMatch) {
+                  adminData = data;
+                  break;
+                }
+              }
+              if (adminData) break;
+            } catch (e) {
+              console.warn(`Admin collection scan failed for ${collectionName}:`, e);
+            }
+          }
+        }
+
+        if (!adminData) {
+          adminNameDisplay.textContent = getLocalStorageValue(["adminName", "fullName", "name", "username"]) || "Not Found";
+          adminIdDisplay.textContent = getLocalStorageValue(["adminId", "uid", "employeeId", "id"]) || "Not Found";
+          return;
+        }
+
+        adminNameDisplay.textContent = getAdminDisplayName(adminData);
+        adminIdDisplay.textContent = getAdminDisplayId(adminData);
+      } catch (error) {
+        console.error(error);
+        showError("Failed to load admin details");
+        adminNameDisplay.textContent = getLocalStorageValue(["adminName", "fullName", "name"]) || "Not Found";
+        adminIdDisplay.textContent = getLocalStorageValue(["adminId", "uid", "employeeId", "id"]) || "Not Found";
+      }
+    }
+
+    async function loadEmployeesAndDependencies() {
+      try {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="10" class="empty-state loading-text">Loading employee database...</td>
+          </tr>
+        `;
+
+        hideError();
+
+        allEmployees = [];
+        visibleEmployees = [];
+        siteDepartmentMap = {};
+        paidLeaveRecords = [];
+        usageByUid = new Map();
+        historyByUid = new Map();
+
+        const collectionsToLoad = [
+          "Supervisor",
+          "AS",
+          "Site-Incharge"
+        ];
+
+        const merged = new Map();
+
+        for (const collectionName of collectionsToLoad) {
+          try {
+            const snap = await getDocs(collection(db, collectionName));
+
+            snap.forEach((docSnap) => {
+              const data = docSnap.data();
+
+              if (collectionName === "Site-Incharge") {
+                const jobs = extractSiteInchargeJobs(data);
+                const person = mapPerson(data, "si", jobs.join(", "));
+
+                if (person.uid && person.fullName) {
+                  const key = `si-${person.uid}`;
+                  const existing = merged.get(key);
+
+                  if (!existing) {
+                    merged.set(key, {
+                      ...person,
+                      department: jobs.join(", "),
+                      raw: {
+                        ...data,
+                        jobs: jobs.length ? jobs : extractDepartmentsFromJobs(data.jobs)
+                      }
+                    });
+                  } else {
+                    const existingJobs = extractDepartmentsFromJobs(existing.raw?.jobs);
+                    const combinedJobs = uniqueNonEmpty([...existingJobs, ...jobs]);
+
+                    merged.set(key, {
+                      ...existing,
+                      department: combinedJobs.join(", "),
+                      site: existing.site || person.site,
+                      fullName: existing.fullName || person.fullName,
+                      telephone: existing.telephone || person.telephone,
+                      cardType: existing.cardType || person.cardType,
+                      raw: {
+                        ...existing.raw,
+                        ...data,
+                        jobs: combinedJobs
+                      }
+                    });
+                  }
+                }
+              } else {
+                const roleType = collectionName === "Supervisor" ? "supervisor" : "as";
+                const person = mapPerson(data, roleType);
+
+                if (person.uid && person.fullName) {
+                  const key = `${roleType}-${person.uid}`;
+                  const existing = merged.get(key);
+
+                  if (!existing) {
+                    merged.set(key, person);
+                  } else {
+                    merged.set(key, {
+                      ...existing,
+                      ...person,
+                      department: existing.department || person.department,
+                      site: existing.site || person.site,
+                      cardType: existing.cardType || person.cardType,
+                      raw: {
+                        ...existing.raw,
+                        ...data
+                      }
+                    });
+                  }
+                }
+              }
+            });
+          } catch (err) {
+            console.warn(`Unable to read collection ${collectionName}:`, err);
+          }
+        }
+
+        allEmployees = Array.from(merged.values());
+
+        allEmployees.forEach((emp) => {
+          if (!emp.site) return;
+
+          if (!siteDepartmentMap[emp.site]) {
+            siteDepartmentMap[emp.site] = new Set();
+          }
+
+          const deptList = extractDepartmentsFromJobs(emp.raw?.jobs);
+
+          if (emp.roleType === "si") {
+            deptList.forEach((dept) => siteDepartmentMap[emp.site].add(dept));
+          } else {
+            if (emp.department) {
+              siteDepartmentMap[emp.site].add(emp.department);
+            }
+            deptList.forEach((dept) => siteDepartmentMap[emp.site].add(dept));
+          }
+        });
+
+        const siteList = Object.keys(siteDepartmentMap).sort((a, b) => a.localeCompare(b));
+
+        siteFilter.innerHTML = `<option value="">Select Site</option>`;
+        siteList.forEach((site) => {
+          const option = document.createElement("option");
+          option.value = site;
+          option.textContent = site;
+          siteFilter.appendChild(option);
+        });
+
+        buildEmployeeSuggestions();
+        buildEmployeeIdSuggestions(allEmployees);
+        await loadPaidLeaveRecords();
+        renderEmployees(allEmployees);
+      } catch (error) {
+        console.error(error);
+        showError("Failed to load employees");
+      }
+    }
+
+
+    function getPaidLeaveDocCycleKey(docId = "", data = {}) {
+      const explicit = safeValue(data.cycleKey);
+      if (explicit) return explicit;
+
+      const rawId = String(docId || "").trim();
+
+      if (!rawId) return "";
+
+      if (rawId.includes("__")) {
+        return rawId.split("__")[0] || "";
+      }
+
+      const parts = rawId.split("_");
+      if (parts.length >= 3) {
+        return parts[1] || "";
+      }
+
+      return safeValue(data.cycleLabel) ? currentCycleKey : "";
+    }
+
+    function getPaidLeaveDocMonthName(docId = "", data = {}) {
+      const explicit = safeValue(data.monthName, data.month);
+      if (explicit) return explicit;
+
+      const rawId = String(docId || "").trim();
+
+      if (!rawId) return "-";
+
+      if (rawId.includes("__")) {
+        return rawId.split("__")[1] || "-";
+      }
+
+      const parts = rawId.split("_");
+      if (parts.length >= 3) {
+        const monthIndex = Number(parts[2] || 0);
+        return getMonthName(monthIndex);
+      }
+
+      return "-";
+    }
+
+    async function loadPaidLeaveRecords() {
+      try {
+        const cycle = getFinancialCycle(new Date());
+        currentCycleKey = cycle.cycleKey;
+        currentCycleLabel = cycle.cycleLabel;
+
+        paidLeaveRecords = [];
+        usageByUid = new Map();
+        historyByUid = new Map();
+
+        const seenRecords = new Set();
+
+        const pushRecord = (uid, docId, data = {}) => {
+          const monthName = getPaidLeaveDocMonthName(docId, data);
+          const cycleKey = getPaidLeaveDocCycleKey(docId, data);
+          const signature = `${safeValue(uid)}|${safeValue(cycleKey)}|${safeValue(monthName)}`.toLowerCase();
+
+          if (seenRecords.has(signature)) return;
+          seenRecords.add(signature);
+
+          const record = {
+            id: safeValue(docId),
+            uid: safeValue(uid, data.uid, data.id),
+            name: safeValue(data.name),
+            designation: safeValue(data.designation),
+            department: safeValue(data.department),
+            site: safeValue(data.site),
+            CardType: safeValue(data.CardType, data.cardType, data.rawCardType),
+            monthName,
+            leaveDays: Number(data.usedPaidLeave || 0),
+            rate: Number(data.rate || 0),
+            amount: Number(data.amount || data.totalAmount || 0),
+            totalAmount: Number(data.amount || data.totalAmount || 0),
+            totalPaidLeave: Number(data.totalPaidLeave || TOTAL_PAID_LEAVE),
+            usedPaidLeave: Number(data.usedPaidLeave || data.leaveDays || 0),
+            cycleLabel: safeValue(data.cycleLabel),
+            cycleKey,
+            createdAt: data.createdAt || null,
+            createdAtMillis: data.createdAtMillis || (data.createdAt?.toMillis ? data.createdAt.toMillis() : 0),
+            createdAtText: data.createdAtText || safeValue(data.createdAtReadable, data.createdAtDisplay, data.submittedAt),
+            monthIndex: getMonthNumberFromValue(monthName)
+          };
+
+          paidLeaveRecords.push(record);
+
+          if (!historyByUid.has(record.uid)) {
+            historyByUid.set(record.uid, []);
+          }
+          historyByUid.get(record.uid).push(record);
+
+          if (record.cycleKey !== currentCycleKey) return;
+
+          const bucket = usageByUid.get(record.uid) || { usedDays: 0, totalAmount: 0 };
+          bucket.usedDays += Number(record.usedPaidLeave || 0);
+          bucket.totalAmount += Number(record.amount || 0);
+          usageByUid.set(record.uid, bucket);
+        };
+
+        // 1) Legacy flat docs support
+        try {
+          const legacySnap = await getDocs(collection(db, "Paid leave"));
+          legacySnap.forEach((docSnap) => {
+            const data = docSnap.data() || {};
+            const uid = safeValue(data.uid, data.id, docSnap.id.split("_")[0]);
+            pushRecord(uid, docSnap.id, data);
+          });
+        } catch (legacyError) {
+          console.warn("Legacy Paid leave read skipped:", legacyError);
+        }
+
+        // 2) New nested structure support:
+        // Paid leave / UID / Months / MonthName-or-CycleKey__MonthName
+        for (const emp of allEmployees) {
+          const uid = safeValue(emp.uid);
+          if (!uid) continue;
+
+          try {
+            const monthsSnap = await getDocs(collection(db, "Paid leave", uid, "Months"));
+            monthsSnap.forEach((monthDoc) => {
+              pushRecord(uid, monthDoc.id, monthDoc.data() || {});
+            });
+          } catch (nestedError) {
+            console.warn(`Nested Paid leave read skipped for ${uid}:`, nestedError);
+          }
+        }
+
+        // refresh table summaries now that usage map exists
+        if (visibleEmployees.length) {
+          renderEmployees(visibleEmployees);
+        } else if (allEmployees.length) {
+          renderEmployees(allEmployees);
+        }
+      } catch (error) {
+        console.error(error);
+        showError("Failed to load paid leave records");
+      }
+    }
+
+    function applyFilter() {
+      hideError();
+
+      const selectedSite = normalizeText(siteFilter.value);
+      const selectedDepartment = normalizeText(departmentFilter.value);
+      const employeeName = normalizeText(employeeNameFilter.value);
+      const employeeId = normalizeText(employeeIdFilter.value);
+
+      const filtered = allEmployees.filter((emp) => {
+        const empSite = normalizeText(emp.site);
+        const empDepartment = normalizeText(emp.department);
+        const empDepartments = extractDepartmentsFromJobs(emp.raw?.jobs).map(normalizeText);
+        const empName = normalizeText(emp.fullName);
+        const empUid = normalizeText(emp.uid);
+
+        const siteMatch = !selectedSite || empSite === selectedSite;
+        const departmentMatch = !selectedDepartment || empDepartment === selectedDepartment || empDepartments.includes(selectedDepartment);
+        const nameMatch = !employeeName || empName.includes(employeeName) || normalizeText(emp.fullName) === employeeName;
+        const idMatch = !employeeId || empUid.includes(employeeId) || empUid === employeeId;
+
+        return siteMatch && departmentMatch && nameMatch && idMatch;
+      });
+
+      if (!filtered.length) {
+        showError("No matching employee found");
+      }
+
+      renderEmployees(filtered);
+    }
+
+
+
+    async function handleRowSubmit(event) {
+      const button = event.currentTarget;
+      const tr = button.closest("tr");
+      if (!tr) return;
+
+      const uid = safeValue(button.dataset.employeeUid);
+      const emp = allEmployees.find((item) => item.uid === uid);
+
+      if (!emp) {
+        showError("Employee details not found");
+        return;
+      }
+
+      const monthSelect = tr.querySelector(".month-select");
+      const daysSelect = tr.querySelector(".days-select");
+      const monthIndex = Number(monthSelect?.value || 0);
+      const leaveDays = Number(daysSelect?.value || 0);
+      const rate = getCardRate(getEffectiveCardType(emp));
+
+      if (!monthIndex || !leaveDays || !rate) {
+        showError("Please select month and paid leave days first");
+        return;
+      }
+
+      try {
+        button.disabled = true;
+        button.textContent = "Saving...";
+
+        const cycle = getFinancialCycle(new Date());
+        const monthName = getMonthName(monthIndex);
+
+        const parentRef = doc(db, "Paid leave", uid);
+        const recordRef = doc(db, "Paid leave", uid, "Months", `${cycle.cycleKey}__${monthName}`);
+
+        const existingSnap = await getDoc(recordRef);
+        const previousUsed = existingSnap.exists()
+          ? Number(existingSnap.data().usedPaidLeave || 0)
+          : 0;
+
+        const cycleUsedBeforeThisMonth = Math.max(0, getCurrentCycleUsedDays(uid) - previousUsed);
+        const remainingBeforeSubmit = Math.max(0, TOTAL_PAID_LEAVE - cycleUsedBeforeThisMonth);
+
+        if (leaveDays > remainingBeforeSubmit) {
+          alert(
+            `Only ${remainingBeforeSubmit} paid leave(s) are left in this cycle.
+
+Already Used in this cycle: ${cycleUsedBeforeThisMonth}
+Trying To Add: ${leaveDays}`
+          );
+
+          button.disabled = false;
+          button.textContent = "Submit";
+          return;
+        }
+
+        const newTotalUsed = previousUsed + leaveDays;
+
+        const payload = {
+          uid: uid,
+          name: getEmployeeName(emp),
+          designation: getDesignationDisplay(emp),
+          department: emp.department || "",
+          site: emp.site || "",
+          CardType: formatLabel(getEffectiveCardType(emp)),
+          monthName: monthName,
+          rate: rate,
+          usedPaidLeave: newTotalUsed,
+          totalPaidLeave: TOTAL_PAID_LEAVE,
+          amount: newTotalUsed * rate,
+          cycleLabel: cycle.cycleLabel,
+          createdAt: existingSnap.exists()
+            ? existingSnap.data().createdAt || serverTimestamp()
+            : serverTimestamp(),
+          updatedAt: serverTimestamp()
+        };
+
+        // Parent document is created so the UID appears in Firestore.
+        // No extra business fields are stored here.
+        await setDoc(parentRef, { uid }, { merge: true });
+        await setDoc(recordRef, payload, { merge: true });
+
+        await loadPaidLeaveRecords();
+
+        button.textContent = "Saved";
+
+        setTimeout(() => {
+          button.textContent = "Submit";
+          button.disabled = false;
+        }, 900);
+
+        renderHistory(uid);
+        hideError();
+      } catch (error) {
+        console.error(error);
+        button.textContent = "Submit";
+        button.disabled = false;
+        showError("Failed to save paid leave");
+      }
+    }
+
+    function nameSafe(emp) {
+      return getEmployeeName(emp);
+    }
+
+    submitBtn.addEventListener("click", applyFilter);
+
+    resetBtn.addEventListener("click", () => {
+      siteFilter.value = "";
+      departmentFilter.innerHTML = `<option value="">Select Department</option>`;
+      employeeNameFilter.value = "";
+      employeeIdFilter.value = "";
+      buildEmployeeIdSuggestions(allEmployees);
+      setManualSearchEnabled(true);
+      renderEmployees(allEmployees);
+      clearHistoryPanel();
+      hideError();
+    });
+
+    siteFilter.addEventListener("change", () => {
+      updateDepartmentDropdown(siteFilter.value);
+    });
+
+    employeeNameFilter.addEventListener("input", () => {
+      if (employeeNameFilter.disabled) return;
+      populateSearchFromName(employeeNameFilter.value);
+      buildEmployeeIdSuggestions(
+        allEmployees.filter((emp) =>
+          normalizeText(getEmployeeName(emp)) === normalizeText(employeeNameFilter.value)
+        )
+      );
+    });
+
+    employeeIdFilter.addEventListener("input", () => {
+      if (employeeIdFilter.disabled) return;
+      populateSearchFromId(employeeIdFilter.value);
+    });
+
+    // Keep ID list aligned with typed name when the field is focused
+    employeeNameFilter.addEventListener("change", () => {
+      if (employeeNameFilter.disabled) return;
+      populateSearchFromName(employeeNameFilter.value);
+    });
+
+    employeeIdFilter.addEventListener("change", () => {
+      if (employeeIdFilter.disabled) return;
+      populateSearchFromId(employeeIdFilter.value);
+    });
+
+    setManualSearchEnabled(false);
+    await loadAdminDetails();
+    await loadEmployeesAndDependencies();
+
+    // clicking submit in filter mode keeps name/id locked
+    // reset button unlocks them for manual search
+  </script>
+</body>
+</html>

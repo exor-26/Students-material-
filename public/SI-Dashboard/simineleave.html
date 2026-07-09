@@ -1,0 +1,1865 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <title>Site-Incharge Dashboard - Leave Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/x-icon" href="logo2.ico" />
+  <link rel="stylesheet" type="text/css" href="simineleave.css" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap-theme.min.css" />
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+
+  <style>
+    *, *::before, *::after {
+      cursor:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" viewBox="0 0 24 24"><path fill="%23FFF" stroke="%23FF2711" stroke-width="2" d="M5.5 3.21V20.8c0 .45.54.67.85.35l4.86-4.86a.5.5 0 0 1 .35-.15h6.87a.5.5 0 0 0 .35-.85L6.35 2.85a.5.5 0 0 0-.85.35Z"></path></svg>') 5 5, auto;
+    }
+
+    a, button, input[type="submit"], input[type="button"],
+    label, select, .dropbtn, .sub-btn, .btn, .cn,
+    .carousel-control, .hideMenuButton, .item a,
+    input[type="text"], input[type="search"], textarea {
+      cursor:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="%23FFF" stroke="%23FF2711" stroke-width="2" stroke-linejoin="round" d="M10 11V8.99c0-.88.59-1.64 1.44-1.86h.05A1.99 1.99 0 0 1 14 9.05V12v-2c0-.88.6-1.65 1.46-1.87h.05A1.98 1.98 0 0 1 18 10.06V13v-1.94a2 2 0 0 1 1.51-1.94h0A2 2 0 0 1 22 11.06V14c0 .6-.08 1.27-.21 1.97a7.96 7.96 0 0 1-7.55 6.48 54.98 54.98 0 0 1-4.48 0 7.96 7.96 0 0 1-7.55-6.48C2.08 15.27 2 14.59 2 14v-1.49c0-1.11.9-2.01 2.01-2.01h0a2 2 0 0 1 2.01 2.03l-.01.97v-10c0-1.1.9-2 2-2h0a2 2 0 0 1 2 2V11Z"></path></svg>') 5 5, auto;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    :root {
+      --topbar-height: 78px;
+      --sidebar-width: 280px;
+      --card-bg: rgba(12, 25, 45, 0.86);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --text-main: #ffffff;
+      --text-soft: #c9d9ee;
+      --text-muted: #8ea4c5;
+      --orange-1: #ff8a3c;
+      --orange-2: #ff5a1f;
+      --blue-1: #2d7dff;
+      --blue-2: #1657cc;
+      --shadow: 0 18px 40px rgba(0, 0, 0, 0.25);
+    }
+
+    html,
+    body {
+      width: 100%;
+      min-height: 100%;
+      margin: 0;
+      padding: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background:
+        linear-gradient(135deg, rgba(7, 16, 30, 0.95), rgba(14, 34, 56, 0.92)),
+        url("https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1600&q=80") center/cover no-repeat fixed;
+      color: var(--text-main);
+      overflow: hidden;
+    }
+
+    .app-shell {
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .topbar {
+      height: var(--topbar-height);
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(7, 16, 30, 0.88);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 2000;
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      min-width: 0;
+    }
+
+    .menu-toggle {
+      width: 46px;
+      height: 46px;
+      border: none;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
+      color: #fff;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: 0.25s ease;
+      flex-shrink: 0;
+    }
+
+    .menu-toggle:hover {
+      background: linear-gradient(135deg, rgba(255,122,47,0.18), rgba(31,119,255,0.16));
+      transform: translateY(-1px);
+    }
+
+    .brand-wrap {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-width: 0;
+    }
+
+    .brand-title {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 700;
+      color: #fff;
+      text-decoration: none !important;
+      line-height: 1.1;
+    }
+
+    .brand-subtitle {
+      margin: 2px 0 0;
+      color: var(--text-soft);
+      font-size: 13px;
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-shrink: 0;
+    }
+
+    .logout {
+      text-decoration: none !important;
+      color: #fff !important;
+      background: linear-gradient(135deg, var(--orange-1), var(--orange-2));
+      padding: 11px 18px;
+      border-radius: 12px;
+      font-weight: 700;
+      transition: 0.25s ease;
+      box-shadow: 0 10px 24px rgba(255, 90, 31, 0.24);
+      white-space: nowrap;
+    }
+
+    .logout:hover {
+      transform: translateY(-1px);
+      color: #fff !important;
+      text-decoration: none !important;
+    }
+
+    .dashboard-layout {
+      width: 100%;
+      height: 100vh;
+    }
+
+    /* ===== ONLY NAVBAR / SIDEBAR CHANGED ===== */
+    nav.sidebar {
+      width: var(--sidebar-width);
+      min-width: var(--sidebar-width);
+      max-width: var(--sidebar-width);
+      position: fixed;
+      top: var(--topbar-height);
+      left: 0;
+      bottom: 0;
+      padding: 20px 16px 22px;
+      background: linear-gradient(180deg, rgba(6, 16, 30, 0.98), rgba(8, 22, 40, 0.96));
+      backdrop-filter: blur(16px);
+      border-right: 1px solid rgba(255,255,255,0.06);
+      overflow-y: auto;
+      overflow-x: hidden;
+      z-index: 1500;
+      box-shadow: 18px 0 45px rgba(0, 0, 0, 0.24);
+    }
+
+    nav.sidebar::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    nav.sidebar::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,0.14);
+      border-radius: 999px;
+    }
+
+    .sidebar-top-card {
+      position: relative;
+      padding: 20px 18px 18px;
+      border-radius: 24px;
+      background:
+        linear-gradient(135deg, rgba(255,122,47,0.16), rgba(31,119,255,0.14)),
+        rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow:
+        0 16px 32px rgba(0,0,0,0.20),
+        inset 0 1px 0 rgba(255,255,255,0.06);
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+
+    .sidebar-top-card::after {
+      content: "";
+      position: absolute;
+      right: -30px;
+      top: -30px;
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,255,255,0.16), transparent 70%);
+    }
+
+    .sidebar-mini-label {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.4px;
+      color: #ffd8c2;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: 5px 10px;
+      border-radius: 999px;
+      margin-bottom: 12px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .sidebar-main-title {
+      font-size: 19px;
+      font-weight: 800;
+      color: #ffffff;
+      margin: 0 0 6px;
+      line-height: 1.2;
+      position: relative;
+      z-index: 1;
+    }
+
+    .sidebar-main-subtitle {
+      font-size: 13px;
+      color: #d5e2f1;
+      line-height: 1.7;
+      margin: 0 0 14px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .sidebar-status-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      position: relative;
+      z-index: 1;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .sidebar-status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #dfffe9;
+      background: rgba(20,184,106,0.14);
+      border: 1px solid rgba(20,184,106,0.22);
+    }
+
+    .sidebar-status-badge::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #4df39b;
+      box-shadow: 0 0 10px rgba(77,243,155,0.7);
+    }
+
+    .sidebar-status-text {
+      font-size: 11px;
+      color: #c6d8ec;
+      text-align: right;
+      line-height: 1.4;
+    }
+
+    .sidebar-section-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #8ea4c5;
+      margin: 0 8px 16px;
+      font-weight: 700;
+    }
+
+    #side-bar {
+      list-style: none;
+      padding-left: 0;
+      margin-bottom: 0;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    #side-bar li {
+      width: 100%;
+      margin: 0;
+    }
+
+    #side-bar a,
+    #side-bar summary {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      width: 100%;
+      padding: 15px 15px;
+      border-radius: 20px;
+      text-decoration: none !important;
+      color: #edf4ff !important;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.055), rgba(255,255,255,0.025));
+      border: 1px solid rgba(255,255,255,0.06);
+      transition: all 0.28s ease;
+      position: relative;
+      overflow: hidden;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+    }
+
+    #side-bar a::before,
+    #side-bar summary::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, rgba(255,122,47,0.13), rgba(31,119,255,0.11));
+      opacity: 0;
+      transition: opacity 0.28s ease;
+    }
+
+    #side-bar a::after,
+    #side-bar summary::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 18%;
+      width: 4px;
+      height: 64%;
+      border-radius: 999px;
+      background: linear-gradient(180deg, #ff8a3c, #1f77ff);
+      opacity: 0;
+      transition: opacity 0.28s ease;
+    }
+
+    #side-bar a:hover,
+    #side-bar summary:hover {
+      transform: translateX(6px);
+      border-color: rgba(255,255,255,0.10);
+      box-shadow: 0 14px 28px rgba(0,0,0,0.20);
+    }
+
+    #side-bar a:hover::before,
+    #side-bar summary:hover::before,
+    #side-bar a:hover::after,
+    #side-bar summary:hover::after {
+      opacity: 1;
+    }
+
+    #side-bar a.active,
+    #side-bar summary.active {
+      background: linear-gradient(135deg, rgba(255,122,47,0.18), rgba(31,119,255,0.16));
+      border-color: rgba(255,255,255,0.12);
+      box-shadow: 0 16px 30px rgba(0,0,0,0.24);
+    }
+
+    #side-bar a.active::before,
+    #side-bar summary.active::before,
+    #side-bar a.active::after,
+    #side-bar summary.active::after {
+      opacity: 1;
+    }
+
+    .nav-icon {
+      width: 44px;
+      height: 44px;
+      min-width: 44px;
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, rgba(255,255,255,0.13), rgba(255,255,255,0.05));
+      border: 1px solid rgba(255,255,255,0.08);
+      color: #fff;
+      font-size: 17px;
+      position: relative;
+      z-index: 1;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+    }
+
+    .nav-text {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .nav-text strong {
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.2;
+    }
+
+    .nav-text span {
+      margin-top: 4px;
+      font-size: 11px;
+      line-height: 1.45;
+      color: #aabed8;
+    }
+
+    .nav-arrow {
+      margin-left: auto;
+      font-size: 16px;
+      color: #93b2d8;
+      position: relative;
+      z-index: 1;
+      transition: transform 0.25s ease;
+    }
+
+    #side-bar a:hover .nav-arrow,
+    #side-bar summary:hover .nav-arrow {
+      transform: translateX(4px);
+    }
+    /* ===== END NAVBAR / SIDEBAR CHANGED ===== */
+
+    main {
+      position: fixed;
+      top: var(--topbar-height);
+      left: var(--sidebar-width);
+      right: 0;
+      bottom: 0;
+      padding: 28px 30px;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    .hero-card {
+      background: linear-gradient(135deg, rgba(22, 61, 112, 0.88), rgba(12, 27, 53, 0.92));
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 24px;
+      padding: 30px 34px;
+      box-shadow: var(--shadow);
+      margin-bottom: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-card::after {
+      content: "";
+      position: absolute;
+      right: -80px;
+      top: -80px;
+      width: 220px;
+      height: 220px;
+      background: radial-gradient(circle, rgba(255, 122, 47, 0.18), transparent 70%);
+      border-radius: 50%;
+    }
+
+    .page-tag {
+      display: inline-block;
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      color: #ffb88f;
+      background: rgba(255, 122, 47, 0.16);
+      border: 1px solid rgba(255, 122, 47, 0.2);
+      margin-bottom: 14px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-card h1 {
+      margin: 0 0 10px;
+      font-size: 32px;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.15;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-card p {
+      margin: 0;
+      max-width: 900px;
+      font-size: 15px;
+      line-height: 1.8;
+      color: #d0def0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .panel-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+      margin-bottom: 24px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .section-header h2,
+    .section-header h3 {
+      margin: 0;
+      font-size: 26px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .section-badge {
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #9ec3ff;
+      background: rgba(31, 119, 255, 0.14);
+      border: 1px solid rgba(31, 119, 255, 0.22);
+      white-space: nowrap;
+    }
+
+    .details-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    .details-col {
+      display: grid;
+      gap: 16px;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+    }
+
+    .value-box,
+    .field input,
+    .field select,
+    .field textarea {
+      width: 100%;
+      min-height: 48px;
+      border-radius: 14px !important;
+      border: 1px solid rgba(255, 255, 255, 0.08) !important;
+      background: rgba(255, 255, 255, 0.05) !important;
+      color: #fff !important;
+      padding: 12px 14px !important;
+      font-size: 14px;
+      outline: none;
+      box-shadow: none !important;
+      transition: 0.25s ease;
+    }
+
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus {
+      border-color: rgba(31, 119, 255, 0.55) !important;
+      box-shadow: 0 0 0 4px rgba(31, 119, 255, 0.12) !important;
+    }
+
+    .field textarea {
+      min-height: 140px;
+      resize: vertical;
+    }
+
+    .field input::placeholder,
+    .field textarea::placeholder {
+      color: #9fb4cf;
+    }
+
+    .field select option {
+      color: #000;
+    }
+
+    .meta-box {
+      padding: 14px 16px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .meta-box .meta-title {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    .meta-box .meta-value {
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.4;
+    }
+
+    .leave-card {
+      background: rgba(10, 24, 42, 0.82);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 26px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .leave-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+
+    .full-width {
+      grid-column: 1 / -1;
+    }
+
+    .status-strip {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 20px;
+      padding: 14px 16px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .status-strip .status-label {
+      font-size: 13px;
+      font-weight: 700;
+      color: #dbe8fb;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 90px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      color: white;
+      font-weight: bold;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    .status-grey {
+      background: #6f7c8f;
+    }
+
+    .status-pending {
+      background: linear-gradient(135deg, #f0ad4e, #d9922d);
+    }
+
+    .status-approved {
+      background: linear-gradient(135deg, #20c174, #119457);
+    }
+
+    .status-rejected {
+      background: linear-gradient(135deg, #ef5350, #cf3d3a);
+    }
+
+    #leavePeriod {
+      color: #c9d9ee !important;
+      font-style: normal !important;
+      font-size: 13px;
+    }
+
+    .help-block {
+      color: #9fb4cf !important;
+      margin-top: 8px !important;
+      font-size: 12px;
+    }
+
+    .submit-btn {
+      border: none !important;
+      border-radius: 14px !important;
+      padding: 13px 20px !important;
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff !important;
+      background: linear-gradient(135deg, var(--blue-1), var(--blue-2)) !important;
+      box-shadow: 0 12px 26px rgba(45, 125, 255, 0.25);
+      min-height: 48px;
+      min-width: 180px;
+      margin-top: 4px;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .paid-leave-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .paid-leave-card {
+      padding: 18px 16px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      min-height: 110px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .paid-leave-card span {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      color: var(--text-muted);
+      font-weight: 700;
+    }
+
+    .paid-leave-card strong {
+      font-size: 28px;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1;
+    }
+
+    .paid-leave-note {
+      margin-top: 12px;
+      font-size: 12px;
+      color: #9fb4cf;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 768px) {
+      .paid-leave-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    #leaveHistoryTable {
+  background: transparent !important;
+  color: #fff !important;
+  border-collapse: collapse;
+  min-width: 1100px;
+}
+
+#leaveHistoryTable thead tr {
+  background: rgba(255,255,255,.06);
+}
+
+#leaveHistoryTable th {
+  color: #fff;
+  font-weight: 700;
+  border: 1px solid rgba(255,255,255,.12) !important;
+  white-space: nowrap;
+}
+
+#leaveHistoryTable td {
+  color: #dbe8fb !important;
+  background-color: rgba(12,25,45,.65) !important;
+  border: 1px solid rgba(255,255,255,.08) !important;
+  vertical-align: middle !important;
+}
+
+#leaveHistoryTable tbody tr:hover td {
+  background: rgba(45,125,255,.12) !important;
+}
+
+#leaveHistoryTable tbody tr:nth-child(even) td {
+  background: rgba(255,255,255,.02) !important;
+}
+
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: 18px;
+}
+
+.table-wrapper::-webkit-scrollbar {
+  height: 8px;
+}
+
+.table-wrapper::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,.2);
+  border-radius: 50px;
+}
+
+.table-striped > tbody > tr:nth-of-type(odd) > td,
+.table-striped > tbody > tr:nth-of-type(odd) > th{
+  background-color: rgba(12,25,45,.65) !important;
+}
+
+.table-bordered{
+  border-color: rgba(255,255,255,.08) !important;
+}
+
+.table-bordered > tbody > tr > td,
+.table-bordered > thead > tr > th{
+  border-color: rgba(255,255,255,.08) !important;
+}
+
+   @media (max-width: 991px) {
+  html,
+  body {
+    width: 100%;
+    min-height: 100%;
+    height: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .app-shell {
+    width: 100%;
+    height: auto;
+    min-height: 100vh;
+    overflow: visible;
+  }
+
+  .dashboard-layout {
+    width: 100%;
+    height: auto;
+    min-height: 100vh;
+    padding-top: var(--topbar-height);
+  }
+
+  nav.sidebar {
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+
+    /* FIX: Command Center scroll ke saath upar jayega */
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    bottom: auto;
+
+    height: auto;
+    max-height: none;
+    overflow: visible;
+
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 0 0 24px 24px;
+    z-index: 100;
+    padding: 14px;
+  }
+
+  .sidebar-top-card {
+    margin-bottom: 18px;
+  }
+
+  .sidebar-section-title {
+    margin: 18px 8px 14px;
+  }
+
+  #side-bar {
+    display: none;
+    gap: 10px;
+  }
+
+  #side-bar.active {
+    display: flex;
+    flex-direction: column;
+    margin-top: 12px;
+  }
+
+  .sidebar-status-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .sidebar-status-text {
+    text-align: left;
+  }
+
+  main {
+    /* FIX: main normal page scroll mein rahega */
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    bottom: auto;
+
+    width: 100%;
+    padding: 18px;
+    overflow: visible;
+  }
+
+  .details-grid,
+  .leave-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .brand-subtitle {
+    display: none;
+  }
+}
+    @media (max-width: 600px) {
+      .topbar {
+        padding: 0 14px;
+      }
+
+      .brand-title {
+        font-size: 21px;
+      }
+
+      .logout {
+        padding: 9px 14px;
+        font-size: 13px;
+      }
+
+      .hero-card,
+      .panel-card,
+      .leave-card {
+        padding: 18px;
+        border-radius: 18px;
+      }
+    }
+
+    /* =========================
+   TABLET OPTIMIZATION
+========================= */
+
+@media (max-width:1024px){
+
+  :root{
+    --sidebar-width:260px;
+  }
+
+  .hero-card h1{
+    font-size:28px;
+  }
+
+  .section-header h2,
+  .section-header h3{
+    font-size:22px;
+  }
+
+  .panel-card,
+  .leave-card,
+  .hero-card{
+    padding:20px;
+  }
+}
+
+/* =========================
+   MOBILE TABLE CARDS
+========================= */
+
+@media (max-width:768px){
+
+  #leaveHistoryTable{
+    min-width:100%;
+  }
+
+  #leaveHistoryTable thead{
+    display:none;
+  }
+
+  #leaveHistoryTable,
+  #leaveHistoryTable tbody,
+  #leaveHistoryTable tr,
+  #leaveHistoryTable td{
+    display:block;
+    width:100%;
+  }
+
+  #leaveHistoryTable tr{
+    margin-bottom:16px;
+    border-radius:16px;
+    overflow:hidden;
+    background:rgba(255,255,255,.04);
+    border:1px solid rgba(255,255,255,.08);
+  }
+
+  #leaveHistoryTable td{
+    text-align:right;
+    padding:12px 15px 12px 45% !important;
+    position:relative;
+    border:none !important;
+    background:transparent !important;
+  }
+
+  #leaveHistoryTable td:before{
+    position:absolute;
+    left:15px;
+    width:40%;
+    text-align:left;
+    font-weight:700;
+    color:#8ec5ff;
+  }
+
+  #leaveHistoryTable td:nth-child(1):before{content:"UID";}
+  #leaveHistoryTable td:nth-child(2):before{content:"Name";}
+  #leaveHistoryTable td:nth-child(3):before{content:"Site";}
+  #leaveHistoryTable td:nth-child(4):before{content:"Start Date";}
+  #leaveHistoryTable td:nth-child(5):before{content:"End Date";}
+  #leaveHistoryTable td:nth-child(6):before{content:"Reason";}
+  #leaveHistoryTable td:nth-child(7):before{content:"Status";}
+}
+  </style>
+</head>
+
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+        <div class="brand-wrap">
+          <a href="#" class="brand-title">Site-Incharge Dashboard</a>
+          <p class="brand-subtitle">Leave Management & Request Overview</p>
+        </div>
+      </div>
+
+      <div class="topbar-right">
+        <a href="#" class="logout" onclick="logoutUser()">Logout</a>
+      </div>
+    </header>
+
+    <div class="dashboard-layout">
+      <nav class="sidebar">
+        <div class="sidebar-top-card">
+          <div class="sidebar-mini-label">SI Panel</div>
+          <h3 class="sidebar-main-title">Command Center</h3>
+          <p class="sidebar-main-subtitle">
+            Access leave requests, request status tracking, and important Site-Incharge sections from one clean navigation area.
+          </p>
+
+          <div class="sidebar-status-row">
+            <span class="sidebar-status-badge">Leave Active</span>
+            <div class="sidebar-status-text">
+              Secure access<br />
+              Quick navigation
+            </div>
+          </div>
+        </div>
+
+        <div class="sidebar-section-title">Navigation</div>
+        <ul id="side-bar"></ul>
+      </nav>
+
+      <main>
+        <section class="hero-card">
+          <span class="page-tag">LEAVE MANAGEMENT PANEL</span>
+          <h1>Leave Application</h1>
+          <p>
+            Submit and monitor leave requests with the same premium Site-Incharge dashboard theme,
+            including request status, period overview, and a clean leave application form.
+          </p>
+        </section>
+
+        <section class="panel-card">
+          <div class="section-header">
+            <h2>Site-Incharge Details</h2>
+            <span class="section-badge">Profile Overview</span>
+          </div>
+
+          <div class="details-grid">
+            <div class="details-col">
+              <div class="field">
+                <label>Site-Incharge Name</label>
+                <div class="value-box" id="siNameDisplay">Loading...</div>
+              </div>
+
+              <div class="field">
+                <label>Site-Incharge Id</label>
+                <div class="value-box" id="siIdDisplay">Loading...</div>
+              </div>
+            </div>
+
+            <div class="details-col">
+              <div class="meta-box">
+                <div class="meta-title">Joining Year</div>
+                <div class="meta-value" id="joiningYearDisplay">Loading...</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="leave-card">
+          <div class="section-header">
+            <h3>Leave Details</h3>
+            <span class="section-badge">Application Form</span>
+          </div>
+
+
+          <form id="leaveForm">
+            <div class="leave-grid">
+              <div class="field">
+                <label for="start-date">Leave Start Date</label>
+                <input type="date" id="start-date" name="start-date" class="input-form" required />
+              </div>
+
+              <div class="field">
+                <label for="end-date">Leave End Date</label>
+                <input type="date" id="end-date" name="end-date" class="input-form" required />
+              </div>
+
+              <div class="field full-width">
+                <label for="leave-purpose">Reason for Leave</label>
+                <textarea id="leave-purpose" name="leave-purpose" class="textarea" required minlength="30"
+                  placeholder="Please enter at least 30 characters…"></textarea>
+                <small class="help-block">Minimum 30 characters required.</small>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary submit-btn">Submit</button>
+          </form>
+
+        <section class="panel-card">
+          <div class="section-header">
+            <h2>Paid Leave</h2>
+            <span class="section-badge">Apr–Mar Cycle</span>
+          </div>
+
+          <div class="field" style="margin-bottom: 18px;">
+            <label for="paidLeaveMonth">Select Month</label>
+            <select id="paidLeaveMonth" class="input-form"></select>
+            <small class="help-block">Only months from the current financial year up to the current month are available.</small>
+          </div>
+
+          <div class="paid-leave-grid">
+            <div class="paid-leave-card">
+              <span>Total Paid Leave</span>
+              <strong id="totalPaidLeaveValue">-</strong>
+            </div>
+            <div class="paid-leave-card">
+              <span>Total Pending Paid Leave</span>
+              <strong id="annualPendingPaidLeaveValue">-</strong>
+            </div>
+            <div class="paid-leave-card">
+              <span>Current Month Paid Leave</span>
+              <strong id="currentMonthPaidLeaveValue">-</strong>
+            </div>
+            <div class="paid-leave-card">
+              <span>Current Month Pending Paid Leave</span>
+              <strong id="currentMonthPendingPaidLeaveValue">-</strong>
+            </div>
+          </div>
+
+          <div class="paid-leave-note" id="paidLeaveNote"></div>
+        </section>
+
+          <hr style="border-color:rgba(255,255,255,.08);margin:30px 0;">
+
+<div class="section-header">
+  <h3>Leave History</h3>
+  <span class="section-badge">My Leave Records</span>
+</div>
+
+<div class="table-wrapper">
+  <table class="table" id="leaveHistoryTable">
+    <thead>
+      <tr>
+        <th>UID</th>
+        <th>Name</th>
+        <th>Site</th>
+        <th>Start Date</th>
+        <th>End Date</th>
+        <th>Reason</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+
+    <tbody id="leaveHistoryBody">
+      <tr>
+        <td colspan="7"
+    style="text-align:center;
+           background:rgba(12,25,45,.65);
+           color:#dbe8fb;">
+          Loading...
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    function toggleMenu() {
+      const sidebar = document.getElementById("side-bar");
+      sidebar.classList.toggle("active");
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const currentPage = window.location.pathname.split("/").pop();
+      const navLinks = document.querySelectorAll("#side-bar a");
+
+      navLinks.forEach(link => {
+        const href = link.getAttribute("href");
+        if (href === currentPage) {
+          link.classList.add("active");
+        }
+      });
+    });
+  </script>
+
+  <script type="module" src="/public/control.js"></script>
+</body>
+</html>
+
+<!-- Firebase Firestore Integration Script -->
+<script type="module">
+  import {
+    getFirestore,
+    doc,
+    getDoc,
+    setDoc,
+    updateDoc,
+    collection,
+    getDocs,
+    query,
+    orderBy,
+    limit,
+    where,
+    collectionGroup
+  } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+  import { app } from "/public/firebase-config.js";
+  const db = getFirestore(app);
+
+  // ────────────────────────────────────────────────
+  // Supervisor Details Fetching
+  // ────────────────────────────────────────────────
+  let siTelephone = "";
+  const siEmail = localStorage.getItem("siEmail");
+  if (!siEmail) {
+    console.error("No Site-Incharge email found in localStorage.");
+  } else {
+    const siDocRef = doc(db, "Site-Incharge", siEmail);
+    getDoc(siDocRef)
+      .then(docSnap => {
+        if (!docSnap.exists()) {
+          console.error("No Site-Incharge document found for email:", siEmail);
+          return;
+        }
+        const siData = docSnap.data();
+        console.log("Fetched siData:", siData);
+
+        // 1) Fill basic details
+        document.getElementById("siNameDisplay").innerText = siData.Name;
+        document.getElementById("siIdDisplay").innerText = siData.uid;
+        document.getElementById("joiningYearDisplay").innerText = siData.joiningDate || "N/A";
+        siTelephone = siData.telephone || "";
+        // now that siIdDisplay is set, we can fetch the leave status
+        loadLeaveHistory();
+        initPaidLeaveMonthSelect();
+        refreshPaidLeaveData();
+      })
+      .catch(err => console.error("Error fetching Supervisor details:", err));
+  }
+  // ─── Helper to turn "YYYY-MM-DD" into "DD-MM-YY" ───────────────────────────
+  function fmtDisplay(iso) {
+    const d = new Date(iso);
+    const dd = String(d.getDate()).padStart(2, "0");
+    const mm = String(d.getMonth() + 1).padStart(2, "0");
+    const yy = String(d.getFullYear()).slice(-2);
+    return `${dd}-${mm}-${yy}`;
+  }
+
+  function getCurrentFinancialYearStart(date = new Date()) {
+    return date.getMonth() >= 3 ? date.getFullYear() : date.getFullYear() - 1;
+  }
+
+  function getPeriodKey(year, month) {
+    return `${year}-${String(month).padStart(2, "0")}`;
+  }
+
+  function parsePeriodKey(raw) {
+    if (raw === undefined || raw === null || raw === "") return null;
+    const value = String(raw).trim();
+    const match = value.match(/^(\d{4})[-/](\d{1,2})$/);
+    if (!match) return null;
+    const year = Number(match[1]);
+    const month = Number(match[2]);
+    if (!Number.isFinite(year) || !Number.isFinite(month) || month < 1 || month > 12) return null;
+    return getPeriodKey(year, month);
+  }
+
+  function formatPeriodLabel(periodKey) {
+    if (!periodKey) return "-";
+    const [yearStr, monthStr] = periodKey.split("-");
+    const year = Number(yearStr);
+    const month = Number(monthStr);
+    if (!year || !month) return "-";
+    return `${getMonthName(month)} ${year}`;
+  }
+
+  function getMonthName(monthNumber) {
+    return new Date(2000, monthNumber - 1, 1).toLocaleString("en", { month: "long" });
+  }
+
+  function getFinancialMonths() {
+    const today = new Date();
+    const fyStartYear = getCurrentFinancialYearStart(today);
+    const currentYear = today.getFullYear();
+    const currentMonth = today.getMonth() + 1;
+    const months = [];
+
+    let year = fyStartYear;
+    let month = 4;
+
+    while (year < currentYear || (year === currentYear && month <= currentMonth)) {
+      months.push({
+        value: getPeriodKey(year, month),
+        label: `${getMonthName(month)} ${year}`
+      });
+
+      month += 1;
+      if (month > 12) {
+        month = 1;
+        year += 1;
+      }
+    }
+
+    return months;
+  }
+
+  function parseMonthValue(raw) {
+    if (raw === undefined || raw === null || raw === "") return null;
+    const value = String(raw).trim().toLowerCase();
+    const monthMap = {
+      jan: 1, january: 1,
+      feb: 2, february: 2,
+      mar: 3, march: 3,
+      apr: 4, april: 4,
+      may: 5,
+      jun: 6, june: 6,
+      jul: 7, july: 7,
+      aug: 8, august: 8,
+      sep: 9, sept: 9, september: 9,
+      oct: 10, october: 10,
+      nov: 11, november: 11,
+      dec: 12, december: 12
+    };
+
+    if (/^\d{1,2}$/.test(value)) {
+      const num = Number(value);
+      return num >= 1 && num <= 12 ? num : null;
+    }
+
+    return monthMap[value] || null;
+  }
+
+  function extractMonthNumber(data) {
+    return parseMonthValue(
+      data?.month ??
+      data?.Month ??
+      data?.monthName ??
+      data?.MonthName ??
+      data?.selectedMonth ??
+      data?.SelectedMonth ??
+      data?.leaveMonth ??
+      data?.LeaveMonth ??
+      data?.monthValue ??
+      data?.MonthValue ??
+      data?.paidMonth ??
+      data?.PaidMonth ??
+      data?.monthKey ??
+      data?.MonthKey
+    );
+  }
+
+  function extractYearNumber(data) {
+    const rawYear =
+      data?.year ??
+      data?.Year ??
+      data?.leaveYear ??
+      data?.LeaveYear ??
+      data?.financialYear ??
+      data?.FinancialYear ??
+      data?.monthYear ??
+      data?.MonthYear;
+
+    if (rawYear === undefined || rawYear === null || rawYear === "") return null;
+
+    const value = String(rawYear).trim();
+
+    if (/^\d{4}$/.test(value)) {
+      return Number(value);
+    }
+
+    const periodMatch = value.match(/^(\d{4})[-/](\d{1,2})$/);
+    if (periodMatch) {
+      return Number(periodMatch[1]);
+    }
+
+    const dateMatch = value.match(/(\d{4})/);
+    if (dateMatch) {
+      const year = Number(dateMatch[1]);
+      return Number.isFinite(year) ? year : null;
+    }
+
+    return null;
+  }
+
+  function extractCycleStartYear(data) {
+    const explicit =
+      data?.cycleStartYear ??
+      data?.CycleStartYear ??
+      data?.financialStartYear ??
+      data?.FinancialStartYear;
+
+    if (explicit !== undefined && explicit !== null && explicit !== "") {
+      const parsed = Number(explicit);
+      if (Number.isFinite(parsed)) return parsed;
+    }
+
+    const cycleLabel =
+      String(
+        data?.cycleLabel ??
+        data?.CycleLabel ??
+        data?.financialCycle ??
+        data?.FinancialCycle ??
+        data?.financialYear ??
+        data?.FinancialYear ??
+        ""
+      ).trim();
+
+    const match = cycleLabel.match(/Apr\s+(\d{4})/i);
+    if (match) {
+      const year = Number(match[1]);
+      if (Number.isFinite(year)) return year;
+    }
+
+    const year = extractYearNumber(data);
+    if (year) {
+      return year;
+    }
+
+    return null;
+  }
+
+  function parsePeriodKeyFallback(data) {
+    const explicitPeriod =
+      data?.period ??
+      data?.Period ??
+      data?.monthYear ??
+      data?.MonthYear ??
+      data?.paidPeriod ??
+      data?.PaidPeriod ??
+      data?.monthKey ??
+      data?.MonthKey;
+
+    const parsedExplicit = parsePeriodKey(explicitPeriod);
+    if (parsedExplicit) return parsedExplicit;
+
+    const month = extractMonthNumber(data);
+    if (!month) return null;
+
+    const cycleStartYear = extractCycleStartYear(data);
+    if (cycleStartYear) {
+      const actualYear = month >= 4 ? cycleStartYear : cycleStartYear + 1;
+      return getPeriodKey(actualYear, month);
+    }
+
+    const year = extractYearNumber(data);
+    if (year) return getPeriodKey(year, month);
+
+    const dateSource =
+      data?.date ??
+      data?.Date ??
+      data?.createdOn ??
+      data?.CreatedOn ??
+      data?.createdAt ??
+      data?.CreatedAt;
+
+    if (dateSource) {
+      const d = typeof dateSource === "number"
+        ? new Date(dateSource)
+        : dateSource?.seconds
+          ? new Date(dateSource.seconds * 1000)
+          : new Date(dateSource);
+
+      if (!Number.isNaN(d.getTime())) {
+        return getPeriodKey(d.getFullYear(), d.getMonth() + 1);
+      }
+    }
+
+    return null;
+  }
+
+  function toNumber(value) {
+    const n = Number(value);
+    return Number.isFinite(n) ? n : 0;
+  }
+
+  function getCurrentPeriodKey(date = new Date()) {
+    return getPeriodKey(date.getFullYear(), date.getMonth() + 1);
+  }
+
+  function getFiscalStartPeriodKey(date = new Date()) {
+    return getPeriodKey(getCurrentFinancialYearStart(date), 4);
+  }
+
+  function comparePeriodKeys(a, b) {
+    if (!a || !b) return 0;
+    const [ay, am] = a.split("-").map(Number);
+    const [by, bm] = b.split("-").map(Number);
+    if (ay !== by) return ay - by;
+    return am - bm;
+  }
+
+  function isPeriodWithinRange(periodKey, startKey, endKey) {
+    if (!periodKey || !startKey || !endKey) return false;
+    return comparePeriodKeys(periodKey, startKey) >= 0 && comparePeriodKeys(periodKey, endKey) <= 0;
+  }
+
+  function buildPaidLeaveSummary(records, selectedPeriodKey) {
+    const currentPeriodKey = getCurrentPeriodKey();
+    const fyStartKey = getFiscalStartPeriodKey();
+    const effectiveSelectedPeriodKey = selectedPeriodKey || currentPeriodKey;
+
+    const monthlyMap = new Map();
+
+    records.forEach((record) => {
+      const periodKey = parsePeriodKeyFallback(record.data);
+      if (!periodKey) return;
+
+      const used = toNumber(
+        record.data?.usedPaidLeave ??
+        record.data?.UsedPaidLeave ??
+        record.data?.paidLeaveUsed ??
+        record.data?.PaidLeaveUsed ??
+        record.data?.leaveUsed ??
+        record.data?.LeaveUsed ??
+        record.data?.used
+      );
+
+      monthlyMap.set(periodKey, (monthlyMap.get(periodKey) || 0) + used);
+    });
+
+    let totalUsedInFY = 0;
+    for (const [periodKey, used] of monthlyMap.entries()) {
+      if (isPeriodWithinRange(periodKey, fyStartKey, effectiveSelectedPeriodKey)) {
+        totalUsedInFY += used;
+      }
+    }
+
+    const selectedUsed = monthlyMap.get(effectiveSelectedPeriodKey) || 0;
+    const currentMonthUsed = effectiveSelectedPeriodKey === currentPeriodKey ? selectedUsed : null;
+
+    return {
+      totalPaidLeave: 12,
+      totalPendingPaidLeave: Math.max(0, 12 - totalUsedInFY),
+      currentMonthPaidLeave: currentMonthUsed,
+      currentMonthPendingPaidLeave: currentMonthUsed === null ? null : Math.max(0, 4 - currentMonthUsed),
+      selectedPeriodLabel: formatPeriodLabel(effectiveSelectedPeriodKey),
+      currentPeriodKey,
+      selectedPeriodKey: effectiveSelectedPeriodKey
+    };
+  }
+
+  function renderPaidLeaveSummary(summary) {
+    const totalEl = document.getElementById("totalPaidLeaveValue");
+    const annualPendingEl = document.getElementById("annualPendingPaidLeaveValue");
+    const currentMonthUsedEl = document.getElementById("currentMonthPaidLeaveValue");
+    const currentMonthPendingEl = document.getElementById("currentMonthPendingPaidLeaveValue");
+    const noteEl = document.getElementById("paidLeaveNote");
+
+    if (!summary) {
+      if (totalEl) totalEl.innerText = "-";
+      if (annualPendingEl) annualPendingEl.innerText = "-";
+      if (currentMonthUsedEl) currentMonthUsedEl.innerText = "-";
+      if (currentMonthPendingEl) currentMonthPendingEl.innerText = "-";
+      if (noteEl) noteEl.innerText = "-";
+      return;
+    }
+
+    if (totalEl) totalEl.innerText = String(summary.totalPaidLeave);
+    if (annualPendingEl) annualPendingEl.innerText = String(summary.totalPendingPaidLeave);
+
+    if (summary.currentMonthPaidLeave === null) {
+      if (currentMonthUsedEl) currentMonthUsedEl.innerText = "-";
+      if (currentMonthPendingEl) currentMonthPendingEl.innerText = "-";
+    } else {
+      if (currentMonthUsedEl) currentMonthUsedEl.innerText = String(summary.currentMonthPaidLeave);
+      if (currentMonthPendingEl) currentMonthPendingEl.innerText = String(summary.currentMonthPendingPaidLeave);
+    }
+
+    if (noteEl) {
+      noteEl.innerText = summary.selectedPeriodKey === summary.currentPeriodKey
+        ? `${summary.selectedPeriodLabel} ka current month data show ho raha hai. Financial year April se March tak count hota hai.`
+        : `${summary.selectedPeriodLabel} current month nahi hai, isliye current month boxes mein "-" show hoga. Financial year April se March tak count hota hai.`;
+    }
+  }
+
+  async function refreshPaidLeaveData() {
+    const siUid = document.getElementById("siIdDisplay").innerText.trim();
+    const monthSelect = document.getElementById("paidLeaveMonth");
+    const selectedPeriodKey = monthSelect?.value || "";
+
+    if (!siUid || siUid === "Loading..." || siUid === "N/A") {
+      renderPaidLeaveSummary(null);
+      return;
+    }
+
+    try {
+      const paidLeaveRef = collection(db, "Paid leave", siUid, "Months");
+      const recordsById = new Map();
+
+      const snap = await getDocs(paidLeaveRef);
+      snap.forEach(docSnap => {
+        const data = docSnap.data();
+        recordsById.set(docSnap.id, {
+          id: docSnap.id,
+          data,
+          createdAt: typeof data.createdAt === "number"
+            ? data.createdAt
+            : (data.createdAt?.seconds ? data.createdAt.seconds * 1000 : 0)
+        });
+      });
+
+      const records = Array.from(recordsById.values());
+      const summary = buildPaidLeaveSummary(records, selectedPeriodKey);
+      renderPaidLeaveSummary(summary);
+    } catch (err) {
+      console.error("Error loading paid leave:", err);
+      renderPaidLeaveSummary(null);
+    }
+  }
+
+  function initPaidLeaveMonthSelect() {
+    const monthSelect = document.getElementById("paidLeaveMonth");
+    if (!monthSelect) return;
+
+    const months = getFinancialMonths();
+    monthSelect.innerHTML = months
+      .map(item => `<option value="${item.value}">${item.label}</option>`)
+      .join("");
+
+    const currentPeriodKey = getCurrentPeriodKey(new Date());
+    const foundCurrent = months.some(item => item.value === currentPeriodKey);
+    monthSelect.value = foundCurrent ? currentPeriodKey : (months[months.length - 1]?.value || "");
+    monthSelect.addEventListener("change", refreshPaidLeaveData);
+  }
+
+  // ─── Refresh the leave‑status badge + period text ─────────────────────────
+  async function refreshLeaveStatus() {
+    const siUid = document.getElementById("siIdDisplay").innerText.trim();
+    const statusEl = document.getElementById("leaveStatus");
+    const periodEl = document.getElementById("leavePeriod");
+
+    console.log("🔄 refreshLeaveStatus for UID:", siUid);
+
+    try {
+
+      // Firestore path: Leave/{supUid}/Supervisor
+      const leavesRef = collection(db, "Leave", siUid, "Site-Incharge");
+      console.log("Looking at:", leavesRef._path.segments.join("/"));
+
+      // Get the latest by startDate descending:
+      const q = query(leavesRef, orderBy("startDate", "desc"), limit(1));
+      const snap = await getDocs(q);
+      console.log("QuerySnapshot size:", snap.size);
+
+      if (snap.empty) {
+        statusEl.innerText = "—";
+        statusEl.className = "status-badge status-grey";
+        periodEl.innerText = "(no requests)";
+        return;
+      }
+
+      const data = snap.docs[0].data();
+      console.log("Latest leave data:", data);
+
+      const s = data.Status || "Pending";
+      statusEl.innerText = s;
+      statusEl.className = "status-badge " + (
+        s === "Approved" ? "status-approved"
+          : s === "Rejected" ? "status-rejected"
+            : "status-pending"
+      );
+
+      periodEl.innerText = `(${fmtDisplay(data.startDate)} → ${fmtDisplay(data.endDate)})`;
+    }
+    catch (err) {
+      console.error("❌ Error loading leave status:", err);
+      statusEl.innerText = "—";
+      statusEl.className = "status-badge status-grey";
+      periodEl.innerText = "(error)";
+    }
+  }
+
+  // ─── Leave‑form submission ────────────────────────────────────────────────
+  document.getElementById("leaveForm")
+    .addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const siUid = document.getElementById("siIdDisplay").innerText.trim();
+      const siName = document.getElementById("siNameDisplay").innerText.trim();
+      const rawStart = document.getElementById("start-date").value;
+      const rawEnd = document.getElementById("end-date").value;
+      const reason = document.getElementById("leave-purpose").value.trim();
+
+      // 1) All fields are mandatory
+      if (!rawStart || !rawEnd || !reason) {
+        return alert("Please fill in **all** leave fields (start date, end date, reason).");
+      }
+
+      // 2) Reason must be at least 30 characters
+      if (reason.length < 30) {
+        return alert("The reason must be at least 30 characters long.");
+      }
+
+      // ─────────────── New: block if ANY existing leave has endDate ≥ today ───────────────
+      const todayISO = new Date().toISOString().split("T")[0]; // "YYYY-MM-DD"
+      const leavesRef = collection(db, "Leave", siUid, "Site-Incharge");
+      const activeQ = query(
+        leavesRef,
+        where("endDate", ">=", todayISO),
+        limit(1)
+      );
+      const activeSnap = await getDocs(activeQ);
+      if (!activeSnap.empty) {
+        const existing = activeSnap.docs[0].data();
+        return alert(
+          `You already have an active leave until ${fmtDisplay(existing.endDate)}. ` +
+          `Please wait until that date has passed before submitting a new request.`
+        );
+      }
+
+      // ─────────────── Your duplicate‑start‑date check follows ───────────────
+      const docId = fmtDisplay(rawStart);
+      const duplicateQ = query(
+        leavesRef,
+        where("__name__", "==", docId)
+      );
+      const duplicateSnap = await getDocs(duplicateQ);
+      if (!duplicateSnap.empty) {
+        return alert("You already have a leave request for that start date.");
+      }
+
+      // ─────────────── All clear → write new leave ───────────────
+      try {
+        const leaveRef = doc(leavesRef, docId);
+        await setDoc(leaveRef, {
+          Name: siName,
+          uid: siUid,
+          telephone: siTelephone,
+          Status: "Pending",
+          startDate: rawStart,
+          endDate: rawEnd,
+          reason: reason
+        });
+        alert("Leave request submitted.");
+        e.target.reset();
+        await loadLeaveHistory();
+      } catch (err) {
+        console.error("Error saving leave:", err);
+        alert("Failed to submit leave request.");
+      }
+    });
+
+    async function loadLeaveHistory() {
+  const siUid = document.getElementById("siIdDisplay").innerText.trim();
+
+  if (!siUid) return;
+
+  const tbody = document.getElementById("leaveHistoryBody");
+
+  try {
+
+    const leavesRef = collection(db, "Leave", siUid, "Site-Incharge");
+
+    const q = query(
+      leavesRef,
+      orderBy("startDate", "desc")
+    );
+
+    const snap = await getDocs(q);
+
+    if (snap.empty) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="7" style="text-align:center;">
+            No Leave History Found
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    let html = "";
+
+    snap.forEach(docSnap => {
+
+      const d = docSnap.data();
+
+      html += `
+        <tr>
+          <td>${d.uid || "-"}</td>
+          <td>${d.Name || "-"}</td>
+          <td>${d.site || d.Site || "-"}</td>
+          <td>${fmtDisplay(d.startDate)}</td>
+          <td>${fmtDisplay(d.endDate)}</td>
+          <td>${d.reason || "-"}</td>
+          <td>
+            <span class="status-badge ${
+              d.Status === "Approved"
+                ? "status-approved"
+                : d.Status === "Rejected"
+                ? "status-rejected"
+                : "status-pending"
+            }">
+              ${d.Status || "Pending"}
+            </span>
+          </td>
+        </tr>
+      `;
+    });
+
+    tbody.innerHTML = html;
+
+  } catch (err) {
+
+    console.error(err);
+
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="7" style="text-align:center;color:red;">
+          Failed To Load History
+        </td>
+      </tr>
+    `;
+  }
+}
+</script>
+
+</html>

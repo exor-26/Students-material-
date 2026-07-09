@@ -1,0 +1,4665 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <title>Admin Dashboard - Payment Management</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/x-icon" href="logo2.ico" />
+  <link rel="stylesheet" type="text/css" href="Hremployeepayment.css" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap-theme.min.css" />
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+
+  <style>
+    *,
+    *::before,
+    *::after {
+      cursor: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" viewBox="0 0 24 24"><path fill="%23FFF" stroke="%23FF2711" stroke-width="2" d="M5.5 3.21V20.8c0 .45.54.67.85.35l4.86-4.86a.5.5 0 0 1 .35-.15h6.87a.5.5 0 0 0 .35-.85L6.35 2.85a.5.5 0 0 0-.85.35Z"></path></svg>') 5 5, auto;
+    }
+
+    a,
+    button,
+    input[type="submit"],
+    input[type="button"],
+    label,
+    select,
+    .dropbtn,
+    .sub-btn,
+    .btn,
+    .cn,
+    .carousel-control,
+    .hideMenuButton,
+    .item a,
+    input[type="text"],
+    input[type="search"],
+    textarea,
+    input[type="month"] {
+      cursor: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="%23FFF" stroke="%23FF2711" stroke-width="2" stroke-linejoin="round" d="M10 11V8.99c0-.88.59-1.64 1.44-1.86h.05A1.99 1.99 0 0 1 14 9.05V12v-2c0-.88.6-1.65 1.46-1.87h.05A1.98 1.98 0 0 1 18 10.06V13v-1.94a2 2 0 0 1 1.51-1.94h0A2 2 0 0 1 22 11.06V14c0 .6-.08 1.27-.21 1.97a7.96 7.96 0 0 1-7.55 6.48 54.98 54.98 0 0 1-4.48 0 7.96 7.96 0 0 1-7.55-6.48C2.08 15.27 2 14.59 2 14v-1.49c0-1.11.9-2.01 2.01-2.01h0a2 2 0 0 1 2.01 2.03l-.01.97v-10c0-1.1.9-2 2-2h0a2 2 0 0 1 2 2V11Z"></path></svg>') 5 5, auto;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --topbar-height: 78px;
+      --sidebar-width: 280px;
+      --bg-dark: #081523;
+      --bg-mid: #0e2238;
+      --card-bg: rgba(12, 25, 45, 0.86);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --text-main: #ffffff;
+      --text-soft: #c9d9ee;
+      --text-muted: #8ea4c5;
+      --orange-1: #ff8a3c;
+      --orange-2: #ff5a1f;
+      --blue-1: #2d7dff;
+      --blue-2: #1657cc;
+      --green-1: #19c37d;
+      --green-2: #119b62;
+      --shadow: 0 18px 40px rgba(0, 0, 0, 0.25);
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      background:
+        linear-gradient(135deg, rgba(7, 16, 30, 0.95), rgba(14, 34, 56, 0.92)),
+        url("https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1600&q=80") center/cover no-repeat fixed;
+      color: var(--text-main);
+    }
+
+    .app-shell {
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .topbar {
+      height: var(--topbar-height);
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(7, 16, 30, 0.88);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 2000;
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      min-width: 0;
+    }
+
+    .menu-toggle {
+      width: 46px;
+      height: 46px;
+      border: none;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
+      color: #fff;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: 0.25s ease;
+      flex-shrink: 0;
+    }
+
+    .menu-toggle:hover {
+      background: linear-gradient(135deg, rgba(255, 122, 47, 0.18), rgba(31, 119, 255, 0.16));
+      transform: translateY(-1px);
+    }
+
+    .brand-wrap {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-width: 0;
+    }
+
+    .brand-title {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 700;
+      color: #fff;
+      text-decoration: none !important;
+      line-height: 1.1;
+    }
+
+    .brand-subtitle {
+      margin: 2px 0 0;
+      color: var(--text-soft);
+      font-size: 13px;
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-shrink: 0;
+    }
+
+    .logout {
+      text-decoration: none !important;
+      color: #fff !important;
+      background: linear-gradient(135deg, var(--orange-1), var(--orange-2));
+      padding: 11px 18px;
+      border-radius: 12px;
+      font-weight: 700;
+      transition: 0.25s ease;
+      box-shadow: 0 10px 24px rgba(255, 90, 31, 0.24);
+      white-space: nowrap;
+    }
+
+    .logout:hover {
+      transform: translateY(-1px);
+      color: #fff !important;
+      text-decoration: none !important;
+    }
+
+    .dashboard-layout {
+      width: 100%;
+      height: 100vh;
+    }
+
+    nav.sidebar {
+      width: var(--sidebar-width);
+      min-width: var(--sidebar-width);
+      max-width: var(--sidebar-width);
+      position: fixed;
+      top: var(--topbar-height);
+      left: 0;
+      bottom: 0;
+      padding: 20px 16px 22px;
+      background: linear-gradient(180deg, rgba(6, 16, 30, 0.98), rgba(8, 22, 40, 0.96));
+      backdrop-filter: blur(16px);
+      border-right: 1px solid rgba(255, 255, 255, 0.06);
+      overflow-y: auto;
+      overflow-x: hidden;
+      z-index: 1500;
+      box-shadow: 18px 0 45px rgba(0, 0, 0, 0.24);
+    }
+
+    nav.sidebar::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    nav.sidebar::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.14);
+      border-radius: 999px;
+    }
+
+    .sidebar-top-card {
+      position: relative;
+      padding: 20px 18px 18px;
+      border-radius: 24px;
+      background:
+        linear-gradient(135deg, rgba(255, 122, 47, 0.16), rgba(31, 119, 255, 0.14)),
+        rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow:
+        0 16px 32px rgba(0, 0, 0, 0.20),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06);
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+
+    .sidebar-top-card::after {
+      content: "";
+      position: absolute;
+      right: -30px;
+      top: -30px;
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.16), transparent 70%);
+    }
+
+    .sidebar-mini-label {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.4px;
+      color: #ffd8c2;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 5px 10px;
+      border-radius: 999px;
+      margin-bottom: 12px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .sidebar-main-title {
+      font-size: 19px;
+      font-weight: 800;
+      color: #ffffff;
+      margin: 0 0 6px;
+      line-height: 1.2;
+      position: relative;
+      z-index: 1;
+    }
+
+    .sidebar-main-subtitle {
+      font-size: 13px;
+      color: #d5e2f1;
+      line-height: 1.7;
+      margin: 0 0 14px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .sidebar-status-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      position: relative;
+      z-index: 1;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .sidebar-status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #dfffe9;
+      background: rgba(20, 184, 106, 0.14);
+      border: 1px solid rgba(20, 184, 106, 0.22);
+    }
+
+    .sidebar-status-badge::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #4df39b;
+      box-shadow: 0 0 10px rgba(77, 243, 155, 0.7);
+    }
+
+    .sidebar-status-text {
+      font-size: 11px;
+      color: #c6d8ec;
+      text-align: right;
+      line-height: 1.4;
+    }
+
+    .sidebar-section-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #8ea4c5;
+      margin: 0 8px 16px;
+      font-weight: 700;
+    }
+
+    #side-bar {
+      list-style: none;
+      padding-left: 0;
+      margin-bottom: 0;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    #side-bar li {
+      width: 100%;
+      margin: 0;
+    }
+
+    #side-bar a,
+    #side-bar summary {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      width: 100%;
+      padding: 15px 15px;
+      border-radius: 20px;
+      text-decoration: none !important;
+      color: #edf4ff !important;
+      background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.025));
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      transition: all 0.28s ease;
+      position: relative;
+      overflow: hidden;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    }
+
+    #side-bar a::before,
+    #side-bar summary::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, rgba(255, 122, 47, 0.13), rgba(31, 119, 255, 0.11));
+      opacity: 0;
+      transition: opacity 0.28s ease;
+    }
+
+    #side-bar a::after,
+    #side-bar summary::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 18%;
+      width: 4px;
+      height: 64%;
+      border-radius: 999px;
+      background: linear-gradient(180deg, #ff8a3c, #1f77ff);
+      opacity: 0;
+      transition: opacity 0.28s ease;
+    }
+
+    #side-bar a:hover,
+    #side-bar summary:hover {
+      transform: translateX(6px);
+      border-color: rgba(255, 255, 255, 0.10);
+      box-shadow: 0 14px 28px rgba(0, 0, 0, 0.20);
+    }
+
+    #side-bar a:hover::before,
+    #side-bar summary:hover::before,
+    #side-bar a:hover::after,
+    #side-bar summary:hover::after {
+      opacity: 1;
+    }
+
+    #side-bar a.active,
+    #side-bar summary.active {
+      background: linear-gradient(135deg, rgba(255, 122, 47, 0.18), rgba(31, 119, 255, 0.16));
+      border-color: rgba(255, 255, 255, 0.12);
+      box-shadow: 0 16px 30px rgba(0, 0, 0, 0.24);
+    }
+
+    #side-bar a.active::before,
+    #side-bar summary.active::before,
+    #side-bar a.active::after,
+    #side-bar summary.active::after {
+      opacity: 1;
+    }
+
+    .nav-icon {
+      width: 44px;
+      height: 44px;
+      min-width: 44px;
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.13), rgba(255, 255, 255, 0.05));
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: #fff;
+      font-size: 17px;
+      position: relative;
+      z-index: 1;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    }
+
+    .nav-text {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .nav-text strong {
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.2;
+    }
+
+    .nav-text span {
+      margin-top: 4px;
+      font-size: 11px;
+      line-height: 1.45;
+      color: #aabed8;
+    }
+
+    .nav-arrow {
+      margin-left: auto;
+      font-size: 16px;
+      color: #93b2d8;
+      position: relative;
+      z-index: 1;
+      transition: transform 0.25s ease;
+    }
+
+    #side-bar a:hover .nav-arrow,
+    #side-bar summary:hover .nav-arrow {
+      transform: translateX(4px);
+    }
+
+    main {
+      position: fixed;
+      top: var(--topbar-height);
+      left: var(--sidebar-width);
+      right: 0;
+      bottom: 0;
+      padding: 28px 30px;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    .hero-card {
+      background: linear-gradient(135deg, rgba(22, 61, 112, 0.88), rgba(12, 27, 53, 0.92));
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 24px;
+      padding: 30px 34px;
+      box-shadow: var(--shadow);
+      margin-bottom: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-card::after {
+      content: "";
+      position: absolute;
+      right: -80px;
+      top: -80px;
+      width: 220px;
+      height: 220px;
+      background: radial-gradient(circle, rgba(255, 122, 47, 0.18), transparent 70%);
+      border-radius: 50%;
+    }
+
+    .page-tag {
+      display: inline-block;
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      color: #ffb88f;
+      background: rgba(255, 122, 47, 0.16);
+      border: 1px solid rgba(255, 122, 47, 0.2);
+      margin-bottom: 14px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-card h1 {
+      margin: 0 0 10px;
+      font-size: 32px;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.15;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-card p {
+      margin: 0;
+      max-width: 900px;
+      font-size: 15px;
+      line-height: 1.8;
+      color: #d0def0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .panel-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+      margin-bottom: 24px;
+    }
+
+    .filter-panel-card {
+      background: linear-gradient(135deg, rgba(16, 37, 64, 0.95), rgba(10, 24, 44, 0.95));
+      border: 1px solid rgba(31, 119, 255, 0.18);
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+      margin-bottom: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .filter-panel-card::after {
+      content: "";
+      position: absolute;
+      right: -60px;
+      bottom: -60px;
+      width: 180px;
+      height: 180px;
+      background: radial-gradient(circle, rgba(31, 119, 255, 0.18), transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .section-header h2,
+    .section-header h3 {
+      margin: 0;
+      font-size: 26px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .section-badge {
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #9ec3ff;
+      background: rgba(31, 119, 255, 0.14);
+      border: 1px solid rgba(31, 119, 255, 0.22);
+      white-space: nowrap;
+    }
+
+    .details-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(220px, 1fr));
+      gap: 18px;
+      margin-bottom: 0;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+    }
+
+    
+
+/* VALUE BOX FIX */
+.value-box{
+  width: 100%;
+
+  height: 52px !important;
+  min-height: 52px !important;
+
+  border-radius: 16px !important;
+
+  border: 1px solid rgba(255,255,255,0.10) !important;
+
+  background: rgba(255,255,255,0.06) !important;
+
+  color: #fff !important;
+
+  padding: 0 18px !important;
+
+  font-size: 15px !important;
+  font-weight: 500;
+
+  display: flex;
+  align-items: center;
+
+  box-sizing: border-box;
+}
+
+
+/* INPUT + DROPDOWN */
+.field input,
+.field select {
+
+  width: 100%;
+
+  height: 52px !important;
+  min-height: 52px !important;
+
+  border-radius: 16px !important;
+
+  border: 1px solid rgba(255,255,255,0.10) !important;
+
+  background: rgba(255,255,255,0.06) !important;
+
+  color: #fff !important;
+
+  padding: 0 16px !important;
+
+  font-size: 15px !important;
+  font-weight: 500;
+
+  outline: none;
+  box-shadow: none !important;
+
+  transition: all 0.25s ease;
+
+  box-sizing: border-box;
+
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* DROPDOWN UI */
+.field select {
+
+  padding-right: 42px !important;
+
+  background-image:
+    linear-gradient(45deg, transparent 50%, #9fb4cf 50%),
+    linear-gradient(135deg, #9fb4cf 50%, transparent 50%);
+
+  background-position:
+    calc(100% - 20px) calc(50% - 3px),
+    calc(100% - 14px) calc(50% - 3px);
+
+  background-size: 6px 6px;
+  background-repeat: no-repeat;
+}
+
+/* OPTION COLOR */
+.field select option{
+  color:#000 !important;
+  background:#fff !important;
+}
+
+/* FOCUS */
+.field input:focus,
+.field select:focus{
+
+  border-color: rgba(45,125,255,0.7) !important;
+
+  box-shadow:
+    0 0 0 4px rgba(45,125,255,0.10) !important;
+
+  background: rgba(255,255,255,0.08) !important;
+}
+
+/* iPad Safari Fix */
+@supports (-webkit-touch-callout: none){
+
+  .field select,
+  .field input[type="month"]{
+
+    height:52px !important;
+
+    line-height:normal !important;
+
+    padding-top:0 !important;
+    padding-bottom:0 !important;
+  }
+}
+
+
+
+    .field input:focus,
+    .field select:focus {
+      border-color: rgba(31, 119, 255, 0.55) !important;
+      box-shadow: 0 0 0 4px rgba(31, 119, 255, 0.12) !important;
+    }
+
+    .field input::placeholder {
+      color: #9fb4cf;
+    }
+
+    .field select option {
+      color: #000;
+    }
+
+    .field input[type="month"] {
+      text-align: center;
+      letter-spacing: 0.3px;
+      justify-content: center;
+      padding-inline: 16px !important;
+    }
+
+    .field input[type="month"]::-webkit-datetime-edit {
+      padding: 0 2px;
+    }
+
+    .field input[type="month"]::-webkit-datetime-edit-fields-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+    }
+
+    .field input[type="month"]::-webkit-datetime-edit-month-field,
+    .field input[type="month"]::-webkit-datetime-edit-year-field {
+      padding: 0;
+    }
+
+    .field input[type="month"]::-webkit-calendar-picker-indicator {
+      margin-left: 6px;
+      opacity: 0.92;
+    }
+
+    .payment-hold-btn {
+      width: auto !important;
+      min-width: 220px;
+      background: linear-gradient(135deg, #ffb347, #ff7f1f) !important;
+      border: none !important;
+      box-shadow: 0 12px 26px rgba(255, 127, 31, 0.18) !important;
+      color: #fff !important;
+    }
+
+    .download-data-btn {
+      background: linear-gradient(135deg, #7f53ff, #4d7cff) !important;
+      color: #fff !important;
+      border: none !important;
+      box-shadow: 0 12px 26px rgba(77, 124, 255, 0.20) !important;
+    }
+
+    .download-data-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .helper-text {
+      margin-top: 6px;
+      font-size: 12px;
+      color: #9fb4cf;
+    }
+
+    .btn-primary.custom-btn {
+      border: none;
+      border-radius: 14px;
+      padding: 12px 24px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      cursor: pointer;
+      background: linear-gradient(135deg, var(--blue-1), var(--blue-2));
+      box-shadow: 0 12px 26px rgba(45, 125, 255, 0.25);
+      transition: 0.25s ease;
+      min-height: 48px;
+      width: 100%;
+    }
+
+    .btn-primary.custom-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn-primary.custom-btn:disabled {
+      opacity: 0.72;
+    }
+
+    .btn-reset {
+      min-height: 48px;
+      border-radius: 14px;
+      padding: 12px 24px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #ffffff, #dfe8f5);
+      color: #123;
+      border: none;
+      min-width: 140px;
+      transition: 0.25s ease;
+    }
+
+    .btn-reset:hover {
+      transform: translateY(-1px);
+    }
+
+    .mode-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .mode-box {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .payment-section {
+      margin-top: 18px;
+    }
+
+    .table-action-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin: 18px 0 14px;
+      padding: 14px 16px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .table-action-copy {
+      min-width: 0;
+    }
+
+    .table-action-copy h4 {
+      margin: 0 0 4px;
+      font-size: 17px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .table-action-copy p {
+      margin: 0;
+      font-size: 12px;
+      line-height: 1.5;
+      color: #aebfda;
+    }
+
+    .payment-submit-btn {
+      width: auto !important;
+      min-width: 220px;
+      background: linear-gradient(135deg, var(--green-1), var(--green-2)) !important;
+      box-shadow: 0 12px 26px rgba(25, 195, 125, 0.18) !important;
+    }
+
+    .payment-submit-btn:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+
+    .payment-submit-btn.saved {
+      background: linear-gradient(135deg, #7f8ea3, #4b6079) !important;
+      box-shadow: none !important;
+    }
+    .payment-action-buttons {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .payment-hold-btn {
+      width: auto !important;
+      min-width: 220px;
+      background: linear-gradient(135deg, #ffb347, #ff7f1f) !important;
+      border: none !important;
+      box-shadow: 0 12px 26px rgba(255, 127, 31, 0.18) !important;
+      color: #fff !important;
+    }
+
+    .payment-hold-btn:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+
+    .payment-hold-btn.saved {
+      background: linear-gradient(135deg, #7f8ea3, #4b6079) !important;
+      box-shadow: none !important;
+    }
+
+    .payment-submit-btn.attention,
+    .payment-hold-btn.attention {
+      animation: paymentPulse 1.2s ease-in-out infinite;
+    }
+
+    .status-chip {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 88px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      border: 1px solid transparent;
+    }
+
+    .status-chip.pending {
+      color: #d7e9ff;
+      background: rgba(45, 125, 255, 0.16);
+      border-color: rgba(45, 125, 255, 0.24);
+      animation: paymentPulse 1.4s ease-in-out infinite;
+    }
+
+    .status-chip.release {
+      color: #d9ffe9;
+      background: rgba(25, 195, 125, 0.16);
+      border-color: rgba(25, 195, 125, 0.25);
+    }
+
+    .status-chip.hold {
+      color: #ffe8c2;
+      background: rgba(255, 122, 47, 0.18);
+      border-color: rgba(255, 122, 47, 0.26);
+    }
+
+    @keyframes paymentPulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(45, 125, 255, 0.0); }
+      50% { transform: scale(1.02); box-shadow: 0 0 0 6px rgba(45, 125, 255, 0.08); }
+    }
+
+    .mode-label {
+      font-size: 14px;
+      font-weight: 700;
+      color: #dce8ff;
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 54px;
+      height: 30px;
+      margin: 0;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background: rgba(255, 255, 255, 0.14);
+      transition: .3s;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 22px;
+      width: 22px;
+      left: 3px;
+      top: 3px;
+      background: #fff;
+      transition: .3s;
+      border-radius: 50%;
+    }
+
+    .switch input:checked+.slider {
+      background: linear-gradient(135deg, var(--blue-1), var(--blue-2));
+    }
+
+    .switch input:checked+.slider:before {
+      transform: translateX(24px);
+    }
+
+    .table-card {
+      background: rgba(10, 24, 42, 0.82);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 26px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+
+    .table-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .table-header h3 {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      border-radius: 16px;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 8px;
+    }
+
+    .table-wrap table {
+      width: 100%;
+      min-width: 1700px;
+      border-collapse: collapse;
+      overflow: hidden;
+      border-radius: 16px;
+    }
+
+    .table-wrap.small table {
+      min-width: 1100px;
+    }
+
+    .table-wrap thead tr {
+      background: linear-gradient(135deg, #183b6f, #102849);
+    }
+
+    .table-wrap thead td,
+    .table-wrap thead th {
+      padding: 16px 14px;
+      color: #fff;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      border: none;
+      text-align: center;
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+
+    .table-wrap tbody tr {
+      background: rgba(255, 255, 255, 0.03);
+      transition: 0.2s ease;
+    }
+
+    .table-wrap tbody tr:nth-child(even) {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .table-wrap tbody tr:hover {
+      background: rgba(31, 119, 255, 0.10);
+    }
+
+    .table-wrap tbody td {
+      padding: 15px 14px;
+      color: #eaf2ff;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      vertical-align: middle;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .earned-head {
+      background: rgba(25, 195, 125, 0.18) !important;
+      color: #b6ffd5 !important;
+    }
+
+    .deduct-head {
+      background: rgba(255, 192, 72, 0.18) !important;
+      color: #ffe8a8 !important;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 28px !important;
+      color: #a8bdd8 !important;
+      font-style: italic;
+    }
+
+    .loading-state {
+      text-align: center;
+      padding: 28px !important;
+      color: #d2e0f3 !important;
+      font-weight: 700;
+    }
+
+    .sum-row {
+      background: linear-gradient(135deg, rgba(255, 138, 60, 0.20), rgba(31, 119, 255, 0.14)) !important;
+      border-top: 2px solid rgba(255, 255, 255, 0.18);
+    }
+
+    .sum-row td {
+      color: #ffffff !important;
+      font-weight: 800;
+      font-size: 14px;
+      background: transparent !important;
+    }
+
+    .sum-label {
+      text-align: right !important;
+      color: #ffd8c2 !important;
+      letter-spacing: 0.5px;
+    }
+
+    .sum-value {
+      color: #b6ffd5 !important;
+      font-weight: 900 !important;
+    }
+
+    @media (max-width: 1200px) {
+      .details-grid {
+        grid-template-columns: repeat(2, minmax(220px, 1fr));
+      }
+    }
+
+   @media (max-width: 991px) {
+  html,
+  body {
+    width: 100%;
+    min-height: 100%;
+    height: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .app-shell {
+    width: 100%;
+    height: auto;
+    min-height: 100vh;
+    overflow: visible;
+  }
+
+  .dashboard-layout {
+    width: 100%;
+    height: auto;
+    min-height: 100vh;
+    padding-top: var(--topbar-height);
+  }
+
+  nav.sidebar {
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+
+    /* FIX: Command Center scroll ke saath upar jayega */
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    bottom: auto;
+
+    height: auto;
+    max-height: none;
+    overflow: visible;
+
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 0 0 24px 24px;
+    z-index: 100;
+    padding: 14px;
+  }
+
+  .sidebar-top-card {
+    margin-bottom: 18px;
+  }
+
+  .sidebar-section-title {
+    margin: 18px 8px 14px;
+  }
+
+  #side-bar {
+    display: none;
+    gap: 10px;
+  }
+
+  #side-bar.active {
+    display: flex;
+    flex-direction: column;
+    margin-top: 12px;
+  }
+
+  .sidebar-status-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .sidebar-status-text {
+    text-align: left;
+  }
+
+  main {
+    /* FIX: main bhi normal page scroll mein rahega */
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    bottom: auto;
+
+    width: 100%;
+    padding: 18px;
+    overflow: visible;
+  }
+
+  .hero-card h1 {
+    font-size: 24px;
+  }
+
+  .details-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .brand-subtitle {
+    display: none;
+  }
+
+  .field input[type="month"] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    line-height: 1.2 !important;
+    -webkit-appearance: none;
+  }
+
+  .field input[type="month"]::-webkit-datetime-edit,
+  .field input[type="month"]::-webkit-datetime-edit-fields-wrapper {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+  }
+
+  .field input[type="month"]::-webkit-datetime-edit-month-field,
+  .field input[type="month"]::-webkit-datetime-edit-year-field {
+    text-align: center;
+    padding: 0;
+  }
+
+  .field input[type="month"]::-webkit-calendar-picker-indicator {
+    margin-left: 6px;
+  }
+}
+
+    @media (max-width: 600px) {
+      .topbar {
+        padding: 0 14px;
+      }
+
+      .logout {
+        padding: 9px 14px;
+        font-size: 13px;
+      }
+
+      .hero-card,
+      .panel-card,
+      .filter-panel-card,
+      .table-card {
+        padding: 18px;
+        border-radius: 18px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+        <div class="brand-wrap">
+          <a href="#" class="brand-title">Admin Dashboard</a>
+          <p class="brand-subtitle">Payment Management & Payroll Control Panel</p>
+        </div>
+      </div>
+
+      <div class="topbar-right">
+        <a href="#" class="logout" onclick="logoutUser()">Logout</a>
+      </div>
+    </header>
+
+    <div class="dashboard-layout">
+      <nav class="sidebar">
+        <div class="sidebar-top-card">
+          <div class="sidebar-mini-label">Admin Panel</div>
+          <h3 class="sidebar-main-title">Command Center</h3>
+          <p class="sidebar-main-subtitle">
+            Access payroll records, payment filters, and important admin payment sections from one clean navigation area.
+          </p>
+
+          <div class="sidebar-status-row">
+            <span class="sidebar-status-badge">Payroll Active</span>
+            <div class="sidebar-status-text">
+              Secure access<br />
+              Quick navigation
+            </div>
+          </div>
+        </div>
+
+        <div class="sidebar-section-title">Navigation</div>
+        <ul id="side-bar"></ul>
+      </nav>
+
+      <main>
+        <section class="hero-card">
+          <span class="page-tag">PAYMENT CONTROL PANEL</span>
+          <h1>Payment Management</h1>
+          <p>
+            Manage monthly payroll for employees, supervisors, AS, site-incharge, and HR
+            with detailed and alternate payment views, UID filtering, and site-based control.
+          </p>
+        </section>
+
+        <section class="panel-card">
+          <div class="section-header">
+            <h2>Admin Details</h2>
+            <span class="section-badge">Profile</span>
+          </div>
+
+          <div class="details-grid">
+            <div class="field">
+              <label>Admin Name</label>
+              <div class="value-box" id="supNameDisplay">Loading...</div>
+            </div>
+
+            <div class="field">
+              <label>Admin ID</label>
+              <div class="value-box" id="supIdDisplay">Loading...</div>
+            </div>
+
+            <div class="field">
+              <label>Access Level</label>
+              <div class="value-box">Full Admin Access</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="filter-panel-card">
+          <div class="section-header">
+            <h2>Payment Filters</h2>
+            <span class="section-badge">Search & Filter</span>
+          </div>
+
+          <div class="details-grid">
+            <div class="field">
+              <label>Month & Year</label>
+              <input type="month" id="adminDateInput" class="form-control" />
+            </div>
+
+            <div class="field">
+              <label>Site</label>
+              <select id="supSiteSelect" class="form-control">
+                <option value="">Select Site</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>Department</label>
+              <select id="departmentSelect" class="form-control" disabled>
+                <option value="">Select Site First</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>Job Role</label>
+              <select id="typeSelect" class="form-control">
+                <option value="">All Role Types</option>
+                <option value="Employee">Employee / Worker</option>
+                <option value="Supervisor">Supervisor</option>
+                <option value="AS">Asst. Supervisor</option>
+                <option value="Site-Incharge">Site-Incharge</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>Status</label>
+              <select id="paymentStatusSelect" class="form-control">
+                <option value="all">All</option>
+                <option value="pending">Pending</option>
+                <option value="release">Release</option>
+                <option value="hold">Hold</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>Employee Name</label>
+              <input type="text" id="employeeNameInput" class="form-control" placeholder="Optional employee name"
+                autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" list="no-list" />
+              <div class="helper-text">Exact naam milte hi ID, Site, Department aur Job Role auto fill ho jayega.</div>
+            </div>
+
+            <div class="field">
+              <label>Employee ID</label>
+              <input type="text" id="uidFilterInput" class="form-control" placeholder="Optional employee ID"
+                autocomplete="off" />
+            </div>
+
+            <div class="field" id="duplicateIdField" style="display:none;">
+              <label>Select Employee ID</label>
+              <select id="duplicateIdSelect" class="form-control">
+                <option value="">Select Employee ID</option>
+              </select>
+              <div class="helper-text">Same name ke multiple records mile hain. ID choose karo.</div>
+            </div>
+
+            <div class="field" style="grid-column: 1 / -1;">
+              <div style="display:flex; gap:12px; flex-wrap:wrap;">
+                <button id="adminSubmitBtn" class="btn btn-primary custom-btn" type="button"
+                  style="flex:1;">Submit</button>
+                <button id="resetFiltersBtn" type="button" class="btn-reset">Reset</button>
+                <button id="downloadBtn" type="button" class="btn-reset download-data-btn">Download Data</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        
+        <section class="table-card">
+          <div class="mode-row">
+            <div class="table-header" style="margin-bottom:0;">
+              <h3>Payment Record</h3>
+              <span class="section-badge">Detailed / Alternate View</span>
+            </div>
+
+            <div class="mode-box">
+              <label class="switch">
+                <input type="checkbox" id="paymentModeToggle" />
+                <span class="slider"></span>
+              </label>
+              <span class="mode-label">Alternate Payment Mode</span>
+            </div>
+          </div>
+
+          <div class="payment-section" id="detailedPaymentSection">
+            <div class="table-action-row">
+              <div class="table-action-copy">
+                <h4>First Payment</h4>
+                <p>Current detailed payment table ko hold ya release mode mein control kar do.</p>
+              </div>
+              <div class="payment-action-buttons">
+                <button id="firstPaymentHoldBtn" class="btn btn-warning custom-btn payment-hold-btn" type="button" disabled>
+                  Hold First Payment
+                </button>
+                <button id="firstPaymentSubmitBtn" class="btn btn-primary custom-btn payment-submit-btn" type="button" disabled>
+                  Submit First Payment
+                </button>
+              </div>
+            </div>
+
+            <div class="table-wrap" id="detailedPaymentTable">
+              <table>
+                <thead>
+                  <tr>
+                    <td rowspan="2"><b>Sl No.</b></td>
+                    <td rowspan="2"><b>UID</b></td>
+                    <td rowspan="2"><b>Name</b></td>
+                    <td rowspan="2"><b>Site</b></td>
+                    <td rowspan="2"><b>Total Day</b></td>
+                    <td colspan="6" class="earned-head"><b>Amount of Wages Earned</b></td>
+                    <td colspan="5" class="deduct-head"><b>Deduction</b></td>
+                    <td rowspan="2"><b>Total Amount</b></td>
+                    <td rowspan="2"><b>Status</b></td>
+                  </tr>
+                  <tr>
+                    <td><b>Wages/@m</b></td>
+                    <td><b>Basic Wages</b></td>
+                    <td><b>PH Amount</b></td>
+                    <td><b>Leave</b></td>
+                    <td><b>Bonus @8.33%</b></td>
+                    <td class="earned-head"><b>Total Wages</b></td>
+                    <td><b>EPF@ 12%</b></td>
+                    <td><b>ESIC @0.75%</b></td>
+                    <td><b>Advance Wages Payment</b></td>
+                    <td><b>Food</b></td>
+                    <td class="deduct-head"><b>Total Deduction</b></td>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td colspan="18" class="empty-state">No payment records loaded yet.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="payment-section" id="alternatePaymentSection" style="display:none;">
+            <div class="table-action-row">
+              <div class="table-action-copy">
+                <h4>Second Payment</h4>
+                <p>Alternate payment table ko hold ya release mode mein control kar do.</p>
+              </div>
+              <div class="payment-action-buttons">
+                <button id="secondPaymentHoldBtn" class="btn btn-warning custom-btn payment-hold-btn" type="button" disabled>
+                  Hold Second Payment
+                </button>
+                <button id="secondPaymentSubmitBtn" class="btn btn-primary custom-btn payment-submit-btn" type="button" disabled>
+                  Submit Second Payment
+                </button>
+              </div>
+            </div>
+
+            <div class="table-wrap small" id="alternatePaymentTable">
+              <table>
+                <thead>
+                  <tr>
+                    <td><b>Sl No.</b></td>
+                    <td><b>UID</b></td>
+                    <td><b>Name</b></td>
+                    <td><b>Site</b></td>
+                    <td><b>Working Type</b></td>
+                    <td><b>Total Day</b></td>
+                    <td><b>Left Wages</b></td>
+                    <td><b>Allowance</b></td>
+                    <td><b>Advance Wages Payment</b></td>
+                    <td><b>OT</b></td>
+                    <td><b>Staff Accommodation Price</b></td>
+                    <td><b>Paid Leave</b></td>
+                    <td><b>Total Amount</b></td>
+                    <td><b>Status</b></td>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td colspan="14" class="empty-state">No alternate payment records loaded yet.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <script>
+    function toggleMenu() {
+      const sidebar = document.getElementById("side-bar");
+      sidebar.classList.toggle("active");
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const currentPage = window.location.pathname.split("/").pop();
+      const navLinks = document.querySelectorAll("#side-bar a");
+
+      navLinks.forEach(link => {
+        const href = link.getAttribute("href");
+        if (href === currentPage) {
+          link.classList.add("active");
+        }
+      });
+    });
+  </script>
+
+  <script type="module" src="/public/control.js"></script>
+</body>
+</html>
+
+  <script type="module">
+  import {
+    getFirestore,
+    collection,
+    doc,
+    getDoc,
+    getDocs,
+    setDoc,
+    serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+
+  import { app } from "/public/firebase-config.js";
+
+  const db = getFirestore(app);
+
+  let adminDataGlobal = null;
+  let allPeopleCache = [];
+  let duplicateMatches = [];
+  let isProgrammaticFill = false;
+  let lockedByNameSelection = false;
+  let isSearching = false;
+  let activeSearchToken = 0;
+
+  const presentDatesCache = new Map();
+  const attendanceDatesCache = new Map();
+  const holidayIsoCache = { loaded: false, dates: [] };
+  const advanceCache = new Map();
+  const foodCache = new Map();
+  const allowanceCache = new Map();
+  const otCache = new Map();
+  const accommodationCache = new Map();
+  const paidLeaveCache = new Map();
+
+  const savedPaymentLockCache = new Map();
+  const autoSaveAttemptCache = new Set();
+  let currentPayrollMonthKey = "";
+  let currentDetailedRows = [];
+  let currentAlternateRows = [];
+
+  const adminEmail = localStorage.getItem("adminEmail");
+
+  const supNameDisplay = document.getElementById("supNameDisplay");
+  const supIdDisplay = document.getElementById("supIdDisplay");
+  const siteSelect = document.getElementById("supSiteSelect");
+  const departmentSelect = document.getElementById("departmentSelect");
+  const typeSelect = document.getElementById("typeSelect");
+  const adminDateInput = document.getElementById("adminDateInput");
+  const employeeNameInput = document.getElementById("employeeNameInput");
+  const uidFilterInput = document.getElementById("uidFilterInput");
+  const duplicateIdField = document.getElementById("duplicateIdField");
+  const duplicateIdSelect = document.getElementById("duplicateIdSelect");
+  const adminSubmitBtn = document.getElementById("adminSubmitBtn");
+  const resetFiltersBtn = document.getElementById("resetFiltersBtn");
+  const paymentModeToggle = document.getElementById("paymentModeToggle");
+  const statusFilterSelect = document.getElementById("paymentStatusSelect");
+  const downloadBtn = document.getElementById("downloadBtn");
+  const detailedPaymentSection = document.getElementById("detailedPaymentSection");
+  const alternatePaymentSection = document.getElementById("alternatePaymentSection");
+  const firstPaymentHoldBtn = document.getElementById("firstPaymentHoldBtn");
+  const firstPaymentSubmitBtn = document.getElementById("firstPaymentSubmitBtn");
+  const secondPaymentHoldBtn = document.getElementById("secondPaymentHoldBtn");
+  const secondPaymentSubmitBtn = document.getElementById("secondPaymentSubmitBtn");
+
+  function safeValue(...values) {
+    for (const value of values) {
+      if (value !== undefined && value !== null && String(value).trim() !== "") {
+        return String(value).trim();
+      }
+    }
+    return "";
+  }
+
+  function normalizeText(value = "") {
+    return String(value || "")
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g, " ");
+  }
+
+  function normalizeId(value = "") {
+    return String(value || "")
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g, "")
+      .replace(/[-_]/g, "");
+  }
+
+  function formatMoney(value) {
+    return (Number(value) || 0).toFixed(2);
+  }
+
+  function formatSignedMoney(value) {
+    return (Number(value) || 0).toFixed(2);
+  }
+
+  function getDisplayString(value) {
+    if (value === undefined || value === null) return "";
+
+    if (Array.isArray(value)) {
+      return value
+        .map(getDisplayString)
+        .filter(Boolean)
+        .join(", ");
+    }
+
+    if (typeof value === "object") {
+      const preferredKeys = [
+        "name", "Name", "label", "Label", "title", "Title", "value", "Value",
+        "department", "Department", "departmentName", "DepartmentName",
+        "dept", "Dept", "fullName", "FullName", "text", "Text", "id", "ID", "code", "Code"
+      ];
+
+      for (const key of preferredKeys) {
+        const nested = value[key];
+        if (nested !== undefined && nested !== null && String(nested).trim() !== "") {
+          return String(nested).trim();
+        }
+      }
+
+      return "";
+    }
+
+    const text = String(value).trim();
+    return text && text !== "[object Object]" ? text : "";
+  }
+
+  function normalizePaymentStatus(status) {
+    const value = String(status || "pending").trim().toLowerCase();
+
+    if (["release", "released", "submitted", "submited", "approved", "done"].includes(value)) {
+      return "release";
+    }
+
+    if (["hold", "onhold", "freeze", "frozen"].includes(value)) {
+      return "hold";
+    }
+
+    return "pending";
+  }
+
+  function getPaymentStatusLabel(status) {
+    const normalized = normalizePaymentStatus(status);
+    if (normalized === "release") return "Release";
+    if (normalized === "hold") return "Hold";
+    return "Pending";
+  }
+
+  function getPaymentStatusClass(status) {
+    return normalizePaymentStatus(status);
+  }
+
+  function getPaymentStatusChip(status) {
+    const normalized = normalizePaymentStatus(status);
+    return `<span class="status-chip ${normalized}">${getPaymentStatusLabel(normalized)}</span>`;
+  }
+
+  function getSelectedStatusFilter() {
+    const raw = String(statusFilterSelect ? statusFilterSelect.value : "all").trim().toLowerCase();
+    return raw === "all" ? "all" : normalizePaymentStatus(raw);
+  }
+
+  function resetSubmitButton() {
+    isSearching = false;
+
+    if (adminSubmitBtn) {
+      adminSubmitBtn.disabled = false;
+      adminSubmitBtn.textContent = "Submit";
+    }
+  }
+
+  function showValidationError(message) {
+    alert(message);
+    clearTables(message);
+    resetSubmitButton();
+  }
+
+  function getPersonDepartments(data) {
+    const departments = [];
+
+    const possibleValues = [
+      data.departmentSelect,
+      data.department,
+      data.Department,
+      data.jobDepartment,
+      data.job,
+      data.Job,
+      data.jobCode,
+      data.JobCode,
+      data.departmentName,
+      data.DepartmentName,
+      data.dept,
+      data.Dept
+    ];
+
+    possibleValues.forEach((value) => {
+      const displayValue = getDisplayString(value);
+      if (displayValue) {
+        departments.push(displayValue);
+      }
+    });
+
+    if (Array.isArray(data.jobs)) {
+      data.jobs.forEach((job) => {
+        const displayValue = getDisplayString(job);
+        if (displayValue) {
+          departments.push(displayValue);
+        }
+      });
+    }
+
+    if (Array.isArray(data.departmentList)) {
+      data.departmentList.forEach((dept) => {
+        const displayValue = getDisplayString(dept);
+        if (displayValue) {
+          departments.push(displayValue);
+        }
+      });
+    }
+
+    if (Array.isArray(data.departments)) {
+      data.departments.forEach((dept) => {
+        const displayValue = getDisplayString(dept);
+        if (displayValue) {
+          departments.push(displayValue);
+        }
+      });
+    }
+
+    const uniqueDepartments = [];
+    const seen = new Set();
+
+    departments.forEach((dept) => {
+      const key = normalizeText(dept);
+      if (!seen.has(key)) {
+        seen.add(key);
+        uniqueDepartments.push(dept);
+      }
+    });
+
+    return uniqueDepartments;
+  }
+
+  function getPersonSites(data) {
+    const sites = [];
+
+    const possibleValues = [
+      data.siteSelect,
+      data.site,
+      data.Site,
+      data.industrySelect,
+      data.location,
+      data.siteName,
+      data.industry
+    ];
+
+    possibleValues.forEach((value) => {
+      if (value !== undefined && value !== null && String(value).trim() !== "") {
+        sites.push(String(value).trim());
+      }
+    });
+
+    if (Array.isArray(data.Site)) {
+      data.Site.forEach((site) => {
+        if (site !== undefined && site !== null && String(site).trim() !== "") {
+          sites.push(String(site).trim());
+        }
+      });
+    }
+
+    if (Array.isArray(data.sites)) {
+      data.sites.forEach((site) => {
+        if (site !== undefined && site !== null && String(site).trim() !== "") {
+          sites.push(String(site).trim());
+        }
+      });
+    }
+
+    const uniqueSites = [];
+    const seen = new Set();
+
+    sites.forEach((site) => {
+      const key = normalizeText(site);
+      if (!seen.has(key)) {
+        seen.add(key);
+        uniqueSites.push(site);
+      }
+    });
+
+    return uniqueSites;
+  }
+
+  function mapPerson(data, roleType) {
+    const departments = getPersonDepartments(data);
+    const sites = getPersonSites(data);
+
+    return {
+      uid: safeValue(
+        data.uid,
+        data.UID,
+        data.employeeId,
+        data.employeeID,
+        data.empId,
+        data.empID,
+        data.id
+      ),
+
+      fullName: safeValue(
+        data.fullName,
+        data.FullName,
+        data.Name,
+        data.name,
+        data.employeeName,
+        data.EmployeeName
+      ),
+
+      department: departments[0] || "",
+      departments,
+
+      site: sites[0] || "",
+      sites,
+
+      cardType: safeValue(
+        data.CardType,
+        data.cardType,
+        data.cardtype,
+        data.category,
+        data.skillType,
+        data.skill,
+        data.workerType
+      ),
+
+      workingType: safeValue(
+        data.workingType,
+        data.WorkingType,
+        data.workType,
+        data.WorkType,
+        data.typeOfWork,
+        data.TypeOfWork
+      ),
+
+      grossAmount: Number(
+        safeValue(
+          data.gross_amount,
+          data.grossAmount,
+          data.GrossAmount,
+          data.gross,
+          data.Gross,
+          data.monthlyAmount,
+          data.monthlySalary,
+          data.salary
+        )
+      ) || 0,
+
+      roleType,
+      raw: data
+    };
+  }
+
+  function resetDuplicateDropdown() {
+    duplicateMatches = [];
+    duplicateIdField.style.display = "none";
+    duplicateIdSelect.innerHTML = `<option value="">Select Employee ID</option>`;
+  }
+
+  function clearAllCaches() {
+    presentDatesCache.clear();
+    attendanceDatesCache.clear();
+    advanceCache.clear();
+    foodCache.clear();
+    allowanceCache.clear();
+    otCache.clear();
+    accommodationCache.clear();
+    paidLeaveCache.clear();
+  }
+
+  function clearTables(message = "No payment records loaded yet.") {
+    currentDetailedRows = [];
+    currentAlternateRows = [];
+    currentPayrollMonthKey = "";
+
+    document.querySelector("#detailedPaymentTable table tbody").innerHTML =
+      `<tr><td colspan="18" class="empty-state">${message}</td></tr>`;
+
+    document.querySelector("#alternatePaymentTable table tbody").innerHTML =
+      `<tr><td colspan="14" class="empty-state">${message}</td></tr>`;
+
+    if (downloadBtn) {
+      downloadBtn.disabled = true;
+    }
+
+    refreshPaymentActionStates();
+  }
+
+  function setLoadingState() {
+    document.querySelector("#detailedPaymentTable table tbody").innerHTML =
+      `<tr><td colspan="18" class="loading-state">Loading payment records...</td></tr>`;
+
+    document.querySelector("#alternatePaymentTable table tbody").innerHTML =
+      `<tr><td colspan="14" class="loading-state">Loading alternate payment records...</td></tr>`;
+
+    if (firstPaymentSubmitBtn) {
+      firstPaymentSubmitBtn.disabled = true;
+      firstPaymentSubmitBtn.textContent = "Submit First Payment";
+      firstPaymentSubmitBtn.classList.remove("saved", "attention");
+    }
+
+    if (firstPaymentHoldBtn) {
+      firstPaymentHoldBtn.disabled = true;
+      firstPaymentHoldBtn.textContent = "Hold First Payment";
+      firstPaymentHoldBtn.classList.remove("saved", "attention");
+    }
+
+    if (secondPaymentSubmitBtn) {
+      secondPaymentSubmitBtn.disabled = true;
+      secondPaymentSubmitBtn.textContent = "Submit Second Payment";
+      secondPaymentSubmitBtn.classList.remove("saved", "attention");
+    }
+
+    if (secondPaymentHoldBtn) {
+      secondPaymentHoldBtn.disabled = true;
+      secondPaymentHoldBtn.textContent = "Hold Second Payment";
+      secondPaymentHoldBtn.classList.remove("saved", "attention");
+    }
+
+    if (downloadBtn) {
+      downloadBtn.disabled = true;
+    }
+  }
+
+  function setSiteDropdown(selectedValue = "") {
+    const siteSet = new Set();
+
+    allPeopleCache.forEach((person) => {
+      const sites = Array.isArray(person.sites) && person.sites.length
+        ? person.sites
+        : [person.site];
+
+      sites.forEach((site) => {
+        if (site) siteSet.add(site);
+      });
+    });
+
+    let sites = Array.from(siteSet).sort((a, b) => a.localeCompare(b));
+
+    if (
+      adminDataGlobal &&
+      Array.isArray(adminDataGlobal.Site) &&
+      adminDataGlobal.Site.length
+    ) {
+      const allowedSites = new Set(
+        adminDataGlobal.Site.map((s) => normalizeText(s))
+      );
+
+      sites = sites.filter((site) => allowedSites.has(normalizeText(site)));
+    }
+
+    siteSelect.innerHTML = `<option value="">Select Site</option>`;
+
+    sites.forEach((site) => {
+      const opt = document.createElement("option");
+      opt.value = site;
+      opt.textContent = site;
+      siteSelect.appendChild(opt);
+    });
+
+    if (selectedValue) {
+      const exact = sites.find(
+        (site) => normalizeText(site) === normalizeText(selectedValue)
+      );
+
+      if (exact) siteSelect.value = exact;
+    }
+  }
+
+  function setDepartmentDropdownForSite(selectedSite, selectedDepartment = "") {
+    if (!selectedSite) {
+      departmentSelect.innerHTML = `<option value="">Select Site First</option>`;
+      departmentSelect.disabled = true;
+      return;
+    }
+
+    const deptSet = new Set();
+
+    allPeopleCache.forEach((person) => {
+      const personSites = Array.isArray(person.sites) && person.sites.length
+        ? person.sites
+        : [person.site];
+
+      const siteMatched = personSites.some(
+        (site) => normalizeText(site) === normalizeText(selectedSite)
+      );
+
+      if (!siteMatched) return;
+
+      const personDepartments =
+        Array.isArray(person.departments) && person.departments.length
+          ? person.departments
+          : [person.department];
+
+      personDepartments.forEach((dept) => {
+        if (dept) deptSet.add(dept);
+      });
+    });
+
+    const departments = Array.from(deptSet).sort((a, b) =>
+      a.localeCompare(b)
+    );
+
+    departmentSelect.innerHTML = `<option value="">All Departments</option>`;
+
+    departments.forEach((dept) => {
+      const opt = document.createElement("option");
+      opt.value = dept;
+      opt.textContent = dept;
+      departmentSelect.appendChild(opt);
+    });
+
+    departmentSelect.disabled = false;
+
+    if (selectedDepartment) {
+      const exact = departments.find(
+        (dept) => normalizeText(dept) === normalizeText(selectedDepartment)
+      );
+
+      if (exact) departmentSelect.value = exact;
+    }
+  }
+
+  function lockFilters(lock = true) {
+    lockedByNameSelection = lock;
+    siteSelect.disabled = lock;
+    departmentSelect.disabled = lock;
+    typeSelect.disabled = lock;
+  }
+
+  function autofillFieldsFromPerson(person) {
+    if (!person) return;
+
+    isProgrammaticFill = true;
+
+    employeeNameInput.value = person.fullName || "";
+    uidFilterInput.value = person.uid || "";
+
+    const firstSite =
+      Array.isArray(person.sites) && person.sites.length
+        ? person.sites[0]
+        : person.site || "";
+
+    const firstDepartment =
+      Array.isArray(person.departments) && person.departments.length
+        ? person.departments[0]
+        : person.department || "";
+
+    setSiteDropdown(firstSite);
+    setDepartmentDropdownForSite(firstSite, firstDepartment);
+    typeSelect.value = person.roleType || "";
+
+    lockFilters(true);
+
+    isProgrammaticFill = false;
+  }
+
+  function resetAllFilters() {
+    lockedByNameSelection = false;
+    isProgrammaticFill = true;
+
+    employeeNameInput.value = "";
+    uidFilterInput.value = "";
+    typeSelect.value = "";
+
+    siteSelect.disabled = false;
+    departmentSelect.disabled = false;
+    typeSelect.disabled = false;
+
+    setSiteDropdown();
+    setDepartmentDropdownForSite("");
+    resetDuplicateDropdown();
+
+    isProgrammaticFill = false;
+  }
+
+  async function loadAdminDetails() {
+    if (!adminEmail) {
+      alert("Admin email not found in localStorage.");
+      return;
+    }
+
+    try {
+      const docSnap = await getDoc(doc(db, "Admin", adminEmail));
+
+      if (!docSnap.exists()) {
+        alert("Admin not found.");
+        return;
+      }
+
+      adminDataGlobal = docSnap.data() || {};
+
+      supNameDisplay.innerText = safeValue(
+        adminDataGlobal.Name,
+        adminDataGlobal.fullName,
+        adminDataGlobal.FullName,
+        adminDataGlobal.name,
+        "N/A"
+      );
+
+      supIdDisplay.innerText = safeValue(
+        adminDataGlobal.uid,
+        adminDataGlobal.UID,
+        adminDataGlobal.id,
+        "N/A"
+      );
+    } catch (err) {
+      console.error("Error loading admin:", err);
+      alert("Error fetching admin details.");
+    }
+  }
+
+  async function loadAllPeople() {
+    const collectionsToRead = [
+      { name: "Employee", role: "Employee" },
+      { name: "Supervisor", role: "Supervisor" },
+      { name: "AS", role: "AS" },
+      { name: "Site-Incharge", role: "Site-Incharge" },
+    ];
+
+    const merged = new Map();
+
+    for (const item of collectionsToRead) {
+      try {
+        const snap = await getDocs(collection(db, item.name));
+
+        snap.forEach((docSnap) => {
+          const person = mapPerson(docSnap.data() || {}, item.role);
+
+          if (person.uid && person.fullName) {
+            merged.set(`${item.role}-${normalizeId(person.uid)}`, person);
+          }
+        });
+      } catch (err) {
+        console.warn(`Unable to read collection ${item.name}:`, err);
+      }
+    }
+
+    allPeopleCache = Array.from(merged.values());
+
+    setSiteDropdown();
+    setDepartmentDropdownForSite("");
+  }
+
+  function getFinalFilteredPeople() {
+    const selectedSite = siteSelect.value.trim();
+
+    const selectedDepartment =
+      departmentSelect.disabled && !lockedByNameSelection
+        ? ""
+        : departmentSelect.value.trim();
+
+    const selectedRole = typeSelect.value.trim();
+    const enteredName = normalizeText(employeeNameInput.value);
+    const enteredId = normalizeId(uidFilterInput.value);
+
+    let filtered = [...allPeopleCache];
+
+    if (selectedSite) {
+      filtered = filtered.filter((person) => {
+        const personSites = Array.isArray(person.sites) && person.sites.length
+          ? person.sites
+          : [person.site];
+
+        return personSites.some(
+          (site) => normalizeText(site) === normalizeText(selectedSite)
+        );
+      });
+    }
+
+    if (selectedDepartment) {
+      filtered = filtered.filter((person) => {
+        const personDepartments =
+          Array.isArray(person.departments) && person.departments.length
+            ? person.departments
+            : [person.department];
+
+        return personDepartments.some(
+          (dept) => normalizeText(dept) === normalizeText(selectedDepartment)
+        );
+      });
+    }
+
+    if (selectedRole) {
+      filtered = filtered.filter(
+        (person) => normalizeText(person.roleType) === normalizeText(selectedRole)
+      );
+    }
+
+    if (enteredName) {
+      filtered = filtered.filter(
+        (person) => normalizeText(person.fullName) === enteredName
+      );
+    }
+
+    if (enteredId) {
+      filtered = filtered.filter(
+        (person) => normalizeId(person.uid) === enteredId
+      );
+    }
+
+    return filtered;
+  }
+
+  siteSelect.addEventListener("change", () => {
+    if (isProgrammaticFill || lockedByNameSelection) return;
+
+    const selectedSite = siteSelect.value.trim();
+
+    setDepartmentDropdownForSite(selectedSite);
+    resetDuplicateDropdown();
+  });
+
+  employeeNameInput.addEventListener("input", () => {
+    if (isProgrammaticFill) return;
+
+    uidFilterInput.value = "";
+    resetDuplicateDropdown();
+
+    const enteredName = normalizeText(employeeNameInput.value);
+
+    if (!enteredName) {
+      lockFilters(false);
+      return;
+    }
+
+    lockFilters(false);
+  });
+
+  employeeNameInput.addEventListener("blur", () => {
+    if (isProgrammaticFill) return;
+
+    const enteredName = normalizeText(employeeNameInput.value);
+    if (!enteredName) return;
+
+    const exactMatches = allPeopleCache.filter(
+      (person) => normalizeText(person.fullName) === enteredName
+    );
+
+    if (exactMatches.length === 1) {
+      autofillFieldsFromPerson(exactMatches[0]);
+      resetDuplicateDropdown();
+    } else if (exactMatches.length > 1) {
+      duplicateMatches = exactMatches;
+      duplicateIdField.style.display = "block";
+      duplicateIdSelect.innerHTML = `<option value="">Select Employee ID</option>`;
+
+      exactMatches.forEach((person) => {
+        const opt = document.createElement("option");
+        opt.value = person.uid;
+        opt.textContent = `${person.uid} - ${person.fullName} - ${person.department || "No Department"}`;
+        duplicateIdSelect.appendChild(opt);
+      });
+    }
+  });
+
+  employeeNameInput.addEventListener("keydown", (e) => {
+    if (e.key === "Backspace" || e.key === "Delete") {
+      if (!isProgrammaticFill) lockFilters(false);
+    }
+  });
+
+  uidFilterInput.addEventListener("input", () => {
+    if (isProgrammaticFill) return;
+
+    const enteredId = normalizeId(uidFilterInput.value);
+
+    if (!enteredId) {
+      lockFilters(false);
+      return;
+    }
+
+    const person = allPeopleCache.find(
+      (item) => normalizeId(item.uid) === enteredId
+    );
+
+    if (person) {
+      autofillFieldsFromPerson(person);
+      resetDuplicateDropdown();
+    }
+  });
+
+  duplicateIdSelect.addEventListener("change", () => {
+    const selectedId = duplicateIdSelect.value.trim();
+
+    if (!selectedId) return;
+
+    const person = duplicateMatches.find(
+      (item) => normalizeId(item.uid) === normalizeId(selectedId)
+    );
+
+    if (person) {
+      autofillFieldsFromPerson(person);
+      resetDuplicateDropdown();
+    }
+  });
+
+  resetFiltersBtn.addEventListener("click", () => {
+    activeSearchToken++;
+    resetSubmitButton();
+
+    resetAllFilters();
+    if (statusFilterSelect) {
+      statusFilterSelect.value = "all";
+    }
+    clearAllCaches();
+    clearTables();
+  });
+
+  if (firstPaymentHoldBtn) {
+    firstPaymentHoldBtn.addEventListener("click", async () => {
+      await savePaymentRows("detailed", "hold");
+    });
+  }
+
+  if (firstPaymentSubmitBtn) {
+    firstPaymentSubmitBtn.addEventListener("click", async () => {
+      await savePaymentRows("detailed", "release");
+    });
+  }
+
+  if (secondPaymentHoldBtn) {
+    secondPaymentHoldBtn.addEventListener("click", async () => {
+      await savePaymentRows("alternate", "hold");
+    });
+  }
+
+  if (secondPaymentSubmitBtn) {
+    secondPaymentSubmitBtn.addEventListener("click", async () => {
+      await savePaymentRows("alternate", "release");
+    });
+  }
+
+  adminSubmitBtn.addEventListener("click", async () => {
+    if (isSearching) return;
+
+    if (!adminDateInput.value) {
+      showValidationError("Please select Month & Year.");
+      return;
+    }
+
+    if (
+      !siteSelect.value.trim() &&
+      !employeeNameInput.value.trim() &&
+      !uidFilterInput.value.trim()
+    ) {
+      showValidationError("Please select site ya employee filter.");
+      return;
+    }
+
+    await runPayrollFor(adminDateInput.value);
+  });
+
+
+  function buildDetailedRowFromSavedRecord(record, slNo) {
+    return {
+      slNo,
+      uid: safeValue(record.uid),
+      fullName: safeValue(record.name),
+      site: safeValue(record.site),
+      presentDays: Number(record.totalDay) || 0,
+      wages: Number(record.wagesRate) || 0,
+      basicWages: Number(record.basicWages) || 0,
+      phAmount: Number(record.phAmount) || 0,
+      leaveCount: Number(record.leaveCount) || 0,
+      bonusAmount: Number(record.bonusAmount) || 0,
+      totalWages: Number(record.totalWages) || 0,
+      epf: Number(record.epf) || 0,
+      esic: Number(record.esic) || 0,
+      advDeduct: Number(record.advanceWagesPayment) || 0,
+      foodDeduction: Number(record.food) || 0,
+      totalDeduction: Number(record.totalDeduction) || 0,
+      netPay: Number(record.totalAmount) || 0,
+      status: normalizePaymentStatus(record.status || record.paymentStatus || record.state || "pending")
+    };
+  }
+
+  function buildAlternateRowFromSavedRecord(record, slNo) {
+    return {
+      slNo,
+      uid: safeValue(record.uid),
+      fullName: safeValue(record.name),
+      site: safeValue(record.site),
+      workingType: safeValue(record.workingType),
+      totalDays: Number(record.totalDay) || 0,
+      leftWages: Number(record.leftWages) || 0,
+      allowanceDisplay: safeValue(record.allowanceDisplay, "0.00"),
+      allowanceValue: Number(record.allowance) || 0,
+      advDeduct: Number(record.advanceWagesPayment) || 0,
+      ot: Number(record.ot) || 0,
+      accommodationPrice: Number(record.staffAccommodationPrice) || 0,
+      paidLeaveAmount: Number(record.paidLeave) || 0,
+      altNetPay: Number(record.totalAmount) || 0,
+      status: normalizePaymentStatus(record.status || record.paymentStatus || record.state || "pending")
+    };
+  }
+
+  async function loadSavedPaymentRows(mode, monthKey, people, searchToken) {
+    const collectionName = getPaymentCollectionName(mode);
+
+    const rows = await processInBatches(
+      people,
+      30,
+      async (person, index) => {
+        if (searchToken !== activeSearchToken) return null;
+
+        try {
+          const snap = await getDoc(
+            doc(db, collectionName, person.uid, "PaymentRecords", monthKey)
+          );
+
+          if (!snap.exists()) {
+            return null;
+          }
+
+          const data = snap.data() || {};
+
+          if (mode === "alternate") {
+            return buildAlternateRowFromSavedRecord(data, index + 1);
+          }
+
+          return buildDetailedRowFromSavedRecord(data, index + 1);
+        } catch (err) {
+          console.warn(`Saved payment read failed: ${collectionName}/${person.uid}/${monthKey}`, err);
+          return null;
+        }
+      }
+    );
+
+    return rows.filter(Boolean);
+  }
+
+  async function calculateDetailedPaymentRows(people, monthKey, searchToken) {
+    return await processInBatches(
+      people,
+      30,
+      async (person, index) => {
+        if (searchToken !== activeSearchToken) return null;
+        return await buildDetailedPayrollRow(person, monthKey, index + 1);
+      }
+    );
+  }
+
+  async function calculateAlternatePaymentRows(people, monthKey, searchToken) {
+    return await processInBatches(
+      people,
+      30,
+      async (person, index) => {
+        if (searchToken !== activeSearchToken) return null;
+        return await buildAlternatePayrollRow(person, monthKey, index + 1);
+      }
+    );
+  }
+
+  async function buildDetailedPayrollRow(person, monthKey, slNo) {
+    const uid = person.uid;
+    const fullName = person.fullName;
+    const site = person.site || "";
+    const cardType = await getEmployeeCardType(person);
+    const wages = basicRate(cardType);
+
+    const presentDates = await getAllPresentISODates(uid);
+    const presentDays = presentDates.filter((iso) => iso.startsWith(monthKey)).length;
+
+    const basicWages = presentDays * wages;
+    const phAmount = await computePaidHolidaysFromDates(presentDates, monthKey, wages);
+    const leaveCount = computeLeaveCountFromDates(presentDates, monthKey);
+    const bonusAmount = basicWages * 8.33 / 100;
+
+    const totalWages = basicWages + phAmount;
+
+    const epf = totalWages * 12 / 100;
+    const esic = totalWages * 0.75 / 100;
+
+    const advDeduct = await computeAdvanceDeduction(uid, `${monthKey}-01`, "detailed");
+    const foodDeduction = await computeFoodDeduction(uid, monthKey, site);
+
+    const totalDeduction = epf + esic + advDeduct + foodDeduction;
+    const netPay = totalWages - totalDeduction;
+
+    await saveBonusAndLeaveRecords({
+      uid,
+      fullName,
+      site,
+      monthKey,
+      totalDay: presentDays,
+      wagesRate: wages,
+      basicWages,
+      bonusAmount,
+      leaveEarned: leaveCount
+    });
+
+    return {
+      slNo,
+      uid,
+      fullName,
+      site,
+      presentDays,
+      wages,
+      basicWages,
+      phAmount,
+      leaveCount,
+      bonusAmount,
+      totalWages,
+      epf,
+      esic,
+      advDeduct,
+      foodDeduction,
+      totalDeduction,
+      netPay
+    };
+  }
+
+  async function buildAlternatePayrollRow(person, monthKey, slNo) {
+    const uid = person.uid;
+    const fullName = person.fullName;
+    const site = person.site || "";
+    const attendanceDates = await getAllAttendanceISODates(uid);
+    const presentDates = await getAllPresentISODates(uid);
+
+    const presentDays = presentDates.filter((iso) => iso.startsWith(monthKey)).length;
+    const attendancePresentDays = attendanceDates.filter((iso) => iso.startsWith(monthKey)).length;
+
+    const alternateTotalDaysRaw = attendancePresentDays - presentDays;
+    const alternateTotalDays = alternateTotalDaysRaw > 0 ? alternateTotalDaysRaw : 0;
+
+    const workingType = await getEmployeeWorkingType(person);
+    const grossAmount = await getEmployeeGrossAmount(person);
+    const cardType = await getEmployeeCardType(person);
+    const wages = basicRate(cardType);
+
+    const leftWages = computeLeftWages({
+      workingType,
+      totalDays: alternateTotalDays,
+      wages,
+      grossAmount
+    });
+
+    const allowanceData = await sumAlternateAllowances(uid, monthKey);
+    const altAdvance = await computeAdvanceDeduction(uid, `${monthKey}-01`, "alternate");
+    const ot = await sumOtForMonth(uid, monthKey);
+    const accommodationPrice = await sumAccommodationForMonth(uid, monthKey, site);
+    const paidLeaveAmount = await sumPaidLeaveForMonth(uid, monthKey);
+
+    const altNetPay =
+      leftWages +
+      allowanceData.value +
+      ot +
+      accommodationPrice +
+      paidLeaveAmount -
+      altAdvance;
+
+    return {
+      slNo,
+      uid,
+      fullName,
+      site,
+      workingType,
+      totalDays: alternateTotalDays,
+      leftWages,
+      allowanceDisplay: allowanceData.display,
+      allowanceValue: allowanceData.value,
+      advDeduct: altAdvance,
+      ot,
+      accommodationPrice,
+      paidLeaveAmount,
+      altNetPay
+    };
+  }
+
+
+  async function runPayrollFor(monthInputValue) {
+    const monthKey = String(monthInputValue || "").slice(0, 7);
+    const people = getFinalFilteredPeople();
+
+    if (!people.length) {
+      clearTables("Selected filters ke hisaab se koi payment record user nahi mila.");
+      resetSubmitButton();
+      return;
+    }
+
+    const searchToken = ++activeSearchToken;
+
+    isSearching = true;
+    clearAllCaches();
+
+    adminSubmitBtn.disabled = true;
+    adminSubmitBtn.textContent = "Searching...";
+
+    setLoadingState();
+
+    const detailedBody = document.querySelector("#detailedPaymentTable table tbody");
+    const alternateBody = document.querySelector("#alternatePaymentTable table tbody");
+
+    detailedBody.innerHTML = "";
+    alternateBody.innerHTML = "";
+
+    try {
+      await getHolidayISODates();
+
+      const [detailedBaseRows, alternateBaseRows] = await Promise.all([
+        calculateDetailedPaymentRows(people, monthKey, searchToken),
+        calculateAlternatePaymentRows(people, monthKey, searchToken)
+      ]);
+
+      if (searchToken !== activeSearchToken) {
+        resetSubmitButton();
+        return;
+      }
+
+      const [hydratedDetailedRows, hydratedAlternateRows] = await Promise.all([
+        hydratePaymentStatuses("detailed", detailedBaseRows || [], monthKey),
+        hydratePaymentStatuses("alternate", alternateBaseRows || [], monthKey)
+      ]);
+
+      if (searchToken !== activeSearchToken) {
+        resetSubmitButton();
+        return;
+      }
+
+      const selectedStatus = getSelectedStatusFilter();
+
+      const detailedRows = filterRowsByStatus(hydratedDetailedRows, selectedStatus);
+      const alternateRows = filterRowsByStatus(hydratedAlternateRows, selectedStatus);
+
+      currentPayrollMonthKey = monthKey;
+      currentDetailedRows = detailedRows;
+      currentAlternateRows = alternateRows;
+
+      detailedBody.innerHTML = "";
+      alternateBody.innerHTML = "";
+
+      detailedRows.forEach((row) => {
+        appendRowDetailed(row);
+      });
+
+      if (detailedRows.length) {
+        appendDetailedSumRow(detailedRows);
+      }
+
+      alternateRows.forEach((row) => {
+        appendRowAlternate(row);
+      });
+
+      ensureEmptyStates();
+      await refreshPaymentActionStates();
+      await maybeAutoSaveEligiblePayments();
+    } catch (err) {
+      console.error("Payment load error:", err);
+
+      if (searchToken === activeSearchToken) {
+        detailedBody.innerHTML =
+          `<tr><td colspan="18" class="empty-state">Error loading payment records.</td></tr>`;
+
+        alternateBody.innerHTML =
+          `<tr><td colspan="14" class="empty-state">Error loading alternate payment records.</td></tr>`;
+      }
+    } finally {
+      if (searchToken === activeSearchToken) {
+        resetSubmitButton();
+      }
+    }
+  }
+
+  async function processInBatches(items, batchSize, worker) {
+    const results = [];
+
+    for (let i = 0; i < items.length; i += batchSize) {
+      if (!isSearching) break;
+
+      const batch = items.slice(i, i + batchSize);
+
+      const batchResults = await Promise.all(
+        batch.map((item, batchIndex) => worker(item, i + batchIndex))
+      );
+
+      results.push(...batchResults);
+    }
+
+    return results;
+  }
+
+
+  function getPaymentCollectionName(mode) {
+    return mode === "alternate" ? "Second Payment" : "First Payment";
+  }
+
+  function getPaymentButton(mode) {
+    return mode === "alternate" ? secondPaymentSubmitBtn : firstPaymentSubmitBtn;
+  }
+
+  function getPaymentSection(mode) {
+    return mode === "alternate" ? alternatePaymentSection : detailedPaymentSection;
+  }
+
+  function getPaymentDocRef(mode, uid, monthKey) {
+    return doc(db, getPaymentCollectionName(mode), uid, "PaymentRecords", monthKey);
+  }
+
+  function getPaymentRowsForMode(mode) {
+    return mode === "alternate" ? currentAlternateRows : currentDetailedRows;
+  }
+
+  function setPaymentRowsForMode(mode, rows) {
+    if (mode === "alternate") {
+      currentAlternateRows = rows;
+    } else {
+      currentDetailedRows = rows;
+    }
+  }
+
+  function renderCurrentPaymentTables() {
+    const detailedBody = document.querySelector("#detailedPaymentTable table tbody");
+    const alternateBody = document.querySelector("#alternatePaymentTable table tbody");
+
+    if (!detailedBody || !alternateBody) return;
+
+    detailedBody.innerHTML = "";
+    alternateBody.innerHTML = "";
+
+    (Array.isArray(currentDetailedRows) ? currentDetailedRows : []).forEach((row) => {
+      appendRowDetailed(row);
+    });
+
+    if (Array.isArray(currentDetailedRows) && currentDetailedRows.length) {
+      appendDetailedSumRow(currentDetailedRows);
+    }
+
+    (Array.isArray(currentAlternateRows) ? currentAlternateRows : []).forEach((row) => {
+      appendRowAlternate(row);
+    });
+
+    ensureEmptyStates();
+  }
+
+  function applyLocalPaymentStatusChange(mode, targetStatus) {
+    const normalizedStatus = normalizePaymentStatus(targetStatus);
+    const rows = getPaymentRowsForMode(mode);
+
+    if (!Array.isArray(rows) || !rows.length) return;
+
+    rows.forEach((row) => {
+      row.status = normalizedStatus;
+    });
+
+    setPaymentRowsForMode(mode, rows);
+    renderCurrentPaymentTables();
+    refreshPaymentActionStates();
+  }
+
+  function rowMatchesStatus(row, filterValue) {
+    const filter = String(filterValue || "all").trim().toLowerCase();
+    const rowStatus = normalizePaymentStatus(row?.status);
+
+    if (filter === "all") return true;
+    return rowStatus === filter;
+  }
+
+  function filterRowsByStatus(rows, filterValue) {
+    return (Array.isArray(rows) ? rows : []).filter((row) => rowMatchesStatus(row, filterValue));
+  }
+
+  async function hydratePaymentStatuses(mode, rows, monthKey) {
+    const collectionName = getPaymentCollectionName(mode);
+    const hydrated = [];
+
+    for (const row of rows || []) {
+      try {
+        const snap = await getDoc(getPaymentDocRef(mode, row.uid, monthKey));
+        const data = snap.exists() ? (snap.data() || {}) : {};
+        const status = normalizePaymentStatus(
+          data.status || data.paymentStatus || data.state || data.paymentStage || row.status || "pending"
+        );
+
+        hydrated.push({
+          ...row,
+          status,
+          savedAt: data.updatedAt || data.submittedAt || null,
+          savedBy: safeValue(data.adminName, data.adminId, ""),
+          sourceCollection: collectionName
+        });
+      } catch (err) {
+        console.warn("Status hydrate failed:", mode, row?.uid, monthKey, err);
+        hydrated.push({
+          ...row,
+          status: normalizePaymentStatus(row.status || "pending"),
+          sourceCollection: collectionName
+        });
+      }
+    }
+
+    return hydrated;
+  }
+
+  async function writePaymentStatusRows(mode, rows, monthKey, targetStatus) {
+    const normalizedStatus = normalizePaymentStatus(targetStatus);
+    const collectionName = getPaymentCollectionName(mode);
+    const adminId = safeValue(adminDataGlobal?.uid, adminDataGlobal?.UID, adminDataGlobal?.id, "");
+    const adminName = safeValue(adminDataGlobal?.Name, adminDataGlobal?.fullName, adminDataGlobal?.FullName, adminDataGlobal?.name, "");
+
+    await Promise.all((rows || []).map((row) => setDoc(
+      getPaymentDocRef(mode, row.uid, monthKey),
+      {
+        ...(
+          mode === "alternate"
+            ? getAlternatePaymentPayload(row, monthKey, normalizedStatus)
+            : getDetailedPaymentPayload(row, monthKey, normalizedStatus)
+        ),
+        status: normalizedStatus,
+        statusUpdatedAt: serverTimestamp(),
+        statusUpdatedBy: adminId,
+        statusUpdatedByName: adminName,
+        paymentAction: normalizedStatus,
+        sourceCollection: collectionName
+      },
+      { merge: true }
+    )));
+  }
+
+  function getPaymentViewState(rows) {
+    const normalizedRows = Array.isArray(rows) ? rows : [];
+    const statuses = normalizedRows.map((row) => normalizePaymentStatus(row.status));
+    const hasHold = statuses.includes("hold");
+    const hasPending = statuses.includes("pending");
+    const hasRelease = statuses.includes("release");
+
+    return {
+      hasHold,
+      hasPending,
+      hasRelease,
+      allHold: statuses.length > 0 && statuses.every((s) => s === "hold"),
+      allRelease: statuses.length > 0 && statuses.every((s) => s === "release"),
+      mixed: new Set(statuses).size > 1
+    };
+  }
+
+  function getCurrentMonthKey() {
+    const today = new Date();
+    return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}`;
+  }
+
+  function getNextMonthKey(monthKey) {
+    const [year, month] = String(monthKey || "").split("-");
+    const dt = new Date(Number(year), Number(month), 1);
+    return `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, "0")}`;
+  }
+
+  function isSubmissionMonthOpen(monthKey) {
+    if (!monthKey) return false;
+
+    const today = new Date();
+    const previousMonthKey = getPreviousMonthKeyFromToday();
+    return monthKey === previousMonthKey && today.getDate() <= 10;
+  }
+
+  function isMonthFrozenByDate(monthKey) {
+    if (!monthKey) return true;
+
+    const today = new Date();
+    const previousMonthKey = getPreviousMonthKeyFromToday();
+
+    if (monthKey !== previousMonthKey) {
+      return true;
+    }
+
+    return today.getDate() > 10;
+  }
+
+  function getLockKey(mode, monthKey) {
+    return `${mode}__${monthKey}`;
+  }
+
+  async function isPaymentLocked(mode, monthKey) {
+    const lockKey = getLockKey(mode, monthKey);
+
+    if (savedPaymentLockCache.has(lockKey)) {
+      return savedPaymentLockCache.get(lockKey);
+    }
+
+    try {
+      const lockSnap = await getDoc(doc(db, "PaymentSubmitLocks", lockKey));
+      const locked = lockSnap.exists() && !!(lockSnap.data() || {}).locked;
+      savedPaymentLockCache.set(lockKey, locked);
+      return locked;
+    } catch (err) {
+      console.warn("Payment lock read failed:", lockKey, err);
+      return false;
+    }
+  }
+
+  async function setPaymentLocked(mode, monthKey, payload = {}) {
+    const lockKey = getLockKey(mode, monthKey);
+
+    const lockData = {
+      locked: true,
+      mode,
+      month: monthKey,
+      lockedAt: serverTimestamp(),
+      adminId: safeValue(adminDataGlobal?.uid, adminDataGlobal?.UID, adminDataGlobal?.id, ""),
+      adminName: safeValue(adminDataGlobal?.Name, adminDataGlobal?.fullName, adminDataGlobal?.FullName, adminDataGlobal?.name, ""),
+      ...payload
+    };
+
+    await setDoc(doc(db, "PaymentSubmitLocks", lockKey), lockData, { merge: true });
+    savedPaymentLockCache.set(lockKey, true);
+  }
+
+  function getDetailedPaymentPayload(row, monthKey, status = "release") {
+    const year = String(monthKey || "").split("-")[0] || "";
+    const adminId = safeValue(adminDataGlobal?.uid, adminDataGlobal?.UID, adminDataGlobal?.id, "");
+    const adminName = safeValue(adminDataGlobal?.Name, adminDataGlobal?.fullName, adminDataGlobal?.FullName, adminDataGlobal?.name, "");
+
+    return {
+      mode: "First payment",
+      month: monthKey,
+      year,
+      date: monthKey,
+      uid: row.uid,
+      name: row.fullName,
+      site: row.site || "",
+      totalDay: Number(row.presentDays) || 0,
+      wagesRate: Number(row.wages) || 0,
+      basicWages: Number(row.basicWages) || 0,
+      phAmount: Number(row.phAmount) || 0,
+      leaveCount: Number(row.leaveCount) || 0,
+      bonusPercent: 8.33,
+      bonusAmount: Number(row.bonusAmount) || 0,
+      totalWages: Number(row.totalWages) || 0,
+      epf: Number(row.epf) || 0,
+      esic: Number(row.esic) || 0,
+      advanceWagesPayment: Number(row.advDeduct) || 0,
+      food: Number(row.foodDeduction) || 0,
+      totalDeduction: Number(row.totalDeduction) || 0,
+      totalAmount: Number(row.netPay) || 0,
+      adminId,
+      adminName,
+      status: normalizePaymentStatus(status),
+      submittedAt: serverTimestamp(),
+      updatedAt: serverTimestamp()
+    };
+  }
+
+  function getAlternatePaymentPayload(row, monthKey, status = "release") {
+    const year = String(monthKey || "").split("-")[0] || "";
+    const adminId = safeValue(adminDataGlobal?.uid, adminDataGlobal?.UID, adminDataGlobal?.id, "");
+    const adminName = safeValue(adminDataGlobal?.Name, adminDataGlobal?.fullName, adminDataGlobal?.FullName, adminDataGlobal?.name, "");
+
+    return {
+      mode: "Second payment",
+      month: monthKey,
+      year,
+      date: monthKey,
+      uid: row.uid,
+      name: row.fullName,
+      site: row.site || "",
+      workingType: row.workingType || "",
+      totalDay: Number(row.totalDays) || 0,
+      leftWages: Number(row.leftWages) || 0,
+      allowance: Number(row.allowanceValue) || 0,
+      allowanceDisplay: row.allowanceDisplay || "0.00",
+      advanceWagesPayment: Number(row.advDeduct) || 0,
+      ot: Number(row.ot) || 0,
+      staffAccommodationPrice: Number(row.accommodationPrice) || 0,
+      paidLeave: Number(row.paidLeaveAmount) || 0,
+      totalAmount: Number(row.altNetPay) || 0,
+      adminId,
+      adminName,
+      status: normalizePaymentStatus(status),
+      submittedAt: serverTimestamp(),
+      updatedAt: serverTimestamp()
+    };
+  }
+
+  function getPaymentActionButton(mode, targetStatus) {
+    const normalizedStatus = normalizePaymentStatus(targetStatus);
+
+    if (mode === "alternate") {
+      return normalizedStatus === "hold" ? secondPaymentHoldBtn : secondPaymentSubmitBtn;
+    }
+
+    return normalizedStatus === "hold" ? firstPaymentHoldBtn : firstPaymentSubmitBtn;
+  }
+
+  async function savePaymentRows(mode, targetStatus = "release") {
+    const monthKey = currentPayrollMonthKey;
+    const rows = getPaymentRowsForMode(mode);
+    const normalizedStatus = normalizePaymentStatus(targetStatus);
+
+    if (!monthKey) {
+      alert("Please choose month and load data first.");
+      return false;
+    }
+
+    if (!rows.length) {
+      alert("No payment records to save.");
+      return false;
+    }
+
+    const actionButton = getPaymentActionButton(mode, normalizedStatus);
+
+    if (actionButton) {
+      actionButton.disabled = true;
+      actionButton.textContent = normalizedStatus === "hold" ? "Holding..." : "Submitting...";
+    }
+
+    try {
+      await writePaymentStatusRows(mode, rows, monthKey, normalizedStatus);
+
+      // Local status update only — do NOT reload/filter again,
+      // otherwise the just-updated hold rows disappear from the view.
+      applyLocalPaymentStatusChange(mode, normalizedStatus);
+
+      return true;
+    } catch (err) {
+      console.error(`Failed to update ${mode} payment rows:`, err);
+      alert(`Unable to update ${mode === "alternate" ? "Second" : "First"} payment right now.`);
+      renderCurrentPaymentTables();
+      await refreshPaymentActionStates();
+      return false;
+    }
+  }
+
+  async function refreshPaymentActionStates() {
+    const monthKey = currentPayrollMonthKey;
+    const selectedStatus = getSelectedStatusFilter();
+    const detailedRows = filterRowsByStatus(currentDetailedRows, selectedStatus);
+    const alternateRows = filterRowsByStatus(currentAlternateRows, selectedStatus);
+    const detailedState = getPaymentViewState(detailedRows);
+    const alternateState = getPaymentViewState(alternateRows);
+
+    const detailedSubmitBtn = firstPaymentSubmitBtn;
+    const detailedHoldBtn = firstPaymentHoldBtn;
+    const alternateSubmitBtn = secondPaymentSubmitBtn;
+    const alternateHoldBtn = secondPaymentHoldBtn;
+
+    if (detailedSubmitBtn) {
+      detailedSubmitBtn.disabled = !monthKey || !detailedRows.length || detailedState.allRelease;
+      detailedSubmitBtn.classList.toggle("saved", !!monthKey && !!detailedRows.length && detailedState.allRelease);
+      detailedSubmitBtn.classList.toggle("attention", !!monthKey && !!detailedRows.length && detailedState.hasHold && !detailedState.allRelease);
+      detailedSubmitBtn.textContent = detailedState.allRelease ? "First Payment Released" : "Submit First Payment";
+    }
+
+    if (detailedHoldBtn) {
+      detailedHoldBtn.disabled = !monthKey || !detailedRows.length || detailedState.allHold;
+      detailedHoldBtn.classList.toggle("saved", !!monthKey && !!detailedRows.length && detailedState.allHold);
+      detailedHoldBtn.classList.toggle("attention", !!monthKey && !!detailedRows.length && detailedState.hasRelease && !detailedState.allHold);
+      detailedHoldBtn.textContent = detailedState.allHold ? "First Payment Held" : "Hold First Payment";
+    }
+
+    if (alternateSubmitBtn) {
+      alternateSubmitBtn.disabled = !monthKey || !alternateRows.length || alternateState.allRelease;
+      alternateSubmitBtn.classList.toggle("saved", !!monthKey && !!alternateRows.length && alternateState.allRelease);
+      alternateSubmitBtn.classList.toggle("attention", !!monthKey && !!alternateRows.length && alternateState.hasHold && !alternateState.allRelease);
+      alternateSubmitBtn.textContent = alternateState.allRelease ? "Second Payment Released" : "Submit Second Payment";
+    }
+
+    if (alternateHoldBtn) {
+      alternateHoldBtn.disabled = !monthKey || !alternateRows.length || alternateState.allHold;
+      alternateHoldBtn.classList.toggle("saved", !!monthKey && !!alternateRows.length && alternateState.allHold);
+      alternateHoldBtn.classList.toggle("attention", !!monthKey && !!alternateRows.length && alternateState.hasRelease && !alternateState.allHold);
+      alternateHoldBtn.textContent = alternateState.allHold ? "Second Payment Held" : "Hold Second Payment";
+    }
+
+    if (downloadBtn) {
+      const visibleRows = paymentModeToggle.checked ? alternateRows : detailedRows;
+      downloadBtn.disabled = !monthKey || !visibleRows.length;
+    }
+  }
+
+  async function maybeAutoSaveEligiblePayments() {
+    return false;
+  }
+
+  function getPreviousMonthKeyFromToday() {
+    const today = new Date();
+    const y = today.getFullYear();
+    const m = today.getMonth();
+    const prev = new Date(y, m - 1, 1);
+
+    return `${prev.getFullYear()}-${String(prev.getMonth() + 1).padStart(2, "0")}`;
+  }
+
+  function canSaveBonusLeaveForMonth(monthKey) {
+    const today = new Date();
+    const currentDay = today.getDate();
+    const previousMonthKey = getPreviousMonthKeyFromToday();
+
+    if (monthKey === previousMonthKey) {
+      return currentDay >= 10;
+    }
+
+    if (monthKey < previousMonthKey) {
+      return true;
+    }
+
+    return false;
+  }
+
+  async function saveBonusAndLeaveRecords({
+    uid,
+    fullName,
+    site,
+    monthKey,
+    totalDay,
+    wagesRate,
+    basicWages,
+    bonusAmount,
+    leaveEarned
+  }) {
+    if (!uid || !monthKey) return;
+
+    if (!canSaveBonusLeaveForMonth(monthKey)) {
+      return;
+    }
+
+    const year = monthKey.split("-")[0];
+
+    const adminId = safeValue(adminDataGlobal?.uid, adminDataGlobal?.UID, adminDataGlobal?.id, "");
+    const adminName = safeValue(adminDataGlobal?.Name, adminDataGlobal?.fullName, adminDataGlobal?.FullName, adminDataGlobal?.name, "");
+
+    const bonusData = {
+      uid,
+      name: fullName || "",
+      site: site || "",
+      adminId,
+      adminName,
+
+      month: monthKey,
+      year,
+
+      totalDay: Number(totalDay) || 0,
+      wagesRate: Number(wagesRate) || 0,
+      basicWages: Number(basicWages) || 0,
+      bonusPercent: 8.33,
+      bonusAmount: Number(bonusAmount) || 0,
+
+      generatedFrom: "ADMIN_PAYMENT",
+      status: "AUTO_GENERATED",
+      updatedAt: serverTimestamp()
+    };
+
+    const leaveData = {
+      uid,
+      name: fullName || "",
+      site: site || "",
+      adminId,
+      adminName,
+
+      month: monthKey,
+      year,
+
+      totalDay: Number(totalDay) || 0,
+      leaveEarned: Number(leaveEarned) || 0,
+      leaveRule: "1 leave per 20 present days",
+
+      generatedFrom: "ADMIN_PAYMENT",
+      status: "AUTO_GENERATED",
+      updatedAt: serverTimestamp()
+    };
+
+    await Promise.all([
+      setDoc(doc(db, "BonusRecords", uid, "Records", monthKey), bonusData, { merge: true }),
+      setDoc(doc(db, "LeaveRecords", uid, "Records", monthKey), leaveData, { merge: true })
+    ]);
+  }
+
+  async function getEmployeeCardType(person) {
+
+  if (person.cardType) return person.cardType;
+
+  const collectionName = person.roleType || "Employee";
+
+  try {
+
+    const snapByDoc = await getDoc(
+      doc(db, collectionName, person.uid)
+    );
+
+    if (snapByDoc.exists()) {
+
+      const data = snapByDoc.data() || {};
+
+      return safeValue(
+        data.CardType,
+        data.cardType,
+        data.cardtype,
+        data.category,
+        data.skillType,
+        data.skill,
+        data.workerType
+      );
+    }
+
+  } catch (err) {
+
+    console.warn(
+      `CardType doc lookup failed ${collectionName}/${person.uid}`,
+      err
+    );
+  }
+
+  return "";
+}
+
+
+
+async function getEmployeeWorkingType(person) {
+
+  if (person.workingType) return person.workingType;
+
+  const collectionName = person.roleType || "Employee";
+
+  try {
+
+    const snapByDoc = await getDoc(
+      doc(db, collectionName, person.uid)
+    );
+
+    if (snapByDoc.exists()) {
+
+      const data = snapByDoc.data() || {};
+
+      return safeValue(
+        data.workingType,
+        data.WorkingType,
+        data.workType,
+        data.WorkType,
+        data.typeOfWork,
+        data.TypeOfWork
+      );
+    }
+
+  } catch (err) {
+
+    console.warn(
+      `WorkingType doc lookup failed ${collectionName}/${person.uid}`,
+      err
+    );
+  }
+
+  return "";
+}
+
+
+
+async function getEmployeeGrossAmount(person) {
+
+  if (person.grossAmount)
+    return Number(person.grossAmount) || 0;
+
+  const collectionName = person.roleType || "Employee";
+
+  try {
+
+    const snapByDoc = await getDoc(
+      doc(db, collectionName, person.uid)
+    );
+
+    if (snapByDoc.exists()) {
+
+      const data = snapByDoc.data() || {};
+
+      return Number(
+        safeValue(
+          data.gross_amount,
+          data.grossAmount,
+          data.GrossAmount,
+          data.gross,
+          data.Gross,
+          data.monthlyAmount,
+          data.monthlySalary,
+          data.salary
+        )
+      ) || 0;
+    }
+
+  } catch (err) {
+
+    console.warn(
+      `Gross amount doc lookup failed ${collectionName}/${person.uid}`,
+      err
+    );
+  }
+
+  return 0;
+}
+  function basicRate(cardTypeValue) {
+    const normalized = normalizeText(cardTypeValue).replace(/\s+/g, "-");
+
+    const rates = {
+      "un-skilled": 472,
+      "unskilled": 472,
+      "semi-skilled": 522,
+      "semiskilled": 522,
+      "skilled": 572,
+      "high-skilled": 622,
+      "highskilled": 622
+    };
+
+    return rates[normalized] || 0;
+  }
+
+  function computeLeftWages({ workingType, totalDays, wages, grossAmount }) {
+    const wt = normalizeText(workingType);
+
+    if (totalDays <= 0) return 0;
+
+    if (
+      wt === "monthly" ||
+      wt === "month" ||
+      wt === "monthly basis" ||
+      wt === "monthly duty"
+    ) {
+      const perDay = grossAmount ? grossAmount / 26 : 0;
+      return perDay * totalDays;
+    }
+
+    return wages * totalDays;
+  }
+
+  function isPresentStatus(value) {
+    const v = normalizeText(value);
+
+    return (
+      v === "present" ||
+      v === "p" ||
+      v === "yes" ||
+      v === "marked"
+    );
+  }
+
+  function parseDateToISO(value) {
+    if (!value) return "";
+
+    if (typeof value === "object" && typeof value.toDate === "function") {
+      const d = value.toDate();
+
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+    }
+
+    const str = String(value).trim();
+
+    if (/^\d{4}-\d{2}-\d{2}$/.test(str)) return str;
+
+    if (/^\d{2}-\d{2}-\d{4}$/.test(str)) {
+      const [dd, mm, yyyy] = str.split("-");
+      return `${yyyy}-${mm}-${dd}`;
+    }
+
+    if (/^\d{2}-\d{2}-\d{2}$/.test(str)) {
+      const [dd, mm, yy] = str.split("-");
+      return `20${yy}-${mm}-${dd}`;
+    }
+
+    if (/^\d{2}\/\d{2}\/\d{4}$/.test(str)) {
+      const [dd, mm, yyyy] = str.split("/");
+      return `${yyyy}-${mm}-${dd}`;
+    }
+
+    const d = new Date(str);
+
+    if (!isNaN(d.getTime())) {
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+    }
+
+    return "";
+  }
+
+  function addDays(isoDate, days) {
+    const [yyyy, mm, dd] = isoDate.split("-").map(Number);
+    const dt = new Date(yyyy, mm - 1, dd);
+
+    dt.setDate(dt.getDate() + days);
+
+    return `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, "0")}-${String(dt.getDate()).padStart(2, "0")}`;
+  }
+
+  async function getAllPresentISODates(uid) {
+    const cacheKey = normalizeId(uid);
+
+    if (presentDatesCache.has(cacheKey)) {
+      return presentDatesCache.get(cacheKey);
+    }
+
+    const presentSet = new Set();
+
+    async function scanAttendanceCollection(pathParts) {
+      try {
+        const snap = await getDocs(collection(db, ...pathParts));
+
+        snap.forEach((docSnap) => {
+          const data = docSnap.data() || {};
+
+          const dateIso = parseDateToISO(
+            safeValue(
+              data.date,
+              data.attendanceDate,
+              data.clmsDate,
+              data.day,
+              data.Date,
+              data.AttendanceDate,
+              docSnap.id
+            )
+          );
+
+          const marking = safeValue(
+            data.Marking,
+            data.marking,
+            data.status,
+            data.Status,
+            data.attendance,
+            data.presentStatus
+          );
+
+          if (dateIso && isPresentStatus(marking)) {
+            presentSet.add(dateIso);
+          }
+        });
+      } catch (err) {
+        console.warn("CLMS attendance path skipped:", pathParts.join("/"), err);
+      }
+    }
+
+    await Promise.all([
+      scanAttendanceCollection(["CLMS Attendance", uid, "Records"]),
+      scanAttendanceCollection(["CLMS_Attendance", uid, "Records"]),
+      scanAttendanceCollection(["CLMSAttendance", uid, "Records"])
+    ]);
+
+    const sortedDates = Array.from(presentSet).sort();
+
+    presentDatesCache.set(cacheKey, sortedDates);
+
+    return sortedDates;
+  }
+
+  async function getAllAttendanceISODates(uid) {
+    const cacheKey = normalizeId(uid);
+
+    if (attendanceDatesCache.has(cacheKey)) {
+      return attendanceDatesCache.get(cacheKey);
+    }
+
+    const presentSet = new Set();
+
+    try {
+      const snap = await getDocs(collection(db, "Attendance", uid, "Records"));
+
+      snap.forEach((docSnap) => {
+        const data = docSnap.data() || {};
+        const docId = String(docSnap.id || "").trim();
+
+        const dateIso = parseDateToISO(
+          safeValue(
+            data.date,
+            data.Date,
+            data.attendanceDate,
+            data.AttendanceDate,
+            docId
+          )
+        );
+
+        const marking = safeValue(
+          data.Marking,
+          data.marking,
+          data.status,
+          data.Status,
+          data.attendance,
+          data.presentStatus
+        );
+
+        if (dateIso && isPresentStatus(marking)) {
+          presentSet.add(dateIso);
+        }
+      });
+    } catch (err) {
+      console.warn("Attendance read failed:", uid, err);
+    }
+
+    const sortedDates = Array.from(presentSet).sort();
+
+    attendanceDatesCache.set(cacheKey, sortedDates);
+
+    return sortedDates;
+  }
+
+  async function getHolidayISODates() {
+    if (holidayIsoCache.loaded) return holidayIsoCache.dates;
+
+    const holidays = [];
+
+    try {
+      const holSnap = await getDocs(collection(db, "Holiday"));
+
+      holSnap.forEach((h) => {
+        const data = h.data() || {};
+
+        const iso = parseDateToISO(
+          safeValue(
+            data.date,
+            data.holidayDate,
+            data.HolidayDate,
+            data.day,
+            data.Date,
+            h.id
+          )
+        );
+
+        if (iso) holidays.push(iso);
+      });
+    } catch (err) {
+      console.error("Error loading Holiday collection:", err);
+    }
+
+    holidayIsoCache.loaded = true;
+    holidayIsoCache.dates = Array.from(new Set(holidays)).sort();
+
+    return holidayIsoCache.dates;
+  }
+
+  async function computePaidHolidaysFromDates(presentDates, monthKey, rate) {
+    if (!rate) return 0;
+
+    const presentSet = new Set(presentDates);
+    const holidayDates = await getHolidayISODates();
+
+    let amount = 0;
+
+    holidayDates
+      .filter((holidayIso) => holidayIso.startsWith(monthKey))
+      .forEach((holidayIso) => {
+        const prevDay = addDays(holidayIso, -1);
+        const nextDay = addDays(holidayIso, 1);
+
+        if (
+          presentSet.has(prevDay) ||
+          presentSet.has(holidayIso) ||
+          presentSet.has(nextDay)
+        ) {
+          amount += rate;
+        }
+      });
+
+    return amount;
+  }
+
+  function computeLeaveCountFromDates(presentDates, monthKey) {
+    const beforeThisMonth = presentDates.filter(
+      (iso) => iso.slice(0, 7) < monthKey
+    ).length;
+
+    const untilThisMonth = presentDates.filter(
+      (iso) => iso.slice(0, 7) <= monthKey
+    ).length;
+
+    return Math.floor(untilThisMonth / 20) - Math.floor(beforeThisMonth / 20);
+  }
+
+  function monthDiff(fromIsoDate, toMonthKey) {
+    if (!fromIsoDate || !toMonthKey) return -999;
+
+    const fromIso = parseDateToISO(fromIsoDate) || fromIsoDate;
+
+    const [fy, fm] = fromIso.slice(0, 7).split("-").map(Number);
+    const [ty, tm] = toMonthKey.split("-").map(Number);
+
+    return (ty - fy) * 12 + (tm - fm);
+  }
+
+  function parseDeductionPlan(plan = "") {
+    const cleanPlan = String(plan || "").trim();
+
+    const monthMatch = cleanPlan.match(/^(\d+)m/i);
+    const months = monthMatch ? Number(monthMatch[1]) : Number(cleanPlan[0]) || 1;
+
+    const splits = cleanPlan
+      .split("-")
+      .slice(1)
+      .map((x) => Number(String(x).replace(/[^0-9.]/g, "")))
+      .filter((x) => !Number.isNaN(x));
+
+    return { months, splits };
+  }
+
+  async function computeAdvanceDeduction(uid, isoDate, mode) {
+    const monthKey = isoDate.slice(0, 7);
+    const cacheKey = `${normalizeId(uid)}_${monthKey}_${mode}`;
+
+    if (advanceCache.has(cacheKey)) {
+      return advanceCache.get(cacheKey);
+    }
+
+    let deduction = 0;
+
+    try {
+      const recs = await getDocs(collection(db, "AdPayment", uid, "Records"));
+
+      for (const r of recs.docs) {
+        const data = r.data() || {};
+
+        const desiredType =
+          mode === "alternate" ? "Cash Payment" : "Account Transfer";
+
+        const transferType = safeValue(
+          data.transferType,
+          data.paymentType,
+          data.type
+        );
+
+        if (
+          transferType &&
+          normalizeText(transferType) !== normalizeText(desiredType)
+        ) {
+          continue;
+        }
+
+        const amount =
+          Number(safeValue(data.amounts, data.amount, data.advanceAmount)) || 0;
+
+        const paymentDate = safeValue(data.paymentDate, data.date, r.id);
+        const deductionPlan = safeValue(data.deductionPlan, data.plan);
+
+        const { months, splits } = parseDeductionPlan(deductionPlan);
+        const idx = monthDiff(paymentDate, monthKey);
+
+        if (idx >= 0 && idx < months) {
+          if (splits.length) {
+            deduction += (amount * (splits[idx] ?? 0)) / 100;
+          } else {
+            deduction += amount / months;
+          }
+        }
+      }
+    } catch (err) {
+      console.warn("Advance deduction fetch failed:", uid, err);
+    }
+
+    advanceCache.set(cacheKey, deduction);
+
+    return deduction;
+  }
+
+  async function computeFoodDeduction(uid, monthKey, site = "") {
+    const cacheKey = `${normalizeId(uid)}_${monthKey}_${normalizeText(site)}`;
+
+    if (foodCache.has(cacheKey)) return foodCache.get(cacheKey);
+
+    let total = 0;
+    const checkedKeys = new Set();
+    const countedKeys = new Set();
+
+    const [year, mon] = monthKey.split("-");
+    const monthDoc1 = monthKey;
+    const monthDoc2 = `${mon}-${year}`;
+    const monthDoc3 = `${mon}-${year.slice(-2)}`;
+    const oldCombinedDoc = `${uid}_${monthKey}`;
+
+    function getFoodAmount(data) {
+      return (
+        Number(
+          safeValue(
+            data.totalAmount,
+            data.TotalAmount,
+            data.total_amount,
+            data.amount,
+            data.Amount,
+            data.foodAmount,
+            data.FoodAmount,
+            data.total,
+            data.Total
+          )
+        ) || 0
+      );
+    }
+
+    function monthMatches(data, docId) {
+      const recordMonth = normalizeText(
+        safeValue(
+          data.monthKey,
+          data.month,
+          data.monthYear,
+          data.date,
+          data.paymentMonth,
+          docId
+        )
+      );
+
+      return (
+        recordMonth === normalizeText(monthDoc1) ||
+        recordMonth === normalizeText(monthDoc2) ||
+        recordMonth === normalizeText(monthDoc3) ||
+        recordMonth.includes(normalizeText(monthDoc1)) ||
+        recordMonth.includes(normalizeText(monthDoc2)) ||
+        recordMonth.includes(normalizeText(monthDoc3))
+      );
+    }
+
+    function uidMatches(data) {
+      const recordUid = normalizeId(
+        safeValue(data.uid, data.UID, data.employeeId, data.employeeID, data.id)
+      );
+
+      return !recordUid || recordUid === normalizeId(uid);
+    }
+
+    function siteMatches(data) {
+      const recordSite = normalizeText(
+        safeValue(data.site, data.Site, data.siteSelect, data.industrySelect)
+      );
+
+      return !recordSite || !site || recordSite === normalizeText(site);
+    }
+
+    function addFoodOnce(pathParts, docId, data) {
+      if (!uidMatches(data)) return;
+      if (!siteMatches(data)) return;
+      if (!monthMatches(data, docId)) return;
+
+      const uniqueKey = `${normalizeText(pathParts[0])}_${normalizeId(
+        safeValue(data.uid, data.employeeId, uid)
+      )}_${normalizeText(safeValue(data.recordId, docId))}`;
+
+      if (countedKeys.has(uniqueKey)) return;
+
+      countedKeys.add(uniqueKey);
+      total += getFoodAmount(data);
+    }
+
+    async function addFoodDoc(pathParts) {
+      const key = pathParts.join("/");
+
+      if (checkedKeys.has(key)) return;
+      checkedKeys.add(key);
+
+      try {
+        const snap = await getDoc(doc(db, ...pathParts));
+
+        if (snap.exists()) {
+          addFoodOnce(pathParts, snap.id, snap.data() || {});
+        }
+      } catch (err) {
+        console.warn("FoodAllowance doc read failed:", key, err);
+      }
+    }
+
+    async function addFoodCollection(pathParts) {
+      const key = pathParts.join("/");
+
+      if (checkedKeys.has(key)) return;
+      checkedKeys.add(key);
+
+      try {
+        const snap = await getDocs(collection(db, ...pathParts));
+
+        snap.forEach((docSnap) => {
+          addFoodOnce(pathParts, docSnap.id, docSnap.data() || {});
+        });
+      } catch (err) {
+        console.warn("FoodAllowance collection read failed:", key, err);
+      }
+    }
+
+    await Promise.all([
+      addFoodDoc(["FoodAllowance", "Records", uid, monthDoc1]),
+      addFoodDoc(["FoodAllowance", "Records", uid, monthDoc2]),
+      addFoodDoc(["FoodAllowance", "Records", uid, monthDoc3]),
+
+      addFoodDoc(["FoodAllowance", "Records", uid, "Records", monthDoc1]),
+      addFoodDoc(["FoodAllowance", "Records", uid, "Records", monthDoc2]),
+      addFoodDoc(["FoodAllowance", "Records", uid, "Records", monthDoc3]),
+
+      addFoodDoc(["FoodAllowance", uid, "Records", monthDoc1]),
+      addFoodDoc(["FoodAllowance", uid, "Records", monthDoc2]),
+      addFoodDoc(["FoodAllowance", uid, "Records", monthDoc3]),
+
+      addFoodDoc(["FoodAllowance", site || "NA", "Records", oldCombinedDoc]),
+      addFoodDoc(["FoodAllowance", "Records", oldCombinedDoc]),
+
+      addFoodCollection(["FoodAllowance", uid, "Records"]),
+      addFoodCollection(["FoodAllowance", "Records", uid]),
+      addFoodCollection(["FoodAllowance", "Records", uid, "Records"])
+    ]);
+
+    foodCache.set(cacheKey, total);
+
+    return total;
+  }
+
+  async function sumAlternateAllowances(uid, monthKey) {
+    const cacheKey = `${normalizeId(uid)}_${monthKey}_alternate`;
+
+    if (allowanceCache.has(cacheKey)) return allowanceCache.get(cacheKey);
+
+    const [year, mon] = monthKey.split("-");
+    const monthDoc1 = `${mon}-${year}`;
+    const monthDoc2 = monthKey;
+    const monthDoc3 = `${mon}-${year.slice(-2)}`;
+
+    let total = 0;
+
+    try {
+      const allowanceSnap = await getDocs(collection(db, "Allowance", uid, "Records"));
+
+      allowanceSnap.forEach((docSnap) => {
+        const data = docSnap.data() || {};
+
+        const recordMonth = normalizeText(
+          safeValue(
+            data.month,
+            data.monthYear,
+            data.monthKey,
+            data.date,
+            data.paymentMonth,
+            docSnap.id
+          )
+        );
+
+        const monthOk =
+          recordMonth === normalizeText(monthDoc1) ||
+          recordMonth === normalizeText(monthDoc2) ||
+          recordMonth === normalizeText(monthDoc3) ||
+          recordMonth.includes(normalizeText(monthDoc1)) ||
+          recordMonth.includes(normalizeText(monthDoc2)) ||
+          recordMonth.includes(normalizeText(monthDoc3));
+
+        if (!monthOk) return;
+
+        const amount =
+          Number(
+            safeValue(
+              data.amount,
+              data.Amount,
+              data.allowanceAmount,
+              data.totalAmount,
+              data.TotalAmount
+            )
+          ) || 0;
+
+        total += amount;
+      });
+    } catch (err) {
+      console.warn("Alternate allowance fetch failed:", uid, err);
+    }
+
+    const result = {
+      display: formatSignedMoney(total),
+      value: total
+    };
+
+    allowanceCache.set(cacheKey, result);
+
+    return result;
+  }
+
+  async function sumOtForMonth(uid, monthKey) {
+    const cacheKey = `${normalizeId(uid)}_${monthKey}`;
+
+    if (otCache.has(cacheKey)) return otCache.get(cacheKey);
+
+    let total = 0;
+
+    try {
+      const otSnap = await getDocs(collection(db, "OT", uid, "ot"));
+
+      otSnap.forEach((docSnap) => {
+        const docId = docSnap.id;
+
+        if (docId.startsWith(monthKey)) {
+          total += Number(docSnap.data().amount) || 0;
+        }
+      });
+    } catch (err) {
+      console.error(`Error fetching OT for ${uid}:`, err);
+    }
+
+    otCache.set(cacheKey, total);
+
+    return total;
+  }
+
+  async function sumPaidLeaveForMonth(uid, monthKey) {
+    const cacheKey = `${normalizeId(uid)}_${monthKey}_paidleave`;
+
+    if (paidLeaveCache.has(cacheKey)) {
+      return paidLeaveCache.get(cacheKey);
+    }
+
+    const [year, mon] = monthKey.split("-");
+    const monthNames = {
+      "01": "january",
+      "02": "february",
+      "03": "march",
+      "04": "april",
+      "05": "may",
+      "06": "june",
+      "07": "july",
+      "08": "august",
+      "09": "september",
+      "10": "october",
+      "11": "november",
+      "12": "december"
+    };
+
+    const targetMonthName = monthNames[mon] || "";
+    let total = 0;
+    const countedRecordKeys = new Set();
+
+    function getPaidLeaveAmount(data) {
+      return (
+        Number(
+          safeValue(
+            data.amount,
+            data.Amount,
+            data.paidLeaveAmount,
+            data.PaidLeaveAmount,
+            data.leaveAmount,
+            data.LeaveAmount,
+            data.totalAmount,
+            data.TotalAmount,
+            data.total,
+            data.Total
+          )
+        ) || 0
+      );
+    }
+
+    function uidMatches(data, docId) {
+      const recordUid = normalizeId(
+        safeValue(
+          data.uid,
+          data.UID,
+          data.employeeId,
+          data.employeeID,
+          data.empId,
+          data.empID,
+          data.id,
+          docId
+        )
+      );
+
+      return !recordUid || recordUid === normalizeId(uid);
+    }
+
+    function monthMatches(data, docId) {
+      const recordMonth = normalizeText(
+        safeValue(
+          data.month,
+          data.monthName,
+          data.monthKey,
+          data.Months,
+          data.months,
+          data.date,
+          docId
+        )
+      );
+
+      const target = normalizeText(targetMonthName);
+
+      if (!target) return false;
+
+      return (
+        recordMonth === target ||
+        recordMonth.includes(target) ||
+        normalizeText(docId).includes(target)
+      );
+    }
+
+    function getUniqueKey(docId, data) {
+      const employeeId = normalizeId(
+        safeValue(
+          data.employeeId,
+          data.employeeID,
+          data.uid,
+          data.UID,
+          data.id,
+          uid
+        )
+      );
+
+      const recordId = normalizeText(
+        safeValue(data.recordId, docId)
+      );
+
+      return `paidleave_${employeeId}_${recordId}`;
+    }
+
+    try {
+      const snap = await getDocs(collection(db, "Paid leave", String(uid), "Months"));
+
+      snap.forEach((docSnap) => {
+        const data = docSnap.data() || {};
+        const docId = String(docSnap.id || "").trim();
+
+        if (!uidMatches(data, docId)) return;
+        if (!monthMatches(data, docId)) return;
+
+        const uniqueKey = getUniqueKey(docId, data);
+        if (countedRecordKeys.has(uniqueKey)) return;
+
+        countedRecordKeys.add(uniqueKey);
+        total += getPaidLeaveAmount(data);
+      });
+    } catch (err) {
+      console.warn("Paid leave collection read failed:", `Paid leave/${uid}/Months`, err);
+    }
+
+    paidLeaveCache.set(cacheKey, total);
+
+    return total;
+  }
+
+
+  async function sumAccommodationForMonth(uid, monthKey, site = "") {
+    const cacheKey = `${normalizeId(uid)}_${monthKey}_${normalizeText(site)}_accommodation`;
+
+    if (accommodationCache.has(cacheKey)) {
+      return accommodationCache.get(cacheKey);
+    }
+
+    const [year, mon] = monthKey.split("-");
+    const yy = year.slice(-2);
+
+    const monthDoc1 = monthKey;
+    const monthDoc2 = `${mon}-${year}`;
+    const monthDoc3 = `${mon}-${yy}`;
+
+    let total = 0;
+
+    const countedRecordKeys = new Set();
+    const checkedPaths = new Set();
+
+    function getAccommodationAmount(data) {
+      return (
+        Number(
+          safeValue(
+            data.amount,
+            data.Amount,
+            data.price,
+            data.Price,
+            data.staffAccommodationPrice,
+            data.StaffAccommodationPrice,
+            data.accommodationPrice,
+            data.AccommodationPrice,
+            data.accommodationAmount,
+            data.AccommodationAmount,
+            data.staffAccommodationAmount,
+            data.StaffAccommodationAmount,
+            data.totalAmount,
+            data.TotalAmount,
+            data.total,
+            data.Total
+          )
+        ) || 0
+      );
+    }
+
+    function timestampToMonthKey(value) {
+      if (!value) return "";
+
+      try {
+        let d = null;
+
+        if (typeof value === "object" && typeof value.toDate === "function") {
+          d = value.toDate();
+        } else if (value instanceof Date) {
+          d = value;
+        } else {
+          d = new Date(value);
+        }
+
+        if (!d || isNaN(d.getTime())) return "";
+
+        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+      } catch (err) {
+        return "";
+      }
+    }
+
+    function monthMatchedFromData(data, docId) {
+      const recordMonth = safeValue(
+        data.monthKey,
+        data.month,
+        data.monthYear,
+        data.date,
+        data.paymentMonth,
+        data.accommodationMonth,
+        data.staffAccommodationMonth,
+        docId
+      );
+
+      const m = normalizeText(recordMonth);
+
+      if (
+        m === normalizeText(monthDoc1) ||
+        m === normalizeText(monthDoc2) ||
+        m === normalizeText(monthDoc3) ||
+        m.includes(normalizeText(monthDoc1)) ||
+        m.includes(normalizeText(monthDoc2)) ||
+        m.includes(normalizeText(monthDoc3))
+      ) {
+        return true;
+      }
+
+      const createdMonth = timestampToMonthKey(data.createdAt);
+      const updatedMonth = timestampToMonthKey(data.updatedAt);
+
+      if (createdMonth === monthKey || updatedMonth === monthKey) {
+        return true;
+      }
+
+      const hasNoMonthField =
+        !data.monthKey &&
+        !data.month &&
+        !data.monthYear &&
+        !data.date &&
+        !data.paymentMonth &&
+        !data.accommodationMonth &&
+        !data.staffAccommodationMonth;
+
+      return hasNoMonthField;
+    }
+
+    function uidMatched(data) {
+      const recordUid = normalizeId(
+        safeValue(
+          data.uid,
+          data.UID,
+          data.employeeId,
+          data.employeeID,
+          data.empId,
+          data.empID,
+          data.id
+        )
+      );
+
+      return !recordUid || recordUid === normalizeId(uid);
+    }
+
+    function siteMatched(data) {
+      const recordSite = normalizeText(
+        safeValue(data.site, data.Site, data.siteSelect, data.industrySelect)
+      );
+
+      return !recordSite || !site || recordSite === normalizeText(site);
+    }
+
+    function getRecordUniqueKey(pathParts, docId, data) {
+      const collectionName = normalizeText(pathParts[0]);
+
+      const recordId = normalizeText(
+        safeValue(data.recordId, docId)
+      );
+
+      const employeeId = normalizeId(
+        safeValue(
+          data.employeeId,
+          data.employeeID,
+          data.uid,
+          data.UID,
+          data.id,
+          uid
+        )
+      );
+
+      return `${collectionName}_${employeeId}_${recordId}`;
+    }
+
+    function addAmountOnce(pathParts, docId, data) {
+      if (!uidMatched(data)) return;
+      if (!siteMatched(data)) return;
+      if (!monthMatchedFromData(data, docId)) return;
+
+      const uniqueKey = getRecordUniqueKey(pathParts, docId, data);
+
+      if (countedRecordKeys.has(uniqueKey)) return;
+
+      countedRecordKeys.add(uniqueKey);
+      total += getAccommodationAmount(data);
+    }
+
+    async function addAccommodationDoc(pathParts) {
+      const pathKey = pathParts.join("/");
+
+      if (checkedPaths.has(pathKey)) return;
+      checkedPaths.add(pathKey);
+
+      try {
+        const snap = await getDoc(doc(db, ...pathParts));
+
+        if (!snap.exists()) return;
+
+        addAmountOnce(pathParts, snap.id, snap.data() || {});
+      } catch (err) {
+        console.warn("Accommodation doc read failed:", pathKey, err);
+      }
+    }
+
+    async function scanAccommodationCollection(pathParts) {
+      const pathKey = pathParts.join("/");
+
+      if (checkedPaths.has(pathKey)) return;
+      checkedPaths.add(pathKey);
+
+      try {
+        const snap = await getDocs(collection(db, ...pathParts));
+
+        snap.forEach((docSnap) => {
+          addAmountOnce(pathParts, docSnap.id, docSnap.data() || {});
+        });
+      } catch (err) {
+        console.warn("Accommodation collection read failed:", pathKey, err);
+      }
+    }
+
+    await Promise.all([
+      addAccommodationDoc(["Accommodation", uid, "Records", "StaffAccommodation"]),
+
+      addAccommodationDoc(["Accommodation", uid, "Records", monthDoc1]),
+      addAccommodationDoc(["Accommodation", uid, "Records", monthDoc2]),
+      addAccommodationDoc(["Accommodation", uid, "Records", monthDoc3]),
+
+      scanAccommodationCollection(["Accommodation", uid, "Records"])
+    ]);
+
+    accommodationCache.set(cacheKey, total);
+
+    return total;
+  }
+
+  function appendRowDetailed(d) {
+    const tbody = document.querySelector("#detailedPaymentTable table tbody");
+    const tr = document.createElement("tr");
+    const status = normalizePaymentStatus(d.status);
+
+    tr.innerHTML = `
+      <td>${d.slNo}</td>
+      <td>${d.uid}</td>
+      <td>${d.fullName}</td>
+      <td>${d.site || "-"}</td>
+      <td>${d.presentDays}</td>
+      <td>${formatMoney(d.wages)}</td>
+      <td>${formatMoney(d.basicWages)}</td>
+      <td>${formatMoney(d.phAmount)}</td>
+      <td>${d.leaveCount}</td>
+      <td>${formatMoney(d.bonusAmount)}</td>
+      <td><strong>${formatMoney(d.totalWages)}</strong></td>
+      <td>${formatMoney(d.epf)}</td>
+      <td>${formatMoney(d.esic)}</td>
+      <td>${formatMoney(d.advDeduct)}</td>
+      <td>${formatMoney(d.foodDeduction)}</td>
+      <td><strong>${formatMoney(d.totalDeduction)}</strong></td>
+      <td><strong>${formatMoney(d.netPay)}</strong></td>
+      <td>${getPaymentStatusChip(status)}</td>
+    `;
+
+    tbody.appendChild(tr);
+  }
+
+  function appendDetailedSumRow(detailedRows) {
+    if (!Array.isArray(detailedRows) || !detailedRows.length) return;
+
+    const tbody = document.querySelector("#detailedPaymentTable table tbody");
+
+    const totalWagesSum = detailedRows.reduce((sum, row) => {
+      return sum + (Number(row.totalWages) || 0);
+    }, 0);
+
+    const totalEpf = detailedRows.reduce((sum, row) => {
+      return sum + (Number(row.epf) || 0);
+    }, 0);
+
+    const totalEsic = detailedRows.reduce((sum, row) => {
+      return sum + (Number(row.esic) || 0);
+    }, 0);
+
+    const totalFood = detailedRows.reduce((sum, row) => {
+      return sum + (Number(row.foodDeduction) || 0);
+    }, 0);
+
+    const totalDeductionSum = detailedRows.reduce((sum, row) => {
+      return sum + (Number(row.totalDeduction) || 0);
+    }, 0);
+
+    const totalAmountSum = detailedRows.reduce((sum, row) => {
+      return sum + (Number(row.netPay) || 0);
+    }, 0);
+
+    const tr = document.createElement("tr");
+    tr.className = "sum-row";
+
+    tr.innerHTML = `
+      <td colspan="10" class="sum-label">TOTAL SUM</td>
+      <td class="sum-value">${formatMoney(totalWagesSum)}</td>
+      <td class="sum-value">${formatMoney(totalEpf)}</td>
+      <td class="sum-value">${formatMoney(totalEsic)}</td>
+      <td>-</td>
+      <td class="sum-value">${formatMoney(totalFood)}</td>
+      <td class="sum-value">${formatMoney(totalDeductionSum)}</td>
+      <td class="sum-value">${formatMoney(totalAmountSum)}</td>
+      <td class="sum-value">-</td>
+    `;
+
+    tbody.appendChild(tr);
+  }
+
+  function appendRowAlternate(d) {
+    const tbody = document.querySelector("#alternatePaymentTable table tbody");
+    const tr = document.createElement("tr");
+    const status = normalizePaymentStatus(d.status);
+
+    tr.innerHTML = `
+      <td>${d.slNo}</td>
+      <td>${d.uid}</td>
+      <td>${d.fullName}</td>
+      <td>${d.site || "-"}</td>
+      <td>${d.workingType || "-"}</td>
+      <td>${d.totalDays}</td>
+      <td>${formatMoney(d.leftWages)}</td>
+      <td>${d.allowanceDisplay}</td>
+      <td>${formatMoney(d.advDeduct)}</td>
+      <td>${formatMoney(d.ot)}</td>
+      <td>${formatMoney(d.accommodationPrice)}</td>
+      <td>${formatMoney(d.paidLeaveAmount)}</td>
+      <td><strong>${formatMoney(d.altNetPay)}</strong></td>
+      <td>${getPaymentStatusChip(status)}</td>
+    `;
+
+    tbody.appendChild(tr);
+  }
+
+  function ensureEmptyStates() {
+    const detailedBody = document.querySelector("#detailedPaymentTable table tbody");
+    const alternateBody = document.querySelector("#alternatePaymentTable table tbody");
+
+    if (!detailedBody.innerHTML.trim()) {
+      detailedBody.innerHTML =
+        `<tr><td colspan="18" class="empty-state">No payment records found.</td></tr>`;
+    }
+
+    if (!alternateBody.innerHTML.trim()) {
+      alternateBody.innerHTML =
+        `<tr><td colspan="14" class="empty-state">No alternate payment records found.</td></tr>`;
+    }
+  }
+
+  paymentModeToggle.addEventListener("change", () => {
+    if (paymentModeToggle.checked) {
+      detailedPaymentSection.style.display = "none";
+      alternatePaymentSection.style.display = "";
+    } else {
+      alternatePaymentSection.style.display = "none";
+      detailedPaymentSection.style.display = "";
+    }
+
+    refreshPaymentActionStates();
+    resetSubmitButton();
+  });
+
+  if (statusFilterSelect) {
+    statusFilterSelect.addEventListener("change", () => {
+      refreshPaymentActionStates();
+    });
+  }
+
+  async function initPage() {
+    await loadAdminDetails();
+    await loadAllPeople();
+
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, "0");
+
+    adminDateInput.value = `${yyyy}-${mm}`;
+    refreshPaymentActionStates();
+    resetSubmitButton();
+
+    setInterval(() => {
+      maybeAutoSaveEligiblePayments();
+    }, 60000);
+  }
+
+  initPage();
+
+  downloadBtn.addEventListener("click", async () => {
+    const { jsPDF } = window.jspdf;
+
+    const doc = new jsPDF("l", "mm", "a4");
+    const isAlternate = paymentModeToggle.checked;
+    const monthKey = currentPayrollMonthKey || (adminDateInput ? adminDateInput.value : "");
+
+    const sourceRows = isAlternate ? currentAlternateRows : currentDetailedRows;
+    const exportRows = (Array.isArray(sourceRows) ? sourceRows : []).filter(
+      (row) => normalizePaymentStatus(row.status) !== "hold"
+    );
+
+    if (!exportRows.length) {
+      alert("No non-hold payment records found for PDF download.");
+      return;
+    }
+
+    const formatMonthLabel = (value) => {
+      if (!value) return "";
+      const [year, month] = String(value).split("-");
+      if (!year || !month) return "";
+      const dt = new Date(Number(year), Number(month) - 1, 1);
+      return dt.toLocaleString("en-US", { month: "long", year: "numeric" });
+    };
+
+    const title = isAlternate
+      ? "Alternate Payment Report"
+      : "Detailed Payment Report";
+
+    const monthLabel = formatMonthLabel(monthKey);
+    const fileMonthPart = String(monthKey || "all_months").replace(/-/g, "_");
+    const fileName = isAlternate
+      ? `Alternate_Payment_Report_${fileMonthPart}.pdf`
+      : `Detailed_Payment_Report_${fileMonthPart}.pdf`;
+
+    const headerText = monthLabel ? `${title} - ${monthLabel}` : title;
+
+    doc.setFontSize(18);
+    doc.text(headerText, 14, 15);
+
+    doc.setFontSize(10);
+    doc.text(`Generated: ${new Date().toLocaleString()}`, 14, 22);
+
+    if (!isAlternate) {
+      doc.autoTable({
+        head: [[
+          "Sl No.",
+          "UID",
+          "Name",
+          "Site",
+          "Total Day",
+          "Wages/@m",
+          "Basic Wages",
+          "PH Amount",
+          "Leave",
+          "Bonus @8.33%",
+          "Total Wages",
+          "EPF@ 12%",
+          "ESIC @0.75%",
+          "Advance Wages Payment",
+          "Food",
+          "Total Deduction",
+          "Total Amount",
+          "Status"
+        ]],
+        body: exportRows.map((row) => ([
+          row.slNo ?? "",
+          row.uid ?? "",
+          row.fullName ?? "",
+          row.site || "-",
+          row.presentDays ?? "",
+          formatMoney(row.wages),
+          formatMoney(row.basicWages),
+          formatMoney(row.phAmount),
+          row.leaveCount ?? "",
+          formatMoney(row.bonusAmount),
+          formatMoney(row.totalWages),
+          formatMoney(row.epf),
+          formatMoney(row.esic),
+          formatMoney(row.advDeduct),
+          formatMoney(row.foodDeduction),
+          formatMoney(row.totalDeduction),
+          formatMoney(row.netPay),
+          getPaymentStatusLabel(row.status)
+        ])),
+        startY: 28,
+        styles: {
+          fontSize: 7,
+          cellPadding: 2,
+          overflow: "linebreak",
+          halign: "center",
+          valign: "middle"
+        },
+        headStyles: {
+          fillColor: [22, 87, 204],
+          textColor: [255, 255, 255],
+          fontStyle: "bold"
+        },
+        bodyStyles: {
+          textColor: [20, 20, 20]
+        },
+        alternateRowStyles: {
+          fillColor: [245, 245, 245]
+        },
+        theme: "grid",
+        margin: {
+          top: 25
+        }
+      });
+    } else {
+      doc.autoTable({
+        head: [[
+          "Sl No.",
+          "UID",
+          "Name",
+          "Site",
+          "Working Type",
+          "Total Day",
+          "Left Wages",
+          "Allowance",
+          "Advance Wages Payment",
+          "OT",
+          "Staff Accommodation Price",
+          "Paid Leave",
+          "Total Amount",
+          "Status"
+        ]],
+        body: exportRows.map((row) => ([
+          row.slNo ?? "",
+          row.uid ?? "",
+          row.fullName ?? "",
+          row.site || "-",
+          row.workingType || "-",
+          row.totalDays ?? "",
+          formatMoney(row.leftWages),
+          row.allowanceDisplay ?? formatMoney(row.allowanceValue),
+          formatMoney(row.advDeduct),
+          formatMoney(row.ot),
+          formatMoney(row.accommodationPrice),
+          formatMoney(row.paidLeaveAmount),
+          formatMoney(row.altNetPay),
+          getPaymentStatusLabel(row.status)
+        ])),
+        startY: 28,
+        styles: {
+          fontSize: 7,
+          cellPadding: 2,
+          overflow: "linebreak",
+          halign: "center",
+          valign: "middle"
+        },
+        headStyles: {
+          fillColor: [22, 87, 204],
+          textColor: [255, 255, 255],
+          fontStyle: "bold"
+        },
+        bodyStyles: {
+          textColor: [20, 20, 20]
+        },
+        alternateRowStyles: {
+          fillColor: [245, 245, 245]
+        },
+        theme: "grid",
+        margin: {
+          top: 25
+        }
+      });
+    }
+
+    doc.save(fileName);
+  });
+</script>
+</body>
+
+</html>

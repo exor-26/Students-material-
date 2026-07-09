@@ -1,0 +1,1576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>KIEPL Login Portal</title>
+  <link rel="icon" type="image/x-icon" href="logo2.ico" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
+  <style>
+    *, *::before, *::after {
+      cursor:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" viewBox="0 0 24 24"><path fill="%23FFF" stroke="%23FF2711" stroke-width="2" d="M5.5 3.21V20.8c0 .45.54.67.85.35l4.86-4.86a.5.5 0 0 1 .35-.15h6.87a.5.5 0 0 0 .35-.85L6.35 2.85a.5.5 0 0 0-.85.35Z"></path></svg>') 5 5, auto;
+    }
+
+    a, button, input[type="submit"], input[type="button"],
+    label, select, .dropbtn, .sub-btn, .btn, .cn,
+    .carousel-control, .hideMenuButton, .item a,
+    input[type="text"], input[type="search"], textarea {
+      cursor:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="%23FFF" stroke="%23FF2711" stroke-width="2" stroke-linejoin="round" d="M10 11V8.99c0-.88.59-1.64 1.44-1.86h.05A1.99 1.99 0 0 1 14 9.05V12v-2c0-.88.6-1.65 1.46-1.87h.05A1.98 1.98 0 0 1 18 10.06V13v-1.94a2 2 0 0 1 1.51-1.94h0A2 2 0 0 1 22 11.06V14c0 .6-.08 1.27-.21 1.97a7.96 7.96 0 0 1-7.55 6.48 54.98 54.98 0 0 1-4.48 0 7.96 7.96 0 0 1-7.55-6.48C2.08 15.27 2 14.59 2 14v-1.49c0-1.11.9-2.01 2.01-2.01h0a2 2 0 0 1 2.01 2.03l-.01.97v-10c0-1.1.9-2 2-2h0a2 2 0 0 1 2 2V11Z"></path></svg>') 5 5, auto;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg-dark: #081523;
+      --bg-mid: #0e2238;
+      --text-main: #ffffff;
+      --text-soft: #b8c9df;
+      --accent: #ff7a2f;
+      --accent-2: #1f77ff;
+      --shadow: 0 20px 45px rgba(0, 0, 0, 0.28);
+      --radius-xl: 28px;
+      --radius-lg: 18px;
+      --radius-md: 14px;
+    }
+
+    html,
+    body {
+      width: 100%;
+      min-height: 100%;
+    }
+
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      background:
+        linear-gradient(135deg, rgba(7, 16, 30, 0.94), rgba(14, 34, 56, 0.9)),
+        url("https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1600&q=80") center/cover no-repeat fixed;
+      color: var(--text-main);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .home-btn {
+      position: fixed;
+      top: 18px;
+      right: 18px;
+      z-index: 999;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 11px 16px;
+      border-radius: 12px;
+      text-decoration: none;
+      color: #fff;
+      background: linear-gradient(135deg, #2d7dff, #1657cc);
+      box-shadow: 0 12px 26px rgba(45, 125, 255, 0.28);
+      font-weight: 700;
+      transition: 0.25s ease;
+    }
+
+    .home-btn:hover {
+      transform: translateY(-1px);
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .page-shell {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 20px 40px;
+    }
+
+    .container {
+      position: relative;
+      width: 100%;
+      max-width: 1100px;
+      min-height: 680px;
+      background: rgba(10, 20, 38, 0.78);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      backdrop-filter: blur(12px);
+    }
+
+    .form-container {
+      position: absolute;
+      top: 0;
+      height: 100%;
+      width: 50%;
+      transition: all 0.6s ease-in-out;
+    }
+
+    .sign-in-container {
+      left: 0;
+      z-index: 2;
+      opacity: 1;
+    }
+
+    .sign-up-container {
+      left: 0;
+      z-index: 1;
+      opacity: 0;
+    }
+
+    .container.right-panel-active .sign-in-container {
+      transform: translateX(100%);
+      opacity: 0;
+      z-index: 1;
+    }
+
+    .container.right-panel-active .sign-up-container {
+      transform: translateX(100%);
+      opacity: 1;
+      z-index: 5;
+    }
+
+    .section {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 48px;
+      background: transparent;
+    }
+
+    .brand-mini {
+      display: inline-block;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: rgba(255, 122, 47, 0.15);
+      border: 1px solid rgba(255, 122, 47, 0.22);
+      color: #ffb991;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      margin-bottom: 16px;
+      width: fit-content;
+    }
+
+    .section h1 {
+      font-size: 34px;
+      font-weight: 800;
+      margin-bottom: 10px;
+      color: #fff;
+      line-height: 1.15;
+    }
+
+    .section-subtitle {
+      color: var(--text-soft);
+      line-height: 1.7;
+      font-size: 14px;
+      margin-bottom: 26px;
+      max-width: 420px;
+    }
+
+    form {
+      width: 100%;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-control {
+      width: 100%;
+      min-height: 54px;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.05);
+      color: #fff;
+      font-size: 15px;
+      padding: 14px 16px;
+      outline: none;
+      transition: 0.25s ease;
+      box-shadow: none;
+    }
+
+    .form-control:focus {
+      border-color: rgba(31, 119, 255, 0.55);
+      box-shadow: 0 0 0 4px rgba(31, 119, 255, 0.12);
+      background: rgba(255, 255, 255, 0.07);
+    }
+
+    .form-control::placeholder {
+      color: #9fb4cf;
+    }
+
+
+    .password-wrapper {
+      position: relative;
+      width: 100%;
+    }
+
+    .password-wrapper .form-control {
+      padding-right: 52px;
+    }
+
+    .toggle-password {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #9fb4cf;
+      font-size: 18px;
+      cursor: pointer;
+      transition: 0.25s ease;
+      z-index: 2;
+    }
+
+    .toggle-password:hover {
+      color: #ffffff;
+      transform: translateY(-50%) scale(1.08);
+    }
+
+    .toggle-password.active {
+      color: #2d7dff;
+    }
+
+    select.form-control option {
+      color: #000;
+    }
+
+    .form-action-btn {
+      width: 100%;
+      min-height: 54px;
+      border: none;
+      border-radius: 14px;
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: 0.2px;
+      color: #fff;
+      background: linear-gradient(135deg, #2d7dff, #1657cc);
+      box-shadow: 0 12px 24px rgba(45, 125, 255, 0.24);
+      transition: 0.25s ease;
+    }
+
+    .form-action-btn:hover {
+      transform: translateY(-1px);
+      opacity: 0.97;
+    }
+
+    .overlay-container {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      width: 50%;
+      height: 100%;
+      overflow: hidden;
+      transition: transform 0.6s ease-in-out;
+      z-index: 100;
+    }
+
+    .container.right-panel-active .overlay-container {
+      transform: translateX(-100%);
+    }
+
+    .overlay {
+      position: relative;
+      left: -100%;
+      width: 200%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(24, 59, 111, 0.96), rgba(12, 27, 53, 0.96));
+      transform: translateX(0);
+      transition: transform 0.6s ease-in-out;
+    }
+
+    .container.right-panel-active .overlay {
+      transform: translateX(50%);
+    }
+
+    .overlay-panel {
+      position: absolute;
+      top: 0;
+      width: 50%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 48px;
+      text-align: left;
+      transition: transform 0.6s ease-in-out;
+    }
+
+    .overlay-left {
+      left: 0;
+      transform: translateX(-20%);
+    }
+
+    .container.right-panel-active .overlay-left {
+      transform: translateX(0);
+    }
+
+    .overlay-right {
+      right: 0;
+      transform: translateX(0);
+    }
+
+    .container.right-panel-active .overlay-right {
+      transform: translateX(20%);
+    }
+
+    .overlay-tag {
+      display: inline-block;
+      width: fit-content;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: #dce8ff;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      margin-bottom: 16px;
+    }
+
+    .overlay-panel h1 {
+      font-size: 38px;
+      font-weight: 800;
+      margin-bottom: 12px;
+      color: #fff;
+      line-height: 1.15;
+    }
+
+    .overlay-panel p {
+      color: #d2e0f5;
+      line-height: 1.8;
+      font-size: 15px;
+      margin-bottom: 24px;
+      max-width: 360px;
+    }
+
+    .ghost {
+      min-height: 50px;
+      padding: 0 22px;
+      width: fit-content;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(255,255,255,0.08);
+      color: #fff;
+      font-weight: 800;
+      letter-spacing: 0.2px;
+      transition: 0.25s ease;
+    }
+
+    .ghost:hover {
+      background: rgba(255,255,255,0.14);
+      transform: translateY(-1px);
+    }
+
+    .info-points {
+      margin-top: 6px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .info-point {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #d8e6fa;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .info-point i {
+      color: #ffb991;
+      width: 18px;
+      text-align: center;
+    }
+
+    /* Loading overlay */
+    .loading-overlay {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.45);
+      backdrop-filter: blur(4px);
+      z-index: 99998;
+    }
+
+    .loading-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      padding: 22px 28px;
+      border-radius: 18px;
+      background: rgba(15, 29, 49, 0.96);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.32);
+      color: #fff;
+      min-width: 220px;
+    }
+
+    .spinner {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      border: 4px solid rgba(255, 255, 255, 0.18);
+      border-top-color: #2d7dff;
+      animation: kieplSpin 0.9s linear infinite;
+    }
+
+    @keyframes kieplSpin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* OTP Popup */
+    .otp-popup {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.72);
+      backdrop-filter: blur(5px);
+      z-index: 99999;
+      padding: 20px;
+    }
+
+    .otp-box {
+      width: 100%;
+      max-width: 440px;
+      background: linear-gradient(180deg, rgba(17, 31, 53, 0.98), rgba(10, 20, 38, 0.98));
+      border-radius: 26px;
+      padding: 30px 28px 26px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .otp-box::before {
+      content: "";
+      position: absolute;
+      inset: -2px;
+      border-radius: 28px;
+      padding: 2px;
+      background: linear-gradient(135deg, rgba(45,125,255,0.55), rgba(255,122,47,0.35));
+      -webkit-mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+              mask-composite: exclude;
+      pointer-events: none;
+    }
+
+    .otp-icon {
+      width: 70px;
+      height: 70px;
+      margin: 0 auto 12px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: radial-gradient(circle at top, rgba(45,125,255,0.35), rgba(255,255,255,0.05));
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: inset 0 0 20px rgba(45,125,255,0.12);
+      font-size: 28px;
+      color: #dce8ff;
+    }
+
+    .otp-box h2 {
+      color: #fff;
+      margin-bottom: 8px;
+      font-size: 28px;
+      font-weight: 800;
+    }
+
+    .otp-box p {
+      color: #b8c9df;
+      font-size: 14px;
+      line-height: 1.7;
+      margin-bottom: 18px;
+    }
+
+    .otp-input {
+      width: 100%;
+      height: 58px;
+      border: 1px solid rgba(255,255,255,0.10);
+      outline: none;
+      border-radius: 14px;
+      padding: 0 18px;
+      font-size: 22px;
+      text-align: center;
+      letter-spacing: 5px;
+      background: rgba(255,255,255,0.07);
+      color: #fff;
+      margin-bottom: 14px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
+    }
+
+    .otp-input:focus {
+      border-color: rgba(45,125,255,0.6);
+      box-shadow: 0 0 0 4px rgba(45,125,255,0.14);
+      background: rgba(255,255,255,0.09);
+    }
+
+    .otp-btn {
+      width: 100%;
+      height: 54px;
+      border: none;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #2d7dff, #1657cc);
+      color: #fff;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 12px 24px rgba(45, 125, 255, 0.24);
+      transition: 0.25s ease;
+    }
+
+    .otp-btn:hover {
+      opacity: 0.97;
+      transform: translateY(-1px);
+    }
+
+    .otp-timer {
+      color: #9fb4cf;
+      margin-top: 12px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .otp-resend {
+      margin-top: 12px;
+      color: #ffb991;
+      font-size: 14px;
+      cursor: pointer;
+      font-weight: 700;
+      user-select: none;
+    }
+
+    .otp-resend:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 980px) {
+      .container {
+        min-height: 760px;
+      }
+
+      .section,
+      .overlay-panel {
+        padding: 34px;
+      }
+
+      .section h1,
+      .overlay-panel h1 {
+        font-size: 28px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      body {
+        overflow-y: auto;
+      }
+
+      .page-shell {
+        align-items: flex-start;
+        padding-top: 88px;
+      }
+
+      .container {
+        min-height: auto;
+        display: flex;
+        flex-direction: column;
+        overflow: visible;
+        background: transparent;
+        border: none;
+        box-shadow: none;
+        backdrop-filter: none;
+        gap: 18px;
+      }
+
+      .form-container,
+      .overlay-container {
+        position: relative;
+        width: 100%;
+        left: 0;
+        height: auto;
+        transform: none !important;
+        opacity: 1 !important;
+      }
+
+      .sign-up-container {
+        display: none;
+      }
+
+      .container.right-panel-active .sign-up-container {
+        display: block;
+      }
+
+      .container.right-panel-active .sign-in-container {
+        display: none;
+      }
+
+      .overlay-container {
+        order: -1;
+      }
+
+      .overlay {
+        position: relative;
+        left: 0;
+        width: 100%;
+        height: auto;
+        transform: none !important;
+        border-radius: var(--radius-xl);
+        border: 1px solid rgba(255,255,255,0.08);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+
+      .overlay-panel {
+        position: relative;
+        width: 100%;
+        height: auto;
+        display: none;
+        transform: none !important;
+      }
+
+      .container:not(.right-panel-active) .overlay-right {
+        display: flex;
+      }
+
+      .container.right-panel-active .overlay-left {
+        display: flex;
+      }
+
+      .section {
+        background: rgba(12, 25, 45, 0.88);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: var(--radius-xl);
+        box-shadow: var(--shadow);
+      }
+    }
+
+    @media (max-width: 600px) {
+      .home-btn {
+        top: 14px;
+        right: 14px;
+        padding: 9px 12px;
+        font-size: 14px;
+      }
+
+      .section,
+      .overlay-panel {
+        padding: 24px;
+      }
+
+      .section h1,
+      .overlay-panel h1 {
+        font-size: 24px;
+      }
+
+      .section-subtitle,
+      .overlay-panel p {
+        font-size: 14px;
+      }
+
+      .otp-box {
+        padding: 24px 18px 20px;
+      }
+
+      .otp-box h2 {
+        font-size: 24px;
+      }
+
+      .otp-input {
+        font-size: 20px;
+        letter-spacing: 4px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <a href="../index.html" class="home-btn">
+    <i class="fas fa-home"></i> Home
+  </a>
+
+  <div class="page-shell">
+    <div class="container" id="container">
+      <!-- Employee Login -->
+      <div class="form-container sign-in-container">
+        <div class="section">
+          <span class="brand-mini">EMPLOYEE ACCESS</span>
+          <h1>User Login</h1>
+          <p class="section-subtitle">
+            Sign in with your registered employee email and password to access your dashboard.
+          </p>
+
+          <form id="userLoginForm">
+            <div class="form-group">
+              <input
+                type="email"
+                class="form-control"
+                id="empEmail"
+                placeholder="Enter your email"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <div class="password-wrapper">
+                <input
+                  type="password"
+                  class="form-control"
+                  id="empPassword"
+                  placeholder="Enter your password"
+                  required
+                />
+                <i class="fas fa-eye toggle-password" toggle="#empPassword"></i>
+              </div>
+            </div>
+
+            <button type="button" id="empSignInBtn" class="form-action-btn">
+              Login
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Corporate Login -->
+      <div class="form-container sign-up-container">
+        <div class="section">
+          <span class="brand-mini">CORPORATE ACCESS</span>
+          <h1>Corporate Login</h1>
+          <p class="section-subtitle">
+            Select your role and sign in with authorized credentials to enter the management dashboard.
+          </p>
+
+          <form id="adminSignInForm">
+            <div class="form-group">
+              <select class="form-control" id="adminRole" required>
+                <option value="" disabled selected>Select your role</option>
+                <option value="Admin">Admin</option>
+                <option value="HR">HR</option>
+                <option value="Site-Incharge">Site-Incharge</option>
+                <option value="Supervisor">Supervisor</option>
+                <option value="AS">AS</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <input
+                type="email"
+                class="form-control"
+                id="adminEmail"
+                placeholder="Enter your email"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <div class="password-wrapper">
+                <input
+                  type="password"
+                  class="form-control"
+                  id="adminPassword"
+                  placeholder="Enter your password"
+                  required
+                />
+                <i class="fas fa-eye toggle-password" toggle="#adminPassword"></i>
+              </div>
+            </div>
+
+            <button type="button" class="form-action-btn" onclick="adminSignIn()">
+              Sign In
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Overlay -->
+      <div class="overlay-container">
+        <div class="overlay">
+          <div class="overlay-panel overlay-left">
+            <span class="overlay-tag">EMPLOYEE LOGIN</span>
+            <h1>Welcome Back!</h1>
+            <p>
+              If you are an employee, use this section to sign in and continue to your work dashboard.
+            </p>
+
+            <div class="info-points">
+              <div class="info-point"><i class="fas fa-user-check"></i> Employee-specific access</div>
+              <div class="info-point"><i class="fas fa-shield-alt"></i> Secure sign-in flow</div>
+              <div class="info-point"><i class="fas fa-briefcase"></i> Quick dashboard entry</div>
+            </div>
+
+            <br />
+            <button class="ghost" id="signIn">Employee Login</button>
+          </div>
+
+          <div class="overlay-panel overlay-right">
+            <span class="overlay-tag">SPECIAL ACCESS</span>
+            <h1>Hello, Admin!</h1>
+            <p>
+              HR, Admin, Supervisor, AS, and Site-Incharge users can sign in through the special access panel.
+            </p>
+
+            <div class="info-points">
+              <div class="info-point"><i class="fas fa-building"></i> Corporate role login</div>
+              <div class="info-point"><i class="fas fa-user-shield"></i> Role-based access</div>
+              <div class="info-point"><i class="fas fa-chart-line"></i> Management dashboard</div>
+            </div>
+
+            <br />
+            <button class="ghost" id="signUp">Special Login</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading overlay -->
+  <div class="loading-overlay" id="loadingOverlay" aria-hidden="true">
+    <div class="loading-card">
+      <div class="spinner"></div>
+      <div style="font-weight:700; letter-spacing:.2px;">Signing in...</div>
+    </div>
+  </div>
+
+  <!-- OTP POPUP -->
+  <div class="otp-popup" id="otpPopup">
+    <div class="otp-box">
+      <div class="otp-icon">
+        <i class="fas fa-shield-alt"></i>
+      </div>
+
+      <h2>Verify OTP</h2>
+
+      <p>
+        A security OTP has been sent to your registered email.
+      </p>
+
+      <input
+        type="text"
+        id="otpInput"
+        name="kieplOtpCode"
+        class="otp-input"
+        maxlength="6"
+        inputmode="numeric"
+        autocomplete="off"
+        autocapitalize="off"
+        spellcheck="false"
+        placeholder="Enter OTP"
+      >
+
+      <button class="otp-btn" onclick="verifyOTP()">
+        Verify & Login
+      </button>
+
+      <div class="otp-timer" id="otpTimer">
+        OTP expires in 02:00
+      </div>
+
+      <div class="otp-resend" onclick="resendOTP()">
+        Resend OTP
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const container = document.getElementById("container");
+    const signUpButton = document.getElementById("signUp");
+    const signInButton = document.getElementById("signIn");
+
+    signUpButton.addEventListener("click", () => {
+      container.classList.add("right-panel-active");
+    });
+
+    signInButton.addEventListener("click", () => {
+      container.classList.remove("right-panel-active");
+    });
+  </script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      document.querySelectorAll(".toggle-password").forEach((icon) => {
+        icon.addEventListener("click", function () {
+          const targetSelector = this.getAttribute("toggle");
+          const input = document.querySelector(targetSelector);
+          if (!input) return;
+
+          const isPassword = input.type === "password";
+          input.type = isPassword ? "text" : "password";
+
+          this.classList.toggle("fa-eye", !isPassword);
+          this.classList.toggle("fa-eye-slash", isPassword);
+          this.classList.toggle("active", isPassword);
+        });
+      });
+    });
+  </script>
+
+  <script type="module" src="firebase-config.js"></script>
+
+  <script type="module">
+  import {
+    getAuth,
+    signInWithPopup,
+    GoogleAuthProvider,
+    signInWithEmailAndPassword,
+    updatePassword,
+    signOut
+  } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+
+  import {
+    getFirestore,
+    doc,
+    getDoc,
+    getDocs,
+    collection,
+    query,
+    where,
+    setDoc,
+    updateDoc,
+    serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+
+  import { app } from "./firebase-config.js";
+
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const googleProvider = new GoogleAuthProvider();
+
+const EMAILJS_PUBLIC_KEY = "g6AH6p55LR8oQv2Dk";
+
+if (!window.emailjs) {
+  console.error("EmailJS SDK failed to load.");
+} else {
+  emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+}
+
+  let generatedOTP = "";
+  let otpExpireInterval = null;
+  let loggedRole = "";
+  let loggedDocEmail = "";   // Firestore doc id wali email
+  let loggedOtpEmail = "";   // OTP bhejne wali email
+
+  const ROLE_COLLECTION_MAP = {
+    HR: "HR",
+    Admin: "Admin",
+    "Site-Incharge": "Site-Incharge",
+    AS: "AS",
+    Supervisor: "Supervisor"
+  };
+
+  // OTP rules:
+  // Admin => every login OTP
+  // Supervisor / AS => 7 days
+  // HR / Site-Incharge => 10 days
+  const OTP_THRESHOLD_DAYS = {
+    Supervisor: 7,
+    AS: 7,
+    HR: 10,
+    "Site-Incharge": 10
+  };
+
+  function redirectByRole(role) {
+    if (role === "Supervisor") {
+      window.location.href = "SupervisorHome.html";
+    } else if (role === "Admin") {
+      window.location.href = "AdminHome.html";
+    } else if (role === "AS") {
+      window.location.href = "AsHome.html";
+    } else if (role === "Site-Incharge") {
+      window.location.href = "SiHome.html";
+    } else if (role === "HR") {
+      window.location.href = "Hrhome.html";
+    }
+  }
+
+  function toMillis(value) {
+    if (!value) return 0;
+
+    if (typeof value?.toMillis === "function") {
+      return value.toMillis();
+    }
+
+    if (typeof value?.seconds === "number") {
+      return value.seconds * 1000;
+    }
+
+    if (value instanceof Date) {
+      return value.getTime();
+    }
+
+    const parsed = new Date(value);
+    return Number.isNaN(parsed.getTime()) ? 0 : parsed.getTime();
+  }
+
+  function getLastSuccessfulLoginMillis(roleData) {
+
+  if (!roleData) return 0;
+
+  const value =
+    roleData.lastSuccessfulLoginAt ||
+    roleData.lastLoginAt ||
+    roleData.lastOtpVerifiedAt;
+
+  return toMillis(value);
+}
+
+  function shouldSendOtp(role, roleData) {
+
+  // Admin => always OTP
+  if (role === "Admin") {
+    return true;
+  }
+
+  const thresholdDays = OTP_THRESHOLD_DAYS[role];
+
+  // safety
+  if (!thresholdDays) {
+    return true;
+  }
+
+  const lastLogin = getLastSuccessfulLoginMillis(roleData);
+
+  // first login
+  if (!lastLogin || lastLogin === 0) {
+    return true;
+  }
+
+  const now = Date.now();
+
+  const diffDays =
+    (now - lastLogin) / (1000 * 60 * 60 * 24);
+
+  console.log("ROLE =", role);
+  console.log("LAST LOGIN =", new Date(lastLogin));
+  console.log("DIFF DAYS =", diffDays);
+
+  // agar threshold ke andar login hua hai
+  // toh OTP NAHI aayega
+  if (diffDays < thresholdDays) {
+    return false;
+  }
+
+  // warna OTP aayega
+  return true;
+}
+
+  async function markSuccessfulLogin(role, loginEmail, extraData = {}) {
+
+  const collectionName = ROLE_COLLECTION_MAP[role];
+
+  if (!collectionName) return;
+
+  const cleanEmail = String(loginEmail || "")
+    .trim()
+    .toLowerCase();
+
+  await setDoc(
+    doc(db, collectionName, cleanEmail),
+    {
+      lastSuccessfulLoginAt: new Date(),
+      ...extraData
+    },
+    { merge: true }
+  );
+}
+
+  async function clearTempPasswordEverywhere(email) {
+    const payload = {
+      tempPassword: null,
+      passwordResetDone: true,
+      passwordResetAt: new Date()
+    };
+
+    const candidateCollections = [
+      "Employee",
+      "pendingEmployeeJob",
+      "PendingEmployeeJoining"
+    ];
+
+    const candidateFields = ["email", "empEmail", "officialEmail"];
+
+    for (const collectionName of candidateCollections) {
+      for (const fieldName of candidateFields) {
+        try {
+          const q = query(collection(db, collectionName), where(fieldName, "==", email));
+          const snap = await getDocs(q);
+
+          for (const d of snap.docs) {
+            await updateDoc(doc(db, collectionName, d.id), payload);
+          }
+        } catch (err) {
+          // ignore
+        }
+      }
+
+      try {
+        const ref = doc(db, collectionName, email);
+        const snap = await getDoc(ref);
+        if (snap.exists()) {
+          await updateDoc(ref, payload);
+        }
+      } catch (err) {
+        // ignore
+      }
+    }
+  }
+
+  function forceBlankInput(id) {
+    const input = document.getElementById(id);
+    if (!input) return;
+
+    input.value = "";
+    input.defaultValue = "";
+    input.setAttribute("value", "");
+  }
+
+  function forceBlankInputs(ids) {
+    ids.forEach(forceBlankInput);
+    requestAnimationFrame(() => ids.forEach(forceBlankInput));
+    setTimeout(() => ids.forEach(forceBlankInput), 100);
+    setTimeout(() => ids.forEach(forceBlankInput), 500);
+  }
+
+  function showOtpPopup() {
+    forceBlankInputs(["otpInput"]);
+    document.getElementById("otpPopup").style.display = "flex";
+    forceBlankInputs(["otpInput"]);
+  }
+
+  function showHandshakeModal() {
+    forceBlankInputs(["newPass", "confirmPass"]);
+    document.getElementById("handshakeModal").style.display = "flex";
+    forceBlankInputs(["newPass", "confirmPass"]);
+  }
+
+  async function sendOTP(email) {
+    const targetEmail = String(email || "").trim().toLowerCase();
+
+    if (!targetEmail) {
+      alert("OTP email is missing.");
+      return;
+    }
+
+    generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
+
+    try {
+      const emailjsClient = window.emailjs;
+
+      if (!emailjsClient || typeof emailjsClient.send !== "function") {
+        throw new Error("EmailJS SDK is not available.");
+      }
+
+      await emailjsClient.send(
+        "service_7xpdxn4",
+        "template_79vb519",
+        {
+          to_email: targetEmail,
+          email: targetEmail,
+          reply_to: targetEmail,
+          otp: generatedOTP,
+          code: generatedOTP,
+          verification_code: generatedOTP,
+          message: `Your OTP is ${generatedOTP}`
+        },
+        { publicKey: EMAILJS_PUBLIC_KEY }
+      );
+
+      showOtpPopup();
+      startOTPTimer();
+      alert("OTP sent successfully");
+    } catch (error) {
+      console.error("EmailJS OTP send failed:", error);
+      const details = error?.text || error?.message || error?.status || "Unknown error";
+      alert("Failed to send OTP: " + details);
+    }
+  }
+
+  function startOTPTimer() {
+    clearInterval(otpExpireInterval);
+
+    let timeLeft = 120;
+
+    otpExpireInterval = setInterval(() => {
+      const minutes = String(Math.floor(timeLeft / 60)).padStart(2, "0");
+      const seconds = String(timeLeft % 60).padStart(2, "0");
+
+      document.getElementById("otpTimer").innerText =
+        `OTP expires in ${minutes}:${seconds}`;
+
+      timeLeft--;
+
+      if (timeLeft < 0) {
+        clearInterval(otpExpireInterval);
+        generatedOTP = "";
+        document.getElementById("otpTimer").innerText = "OTP Expired";
+        alert("OTP expired. Please resend OTP.");
+      }
+    }, 1000);
+  }
+
+  window.resendOTP = async function () {
+    if (!loggedOtpEmail) return;
+    await sendOTP(loggedOtpEmail);
+  };
+
+  window.verifyOTP = async function () {
+    const enteredOTP = document.getElementById("otpInput").value.trim();
+
+    if (!enteredOTP) {
+      alert("Please enter OTP");
+      return;
+    }
+
+    if (enteredOTP !== generatedOTP) {
+      alert("Invalid OTP");
+      return;
+    }
+
+    clearInterval(otpExpireInterval);
+    document.getElementById("otpPopup").style.display = "none";
+
+    // OTP verified => successful login time update
+    if (loggedRole && loggedDocEmail) {
+      await markSuccessfulLogin(loggedRole, loggedDocEmail, {
+        lastOtpVerifiedAt: serverTimestamp(),
+        lastOtpEmail: loggedOtpEmail
+      });
+    }
+    const sessionId = crypto.randomUUID();
+
+localStorage.setItem("sessionId", sessionId);
+
+await setDoc(
+  doc(db, "ActiveSessions", loggedDocEmail.toLowerCase()),
+  {
+    sessionId,
+    email: loggedDocEmail.toLowerCase(),
+    role: loggedRole,
+    lastLogin: serverTimestamp()
+  },
+  { merge: true }
+);
+
+    alert("Login successful!");
+    redirectByRole(loggedRole);
+  };
+
+  async function employeeSignUp() {
+    const empNameEl = document.getElementById("empName");
+    const empSiteEl = document.getElementById("empSite");
+    const joiningCodeEl = document.getElementById("joiningCode");
+
+    if (!empNameEl || !empSiteEl || !joiningCodeEl) {
+      alert("Employee sign up fields are not available on this page.");
+      return;
+    }
+
+    const fullName = empNameEl.value.trim();
+    const site = empSiteEl.value;
+    const joiningCode = joiningCodeEl.value.trim();
+
+    if (!fullName || !site || !joiningCode) {
+      alert("Please fill out Full Name, Site, and Joining Code.");
+      return;
+    }
+
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      const user = result.user;
+      const userEmail = user.email;
+
+      const empDocRef = doc(db, "Employee", userEmail);
+      const empDocSnap = await getDoc(empDocRef);
+
+      if (empDocSnap.exists()) {
+        const data = empDocSnap.data();
+
+        if (data.accountStatus === "Activate") {
+          alert("Account already activated. Please try to login.");
+          return;
+        }
+
+        if (
+          data.fullName === fullName &&
+          data.Site === site &&
+          data.joiningCode === joiningCode
+        ) {
+          await setDoc(
+            empDocRef,
+            {
+              accountStatus: "Activate",
+              activatedAt: new Date()
+            },
+            { merge: true }
+          );
+          alert(`Welcome, ${fullName}! Your account has been activated.`);
+        } else {
+          alert("Entered details do not match our records. Please enter valid details or contact Admin.");
+        }
+      } else {
+        alert("Entered details do not match our records. Please enter valid details or contact Admin.");
+      }
+    } catch (error) {
+      console.error("Error during employee sign up:", error);
+      alert("Error during sign up: " + error.message);
+    }
+  }
+
+  async function employeeSignIn() {
+    const email = document.getElementById("empEmail").value.trim();
+    const password = document.getElementById("empPassword").value;
+    const loadingOverlay = document.getElementById("loadingOverlay");
+    const employeeBtn = document.getElementById("empSignInBtn");
+
+    if (!email || !password) {
+      alert("Please enter both email and password.");
+      return;
+    }
+
+    try {
+      if (loadingOverlay) loadingOverlay.style.display = "flex";
+      if (employeeBtn) {
+        employeeBtn.disabled = true;
+        employeeBtn.dataset.originalText = employeeBtn.textContent;
+        employeeBtn.innerHTML =
+          '<span class="spinner" style="width:18px;height:18px;border-width:3px;border-top-color:#fff;display:inline-block;vertical-align:middle;margin-right:10px;"></span> Signing in...';
+      }
+
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const userEmail = userCredential.user.email;
+
+      const empDocRef = doc(db, "Employee", userEmail);
+      const empSnap = await getDoc(empDocRef);
+
+      if (!empSnap.exists()) {
+        alert("Account not registered. Please contact your HR.");
+        return;
+      }
+
+      const empData = empSnap.data();
+
+      if (empData.accountActivated === false) {
+        window._activationCtx = { user: userCredential.user, email: userEmail };
+        showHandshakeModal();
+        return;
+      }
+
+      localStorage.setItem("employeeEmail", userEmail);
+      localStorage.setItem("role", "Employee");
+      const sessionId = crypto.randomUUID();
+
+localStorage.setItem("sessionId", sessionId);
+
+await setDoc(
+  doc(db, "ActiveSessions", userEmail.toLowerCase()),
+  {
+    sessionId,
+    email: userEmail.toLowerCase(),
+    role: "Employee",
+    lastLogin: serverTimestamp()
+  },
+  { merge: true }
+);
+      alert(`Welcome back, ${userEmail}!`);
+      window.location.href = "EmployeeHome.html";
+    } catch (err) {
+      console.error("Error during employee sign in:", err);
+      alert("Error during sign in: " + err.message);
+    } finally {
+      if (loadingOverlay) loadingOverlay.style.display = "none";
+      if (employeeBtn) {
+        employeeBtn.disabled = false;
+        if (employeeBtn.dataset.originalText) {
+          employeeBtn.textContent = employeeBtn.dataset.originalText;
+        }
+      }
+    }
+  }
+
+  document.getElementById("empSignInBtn").addEventListener("click", employeeSignIn);
+
+  window.adminSignIn = async function () {
+    const roleSelected = document.getElementById("adminRole").value.trim();
+    const email = document.getElementById("adminEmail").value.trim();
+    const password = document.getElementById("adminPassword").value;
+    const loadingOverlay = document.getElementById("loadingOverlay");
+    const loginBtn = document.querySelector(".sign-up-container .form-action-btn");
+
+    if (!roleSelected) {
+      alert("Please select your role.");
+      return;
+    }
+
+    if (!email || !password) {
+      alert("Please enter email and password.");
+      return;
+    }
+
+    try {
+      if (loadingOverlay) loadingOverlay.style.display = "flex";
+      if (loginBtn) {
+        loginBtn.disabled = true;
+        loginBtn.dataset.originalText = loginBtn.textContent;
+        loginBtn.innerHTML =
+          '<span class="spinner" style="width:18px;height:18px;border-width:3px;border-top-color:#fff;display:inline-block;vertical-align:middle;margin-right:10px;"></span> Signing in...';
+      }
+
+      await signInWithEmailAndPassword(auth, email, password);
+
+      const colName = ROLE_COLLECTION_MAP[roleSelected];
+      if (!colName) throw new Error(`Unknown role "${roleSelected}"`);
+
+      const cleanEmail = email.trim().toLowerCase();
+
+const roleDocRef = doc(db, colName, cleanEmail);
+      const roleSnap = await getDoc(roleDocRef);
+
+      if (!roleSnap.exists()) {
+        await signOut(auth);
+        alert(`No ${roleSelected} record found.`);
+        return;
+      }
+
+      const roleData = roleSnap.data();
+
+      // doc id wali email ko alag rakho
+      loggedRole = roleSelected;
+      loggedDocEmail = cleanEmail;
+
+      // OTP bhejne ke liye real target email
+      loggedOtpEmail = String(roleData.officialOTPEmail || "").trim() || email;
+
+      if (roleSelected === "HR") {
+        localStorage.setItem("hrEmail", email);
+      } else if (roleSelected === "Admin") {
+        localStorage.setItem("adminEmail", email);
+      } else if (roleSelected === "Site-Incharge") {
+        localStorage.setItem("siEmail", email);
+      } else if (roleSelected === "AS") {
+        localStorage.setItem("asEmail", email);
+      } else if (roleSelected === "Supervisor") {
+        localStorage.setItem("supEmail", email);
+      }
+
+      localStorage.setItem("role", roleSelected);
+
+      const needOtp = shouldSendOtp(roleSelected, roleData);
+
+      if (needOtp) {
+        await sendOTP(loggedOtpEmail);
+      } else {
+        await markSuccessfulLogin(roleSelected, email, {
+          lastBypassLoginAt: serverTimestamp(),
+          lastOtpEmail: loggedOtpEmail
+        });
+       const sessionId = crypto.randomUUID();
+
+localStorage.setItem("sessionId", sessionId);
+
+await setDoc(
+  doc(db, "ActiveSessions", cleanEmail),
+  {
+    sessionId,
+    email: cleanEmail,
+    role: roleSelected,
+    lastLogin: serverTimestamp()
+  },
+  { merge: true }
+);
+
+        alert("Login successful!");
+        redirectByRole(roleSelected);
+      }
+    } catch (error) {
+      console.error("Signin failed:", error);
+      alert("Error: " + error.message);
+    } finally {
+      if (loadingOverlay) loadingOverlay.style.display = "none";
+      if (loginBtn) {
+        loginBtn.disabled = false;
+        if (loginBtn.dataset.originalText) {
+          loginBtn.textContent = loginBtn.dataset.originalText;
+        }
+      }
+    }
+  };
+
+  window.employeeSignUp = employeeSignUp;
+  window.employeeSignIn = employeeSignIn;
+
+  document.getElementById("submitHandshake").addEventListener("click", async () => {
+    const newPass = document.getElementById("newPass").value;
+    const confPass = document.getElementById("confirmPass").value;
+
+    if (newPass !== confPass) {
+      alert("Passwords do not match.");
+      return;
+    }
+    if (newPass.length < 8) {
+      alert("Minimum 8 characters required.");
+      return;
+    }
+
+    const btn = document.getElementById("submitHandshake");
+    btn.disabled = true;
+    btn.textContent = "Activating...";
+
+    try {
+      const { user, email } = window._activationCtx;
+
+      await updatePassword(user, newPass);
+
+      await clearTempPasswordEverywhere(email);
+
+      document.getElementById("handshakeModal").style.display = "none";
+      localStorage.setItem("employeeEmail", email);
+      localStorage.setItem("role", "Employee");
+      window.location.href = "EmployeeHome.html";
+    } catch (err) {
+      console.error("Activation failed:", err);
+      alert("Activation failed: " + err.message);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "Set & Login";
+    }
+  });
+</script>
+
+<div id="handshakeModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.72); backdrop-filter:blur(5px); align-items:center; justify-content:center; z-index:999999; padding:20px;">
+  <div style="width:100%; max-width:420px; background:linear-gradient(180deg,rgba(17,31,53,0.98),rgba(10,20,38,0.98)); border-radius:26px; padding:32px 28px 28px; border:1px solid rgba(255,255,255,0.08); box-shadow:0 24px 60px rgba(0,0,0,0.45); position:relative; overflow:hidden;">
+    <div style="position:absolute;inset:-2px;border-radius:28px;padding:2px;background:linear-gradient(135deg,rgba(45,125,255,0.55),rgba(255,122,47,0.35));-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none;"></div>
+    <div style="width:64px;height:64px;margin:0 auto 14px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at top,rgba(45,125,255,0.35),rgba(255,255,255,0.05));border:1px solid rgba(255,255,255,0.08);font-size:26px;color:#dce8ff;">
+      <i class="fas fa-key"></i>
+    </div>
+    <h2 style="color:#fff;text-align:center;font-size:26px;font-weight:800;margin-bottom:8px;">Set Your Password</h2>
+    <p style="color:#b8c9df;font-size:14px;line-height:1.7;text-align:center;margin-bottom:22px;">
+      First login detected. Set a new password to activate your account.
+    </p>
+    <div class="password-wrapper" style="margin-bottom:12px;">
+      <input type="password" id="newPass" name="kieplNewEmployeePassword" autocomplete="new-password" autocapitalize="off" spellcheck="false" placeholder="New Password (min. 8 characters)"
+        class="form-control" style="padding-right:52px;" />
+      <i class="fas fa-eye toggle-password" toggle="#newPass"></i>
+    </div>
+    <div class="password-wrapper" style="margin-bottom:18px;">
+      <input type="password" id="confirmPass" name="kieplConfirmEmployeePassword" autocomplete="new-password" autocapitalize="off" spellcheck="false" placeholder="Confirm New Password"
+        class="form-control" style="padding-right:52px;" />
+      <i class="fas fa-eye toggle-password" toggle="#confirmPass"></i>
+    </div>
+    <button id="submitHandshake"
+      style="width:100%;height:54px;border:none;border-radius:14px;background:linear-gradient(135deg,#2d7dff,#1657cc);color:#fff;font-size:16px;font-weight:800;letter-spacing:0.2px;box-shadow:0 12px 24px rgba(45,125,255,0.24);transition:0.25s ease;">
+      Set &amp; Login
+    </button>
+  </div>
+</div>
+
+</body>
+</html>

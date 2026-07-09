@@ -1,0 +1,1387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard - Gross Amount</title>
+  <link rel="icon" type="image/x-icon" href="logo2.ico" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap-theme.min.css" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --topbar-height: 78px;
+      --sidebar-width: 280px;
+      --card-bg: rgba(12, 25, 45, 0.86);
+      --text-main: #ffffff;
+      --text-soft: #b8c9df;
+      --accent: #ff7a2f;
+      --accent-2: #1f77ff;
+      --danger: #ef4d4d;
+      --shadow: 0 18px 40px rgba(0, 0, 0, 0.25);
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      background:
+        linear-gradient(135deg, rgba(7, 16, 30, 0.95), rgba(14, 34, 56, 0.92)),
+        url("https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1600&q=80") center/cover no-repeat fixed;
+      color: var(--text-main);
+    }
+
+    .app-shell { height: 100vh; width: 100%; overflow: hidden; }
+
+    .topbar {
+      height: var(--topbar-height);
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(7, 16, 30, 0.88);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 2000;
+    }
+
+    .topbar-left { display: flex; align-items: center; gap: 16px; min-width: 0; }
+
+    .menu-toggle {
+      width: 46px; height: 46px; border: none; border-radius: 14px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
+      color: #fff; font-size: 20px; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: 0.25s ease; flex-shrink: 0;
+    }
+    .menu-toggle:hover {
+      background: linear-gradient(135deg, rgba(255,122,47,0.18), rgba(31,119,255,0.16));
+      transform: translateY(-1px);
+    }
+
+    .brand-title { margin: 0; font-size: 24px; font-weight: 700; color: #fff; text-decoration: none !important; }
+    .brand-subtitle { margin: 2px 0 0; color: var(--text-soft); font-size: 13px; }
+
+    .logout {
+      text-decoration: none !important; color: #fff !important;
+      background: linear-gradient(135deg, #ff8a3c, #ff5a1f);
+      padding: 11px 18px; border-radius: 12px; font-weight: 700; white-space: nowrap;
+    }
+
+    nav.sidebar {
+      width: var(--sidebar-width);
+      min-width: var(--sidebar-width);
+      max-width: var(--sidebar-width);
+      position: fixed;
+      top: var(--topbar-height); left: 0; bottom: 0;
+      padding: 20px 16px 22px;
+      background: linear-gradient(180deg, rgba(6, 16, 30, 0.98), rgba(8, 22, 40, 0.96));
+      backdrop-filter: blur(16px);
+      border-right: 1px solid rgba(255, 255, 255, 0.06);
+      overflow-y: auto; overflow-x: hidden;
+      z-index: 1500;
+      box-shadow: 18px 0 45px rgba(0, 0, 0, 0.24);
+    }
+
+    nav.sidebar::-webkit-scrollbar { width: 6px; }
+    nav.sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.14); border-radius: 999px; }
+
+    .sidebar-top-card {
+      position: relative; padding: 20px 18px 18px; border-radius: 24px;
+      background: linear-gradient(135deg, rgba(255,122,47,0.16), rgba(31,119,255,0.14)), rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: 0 16px 32px rgba(0,0,0,0.20), inset 0 1px 0 rgba(255,255,255,0.06);
+      overflow: hidden;
+    }
+    .sidebar-top-card::after {
+      content: ""; position: absolute; right: -30px; top: -30px; width: 100px; height: 100px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,255,255,0.16), transparent 70%);
+    }
+
+    .sidebar-mini-label {
+      display: inline-block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.4px;
+      color: #ffd8c2; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.08);
+      padding: 5px 10px; border-radius: 999px; margin-bottom: 12px; position: relative; z-index: 1;
+    }
+    .sidebar-main-title { font-size: 19px; font-weight: 800; color: #ffffff; margin: 0 0 6px; line-height: 1.2; position: relative; z-index: 1; }
+    .sidebar-main-subtitle { font-size: 13px; color: #d5e2f1; line-height: 1.7; margin: 0 0 14px; position: relative; z-index: 1; }
+
+    .sidebar-status-row {
+      display: flex; align-items: center; justify-content: space-between; gap: 10px; position: relative; z-index: 1;
+      padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.08);
+    }
+    .sidebar-status-badge {
+      display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 999px;
+      font-size: 11px; font-weight: 700; color: #dfffe9; background: rgba(20,184,106,0.14); border: 1px solid rgba(20,184,106,0.22);
+    }
+    .sidebar-status-badge::before {
+      content: ""; width: 8px; height: 8px; border-radius: 50%; background: #4df39b; box-shadow: 0 0 10px rgba(77,243,155,0.7);
+    }
+    .sidebar-status-text { font-size: 11px; color: #c6d8ec; text-align: right; line-height: 1.4; }
+
+    .sidebar-section-title {
+      font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: #8ea4c5;
+      margin: 24px 8px 16px; font-weight: 700;
+    }
+
+    #side-bar { list-style: none; padding-left: 0; margin: 0; width: 100%; display: flex; flex-direction: column; gap: 12px; }
+    #side-bar li { width: 100%; }
+
+    #side-bar a, #side-bar summary {
+      display: flex; align-items: center; gap: 14px; width: 100%; padding: 15px;
+      border-radius: 20px; text-decoration: none !important; color: #edf4ff !important;
+      background: linear-gradient(135deg, rgba(255,255,255,0.055), rgba(255,255,255,0.025));
+      border: 1px solid rgba(255,255,255,0.06); transition: all 0.28s ease; position: relative; overflow: hidden;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+    }
+    #side-bar a::before, #side-bar summary::before {
+      content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(255,122,47,0.13), rgba(31,119,255,0.11)); opacity: 0; transition: opacity 0.28s ease;
+    }
+    #side-bar a::after, #side-bar summary::after {
+      content: ""; position: absolute; left: 0; top: 18%; width: 4px; height: 64%; border-radius: 999px; background: linear-gradient(180deg, #ff8a3c, #1f77ff); opacity: 0; transition: opacity 0.28s ease;
+    }
+    #side-bar a:hover, #side-bar summary:hover { transform: translateX(6px); border-color: rgba(255,255,255,0.10); box-shadow: 0 14px 28px rgba(0,0,0,0.20); }
+    #side-bar a:hover::before, #side-bar summary:hover::before, #side-bar a:hover::after, #side-bar summary:hover::after { opacity: 1; }
+    #side-bar a.active, #side-bar summary.active { background: linear-gradient(135deg, rgba(255,122,47,0.18), rgba(31,119,255,0.16)); border-color: rgba(255,255,255,0.12); box-shadow: 0 16px 30px rgba(0,0,0,0.24); }
+    #side-bar a.active::before, #side-bar summary.active::before, #side-bar a.active::after, #side-bar summary.active::after { opacity: 1; }
+
+    .nav-icon {
+      width: 44px; height: 44px; min-width: 44px; border-radius: 15px; display: flex; align-items: center; justify-content: center;
+      background: linear-gradient(135deg, rgba(255,255,255,0.13), rgba(255,255,255,0.05)); border: 1px solid rgba(255,255,255,0.08);
+      color: #fff; font-size: 17px; position: relative; z-index: 1; box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+    }
+    .nav-text { display: flex; flex-direction: column; min-width: 0; position: relative; z-index: 1; }
+    .nav-text strong { font-size: 14px; font-weight: 700; color: #fff; line-height: 1.2; }
+    .nav-text span { margin-top: 4px; font-size: 11px; line-height: 1.45; color: #aabed8; }
+    .nav-arrow { margin-left: auto; font-size: 16px; color: #93b2d8; position: relative; z-index: 1; transition: transform 0.25s ease; }
+    #side-bar a:hover .nav-arrow, #side-bar summary:hover .nav-arrow { transform: translateX(4px); }
+
+    main {
+      position: fixed; top: var(--topbar-height); left: var(--sidebar-width); right: 0; bottom: 0;
+      min-width: 0; padding: 28px 30px; overflow-y: auto; overflow-x: hidden;
+    }
+
+    .hero-card {
+      background: linear-gradient(135deg, rgba(22, 61, 112, 0.88), rgba(12, 27, 53, 0.92));
+      border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 24px; padding: 30px 34px; box-shadow: var(--shadow); margin-bottom: 24px;
+    }
+    .page-tag {
+      display: inline-block; padding: 7px 12px; border-radius: 999px; font-size: 12px; font-weight: 700; letter-spacing: 0.8px;
+      color: #ffb88f; background: rgba(255, 122, 47, 0.16); border: 1px solid rgba(255, 122, 47, 0.2); margin-bottom: 14px;
+    }
+    .hero-card h1 { margin: 0 0 10px; font-size: 32px; font-weight: 800; color: #fff; }
+    .hero-card p { margin: 0; max-width: 850px; font-size: 15px; line-height: 1.8; color: #d0def0; }
+
+    .panel-card {
+      background: var(--card-bg); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 22px; padding: 24px;
+      box-shadow: var(--shadow); width: 100%; margin-bottom: 24px;
+    }
+
+    .section-header {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 20px; flex-wrap: wrap;
+    }
+    .section-header h2, .section-header h3 { margin: 0; font-size: 24px; font-weight: 800; color: #fff; }
+    .section-badge {
+      padding: 6px 12px; border-radius: 999px; font-size: 12px; font-weight: 700; color: #9ec3ff;
+      background: rgba(31, 119, 255, 0.14); border: 1px solid rgba(31, 119, 255, 0.22); white-space: nowrap;
+    }
+
+    .details-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    .filter-grid { display: grid; grid-template-columns: repeat(4, minmax(220px, 1fr)); gap: 18px; }
+
+    .field label {
+      display: block; margin-bottom: 8px; font-size: 12px; font-weight: 700; color: #9db4d0; text-transform: uppercase;
+    }
+    .value-box, .field input, .field select {
+      width: 100%; min-height: 48px; border-radius: 14px; border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.05); color: #fff; padding: 12px 14px; font-size: 14px; outline: none;
+    }
+    .field input::placeholder { color: #9fb4cf; }
+    .field select option { color: #000; }
+
+    .btn-row { display: flex; align-items: center; gap: 12px; margin-top: 20px; flex-wrap: wrap; }
+    .action-btn {
+      border: none; padding: 12px 22px; border-radius: 14px; font-size: 14px; font-weight: 700; color: #fff; transition: 0.25s ease;
+    }
+    .action-btn.primary { background: linear-gradient(135deg, #1f77ff, #144fc6); box-shadow: 0 12px 24px rgba(31, 119, 255, 0.25); }
+    .action-btn.secondary { background: linear-gradient(135deg, #ff8a3c, #ff5a1f); box-shadow: 0 12px 24px rgba(255, 90, 31, 0.24); }
+    .action-btn:hover { transform: translateY(-1px); }
+
+    .error-box {
+      display: none; margin-top: 16px; padding: 12px 14px; border-radius: 14px; background: rgba(239, 77, 77, 0.12);
+      border: 1px solid rgba(239, 77, 77, 0.25); color: #ffd3d3; font-weight: 600;
+    }
+
+    .table-box {
+      width: 100%; overflow-x: auto; border-radius: 16px; -webkit-overflow-scrolling: touch; padding-bottom: 8px;
+    }
+    .table-box table { width: 100%; min-width: 1400px; border-collapse: collapse; overflow: hidden; border-radius: 16px; }
+    .table-box thead tr { background: linear-gradient(135deg, #183b6f, #102849); }
+    .table-box thead th {
+      padding: 16px 14px; color: #fff; font-size: 13px; text-transform: uppercase; letter-spacing: 0.6px; text-align: center; white-space: nowrap;
+    }
+    .table-box tbody tr { background: rgba(255, 255, 255, 0.03); transition: 0.2s ease; }
+    .table-box tbody tr:nth-child(even) { background: rgba(255, 255, 255, 0.05); }
+    .table-box tbody tr:hover { background: rgba(31, 119, 255, 0.10); }
+    .table-box tbody td {
+      padding: 15px 14px; color: #eaf2ff; border-top: 1px solid rgba(255, 255, 255, 0.05); text-align: center; white-space: nowrap;
+    }
+
+    .uid-pill {
+      display: inline-block; padding: 7px 12px; border-radius: 999px; background: rgba(31, 119, 255, 0.14);
+      color: #cfe2ff; font-size: 12px; font-weight: 700; border: 1px solid rgba(31, 119, 255, 0.22); white-space: nowrap;
+    }
+    .email-pill {
+      display: inline-block; padding: 7px 12px; border-radius: 999px; background: rgba(255, 255, 255, 0.08);
+      color: #e6f0ff; font-size: 12px; font-weight: 600; white-space: nowrap;
+    }
+    .money-pill {
+      display: inline-block; padding: 7px 12px; border-radius: 999px; background: rgba(20,184,106,0.14);
+      color: #dfffe9; font-size: 12px; font-weight: 700; border: 1px solid rgba(20,184,106,0.22); white-space: nowrap;
+    }
+
+    .empty-state { text-align: center; padding: 28px !important; color: #a8bdd8 !important; font-style: italic; }
+    .loading-text { color: #9ec3ff !important; font-style: normal; font-weight: 700; }
+
+    @media (max-width: 1200px) {
+      .filter-grid { grid-template-columns: repeat(2, minmax(220px, 1fr)); }
+    }
+
+    @media (max-width: 900px) {
+      html, body { width: 100%; min-height: 100%; height: auto; overflow-y: auto; overflow-x: hidden; }
+      .app-shell { height: auto; min-height: 100vh; overflow: visible; }
+      .dashboard-layout { height: auto; min-height: 100vh; padding-top: var(--topbar-height); }
+
+      nav.sidebar {
+        width: 100%; min-width: 100%; max-width: 100%; position: relative; top: auto; left: auto; right: auto; bottom: auto;
+        height: auto; max-height: none; overflow: visible; border-right: none; border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 0 0 24px 24px; z-index: 100; padding: 14px;
+      }
+      .sidebar-section-title { margin: 18px 6px 14px; }
+      #side-bar { display: none; gap: 10px; }
+      #side-bar.active { display: flex; }
+      .sidebar-status-row { align-items: flex-start; flex-direction: column; }
+      .sidebar-status-text { text-align: left; }
+
+      main { position: relative; top: auto; left: auto; right: auto; bottom: auto; width: 100%; padding: 18px; overflow: visible; }
+      .details-grid-2, .filter-grid { grid-template-columns: 1fr; }
+      .brand-subtitle { display: none; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="topbar-left">
+        <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+        <div>
+          <a href="#" class="brand-title">Admin Dashboard</a>
+          <p class="brand-subtitle">Gross Amount & Employee Filter</p>
+        </div>
+      </div>
+
+      <div class="topbar-right">
+        <a href="#" class="logout" onclick="logoutUser()">Logout</a>
+      </div>
+    </header>
+
+    <div class="dashboard-layout">
+      <nav class="sidebar">
+        <div class="sidebar-top-card">
+          <div class="sidebar-mini-label">Admin Panel</div>
+          <h3 class="sidebar-main-title">Command Center</h3>
+          <p class="sidebar-main-subtitle">
+            View gross amount data with site, department, employee name, and employee ID filters in one clean dashboard.
+          </p>
+
+          <div class="sidebar-status-row">
+            <span class="sidebar-status-badge">Gross Amount Active</span>
+            <div class="sidebar-status-text">Secure access<br />Quick navigation</div>
+          </div>
+        </div>
+
+        <div class="sidebar-section-title">Navigation</div>
+        <ul id="side-bar"></ul>
+      </nav>
+
+      <main>
+        <section class="hero-card">
+          <span class="page-tag">ADMIN GROSS AMOUNT DASHBOARD</span>
+          <h1>Gross Amount List</h1>
+          <p>
+            Admin can filter employee records by site, department, employee name, and employee ID.
+            After submit, matching employee gross amount records will be shown below.
+          </p>
+        </section>
+
+        <section class="panel-card">
+          <div class="section-header">
+            <h2>Admin Details</h2>
+            <span class="section-badge">Profile</span>
+          </div>
+
+          <div class="details-grid-2">
+            <div class="field">
+              <label>Admin Name</label>
+              <div class="value-box" id="adminNameDisplay">Loading...</div>
+            </div>
+
+            <div class="field">
+              <label>Admin ID</label>
+              <div class="value-box" id="adminIdDisplay">Loading...</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel-card">
+          <div class="section-header">
+            <h2>Filter Gross Amount Data</h2>
+            <span class="section-badge">Search Panel</span>
+          </div>
+
+          <div class="filter-grid">
+            <div class="field">
+              <label>Site</label>
+              <select id="siteFilter">
+                <option value="">Select Site</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>Role</label>
+              <select id="roleFilter">
+                <option value="">Select Role</option>
+                <option value="Site-Incharge">Site-Incharge</option>
+                <option value="Supervisor">Supervisor</option>
+                <option value="AS">AS</option>
+                <option value="Employee">Employee</option>
+              </select>
+            </div>
+
+            
+
+<div class="field">
+  <label>Employee Type</label>
+  <select id="employeeTypeFilter">
+    <option value="">Select Type</option>
+    <option value="new">New Employee</option>
+    <option value="old">Old Employee</option>
+  </select>
+</div>
+
+            <div class="field">
+              <label>Employee Name</label>
+              <input type="text" id="employeeNameFilter" placeholder="Enter employee name" />
+            </div>
+
+            <div class="field">
+              <label>Employee ID</label>
+              <select id="employeeIdFilter">
+                <option value="">Select Employee ID</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="btn-row">
+            <button class="action-btn primary" id="submitBtn">Submit</button>
+            <button class="action-btn secondary" id="resetBtn">Reset</button>
+          </div>
+
+          <div class="error-box" id="errorBox"></div>
+        </section>
+
+        <section class="panel-card">
+          <div class="section-header">
+            <h3>Gross Amount Directory</h3>
+            <span class="section-badge" id="masterListBadge">Master List = 0</span>
+          </div>
+
+          <div class="table-box">
+            <table>
+              
+
+<thead>
+  <tr>
+    <th>UID</th>
+    <th>Name</th>
+    <th>Contact Number</th>
+    <th>Site</th>
+    <th>Role</th>
+    <th>Gross Amount</th>
+    <th>Action</th>
+  </tr>
+</thead>
+              <tbody id="employeeTableBody">
+                <tr>
+                  <td colspan="7" class="empty-state">Loading employee database...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script>
+        function toggleMenu() {
+            const sidebar = document.getElementById("side-bar");
+            sidebar.classList.toggle("active");
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const currentPage = window.location.pathname.split("/").pop();
+            const navLinks = document.querySelectorAll("#side-bar a");
+
+            navLinks.forEach(link => {
+                const href = link.getAttribute("href");
+                if (href === currentPage) {
+                    link.classList.add("active");
+                }
+            });
+        });
+    </script>
+
+    <script type="module" src="/public/control.js"></script>
+
+  <!-- =========================
+UPDATED COMPLETE SCRIPT
+PASTE THIS FULL SCRIPT
+REMOVE OLD SCRIPT COMPLETELY
+========================= -->
+
+<script type="module">
+
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  collection,
+  getDocs,
+  updateDoc
+} from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+
+// =========================
+// FIREBASE IMPORT
+// =========================
+
+// IF ERROR COMES
+// CHANGE THIS PATH ACCORDING TO FILE LOCATION
+
+import { app } from "../firebase-config.js";
+
+// =========================
+// DB
+// =========================
+const db = getFirestore(app);
+
+// =========================
+// STORAGE
+// =========================
+const adminEmail = localStorage.getItem("adminEmail");
+
+// =========================
+// ELEMENTS
+// =========================
+const adminNameDisplay = document.getElementById("adminNameDisplay");
+const adminIdDisplay = document.getElementById("adminIdDisplay");
+
+const siteFilter = document.getElementById("siteFilter");
+const roleFilter = document.getElementById("roleFilter");
+const employeeTypeFilter = document.getElementById("employeeTypeFilter");
+
+const employeeNameFilter = document.getElementById("employeeNameFilter");
+const employeeIdFilter = document.getElementById("employeeIdFilter");
+
+const submitBtn = document.getElementById("submitBtn");
+const resetBtn = document.getElementById("resetBtn");
+
+const tbody = document.getElementById("employeeTableBody");
+const errorBox = document.getElementById("errorBox");
+const masterListBadge = document.getElementById("masterListBadge");
+
+// =========================
+// DATA
+// =========================
+let allEmployees = [];
+let siteList = [];
+let siteSet = new Set();
+
+let currentMode = "normal";
+
+// =========================
+// GLOBAL FUNCTIONS
+// =========================
+window.toggleMenu = function () {
+
+  const sidebar = document.getElementById("side-bar");
+
+  sidebar.classList.toggle("active");
+};
+
+// =========================
+// LOGOUT
+// =========================
+window.logoutUser = function () {
+
+  localStorage.removeItem("adminEmail");
+
+  // FIXED LOGIN PATH
+  window.location.href = "../login.html";
+};
+
+// =========================
+// UTILITIES
+// =========================
+function showError(message) {
+
+  errorBox.style.display = "block";
+
+  errorBox.textContent = message;
+}
+
+function hideError() {
+
+  errorBox.style.display = "none";
+
+  errorBox.textContent = "";
+}
+
+function setMasterCount(count) {
+
+  masterListBadge.textContent =
+    `Master List = ${count}`;
+}
+
+function emptyRow(message, loading = false) {
+
+  tbody.innerHTML = `
+    <tr>
+      <td colspan="7"
+        class="empty-state ${loading ? "loading-text" : ""}">
+        ${message}
+      </td>
+    </tr>
+  `;
+
+  setMasterCount(0);
+}
+
+function getValue(value) {
+
+  return (value || "")
+    .toString()
+    .trim();
+}
+
+function getLower(value) {
+
+  return getValue(value)
+    .toLowerCase();
+}
+
+function normalizeEmployee(emp) {
+
+  return {
+
+    uid: emp.uid || "",
+
+    email: emp.email || "",
+
+    name: emp.name || "",
+
+    contact: emp.contact || "",
+
+    site: emp.site || "",
+
+    role: emp.role || "",
+
+    grossAmount: emp.grossAmount ?? "",
+
+    collectionName: emp.collectionName || ""
+  };
+}
+
+function getEmployeeName(data) {
+
+  return getValue(
+    data.fullName ||
+    data.Name ||
+    data.name ||
+    ""
+  );
+}
+
+function getEmployeeId(data) {
+
+  return getValue(
+    data.uid ||
+    data.employeeId ||
+    data.empId ||
+    ""
+  );
+}
+
+function getEmployeePhone(data) {
+
+  return getValue(
+    data.telephone ||
+    data.contactNumber ||
+    data.mobile ||
+    data.phone ||
+    ""
+  );
+}
+
+function getEmployeeSite(data) {
+
+  return getValue(
+    data.Site ||
+    data.site ||
+    ""
+  );
+}
+
+function getGrossAmount(data) {
+
+  return (
+    data.gross_amount ??
+    data.grossAmount ??
+    data.GrossAmount ??
+    data.salaryGross ??
+    data.salary ??
+    data.gross ??
+    ""
+  );
+}
+
+// =========================
+// ENABLE DISABLE
+// =========================
+function disableElement(el) {
+
+  el.disabled = true;
+
+  el.style.opacity = "0.6";
+}
+
+function enableElement(el) {
+
+  el.disabled = false;
+
+  el.style.opacity = "1";
+}
+
+// =========================
+// RESET
+// =========================
+function resetAllFiltersState() {
+
+  currentMode = "normal";
+
+  siteFilter.value = "";
+  roleFilter.value = "";
+  employeeTypeFilter.value = "";
+
+  employeeNameFilter.value = "";
+
+  employeeIdFilter.innerHTML = `
+    <option value="">
+      Select Employee ID
+    </option>
+  `;
+
+  employeeIdFilter.value = "";
+
+  enableElement(siteFilter);
+  enableElement(roleFilter);
+  enableElement(employeeTypeFilter);
+
+  enableElement(employeeNameFilter);
+  enableElement(employeeIdFilter);
+  employeeNameFilter.disabled = false;
+  employeeNameFilter.readOnly = false;
+
+  hideError();
+}
+
+// =========================
+// SITE DROPDOWN
+// =========================
+function populateSiteDropdown() {
+
+  siteFilter.innerHTML = `
+    <option value="">
+      Select Site
+    </option>
+  `;
+
+  siteList.forEach(site => {
+
+    siteFilter.innerHTML += `
+      <option value="${site}">
+        ${site}
+      </option>
+    `;
+  });
+}
+
+// =========================
+// EMPLOYEE ID DROPDOWN
+// =========================
+function clearEmployeeIdDropdown() {
+
+  employeeIdFilter.innerHTML = `
+    <option value="">
+      Select Employee ID
+    </option>
+  `;
+}
+
+function setEmployeeIdDropdown(list) {
+
+  clearEmployeeIdDropdown();
+
+  list.forEach(emp => {
+
+    employeeIdFilter.innerHTML += `
+      <option value="${emp.uid}">
+        ${emp.uid}
+      </option>
+    `;
+  });
+}
+
+// =========================
+// ADMIN DETAILS
+// =========================
+async function loadAdminDetails() {
+
+  try {
+
+    if (!adminEmail) {
+
+      adminNameDisplay.textContent = "Not Found";
+
+      adminIdDisplay.textContent = "Not Found";
+
+      return;
+    }
+
+    const adminRef =
+      doc(db, "Admin", adminEmail);
+
+    const adminSnap =
+      await getDoc(adminRef);
+
+    if (!adminSnap.exists()) {
+
+      adminNameDisplay.textContent = "Not Found";
+
+      adminIdDisplay.textContent = "Not Found";
+
+      return;
+    }
+
+    const data = adminSnap.data();
+
+    adminNameDisplay.textContent =
+      data.Name ||
+      data.name ||
+      "-";
+
+    adminIdDisplay.textContent =
+      data.uid ||
+      data.adminId ||
+      "-";
+
+  } catch (error) {
+
+    console.error(error);
+
+    adminNameDisplay.textContent = "Error";
+
+    adminIdDisplay.textContent = "Error";
+  }
+}
+
+// =========================
+// LOAD EMPLOYEES
+// =========================
+async function loadEmployeesFast() {
+
+  try {
+
+    emptyRow(
+      "Loading employee database...",
+      true
+    );
+
+    allEmployees = [];
+
+    siteList = [];
+
+    siteSet = new Set();
+
+    const collectionsToLoad = [
+
+      {
+        name: "Site-Incharge",
+        role: "Site-Incharge"
+      },
+
+      {
+        name: "Supervisor",
+        role: "Supervisor"
+      },
+
+      {
+        name: "AS",
+        role: "AS"
+      },
+
+      {
+        name: "Employee",
+        role: "Employee"
+      }
+    ];
+
+    for (const item of collectionsToLoad) {
+
+      const snap =
+        await getDocs(
+          collection(db, item.name)
+        );
+
+      snap.forEach(docSnap => {
+
+  const data = docSnap.data();
+
+  // ONLY MONTHLY DUTY EMPLOYEES
+  const workingType =
+    (data.workingType || "")
+      .toString()
+      .trim()
+      .toLowerCase();
+
+  if (
+    workingType !== "monthly duty" &&
+    workingType !== "monthly"
+  ) {
+    return;
+  }
+
+  const employee =
+    normalizeEmployee({
+
+      uid: getEmployeeId(data),
+
+      email: docSnap.id,
+
+      name: getEmployeeName(data),
+
+      contact: getEmployeePhone(data),
+
+      site: getEmployeeSite(data),
+
+      role: item.role,
+
+      grossAmount: getGrossAmount(data),
+
+      collectionName: item.name
+    });
+
+  allEmployees.push(employee);
+
+  if (employee.site) {
+
+    siteSet.add(employee.site);
+  }
+});
+    }
+
+    siteList =
+      [...siteSet].sort((a, b) =>
+        a.localeCompare(b)
+      );
+
+    populateSiteDropdown();
+
+    emptyRow(
+      "Search employee or use filters."
+    );
+
+  } catch (error) {
+
+    console.error(error);
+
+    emptyRow("Error loading employees.");
+  }
+}
+
+// =========================
+// SEARCH NAME
+// =========================
+function findMatchingEmployeesByName(query) {
+
+  const q = getLower(query);
+
+  return allEmployees.filter(emp =>
+    getLower(emp.name).includes(q)
+  );
+}
+
+// =========================
+// FILL DATA
+// =========================
+function fillEmployeeData(emp) {
+
+  siteFilter.value = emp.site || "";
+
+  roleFilter.value = emp.role || "";
+
+  employeeNameFilter.value = emp.name || "";
+
+  setEmployeeIdDropdown([emp]);
+
+  employeeIdFilter.value = emp.uid || "";
+}
+
+// =========================
+// RENDER TABLE
+// =========================
+function renderTable(records) {
+
+  if (!records.length) {
+
+    emptyRow("No employee found.");
+
+    return;
+  }
+
+  tbody.innerHTML = "";
+
+  setMasterCount(records.length);
+
+  records.forEach(emp => {
+
+    const isOldEmployee =
+      emp.grossAmount !== "" &&
+      emp.grossAmount !== null &&
+      emp.grossAmount !== undefined;
+
+    const inputValue =
+      isOldEmployee
+        ? emp.grossAmount
+        : 0;
+
+    const tr = document.createElement("tr");
+
+    tr.innerHTML = `
+      <td>
+        <span class="uid-pill">
+          ${emp.uid || "-"}
+        </span>
+      </td>
+
+      <td>${emp.name || "-"}</td>
+
+      <td>${emp.contact || "-"}</td>
+
+      <td>${emp.site || "-"}</td>
+
+      <td>${emp.role || "-"}</td>
+
+      <td>
+        <input
+          type="number"
+          id="gross_${emp.uid}"
+          value="${inputValue}"
+          ${isOldEmployee ? "disabled" : ""}
+          style="
+            width:120px;
+            padding:8px;
+            border-radius:10px;
+            border:none;
+            text-align:center;
+            color:black;
+          "
+        />
+      </td>
+
+      <td>
+
+        ${
+          isOldEmployee
+            ? `
+              <button
+                class="action-btn secondary"
+                id="edit_${emp.uid}">
+                Edit
+              </button>
+            `
+            : ""
+        }
+
+        <button
+          class="action-btn primary"
+          id="save_${emp.uid}">
+          Submit
+        </button>
+
+      </td>
+    `;
+
+    tbody.appendChild(tr);
+
+    const inputBox =
+      document.getElementById(
+        `gross_${emp.uid}`
+      );
+
+    const saveBtn =
+      document.getElementById(
+        `save_${emp.uid}`
+      );
+
+    const editBtn =
+      document.getElementById(
+        `edit_${emp.uid}`
+      );
+
+    if (editBtn) {
+
+      editBtn.addEventListener("click", () => {
+
+        inputBox.disabled = false;
+
+        inputBox.focus();
+      });
+    }
+
+    saveBtn.addEventListener("click", async () => {
+
+      try {
+
+        const value =
+          inputBox.value.trim();
+
+        if (!value) {
+
+          alert("Enter gross amount");
+
+          return;
+        }
+
+        saveBtn.disabled = true;
+
+        const oldText =
+          saveBtn.innerHTML;
+
+        saveBtn.innerHTML = "Saving...";
+
+        const employeeRef =
+          doc(
+            db,
+            emp.collectionName,
+            emp.email
+          );
+
+        await updateDoc(employeeRef, {
+
+          gross_amount: Number(value)
+        });
+
+        inputBox.disabled = true;
+
+        saveBtn.innerHTML = "Saved";
+
+        setTimeout(() => {
+
+          saveBtn.innerHTML = oldText;
+
+          saveBtn.disabled = false;
+
+        }, 1200);
+
+      } catch (error) {
+
+        console.error(error);
+
+        alert("Update failed");
+
+        saveBtn.disabled = false;
+
+        saveBtn.innerHTML = "Submit";
+      }
+    });
+  });
+}
+
+// =========================
+// APPLY FILTERS
+// =========================
+function applyFilters() {
+
+  hideError();
+
+  const site =
+    getValue(siteFilter.value);
+
+  const role =
+    getValue(roleFilter.value);
+
+  const employeeType =
+    getValue(employeeTypeFilter.value);
+
+  const employeeName =
+    getValue(employeeNameFilter.value);
+
+  const employeeId =
+    getValue(employeeIdFilter.value);
+
+  let filtered = [...allEmployees];
+
+  if (site) {
+
+    filtered = filtered.filter(emp =>
+      getLower(emp.site) === getLower(site)
+    );
+  }
+
+  if (role) {
+
+    filtered = filtered.filter(emp =>
+      getLower(emp.role) === getLower(role)
+    );
+  }
+
+  if (employeeName) {
+
+    filtered = filtered.filter(emp =>
+      getLower(emp.name).includes(
+        getLower(employeeName)
+      )
+    );
+  }
+
+  if (employeeId) {
+
+    filtered = filtered.filter(emp =>
+      getLower(emp.uid) === getLower(employeeId)
+    );
+  }
+
+  if (employeeType === "new") {
+
+    filtered = filtered.filter(emp =>
+      emp.grossAmount === "" ||
+      emp.grossAmount === null ||
+      emp.grossAmount === undefined
+    );
+  }
+
+  if (employeeType === "old") {
+
+    filtered = filtered.filter(emp =>
+      emp.grossAmount !== "" &&
+      emp.grossAmount !== null &&
+      emp.grossAmount !== undefined
+    );
+  }
+
+  if (!filtered.length) {
+
+    showError("No employee found");
+
+    emptyRow("No employee found");
+
+    return;
+  }
+
+  renderTable(filtered);
+}
+
+// =========================
+// NAME SEARCH EVENT
+// =========================
+employeeNameFilter.addEventListener("input", () => {
+
+  hideError();
+
+  if (currentMode === "site-role") {
+    return;
+  }
+
+  const query = getValue(employeeNameFilter.value);
+
+  if (!query) {
+    clearEmployeeIdDropdown();
+
+    enableElement(siteFilter);
+    enableElement(roleFilter);
+    enableElement(employeeIdFilter);
+
+    currentMode = "normal";
+    return;
+  }
+
+  const matches = findMatchingEmployeesByName(query);
+
+  if (!matches.length) {
+    clearEmployeeIdDropdown();
+    currentMode = "normal";
+    return;
+  }
+
+  setEmployeeIdDropdown(matches);
+
+  if (matches.length === 1) {
+    employeeIdFilter.value = matches[0].uid || "";
+    currentMode = "name-single";
+    return;
+  }
+
+  currentMode = "name-multiple";
+});
+
+// =========================
+// ID CHANGE
+// =========================
+employeeIdFilter.addEventListener("change", () => {
+
+  hideError();
+
+  const selectedId =
+    getValue(employeeIdFilter.value);
+
+  if (!selectedId) return;
+
+  const employee =
+    allEmployees.find(emp =>
+      getLower(emp.uid) === getLower(selectedId)
+    );
+
+  if (!employee) return;
+
+  fillEmployeeData(employee);
+
+  disableElement(siteFilter);
+  disableElement(roleFilter);
+
+  disableElement(employeeIdFilter);
+
+
+  currentMode = "name-single";
+});
+
+// =========================
+// SITE EVENT
+// =========================
+siteFilter.addEventListener("change", () => {
+
+  hideError();
+
+  const hasSite =
+    getValue(siteFilter.value);
+
+  const hasRole =
+    getValue(roleFilter.value);
+
+  if (hasSite || hasRole) {
+
+    employeeNameFilter.value = "";
+
+    clearEmployeeIdDropdown();
+
+    disableElement(employeeNameFilter);
+
+    disableElement(employeeIdFilter);
+
+    currentMode = "site-role";
+
+  } else {
+
+    enableElement(employeeNameFilter);
+
+    enableElement(employeeIdFilter);
+
+    currentMode = "normal";
+  }
+});
+
+// =========================
+// ROLE EVENT
+// =========================
+roleFilter.addEventListener("change", () => {
+
+  hideError();
+
+  const hasSite =
+    getValue(siteFilter.value);
+
+  const hasRole =
+    getValue(roleFilter.value);
+
+  if (hasSite || hasRole) {
+
+    employeeNameFilter.value = "";
+
+    clearEmployeeIdDropdown();
+
+    disableElement(employeeNameFilter);
+
+    disableElement(employeeIdFilter);
+
+    currentMode = "site-role";
+
+  } else {
+
+    enableElement(employeeNameFilter);
+
+    enableElement(employeeIdFilter);
+
+    currentMode = "normal";
+  }
+});
+
+// =========================
+// BUTTONS
+// =========================
+submitBtn.addEventListener("click", () => {
+
+  applyFilters();
+});
+
+resetBtn.addEventListener("click", () => {
+
+  resetAllFiltersState();
+
+  emptyRow(
+    "Search employee or use filters."
+  );
+});
+
+// =========================
+// INIT
+// =========================
+document.addEventListener("DOMContentLoaded", async () => {
+
+  resetAllFiltersState();
+
+  await loadAdminDetails();
+
+  await loadEmployeesFast();
+});
+
+</script>
+</body>
+</html>

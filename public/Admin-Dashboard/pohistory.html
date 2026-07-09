@@ -1,0 +1,1546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Final PO History - Admin Dashboard</title>
+  <link rel="icon" type="image/x-icon" href="logo2.ico" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap-theme.min.css" />
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body {
+      width: 100%;
+      min-height: 100%;
+      margin: 0;
+      overflow-x: hidden;
+      overflow-y: auto;
+      font-family: "Segoe UI", Arial, sans-serif;
+      color: #fff;
+      background:
+        linear-gradient(135deg, rgba(7, 16, 30, 0.95), rgba(14, 34, 56, 0.92)),
+        url("https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1600&q=80") center/cover no-repeat fixed;
+    }
+
+    body.sidebar-open { overflow: hidden; }
+    :root {
+      --topbar-height: 78px;
+      --sidebar-width: 280px;
+      --card-bg: rgba(12, 25, 45, 0.88);
+      --text-soft: #b8c9df;
+      --accent: #ff7a2f;
+      --accent-2: #1f77ff;
+      --shadow: 0 18px 40px rgba(0,0,0,0.25);
+    }
+    .app-shell { width: 100%; min-height: 100vh; position: relative; }
+    .topbar {
+      height: var(--topbar-height);
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(7, 16, 30, 0.88);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 2000;
+    }
+    .topbar-left { display: flex; align-items: center; gap: 16px; min-width: 0; }
+    .menu-toggle {
+      width: 46px; height: 46px; border: none; border-radius: 14px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
+      color: #fff; font-size: 20px; display: flex; align-items: center; justify-content: center;
+      transition: 0.25s ease; flex-shrink: 0; box-shadow: 0 10px 22px rgba(0,0,0,0.16);
+      cursor: pointer;
+    }
+    .menu-toggle:hover { transform: translateY(-1px); background: linear-gradient(135deg, rgba(255,122,47,0.18), rgba(31,119,255,0.16)); }
+    .brand-title { margin: 0; font-size: 24px; font-weight: 700; color: #fff; text-decoration: none !important; }
+    .brand-subtitle { margin: 2px 0 0; color: var(--text-soft); font-size: 13px; }
+    .logout {
+      text-decoration: none !important; color: #fff !important; background: linear-gradient(135deg, #ff8a3c, #ff5a1f);
+      padding: 11px 18px; border-radius: 12px; font-weight: 700; transition: 0.25s ease; box-shadow: 0 10px 24px rgba(255, 90, 31, 0.24);
+    }
+    .logout:hover { transform: translateY(-1px); }
+
+    .sidebar-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.55);
+      backdrop-filter: blur(3px);
+      z-index: 1400;
+      display: none;
+    }
+    .sidebar-backdrop.show { display: block; }
+
+    nav.sidebar {
+      width: var(--sidebar-width);
+      min-width: var(--sidebar-width);
+      max-width: var(--sidebar-width);
+      position: fixed;
+      transition: transform 0.28s ease, box-shadow 0.28s ease;
+      top: var(--topbar-height);
+      left: 0;
+      bottom: 0;
+      padding: 20px 16px 22px;
+      background: linear-gradient(180deg, rgba(6, 16, 30, 0.98), rgba(8, 22, 40, 0.96));
+      backdrop-filter: blur(16px);
+      border-right: 1px solid rgba(255,255,255,0.06);
+      overflow-y: auto; overflow-x: hidden;
+      z-index: 1500;
+      box-shadow: 18px 0 45px rgba(0, 0, 0, 0.24);
+      margin-top: 12px;
+    }
+    nav.sidebar::-webkit-scrollbar { width: 6px; }
+    nav.sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.14); border-radius: 999px; }
+
+    .sidebar-top-card {
+      position: relative; width: 100%; max-width: 100%;
+      padding: 20px 18px 18px; border-radius: 24px;
+      background: linear-gradient(135deg, rgba(255,122,47,0.16), rgba(31,119,255,0.14)), rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08); overflow: hidden;
+    }
+    .sidebar-top-card::after {
+      content: ""; position: absolute; right: -30px; top: -30px; width: 100px; height: 100px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,255,255,0.16), transparent 70%);
+    }
+    .sidebar-logo {
+      width: 78px; height: 78px; object-fit: cover; border-radius: 16px; border: 1px solid rgba(255,255,255,0.08);
+      margin-bottom: 12px; box-shadow: 0 14px 30px rgba(0,0,0,0.2); background: rgba(255,255,255,0.04);
+    }
+    .sidebar-mini-label {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.4px;
+      color: #ffd8c2;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: 5px 10px;
+      border-radius: 999px;
+      margin-bottom: 12px;
+      margin-left: 0;
+      align-self: flex-start;
+    }
+    .sidebar-main-title { font-size: 19px; font-weight: 800; color: #fff; margin: 0 0 6px; line-height: 1.2; position: relative; z-index: 1; }
+    .sidebar-main-subtitle { font-size: 13px; color: #d5e2f1; line-height: 1.7; margin: 0 0 14px; position: relative; z-index: 1; }
+    .sidebar-status-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; position: relative; z-index: 1; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.08); }
+    .sidebar-status-badge {
+      display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 999px; font-size: 11px; font-weight: 700;
+      color: #dfffe9; background: rgba(20,184,106,0.14); border: 1px solid rgba(20,184,106,0.22);
+    }
+    .sidebar-status-badge::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: #4df39b; box-shadow: 0 0 10px rgba(77,243,155,0.7); }
+    .sidebar-status-text { font-size: 11px; color: #c6d8ec; text-align: right; line-height: 1.4; }
+    .sidebar-section-title { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: #8ea4c5; margin: 24px 8px 16px; font-weight: 700; }
+
+    #side-bar { list-style: none; padding-left: 0; margin: 0; width: 100%; display: flex; flex-direction: column; gap: 12px; }
+    #side-bar li { margin-bottom: 0; width: 100%; }
+    #side-bar a {
+      display: flex; align-items: center; gap: 14px; width: 100%; padding: 15px 15px; border-radius: 20px;
+      text-decoration: none !important; color: #edf4ff !important;
+      background: linear-gradient(135deg, rgba(255,255,255,0.055), rgba(255,255,255,0.025));
+      border: 1px solid rgba(255,255,255,0.06); transition: all 0.28s ease; position: relative; overflow: hidden;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.04); word-break: break-word;
+    }
+    #side-bar a::before { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(255,122,47,0.13), rgba(31,119,255,0.11)); opacity: 0; transition: opacity 0.28s ease; }
+    #side-bar a::after { content: ""; position: absolute; left: 0; top: 18%; width: 4px; height: 64%; border-radius: 999px; background: linear-gradient(180deg, #ff8a3c, #1f77ff); opacity: 0; transition: opacity 0.28s ease; }
+    #side-bar a:hover { transform: translateX(6px); border-color: rgba(255,255,255,0.10); box-shadow: 0 14px 28px rgba(0,0,0,0.20); }
+    #side-bar a:hover::before, #side-bar a:hover::after, #side-bar a.active::before, #side-bar a.active::after { opacity: 1; }
+    #side-bar a.active { background: linear-gradient(135deg, rgba(255,122,47,0.18), rgba(31,119,255,0.16)); border-color: rgba(255,255,255,0.12); box-shadow: 0 16px 30px rgba(0,0,0,0.24); }
+    .nav-icon {
+      width: 44px; height: 44px; min-width: 44px; border-radius: 15px; display: flex; align-items: center; justify-content: center;
+      background: linear-gradient(135deg, rgba(255,255,255,0.13), rgba(255,255,255,0.05));
+      border: 1px solid rgba(255,255,255,0.08); color: #fff; font-size: 17px; position: relative; z-index: 1;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+    }
+    .nav-text { display: flex; flex-direction: column; min-width: 0; position: relative; z-index: 1; }
+    .nav-text strong { font-size: 14px; font-weight: 700; color: #fff; line-height: 1.2; }
+    .nav-text span { margin-top: 4px; font-size: 11px; line-height: 1.45; color: #aabed8; }
+    .nav-arrow { margin-left: auto; font-size: 16px; color: #93b2d8; position: relative; z-index: 1; transition: transform 0.25s ease; }
+    #side-bar a:hover .nav-arrow { transform: translateX(4px); }
+
+    main {
+      position: fixed;
+      top: var(--topbar-height);
+      left: var(--sidebar-width);
+      right: 0;
+      bottom: 0;
+      min-width: 0;
+      padding: 28px 30px;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    .hero-card {
+      background: linear-gradient(135deg, rgba(22, 61, 112, 0.88), rgba(12, 27, 53, 0.92));
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 24px;
+      padding: 30px 34px;
+      box-shadow: var(--shadow);
+      margin-bottom: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-card::after {
+      content: "";
+      position: absolute; right: -80px; top: -80px; width: 220px; height: 220px;
+      background: radial-gradient(circle, rgba(255,122,47,0.18), transparent 70%);
+      border-radius: 50%;
+    }
+    .page-tag {
+      display: inline-block; padding: 7px 12px; border-radius: 999px; font-size: 12px; font-weight: 700; letter-spacing: 0.8px;
+      color: #ffb88f; background: rgba(255, 122, 47, 0.16); border: 1px solid rgba(255, 122, 47, 0.2); margin-bottom: 14px;
+    }
+    .hero-card h1 { margin: 0 0 10px; font-size: 32px; font-weight: 800; color: #fff; line-height: 1.15; }
+    .hero-card p { margin: 0; max-width: 1060px; font-size: 15px; line-height: 1.8; color: #d0def0; }
+
+    .panel-card {
+      background: var(--card-bg);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 22px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+      width: 100%;
+      min-width: 0;
+      margin-bottom: 24px;
+    }
+    .section-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+    .section-header h2, .section-header h3 { margin: 0; font-size: 24px; font-weight: 800; color: #fff; }
+    .section-badge {
+      padding: 6px 12px; border-radius: 999px; font-size: 12px; font-weight: 700; color: #9ec3ff;
+      background: rgba(31, 119, 255, 0.14); border: 1px solid rgba(31, 119, 255, 0.22); white-space: nowrap;
+    }
+    .sub-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 8px 12px; border-radius: 999px; font-size: 12px; font-weight: 700;
+      color: #d7e6fb; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .stat-card {
+      border-radius: 20px;
+      padding: 18px 18px 16px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: 0 14px 30px rgba(0,0,0,.16);
+    }
+    .stat-card .k { font-size: 11px; text-transform: uppercase; letter-spacing: 1.1px; color: #9db4d0; margin-bottom: 8px; }
+    .stat-card .v { font-size: 24px; font-weight: 800; line-height: 1.1; }
+    .stat-card .s { font-size: 12px; color: #bfcfe5; margin-top: 8px; }
+
+    .search-row { display: grid; grid-template-columns: 1.2fr .6fr auto; gap: 14px; align-items: end; margin-bottom: 18px; }
+    .field-group { min-width: 0; }
+    .field-group label {
+      display: block; margin-bottom: 8px; font-size: 12px; font-weight: 700; color: #9db4d0; letter-spacing: 0.35px; text-transform: uppercase;
+    }
+    .modern-input, .modern-select, .modern-textarea {
+      width: 100%; min-height: 48px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.05);
+      color: #fff; padding: 12px 14px; font-size: 14px; outline: none; transition: 0.25s ease;
+    }
+    .modern-input:focus, .modern-select:focus, .modern-textarea:focus { border-color: rgba(31, 119, 255, 0.55); box-shadow: 0 0 0 4px rgba(31, 119, 255, 0.12); }
+    .modern-select option { color: #000; }
+    .input-hint { margin-top: 8px; color: #9db4d0; font-size: 12px; line-height: 1.5; }
+
+    .btn-primary.custom-btn, .btn-secondary.custom-btn-ghost, .btn-success.custom-btn-success, .btn-warning.custom-btn-warning, .btn-danger.custom-btn-danger {
+      border: none; border-radius: 14px; padding: 12px 22px; font-size: 14px; font-weight: 700; cursor: pointer; min-height: 48px; transition: 0.25s ease;
+    }
+    .btn-primary.custom-btn { color: #fff; background: linear-gradient(135deg, #2d7dff, #1657cc); box-shadow: 0 12px 26px rgba(45, 125, 255, 0.25); }
+    .btn-secondary.custom-btn-ghost { color: #fff; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); }
+    .btn-success.custom-btn-success { color: #fff; background: linear-gradient(135deg, #1dc06d, #109b56); box-shadow: 0 12px 26px rgba(20,184,106,0.25); }
+    .btn-warning.custom-btn-warning { color: #1a2233; background: linear-gradient(135deg, #ffd35c, #ffb72d); box-shadow: 0 12px 26px rgba(255, 183, 45, 0.25); }
+    .btn-danger.custom-btn-danger { color: #fff; background: linear-gradient(135deg, #ff6d6d, #d83a3a); box-shadow: 0 12px 26px rgba(216, 58, 58, 0.20); }
+    .btn-primary.custom-btn:hover, .btn-secondary.custom-btn-ghost:hover, .btn-success.custom-btn-success:hover, .btn-warning.custom-btn-warning:hover, .btn-danger.custom-btn-danger:hover { transform: translateY(-1px); }
+
+    .message {
+      margin-bottom: 16px; padding: 12px 14px; border-radius: 14px; font-size: 13px; line-height: 1.6; display: none;
+    }
+    .message.success { display: block; background: rgba(20,184,106,0.14); border: 1px solid rgba(20,184,106,0.24); color: #d8ffea; }
+    .message.error { display: block; background: rgba(239,77,77,0.12); border: 1px solid rgba(239,77,77,0.24); color: #ffd2d2; }
+
+    .table-container {
+      width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: 16px;
+    }
+    .table-container table {
+      width: 100%; min-width: 1380px; border-collapse: collapse; overflow: hidden; border-radius: 16px;
+    }
+    .table-container thead tr { background: linear-gradient(135deg, #183b6f, #102849); }
+    .table-container thead th {
+      padding: 16px 14px; color: #fff; font-size: 13px; text-transform: uppercase; letter-spacing: 0.6px;
+      border: none; text-align: left; vertical-align: middle; white-space: nowrap;
+    }
+    .table-container tbody tr { background: rgba(255,255,255,0.03); transition: 0.2s ease; }
+    .table-container tbody tr:nth-child(even) { background: rgba(255,255,255,0.05); }
+    .table-container tbody tr:hover { background: rgba(31, 119, 255, 0.10); }
+    .table-container tbody td { padding: 14px 14px; color: #eaf2ff; border-top: 1px solid rgba(255,255,255,0.05); vertical-align: top; }
+    .empty-state { text-align: center; padding: 28px !important; color: #a8bdd8 !important; font-style: italic; }
+
+    .uid-pill, .status-chip, .type-chip {
+      display: inline-block; padding: 7px 12px; border-radius: 999px; font-size: 12px; font-weight: 700; white-space: nowrap;
+    }
+    .uid-pill { background: rgba(255,255,255,0.08); color: #e6f0ff; }
+    .status-chip.pending { background: rgba(255, 192, 72, 0.16); color: #ffd77f; border: 1px solid rgba(255, 192, 72, 0.22); }
+    .status-chip.viewed { background: rgba(31, 119, 255, 0.16); color: #a7cbff; border: 1px solid rgba(31,119,255,0.20); }
+    .status-chip.rejected { background: rgba(255, 109, 109, 0.16); color: #ffb0b0; border: 1px solid rgba(255,109,109,0.22); }
+    .status-chip.approved { background: rgba(20,184,106,0.16); color: #9ef2c0; border: 1px solid rgba(20,184,106,0.22); }
+    .type-chip { background: rgba(31, 119, 255, 0.16); color: #a7cbff; border: 1px solid rgba(31,119,255,0.20); }
+
+    .action-wrap { display: flex; gap: 10px; flex-wrap: wrap; }
+    .btn-edit, .btn-open-pdf, .btn-approve, .btn-reject, .btn-download {
+      border: none; border-radius: 10px; padding: 9px 14px; color: #fff; font-weight: 700;
+      transition: 0.25s ease; white-space: nowrap;
+    }
+    .btn-open-pdf { background: linear-gradient(135deg, #2d7dff, #1657cc); }
+    .btn-approve { background: linear-gradient(135deg, #1dc06d, #109b56); }
+    .btn-reject { background: linear-gradient(135deg, #ff6d6d, #d83a3a); }
+    .btn-download { background: linear-gradient(135deg, #ffd35c, #ffb72d); color: #1a2233; }
+    .btn-open-pdf:hover, .btn-approve:hover, .btn-reject:hover, .btn-download:hover { transform: translateY(-1px); }
+    .btn-open-pdf:disabled, .btn-approve:disabled, .btn-reject:disabled, .btn-download:disabled {
+      opacity: 0.38;
+      cursor: not-allowed;
+      transform: none !important;
+      box-shadow: none !important;
+      filter: grayscale(0.15);
+    }
+
+    .table-topbar {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 18px;
+    }
+    .help-text { font-size: 12px; color: #9db4d0; margin-top: 6px; }
+
+    .modal-overlay{
+      position: fixed; inset: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.68); backdrop-filter: blur(6px);
+      display: none; align-items: center; justify-content: center; z-index: 99999; padding: 20px;
+    }
+    .modal-overlay.show{ display: flex; }
+    .modal-box{
+      width: min(96%, 1180px); max-height: 92vh; overflow: hidden;
+      background: #10223a; border: 1px solid rgba(255,255,255,.08);
+      border-radius: 24px; box-shadow: 0 25px 60px rgba(0,0,0,.45);
+      display: flex; flex-direction: column;
+    }
+    .modal-head {
+      padding: 18px 20px; border-bottom: 1px solid rgba(255,255,255,.08); display: flex; gap: 12px; align-items: center; justify-content: space-between; flex-wrap: wrap;
+    }
+    .modal-head h3 { margin: 0; font-size: 20px; font-weight: 800; }
+    .modal-body { padding: 18px; overflow: auto; }
+    .modal-foot { padding: 18px 20px; border-top: 1px solid rgba(255,255,255,.08); display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
+
+    .po-preview-frame {
+      background: #eff3f8;
+      border-radius: 18px;
+      padding: 12px;
+      overflow: auto;
+    }
+    .saved-file-wrap {
+      width: 100%;
+      min-height: 80vh;
+      display: flex;
+      align-items: stretch;
+      justify-content: stretch;
+    }
+    .saved-file-frame {
+      width: 100%;
+      min-height: 80vh;
+      border: 0;
+      border-radius: 14px;
+      background: #fff;
+      box-shadow: 0 10px 24px rgba(0,0,0,0.12);
+    }
+    .saved-file-image {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 14px;
+      background: #fff;
+      box-shadow: 0 10px 24px rgba(0,0,0,0.12);
+    }
+    .po-sheet {
+      width: min(100%, 210mm);
+      min-height: 297mm;
+      background: #fff;
+      color: #111;
+      border: 1px solid #d2d2d2;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.22);
+      padding: 8mm 10mm 10mm;
+      position: relative;
+      overflow: hidden;
+      box-sizing: border-box;
+      margin: 0 auto;
+    }
+    .po-sheet.page-break { page-break-after: always; }
+    .po-header-top {
+      display: grid;
+      grid-template-columns: 78px 1fr 56px;
+      gap: 6px;
+      align-items: center;
+      border-bottom: 2px solid #222;
+      padding-bottom: 6px;
+      margin-bottom: 6px;
+    }
+    .po-logo { width: 72px; height: 72px; object-fit: contain; }
+    .po-company { text-align: center; font-family: "Times New Roman", serif; }
+    .po-company h1 {
+      font-size: 16px; margin: 0 0 2px; font-weight: 700; letter-spacing: 0.3px;
+      text-decoration: underline;
+    }
+    .po-company .addr, .po-company .subinfo {
+      font-size: 10px; margin: 1px 0 0; line-height: 1.4;
+    }
+    .po-page-no {
+      text-align: right;
+      font-size: 9px;
+      font-weight: 400;
+      font-family: "Times New Roman", serif;
+      align-self: start;
+      line-height: 1.3;
+    }
+    .po-title-box {
+      text-align: center;
+      border: 1px solid #555;
+      margin: 5px 0 6px;
+      padding: 3px 8px 4px;
+      font-family: "Times New Roman", serif;
+    }
+    .po-title-box .main { font-size: 14px; font-weight: 700; letter-spacing: 4px; }
+    .po-title-box .sub { font-size: 9px; font-weight: 700; margin-top: 1px; text-transform: uppercase; letter-spacing: 1px; }
+    .po-info-box, .po-footer-box {
+      border: 1px solid #555;
+      padding: 5px 7px;
+      font-family: "Times New Roman", serif;
+      font-size: 11px;
+      margin-bottom: 5px;
+    }
+    .po-info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0 12px;
+      align-items: start;
+    }
+    .po-info-grid > div {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      min-width: 0;
+    }
+    .po-info-row {
+      display: grid;
+      grid-template-columns: 110px 10px 1fr;
+      gap: 0;
+      align-items: baseline;
+      margin: 0;
+      line-height: 1.5;
+    }
+    .po-info-row .label, .po-info-row .colon, .po-info-row .value {
+      font-size: 10.5px;
+      line-height: 1.5;
+      color: #111;
+    }
+    .po-info-row .label { font-weight: 400; white-space: nowrap; }
+    .po-info-row .colon { text-align: left; padding: 0 2px; }
+    .po-info-row .value { font-weight: 400; word-break: break-word; min-width: 0; }
+    .po-table-title {
+      font-size: 10px; font-weight: 400; font-style: italic;
+      margin: 4px 0 3px; font-family: "Times New Roman", serif;
+      border-top: 1px solid #555; padding-top: 4px;
+    }
+    .po-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: "Times New Roman", serif;
+      font-size: 10.5px;
+      table-layout: fixed;
+    }
+    .po-table thead th {
+      border-top: 1.5px solid #333;
+      border-bottom: 1.5px solid #333;
+      font-size: 10.5px;
+      font-weight: 700;
+      text-align: left;
+      padding: 3px 4px;
+    }
+    .po-table td {
+      border-bottom: none;
+      white-space: normal;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+      vertical-align: top;
+      padding: 3px 4px;
+      font-size: 10.5px;
+    }
+    .po-table td.desc-cell { vertical-align: top; }
+    .po-table td.qty-cell  { text-align: center; vertical-align: top; }
+    .po-table td.rate-cell { text-align: right; vertical-align: top; }
+    .po-table td.num, .po-table th.num { text-align: right; }
+    .po-table td.center, .po-table th.center { text-align: center; }
+    .po-table tbody tr:last-child td { border-bottom: 1.5px solid #333; }
+    .po-note-line {
+      display: block;
+      font-family: "Times New Roman", serif;
+      font-size: 10.5px;
+      margin-top: 10px;
+    }
+    .po-note-line .words { min-height: 18px; }
+    .po-total-box {
+      margin-top: 4px;
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 0;
+      align-items: start;
+    }
+    .po-total-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: "Times New Roman", serif;
+      font-size: 10.5px;
+      border-top: 1.5px solid #333;
+    }
+    .po-total-table td { padding: 2px 4px; line-height: 1.5; }
+    .po-total-table td:first-child { width: 60%; font-weight: 400; }
+    .po-total-table td:last-child { text-align: right; }
+    .po-total-table tr:last-child td { border-top: 1px solid #555; font-weight: 700; }
+    .po-terms-title {
+      font-family: "Times New Roman", serif;
+      font-size: 10.5px;
+      font-weight: 700;
+      margin: 6px 0 3px;
+      border-top: 1px solid #555;
+      padding-top: 4px;
+    }
+    .po-terms { font-family: "Times New Roman", serif; font-size: 10.5px; line-height: 1.5; }
+    .po-terms > div { margin-bottom: 2px; }
+    .po-signature {
+      margin-top: 12px;
+      display: grid;
+      grid-template-columns: 1fr 200px;
+      gap: 10px;
+      align-items: end;
+      font-family: "Times New Roman", serif;
+      font-size: 10.5px;
+      border-top: 1px solid #555;
+      padding-top: 6px;
+    }
+    .po-sign-left {
+      min-height: 80px;
+      font-size: 10px;
+      color: #333;
+      font-style: italic;
+    }
+    .po-sign-right { text-align: center; }
+    .po-sign-right .company { font-weight: 700; font-size: 10.5px; margin-top: 0; }
+    .po-sign-right .name { font-size: 11px; margin-top: 40px; font-weight: 700; }
+    .po-sign-right .title { font-size: 10px; margin-top: 2px; font-weight: 400; }
+    .po-footer-box {
+      margin-top: 6px;
+      font-size: 9.5px;
+      font-family: "Times New Roman", serif;
+    }
+    .po-footer-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px 10px;
+    }
+
+    .confirm-text { color: #d7e6fb; line-height: 1.7; }
+    .confirm-badge { display: inline-block; margin-bottom: 10px; padding: 6px 10px; border-radius: 999px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.1); color: #ffdfbf; font-size: 12px; font-weight: 700; }
+
+    @media (max-width: 1200px) {
+      .stats-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .search-row { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 900px) {
+      html, body { overflow-y: auto; overflow-x: hidden; }
+      body.sidebar-open { overflow: hidden; }
+      nav.sidebar {
+        width: 100%;
+        min-width: 100%;
+        max-width: 100%;
+        position: fixed;
+        top: var(--topbar-height);
+        left: 0;
+        right: 0;
+        bottom: auto;
+        height: calc(100vh - var(--topbar-height));
+        max-height: calc(100vh - var(--topbar-height));
+        overflow-y: auto;
+        overflow-x: hidden;
+        border-right: none;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+        border-radius: 0 0 24px 24px;
+        z-index: 1600;
+        padding: 14px;
+        margin-top: 0;
+        transform: translateY(-110%);
+        opacity: 0;
+        pointer-events: none;
+        transition: transform 0.28s ease, opacity 0.28s ease, box-shadow 0.28s ease;
+      }
+      nav.sidebar.active {
+        transform: translateY(0);
+        opacity: 1;
+        pointer-events: auto;
+      }
+      #side-bar { display: flex; gap: 10px; flex-direction: column; }
+      main { position: relative; top: auto; left: auto; right: auto; bottom: auto; width: 100%; padding: 18px; overflow: visible; }
+      .hero-card h1 { font-size: 24px; }
+      .topbar { position: sticky; top: 0; z-index: 2001; }
+      .po-sheet { width: 100%; min-height: auto; padding: 10mm 8mm; }
+      .po-header-top { grid-template-columns: 56px 1fr 44px; }
+      .po-logo { width: 62px; height: 62px; }
+      .stats-row { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 600px) {
+      .topbar { padding: 0 12px; }
+      .topbar-left { gap: 10px; }
+      .brand-title { font-size: 18px; line-height: 1.1; }
+      .hero-card, .panel-card { padding: 16px; border-radius: 18px; }
+      .logout { padding: 9px 12px; font-size: 13px; }
+      .btn-primary.custom-btn, .btn-secondary.custom-btn-ghost, .btn-success.custom-btn-success, .btn-warning.custom-btn-warning, .btn-danger.custom-btn-danger { width: 100%; }
+      .action-row, .table-topbar { flex-direction: column; width: 100%; }
+      .action-row > *, .table-topbar > * { width: 100%; }
+      .summary-line { font-size: 13px; }
+      .po-sheet { padding: 8mm 6mm; }
+      .po-title-box .main { font-size: 14px; }
+      .po-info-grid, .po-total-box, .po-signature, .po-footer-grid { grid-template-columns: 1fr; }
+      .po-info-row { grid-template-columns: 110px 10px 1fr; }
+      .table-container table { min-width: 1220px; }
+      .modal-body { padding: 12px; }
+      .modal-head, .modal-foot { padding: 14px; }
+    }
+  </style>
+
+</head>
+<body>
+<div id="sidebarBackdrop" class="sidebar-backdrop" aria-hidden="true"></div>
+<div class="app-shell">
+
+  <div id="successModal" class="modal-overlay" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="modal-box" style="width:min(96%, 520px);">
+      <div class="modal-head">
+        <h3 id="successModalTitle">Done</h3>
+        <span class="sub-badge">Status</span>
+      </div>
+      <div class="modal-body">
+        <div class="confirm-text" id="successModalMessage"></div>
+      </div>
+      <div class="modal-foot">
+        <button type="button" id="successModalOk" class="btn btn-success custom-btn-success">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="shareModal" class="modal-overlay" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="modal-box" style="width:min(96%, 640px);">
+      <div class="modal-head">
+        <h3 id="shareModalTitle">Share Final PO</h3>
+        <span class="sub-badge" id="shareModalTag">Share</span>
+      </div>
+      <div class="modal-body">
+        <div class="confirm-badge" id="shareModalBadge">Choose a share method</div>
+        <div class="confirm-text" id="shareModalText">
+          Send the purchase order directly through WhatsApp or email. The message will include the PO number, vendor name, and file link when available.
+        </div>
+        <div class="share-details" id="sharePreviewBox"></div>
+      </div>
+      <div class="modal-foot">
+        <button type="button" id="shareWhatsappBtn" class="btn btn-success custom-btn-success">WhatsApp</button>
+        <button type="button" id="shareEmailBtn" class="btn btn-primary custom-btn">Email</button>
+        <button type="button" id="shareCopyBtn" class="btn btn-warning custom-btn-warning">Copy Text</button>
+        <button type="button" id="shareNativeBtn" class="btn btn-secondary custom-btn-ghost" style="display:none;">Share</button>
+        <button type="button" id="closeShareBtn" class="btn btn-secondary custom-btn-ghost">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="viewModal" class="modal-overlay" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="modal-box">
+      <div class="modal-head">
+        <h3 id="viewModalTitle">Final PO Preview</h3>
+        <span class="sub-badge" id="viewModalStatus">Final</span>
+      </div>
+      <div class="modal-body">
+        <div id="previewMount" class="po-preview-frame"></div>
+      </div>
+      <div class="modal-foot">
+        <button type="button" id="downloadFromPreviewBtn" class="btn btn-warning custom-btn-warning">Download PDF</button>
+        <button type="button" id="shareFromPreviewBtn" class="btn btn-primary custom-btn">Share</button>
+        <button type="button" id="closeViewBtn" class="btn btn-secondary custom-btn-ghost">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <header class="topbar">
+    <div class="topbar-left">
+      <div class="menu-toggle" id="menuToggle">☰</div>
+      <div>
+        <a href="/public/AdminHome.html" class="brand-title">Admin Dashboard</a>
+        <p class="brand-subtitle">Final PO History & Share Panel</p>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <a href="#" class="logout" id="logoutBtn">Logout</a>
+    </div>
+  </header>
+
+  <div class="dashboard-layout">
+    <nav class="sidebar">
+      <div class="sidebar-top-card">
+        <div class="sidebar-mini-label">Admin Panel</div>
+        <h3 class="sidebar-main-title">Final PO Center</h3>
+        <p class="sidebar-main-subtitle">
+          Browse saved purchase orders from Firestore <b>Final PO</b>, search any field, preview the full PO, download the PDF, or share it directly to WhatsApp or email.
+        </p>
+        <div class="sidebar-status-row">
+          <span class="sidebar-status-badge">History Module Active</span>
+          <div class="sidebar-status-text">
+            Secure access<br />Fast navigation
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-section-title">Navigation</div>
+      <ul id="side-bar">
+        <li>
+          <a href="/public/AdminHome.html">
+            <span class="nav-icon">⌂</span>
+            <span class="nav-text">
+              <strong>Dashboard</strong>
+              <span>Back to home panel</span>
+            </span>
+            <span class="nav-arrow">›</span>
+          </a>
+        </li>
+        <li>
+          <a href="/public/NewPO.html">
+            <span class="nav-icon">🧾</span>
+            <span class="nav-text">
+              <strong>New PO</strong>
+              <span>Create purchase order</span>
+            </span>
+            <span class="nav-arrow">›</span>
+          </a>
+        </li>
+        <li>
+          <a href="javascript:void(0)" class="active">
+            <span class="nav-icon">📄</span>
+            <span class="nav-text">
+              <strong>Final PO</strong>
+              <span>View history and share</span>
+            </span>
+            <span class="nav-arrow">›</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <main>
+      <section class="hero-card">
+        <span class="page-tag">FINAL PURCHASE ORDER HISTORY</span>
+        <h1>Final Purchase Orders</h1>
+        <p>
+          This dashboard loads every record from the <b>Final PO</b> collection in Firestore. You can search by PO number, vendor name, vendor code, site, or any other visible detail, then view, download, or share the order.
+        </p>
+      </section>
+
+      <section class="panel-card">
+        <div class="section-header">
+          <h2>Final PO Overview</h2>
+          <span class="section-badge">Firestore Live Fetch</span>
+        </div>
+
+        <div id="formMessage" class="message"></div>
+
+        <div class="stats-row">
+          <div class="stat-card">
+            <div class="k">Total Final PO</div>
+            <div class="v" id="totalDrafts">0</div>
+            <div class="s">Records found in Final PO</div>
+          </div>
+          <div class="stat-card">
+            <div class="k">This Month</div>
+            <div class="v" id="pendingCount">0</div>
+            <div class="s">Recent final orders</div>
+          </div>
+          <div class="stat-card">
+            <div class="k">With File</div>
+            <div class="v" id="approvedCount">0</div>
+            <div class="s">Has PDF / preview link</div>
+          </div>
+          <div class="stat-card">
+            <div class="k">Searchable</div>
+            <div class="v" id="rejectedCount">0</div>
+            <div class="s">Matched by current filter</div>
+          </div>
+        </div>
+
+        <div class="table-topbar">
+          <div class="search-row" style="flex:1; width:100%;">
+            <div class="field-group">
+              <label>Search Final PO</label>
+              <input type="search" id="searchInput" class="modern-input" placeholder="Type PO number, vendor name, vendor code, site, work type, remark..." />
+              <div class="input-hint">Instant search across all loaded Final PO records.</div>
+            </div>
+            <div class="field-group">
+              <label>Quick Filter</label>
+              <select id="statusFilter" class="modern-select">
+                <option value="all">All Records</option>
+                <option value="withfile">With File Link</option>
+                <option value="withoutfile">Without File Link</option>
+              </select>
+              <div class="input-hint">Optional quick filter for file availability.</div>
+            </div>
+            <button type="button" id="refreshBtn" class="btn btn-primary custom-btn">Refresh</button>
+          </div>
+        </div>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>PO Number</th>
+                <th>Vendor Code</th>
+                <th>Vendor Name</th>
+                <th>Site</th>
+                <th>Work Type</th>
+                <th>Status</th>
+                <th>Basic Value</th>
+                <th>Tax</th>
+                <th>Grand Total</th>
+                <th>Final Date</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="historyBody">
+              <tr><td colspan="11" class="empty-state">Loading final purchase orders...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+<script type="module" src="/public/control.js"></script>
+<script type="module">
+  import { app } from "/public/firebase-config.js";
+  import {
+    getFirestore,
+    collection,
+    doc,
+    getDocs,
+    setDoc,
+    writeBatch,
+    serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+
+  const db = getFirestore(app);
+  const finalPoCollection = collection(db, "Final PO");
+
+  const COMPANY = {
+    name: "KAMALESWAR INDIA ENGINEERING PVT LTD",
+    address: "Kartika Building, Ground Floor, Brundaban Vihar, Behind TPWODL Office, Post Office:- Ainthapali, Sub Divison:- Ainthapali, City/District:- Sambalpur, State:- ODISHA, PIN Code:- 768004, Country:- India, Website:- www.kiepl.co",
+    contact: "Akshay Sahu",
+    email: "akshaysahu@kiepl.co",
+    gstin: "21AAICK5630K1ZL",
+    cin: "U45500OR2021PTC035348",
+    pan: "AAICK5630K",
+    division: "Odisha",
+    tan: "BBNK02417C"
+  };
+
+  const el = {
+    menuToggle: document.getElementById("menuToggle"),
+    sidebarBackdrop: document.getElementById("sidebarBackdrop"),
+    sidebarNav: document.querySelector("nav.sidebar"),
+    sideBar: document.getElementById("side-bar"),
+    logoutBtn: document.getElementById("logoutBtn"),
+    formMessage: document.getElementById("formMessage"),
+    searchInput: document.getElementById("searchInput"),
+    statusFilter: document.getElementById("statusFilter"),
+    refreshBtn: document.getElementById("refreshBtn"),
+    historyBody: document.getElementById("historyBody"),
+    totalDrafts: document.getElementById("totalDrafts"),
+    pendingCount: document.getElementById("pendingCount"),
+    approvedCount: document.getElementById("approvedCount"),
+    rejectedCount: document.getElementById("rejectedCount"),
+    viewModal: document.getElementById("viewModal"),
+    viewModalTitle: document.getElementById("viewModalTitle"),
+    viewModalStatus: document.getElementById("viewModalStatus"),
+    previewMount: document.getElementById("previewMount"),
+    downloadFromPreviewBtn: document.getElementById("downloadFromPreviewBtn"),
+    shareFromPreviewBtn: document.getElementById("shareFromPreviewBtn"),
+    closeViewBtn: document.getElementById("closeViewBtn"),
+    successModal: document.getElementById("successModal"),
+    successModalTitle: document.getElementById("successModalTitle"),
+    successModalMessage: document.getElementById("successModalMessage"),
+    successModalOk: document.getElementById("successModalOk"),
+    shareModal: document.getElementById("shareModal"),
+    shareModalTitle: document.getElementById("shareModalTitle"),
+    shareModalTag: document.getElementById("shareModalTag"),
+    shareModalBadge: document.getElementById("shareModalBadge"),
+    shareModalText: document.getElementById("shareModalText"),
+    sharePreviewBox: document.getElementById("sharePreviewBox"),
+    shareWhatsappBtn: document.getElementById("shareWhatsappBtn"),
+    shareEmailBtn: document.getElementById("shareEmailBtn"),
+    shareCopyBtn: document.getElementById("shareCopyBtn"),
+    shareNativeBtn: document.getElementById("shareNativeBtn"),
+    closeShareBtn: document.getElementById("closeShareBtn")
+  };
+
+  const state = {
+    records: [],
+    currentRecord: null,
+    shareRecord: null
+  };
+
+  function escapeHtml(value) {
+    return String(value ?? "").replace(/[&<>"']/g, (ch) => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;"
+    })[ch]);
+  }
+
+  function showMessage(type, text) {
+    el.formMessage.className = `message ${type}`;
+    el.formMessage.textContent = text;
+    el.formMessage.style.display = "block";
+  }
+
+  function clearMessage() {
+    el.formMessage.className = "message";
+    el.formMessage.textContent = "";
+    el.formMessage.style.display = "none";
+  }
+
+  function openSidebar() {
+    el.sidebarNav?.classList.add("active");
+    el.sideBar.classList.add("active");
+    document.body.classList.add("sidebar-open");
+    el.sidebarBackdrop.classList.add("show");
+    el.sidebarBackdrop.setAttribute("aria-hidden", "false");
+    el.menuToggle.setAttribute("aria-expanded", "true");
+    el.sideBar.scrollTop = 0;
+  }
+
+  function closeSidebar() {
+    el.sidebarNav?.classList.remove("active");
+    el.sideBar.classList.remove("active");
+    document.body.classList.remove("sidebar-open");
+    el.sidebarBackdrop.classList.remove("show");
+    el.sidebarBackdrop.setAttribute("aria-hidden", "true");
+    el.menuToggle.setAttribute("aria-expanded", "false");
+  }
+
+  function toggleMenu() {
+    if (el.sidebarNav?.classList.contains("active") || el.sideBar.classList.contains("active")) closeSidebar();
+    else openSidebar();
+  }
+
+  function formatCurrency(num) {
+    const n = Number(num || 0);
+    return `₹${n.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  }
+
+  function formatDate(value) {
+    if (!value) return "-";
+    if (typeof value?.toDate === "function") {
+      return value.toDate().toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" }).replace(/ /g, "-").toUpperCase();
+    }
+    const d = new Date(value);
+    if (Number.isNaN(d.getTime())) return "-";
+    return d.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" }).replace(/ /g, "-").toUpperCase();
+  }
+
+  function toDateObject(value) {
+    if (!value) return null;
+    if (typeof value?.toDate === "function") return value.toDate();
+    const d = new Date(value);
+    return Number.isNaN(d.getTime()) ? null : d;
+  }
+
+  function getDisplayDate(record) {
+    return formatDate(record.finalCreatedAt || record.createdAt || record.approvedAt || record.creationDate);
+  }
+
+  function getVendorDisplay(record) {
+    const name = String(record?.vendorName || record?.companyName || "").trim();
+    const type = String(record?.companyType || "").trim();
+    const combined = [name, type].filter(Boolean).join(" ");
+    return combined || "-";
+  }
+
+  function getStatusLabel(record) {
+    const status = String(record?.status || "final").toLowerCase();
+    if (status === "approved") return "Approved";
+    if (status === "final") return "Final";
+    if (status === "viewed") return "Viewed";
+    if (status === "rejected") return "Rejected";
+    return status ? status.charAt(0).toUpperCase() + status.slice(1) : "Final";
+  }
+
+  function getStatusClass(record) {
+    const status = String(record?.status || "final").toLowerCase();
+    if (status === "approved") return "approved";
+    if (status === "rejected") return "rejected";
+    if (status === "viewed") return "viewed";
+    return "pending";
+  }
+
+  function getSavedPreviewUrl(record) {
+    return String(record?.pdfUrl || record?.fileUrl || record?.downloadUrl || record?.previewUrl || "").trim();
+  }
+
+  function isImageUrl(url = "") {
+    return /\.(png|jpe?g|gif|webp|bmp|svg)(\?|#|$)/i.test(url);
+  }
+
+  function getPdfViewerUrl(url = "") {
+    const cleanUrl = String(url || "").trim();
+    if (!cleanUrl) return "";
+    const joiner = cleanUrl.includes("#") ? "&" : "#";
+    return `${cleanUrl}${joiner}page=1&zoom=page-width&toolbar=0&navpanes=0&scrollbar=1`;
+  }
+
+  function buildSearchText(record) {
+    const items = Array.isArray(record.items) ? record.items : [];
+    const itemText = items.map((item) => [
+      item.slNo,
+      item.description,
+      item.uom,
+      item.qty,
+      item.qtyText,
+      item.unitRate,
+      item.cgst,
+      item.sgst
+    ].join(" ")).join(" ");
+
+    return [
+      record.poNumber,
+      record.poNumberRaw,
+      record.vendorCode,
+      record.vendorName,
+      record.companyName,
+      record.companyType,
+      record.site,
+      record.workType,
+      record.status,
+      record.address,
+      record.gstinNo,
+      record.contactPerson,
+      record.mobileNo,
+      record.email,
+      record.amountWords,
+      record.paymentTerms,
+      record.remarks,
+      itemText
+    ].map((x) => String(x || "").toLowerCase()).join(" ");
+  }
+
+  function getFilterState(record) {
+    const hasFile = Boolean(getSavedPreviewUrl(record));
+    return {
+      canDownload: true,
+      hasFile
+    };
+  }
+
+  function updateStats(filtered = null) {
+    const records = filtered || state.records;
+    el.totalDrafts.textContent = state.records.length;
+
+    const now = new Date();
+    const thisMonth = records.filter((r) => {
+      const d = toDateObject(r.finalCreatedAt || r.createdAt || r.approvedAt || r.creationDate);
+      return d && d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+    }).length;
+
+    const withFile = records.filter((r) => Boolean(getSavedPreviewUrl(r))).length;
+
+    el.pendingCount.textContent = thisMonth;
+    el.approvedCount.textContent = withFile;
+    el.rejectedCount.textContent = records.length;
+  }
+
+  function filterRecords() {
+    const q = el.searchInput.value.trim().toLowerCase();
+    const filter = el.statusFilter.value;
+
+    return state.records.filter((record) => {
+      const searchable = buildSearchText(record);
+      const matchesQuery = !q || searchable.includes(q);
+      const hasFile = Boolean(getSavedPreviewUrl(record));
+      const matchesFilter =
+        filter === "all" ||
+        (filter === "withfile" && hasFile) ||
+        (filter === "withoutfile" && !hasFile);
+      return matchesQuery && matchesFilter;
+    });
+  }
+
+  function renderTable() {
+    const rows = filterRecords();
+    updateStats(rows);
+
+    if (!rows.length) {
+      el.historyBody.innerHTML = `<tr><td colspan="11" class="empty-state">No final purchase orders found.</td></tr>`;
+      return;
+    }
+
+    el.historyBody.innerHTML = rows.map((record) => {
+      const tax = Number(record?.totals?.cgstTotal || 0) + Number(record?.totals?.sgstTotal || 0);
+      const actions = getFilterState(record);
+      return `
+        <tr>
+          <td><span class="uid-pill">${escapeHtml(record.poNumber || "-")}</span></td>
+          <td>${escapeHtml(record.vendorCode || "-")}</td>
+          <td>${escapeHtml(getVendorDisplay(record))}</td>
+          <td>${escapeHtml(record.site || "-")}</td>
+          <td><span class="type-chip">${escapeHtml(record.workType || "-")}</span></td>
+          <td><span class="status-chip ${getStatusClass(record)}">${escapeHtml(getStatusLabel(record))}</span></td>
+          <td>${escapeHtml(formatCurrency(record?.totals?.basic || 0))}</td>
+          <td>${escapeHtml(formatCurrency(tax))}</td>
+          <td><strong>${escapeHtml(formatCurrency(record?.totals?.grand || 0))}</strong></td>
+          <td>${escapeHtml(getDisplayDate(record))}</td>
+          <td>
+            <div class="action-wrap">
+              <button class="btn-open-pdf" data-action="openPdf" data-id="${escapeHtml(record.id)}">View</button>
+              <button class="btn-download" data-action="download" data-id="${escapeHtml(record.id)}">Download</button>
+              <button class="btn-share" data-action="share" data-id="${escapeHtml(record.id)}" style="border:none;border-radius:10px;padding:9px 14px;color:#fff;font-weight:700;background:linear-gradient(135deg,#9b6dff,#6a35ff);transition:.25s ease;white-space:nowrap;">Share</button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join("");
+  }
+
+  function renderPreview(record) {
+    const items = Array.isArray(record.items) ? record.items : [];
+    const rows = items.map((item) => `
+      <tr>
+        <td class="center">${escapeHtml(item.slNo || "")}</td>
+        <td class="desc-cell">${escapeHtml(item.description || "").replace(/\n/g, "<br/>")}</td>
+        <td class="center">${escapeHtml(item.uom || "NUMBER")}</td>
+        <td class="qty-cell">${escapeHtml(item.qtyText || String(item.qty || ""))}</td>
+        <td class="num">${escapeHtml(Number(item.unitRate || 0).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 }))}</td>
+        <td class="num">${escapeHtml(Number(item.cgst || 0).toFixed(2))}%</td>
+        <td class="num">${escapeHtml(Number(item.sgst || 0).toFixed(2))}%</td>
+      </tr>
+    `).join("");
+
+    const basic = Number(record?.totals?.basic || 0);
+    const cgst = Number(record?.totals?.cgstTotal || 0);
+    const sgst = Number(record?.totals?.sgstTotal || 0);
+    const grand = Number(record?.totals?.grand || 0);
+    const vendorName = getVendorDisplay(record);
+    const logo = "logo2.ico";
+
+    return `
+      <section class="po-sheet page-break">
+        <div class="po-header-top">
+          <img class="po-logo" src="${logo}" alt="Company logo" />
+          <div class="po-company">
+            <h1>${escapeHtml(COMPANY.name)}</h1>
+            <div class="addr">${escapeHtml(COMPANY.address)}</div>
+            <div class="subinfo">GSTIN: ${escapeHtml(COMPANY.gstin)} | CIN: ${escapeHtml(COMPANY.cin)} | PAN: ${escapeHtml(COMPANY.pan)}</div>
+          </div>
+          <div class="po-page-no">Page 1</div>
+        </div>
+
+        <div class="po-title-box">
+          <div class="main">PURCHASE ORDER</div>
+          <div class="sub">FINAL PO PREVIEW</div>
+        </div>
+
+        <div class="po-info-box">
+          <div class="po-info-grid">
+            <div>
+              <div class="po-info-row"><div class="label">Vendor Code</div><div class="colon">:</div><div class="value">${escapeHtml(record.vendorCode || "-")}</div></div>
+              <div class="po-info-row"><div class="label">Vendor Name</div><div class="colon">:</div><div class="value">${escapeHtml(vendorName)}</div></div>
+              <div class="po-info-row"><div class="label">Site</div><div class="colon">:</div><div class="value">${escapeHtml(record.site || "-")}</div></div>
+              <div class="po-info-row"><div class="label">Address</div><div class="colon">:</div><div class="value">${escapeHtml(record.address || "-")}</div></div>
+              <div class="po-info-row"><div class="label">GSTIN</div><div class="colon">:</div><div class="value">${escapeHtml(record.gstinNo || "-")}</div></div>
+              <div class="po-info-row"><div class="label">Email</div><div class="colon">:</div><div class="value">${escapeHtml(record.email || "-")}</div></div>
+              <div class="po-info-row"><div class="label">Contact Person</div><div class="colon">:</div><div class="value">${escapeHtml(record.contactPerson || "-")}</div></div>
+              <div class="po-info-row"><div class="label">Mobile</div><div class="colon">:</div><div class="value">${escapeHtml(record.mobileNo || "-")}</div></div>
+            </div>
+            <div>
+              <div class="po-info-row"><div class="label">PO Number</div><div class="colon">:</div><div class="value">${escapeHtml(record.poNumber || "-")}</div></div>
+              <div class="po-info-row"><div class="label">Final Date</div><div class="colon">:</div><div class="value">${escapeHtml(getDisplayDate(record))}</div></div>
+              <div class="po-info-row"><div class="label">Currency</div><div class="colon">:</div><div class="value">${escapeHtml(record.currency || "INR")}</div></div>
+              <div class="po-info-row"><div class="label">Our Contact</div><div class="colon">:</div><div class="value">${escapeHtml(record.ourContact || COMPANY.contact)}</div></div>
+              <div class="po-info-row"><div class="label">Email</div><div class="colon">:</div><div class="value">${escapeHtml(record.ourEmail || COMPANY.email)}</div></div>
+              <div class="po-info-row"><div class="label">Phone No.</div><div class="colon">:</div><div class="value">${escapeHtml(record.ourPhone || "-")}</div></div>
+              <div class="po-info-row"><div class="label">Work Type</div><div class="colon">:</div><div class="value">${escapeHtml(record.workType || "-")}</div></div>
+              <div class="po-info-row"><div class="label">PO Validity</div><div class="colon">:</div><div class="value">${escapeHtml(record.poValidity || "-")}</div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="po-table-title">Please supply/service the following items subject to the terms & conditions mentioned here under and overleaf</div>
+        <table class="po-table">
+          <thead>
+            <tr>
+              <th class="center" style="width:5%;">S.No</th>
+              <th style="width:42%;">Description</th>
+              <th class="center" style="width:8%;">UOM</th>
+              <th class="center" style="width:9%;">Qty</th>
+              <th class="num" style="width:12%;">Unit Rate</th>
+              <th class="num" style="width:8%;">CGST%</th>
+              <th class="num" style="width:8%;">SGST%</th>
+            </tr>
+          </thead>
+          <tbody>${rows || `<tr><td colspan="7" class="center">No items</td></tr>`}</tbody>
+        </table>
+
+        <div class="po-note-line">
+          <strong>Amount in Words:</strong> <span class="words">${escapeHtml(record.amountWords || "-")}</span>
+        </div>
+
+        <div class="po-total-box">
+          <div>
+            <div class="po-terms-title">Payment Terms</div>
+            <div class="po-terms">${escapeHtml(record.paymentTerms || "-").replace(/\n/g, "<br/>")}</div>
+            <div class="po-terms-title">Remarks</div>
+            <div class="po-terms">${escapeHtml(record.remarks || "-").replace(/\n/g, "<br/>")}</div>
+          </div>
+          <table class="po-total-table">
+            <tr><td>Basic Value</td><td>${escapeHtml(formatCurrency(basic))}</td></tr>
+            <tr><td>CGST</td><td>${escapeHtml(formatCurrency(cgst))}</td></tr>
+            <tr><td>SGST</td><td>${escapeHtml(formatCurrency(sgst))}</td></tr>
+            <tr><td>Grand Total</td><td>${escapeHtml(formatCurrency(grand))}</td></tr>
+          </table>
+        </div>
+
+        <div class="po-signature">
+          <div class="po-sign-left">
+            Final PO record for record keeping and sharing.
+          </div>
+          <div class="po-sign-right">
+            <div class="company">${escapeHtml(COMPANY.name)}</div>
+            <div class="name">Authorized Signatory</div>
+            <div class="title">Final PO</div>
+          </div>
+        </div>
+
+        <div class="po-footer-box">
+          <div class="po-footer-grid">
+            <div>GSTIN: ${escapeHtml(COMPANY.gstin)}</div>
+            <div>CIN: ${escapeHtml(COMPANY.cin)}</div>
+            <div>PAN: ${escapeHtml(COMPANY.pan)}</div>
+            <div>Website: www.kiepl.co</div>
+          </div>
+        </div>
+      </section>
+    `;
+  }
+
+  function renderSavedFilePreview(record) {
+    const url = getSavedPreviewUrl(record);
+    if (url) {
+      if (isImageUrl(url)) {
+        return `
+          <div class="saved-file-wrap">
+            <img class="saved-file-image" src="${escapeHtml(url)}" alt="Saved PO preview" />
+          </div>
+        `;
+      }
+      return `
+        <div class="saved-file-wrap">
+          <iframe class="saved-file-frame" src="${escapeHtml(url)}" title="Saved PO preview"></iframe>
+        </div>
+      `;
+    }
+    return renderPreview(record);
+  }
+
+  function openPdfForRecord(record) {
+    const savedUrl = getSavedPreviewUrl(record);
+    if (!savedUrl) return;
+
+    const viewerUrl = isImageUrl(savedUrl) ? savedUrl : getPdfViewerUrl(savedUrl);
+    window.open(viewerUrl, "_blank", "noopener,noreferrer");
+  }
+
+  function openViewModal(record) {
+    state.currentRecord = record;
+    el.viewModalTitle.textContent = record.poNumber ? `Final PO Preview - ${record.poNumber}` : "Final PO Preview";
+    el.viewModalStatus.textContent = getStatusLabel(record);
+    el.viewModalStatus.className = `sub-badge ${getStatusClass(record)}`;
+    el.previewMount.innerHTML = renderSavedFilePreview(record);
+    el.viewModal.classList.add("show");
+    el.viewModal.setAttribute("aria-hidden", "false");
+  }
+
+  function closeViewModal() {
+    el.viewModal.classList.remove("show");
+    el.viewModal.setAttribute("aria-hidden", "true");
+    state.currentRecord = null;
+  }
+
+  function openSuccess(title, message) {
+    el.successModalTitle.textContent = title;
+    el.successModalMessage.textContent = message;
+    el.successModal.classList.add("show");
+    el.successModal.setAttribute("aria-hidden", "false");
+  }
+
+  function closeSuccess() {
+    el.successModal.classList.remove("show");
+    el.successModal.setAttribute("aria-hidden", "true");
+  }
+
+  function openShareModal(record) {
+    state.shareRecord = record;
+    el.shareModalTitle.textContent = record.poNumber ? `Share Final PO - ${record.poNumber}` : "Share Final PO";
+    el.shareModalTag.textContent = getStatusLabel(record);
+    el.shareModalBadge.textContent = record.poNumber || "Final PO";
+    el.shareModalText.textContent = "Choose WhatsApp, email, or copy text. The share message includes the PO number, vendor name, total amount, and file link when available.";
+
+    const fileUrl = getSavedPreviewUrl(record);
+    const summary = [
+      `PO Number: ${record.poNumber || "-"}`,
+      `Vendor Name: ${getVendorDisplay(record)}`,
+      `Vendor Code: ${record.vendorCode || "-"}`,
+      `Site: ${record.site || "-"}`,
+      `Work Type: ${record.workType || "-"}`,
+      `Grand Total: ${formatCurrency(record?.totals?.grand || 0)}`,
+      `Final Date: ${getDisplayDate(record)}`,
+      `Status: ${getStatusLabel(record)}`,
+      fileUrl ? `File Link: ${fileUrl}` : null
+    ].filter(Boolean).join("\\n");
+
+    el.sharePreviewBox.innerHTML = `
+      <div style="margin-top:14px;padding:14px;border-radius:16px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);color:#dfe9f8;line-height:1.7;white-space:pre-wrap;">
+        ${escapeHtml(summary)}
+      </div>
+    `;
+
+    const nativeSupported = typeof navigator.share === "function";
+    el.shareNativeBtn.style.display = nativeSupported ? "inline-block" : "none";
+
+    el.shareWhatsappBtn.onclick = () => shareToWhatsApp(record);
+    el.shareEmailBtn.onclick = () => shareByEmail(record);
+    el.shareCopyBtn.onclick = async () => {
+      try {
+        await navigator.clipboard.writeText(summary);
+        openSuccess("Copied", "Final PO details copied to clipboard.");
+      } catch (error) {
+        openSuccess("Copy Failed", error?.message || "Could not copy the share text.");
+      }
+    };
+    el.shareNativeBtn.onclick = async () => {
+      try {
+        await navigator.share({
+          title: `Final PO ${record.poNumber || ""}`.trim(),
+          text: summary,
+          url: fileUrl || window.location.href
+        });
+      } catch (error) {
+        if (error && error.name !== "AbortError") {
+          openSuccess("Share Failed", error?.message || "Could not open the device share dialog.");
+        }
+      }
+    };
+
+    el.shareModal.classList.add("show");
+    el.shareModal.setAttribute("aria-hidden", "false");
+  }
+
+  function closeShareModal() {
+    el.shareModal.classList.remove("show");
+    el.shareModal.setAttribute("aria-hidden", "true");
+    state.shareRecord = null;
+  }
+
+  function buildShareText(record) {
+    const fileUrl = getSavedPreviewUrl(record);
+    return [
+      `Purchase Order: ${record.poNumber || "-"}`,
+      `Vendor Name: ${getVendorDisplay(record)}`,
+      `Vendor Code: ${record.vendorCode || "-"}`,
+      `Site: ${record.site || "-"}`,
+      `Work Type: ${record.workType || "-"}`,
+      `Grand Total: ${formatCurrency(record?.totals?.grand || 0)}`,
+      `Final Date: ${getDisplayDate(record)}`,
+      `Status: ${getStatusLabel(record)}`,
+      fileUrl ? `File Link: ${fileUrl}` : ""
+    ].filter(Boolean).join("\\n");
+  }
+
+  function shareToWhatsApp(record) {
+    const text = encodeURIComponent(buildShareText(record));
+    window.open(`https://wa.me/?text=${text}`, "_blank", "noopener,noreferrer");
+  }
+
+  function shareByEmail(record) {
+    const subject = encodeURIComponent(`Final PO ${record.poNumber || ""}`.trim() || "Final PO");
+    const body = encodeURIComponent(buildShareText(record));
+    window.location.href = `mailto:?subject=${subject}&body=${body}`;
+  }
+
+  async function downloadPdfForRecord(record) {
+    const savedUrl = getSavedPreviewUrl(record);
+    if (savedUrl) {
+      const response = await fetch(savedUrl, { mode: "cors" });
+      if (!response.ok) throw new Error("Saved file could not be downloaded.");
+      const blob = await response.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = blobUrl;
+      a.download = `${String(record.poNumber || "Final_PO").replace(/[^a-zA-Z0-9_-]+/g, "_")}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
+      return;
+    }
+
+    const sheet = el.previewMount.querySelector(".po-sheet");
+    if (!sheet) throw new Error("Preview not ready for PDF export.");
+
+    const canvas = await html2canvas(sheet, { scale: 2, useCORS: true, backgroundColor: "#ffffff" });
+    const imgData = canvas.toDataURL("image/png");
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({ orientation: "p", unit: "mm", format: "a4" });
+    const pdfWidth = 210;
+    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+    pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+    pdf.save(`${String(record.poNumber || "Final_PO").replace(/[^a-zA-Z0-9_-]+/g, "_")}.pdf`);
+  }
+
+  async function loadFinalPOs() {
+    clearMessage();
+    el.historyBody.innerHTML = `<tr><td colspan="11" class="empty-state">Loading final purchase orders...</td></tr>`;
+
+    try {
+      const snap = await getDocs(finalPoCollection);
+      state.records = snap.docs.map((d) => {
+        const data = d.data() || {};
+        return {
+          id: d.id,
+          ...data,
+          status: data.status || "final",
+          finalCreatedAt: data.finalCreatedAt || data.createdAt || data.approvedAt || null
+        };
+      }).sort((a, b) => {
+        const da = toDateObject(a.finalCreatedAt || a.createdAt || a.approvedAt || a.creationDate)?.getTime() || 0;
+        const db = toDateObject(b.finalCreatedAt || b.createdAt || b.approvedAt || b.creationDate)?.getTime() || 0;
+        return db - da;
+      });
+
+      renderTable();
+      if (!state.records.length) {
+        showMessage("success", "No final purchase orders found in Final PO.");
+      } else {
+        clearMessage();
+      }
+    } catch (error) {
+      console.error(error);
+      el.historyBody.innerHTML = `<tr><td colspan="11" class="empty-state">Could not load final purchase orders.</td></tr>`;
+      showMessage("error", error?.message || "Failed to load final orders.");
+    }
+  }
+
+  async function handleAction(action, id) {
+    const record = state.records.find((r) => r.id === id);
+    if (!record) return;
+
+    if (action === "openPdf") {
+      try {
+        openPdfForRecord(record);
+      } catch (error) {
+        console.error(error);
+        openSuccess("PDF Open Failed", error?.message || "Could not open PDF.");
+      }
+      return;
+    }
+
+    if (action === "download") {
+      try {
+        if (el.viewModal.classList.contains("show") && state.currentRecord?.id === id) {
+          await downloadPdfForRecord(state.currentRecord);
+        } else {
+          openViewModal(record);
+          await downloadPdfForRecord(record);
+        }
+      } catch (error) {
+        console.error(error);
+        openSuccess("Download Failed", error?.message || "Could not download PDF.");
+      }
+      return;
+    }
+
+    if (action === "share") {
+      openShareModal(record);
+    }
+  }
+
+  el.historyBody.addEventListener("click", (event) => {
+    const btn = event.target.closest("button[data-action]");
+    if (!btn) return;
+    handleAction(btn.dataset.action, btn.dataset.id);
+  });
+
+  el.searchInput.addEventListener("input", renderTable);
+  el.statusFilter.addEventListener("change", renderTable);
+  el.refreshBtn.addEventListener("click", loadFinalPOs);
+
+  el.menuToggle.addEventListener("click", toggleMenu);
+  el.sidebarBackdrop.addEventListener("click", closeSidebar);
+  el.logoutBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    try { localStorage.removeItem("adminEmail"); } catch {}
+    window.location.href = "/public/index.html";
+  });
+
+  el.closeViewBtn.addEventListener("click", closeViewModal);
+  el.downloadFromPreviewBtn.addEventListener("click", async () => {
+    if (!state.currentRecord) return;
+    try {
+      await downloadPdfForRecord(state.currentRecord);
+    } catch (error) {
+      console.error(error);
+      openSuccess("Download Failed", error?.message || "Could not download PDF.");
+    }
+  });
+  el.shareFromPreviewBtn.addEventListener("click", () => {
+    if (state.currentRecord) openShareModal(state.currentRecord);
+  });
+
+  el.closeShareBtn.addEventListener("click", closeShareModal);
+
+  el.successModalOk.addEventListener("click", closeSuccess);
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      closeSidebar();
+      closeViewModal();
+      closeShareModal();
+      closeSuccess();
+    }
+  });
+
+  window.addEventListener("resize", () => {
+    if (!window.matchMedia("(max-width: 900px)").matches) closeSidebar();
+  });
+
+  function init() {
+    closeSidebar();
+    loadFinalPOs();
+  }
+
+  document.addEventListener("DOMContentLoaded", init);
+</script>
+</body>
+</html>

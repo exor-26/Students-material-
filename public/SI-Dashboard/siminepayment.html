@@ -1,0 +1,2395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Site-Incharge Dashboard - Payment Management</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/x-icon" href="logo2.ico" />
+  <link rel="stylesheet" type="text/css" href="siminepayment.css" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap-theme.min.css" />
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      cursor:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" viewBox="0 0 24 24"><path fill="%23FFF" stroke="%23FF2711" stroke-width="2" d="M5.5 3.21V20.8c0 .45.54.67.85.35l4.86-4.86a.5.5 0 0 1 .35-.15h6.87a.5.5 0 0 0 .35-.85L6.35 2.85a.5.5 0 0 0-.85.35Z"></path></svg>') 5 5, auto;
+    }
+
+    a, button, input[type="submit"], input[type="button"], label, select, .dropbtn, .sub-btn, .btn, .cn,
+    .carousel-control, .hideMenuButton, .item a, input[type="text"], input[type="search"], textarea {
+      cursor:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="%23FFF" stroke="%23FF2711" stroke-width="2" stroke-linejoin="round" d="M10 11V8.99c0-.88.59-1.64 1.44-1.86h.05A1.99 1.99 0 0 1 14 9.05V12v-2c0-.88.6-1.65 1.46-1.87h.05A1.98 1.98 0 0 1 18 10.06V13v-1.94a2 2 0 0 1 1.51-1.94h0A2 2 0 0 1 22 11.06V14c0 .6-.08 1.27-.21 1.97a7.96 7.96 0 0 1-7.55 6.48 54.98 54.98 0 0 1-4.48 0 7.96 7.96 0 0 1-7.55-6.48C2.08 15.27 2 14.59 2 14v-1.49c0-1.11.9-2.01 2.01-2.01h0a2 2 0 0 1 2.01 2.03l-.01.97v-10c0-1.1.9-2 2-2h0a2 2 0 0 1 2 2V11Z"></path></svg>') 5 5, auto;
+    }
+
+    :root {
+      --topbar-height: 78px;
+      --sidebar-width: 280px;
+      --card-bg: rgba(12, 25, 45, 0.86);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --text-main: #ffffff;
+      --text-soft: #c9d9ee;
+      --text-muted: #8ea4c5;
+      --orange-1: #ff8a3c;
+      --orange-2: #ff5a1f;
+      --blue-1: #2d7dff;
+      --blue-2: #1657cc;
+      --shadow: 0 18px 40px rgba(0, 0, 0, 0.25);
+    }
+
+    html, body {
+      width: 100%;
+      min-height: 100%;
+      margin: 0;
+      padding: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background:
+        linear-gradient(135deg, rgba(7, 16, 30, 0.95), rgba(14, 34, 56, 0.92)),
+        url("https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1600&q=80") center/cover no-repeat fixed;
+      color: var(--text-main);
+      overflow: hidden;
+    }
+
+    .app-shell { width: 100%; height: 100vh; overflow: hidden; }
+
+    .topbar {
+      height: var(--topbar-height);
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(7, 16, 30, 0.88);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 2000;
+    }
+
+    .topbar-left { display: flex; align-items: center; gap: 16px; min-width: 0; }
+
+    .menu-toggle {
+      width: 46px;
+      height: 46px;
+      border: none;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
+      color: #fff;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: 0.25s ease;
+      flex-shrink: 0;
+    }
+
+    .menu-toggle:hover {
+      background: linear-gradient(135deg, rgba(255,122,47,0.18), rgba(31,119,255,0.16));
+      transform: translateY(-1px);
+    }
+
+    .brand-wrap { display: flex; flex-direction: column; justify-content: center; min-width: 0; }
+
+    .brand-title {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 700;
+      color: #fff;
+      text-decoration: none !important;
+      line-height: 1.1;
+    }
+
+    .brand-subtitle { margin: 2px 0 0; color: var(--text-soft); font-size: 13px; }
+
+    .topbar-right { display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
+
+    .logout {
+      text-decoration: none !important;
+      color: #fff !important;
+      background: linear-gradient(135deg, var(--orange-1), var(--orange-2));
+      padding: 11px 18px;
+      border-radius: 12px;
+      font-weight: 700;
+      transition: 0.25s ease;
+      box-shadow: 0 10px 24px rgba(255, 90, 31, 0.24);
+      white-space: nowrap;
+    }
+
+    .logout:hover { transform: translateY(-1px); color: #fff !important; }
+
+    .dashboard-layout { width: 100%; height: 100vh; }
+
+    nav.sidebar {
+      width: var(--sidebar-width);
+      min-width: var(--sidebar-width);
+      max-width: var(--sidebar-width);
+      position: fixed;
+      top: var(--topbar-height);
+      left: 0;
+      bottom: 0;
+      padding: 20px 16px 22px;
+      background: linear-gradient(180deg, rgba(6, 16, 30, 0.98), rgba(8, 22, 40, 0.96));
+      backdrop-filter: blur(16px);
+      border-right: 1px solid rgba(255,255,255,0.06);
+      overflow-y: auto;
+      overflow-x: hidden;
+      z-index: 1500;
+      box-shadow: 18px 0 45px rgba(0, 0, 0, 0.24);
+    }
+
+    nav.sidebar::-webkit-scrollbar { width: 6px; }
+    nav.sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.14); border-radius: 999px; }
+
+    .sidebar-top-card {
+      position: relative;
+      padding: 20px 18px 18px;
+      border-radius: 24px;
+      background:
+        linear-gradient(135deg, rgba(255,122,47,0.16), rgba(31,119,255,0.14)),
+        rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: 0 16px 32px rgba(0,0,0,0.20), inset 0 1px 0 rgba(255,255,255,0.06);
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+
+    .sidebar-top-card::after {
+      content: "";
+      position: absolute;
+      right: -30px;
+      top: -30px;
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,255,255,0.16), transparent 70%);
+    }
+
+    .sidebar-mini-label {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.4px;
+      color: #ffd8c2;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: 5px 10px;
+      border-radius: 999px;
+      margin-bottom: 12px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .sidebar-main-title {
+      font-size: 19px;
+      font-weight: 800;
+      color: #ffffff;
+      margin: 0 0 6px;
+      line-height: 1.2;
+      position: relative;
+      z-index: 1;
+    }
+
+    .sidebar-main-subtitle {
+      font-size: 13px;
+      color: #d5e2f1;
+      line-height: 1.7;
+      margin: 0 0 14px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .sidebar-status-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      position: relative;
+      z-index: 1;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .sidebar-status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #dfffe9;
+      background: rgba(20,184,106,0.14);
+      border: 1px solid rgba(20,184,106,0.22);
+    }
+
+    .sidebar-status-badge::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #4df39b;
+      box-shadow: 0 0 10px rgba(77,243,155,0.7);
+    }
+
+    .sidebar-status-text {
+      font-size: 11px;
+      color: #c6d8ec;
+      text-align: right;
+      line-height: 1.4;
+    }
+
+    .sidebar-section-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #8ea4c5;
+      margin: 0 8px 16px;
+      font-weight: 700;
+    }
+
+    #side-bar {
+      list-style: none;
+      padding-left: 0;
+      margin-bottom: 0;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    #side-bar li { width: 100%; margin: 0; }
+
+    #side-bar a, #side-bar summary {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      width: 100%;
+      padding: 15px 15px;
+      border-radius: 20px;
+      text-decoration: none !important;
+      color: #edf4ff !important;
+      background: linear-gradient(135deg, rgba(255,255,255,0.055), rgba(255,255,255,0.025));
+      border: 1px solid rgba(255,255,255,0.06);
+      transition: all 0.28s ease;
+      position: relative;
+      overflow: hidden;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+    }
+
+    #side-bar a::before, #side-bar summary::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, rgba(255,122,47,0.13), rgba(31,119,255,0.11));
+      opacity: 0;
+      transition: opacity 0.28s ease;
+    }
+
+    #side-bar a::after, #side-bar summary::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 18%;
+      width: 4px;
+      height: 64%;
+      border-radius: 999px;
+      background: linear-gradient(180deg, #ff8a3c, #1f77ff);
+      opacity: 0;
+      transition: opacity 0.28s ease;
+    }
+
+    #side-bar a:hover, #side-bar summary:hover {
+      transform: translateX(6px);
+      border-color: rgba(255,255,255,0.10);
+      box-shadow: 0 14px 28px rgba(0,0,0,0.20);
+    }
+
+    #side-bar a:hover::before, #side-bar summary:hover::before,
+    #side-bar a:hover::after, #side-bar summary:hover::after { opacity: 1; }
+
+    #side-bar a.active, #side-bar summary.active {
+      background: linear-gradient(135deg, rgba(255,122,47,0.18), rgba(31,119,255,0.16));
+      border-color: rgba(255,255,255,0.12);
+      box-shadow: 0 16px 30px rgba(0,0,0,0.24);
+    }
+
+    #side-bar a.active::before, #side-bar summary.active::before,
+    #side-bar a.active::after, #side-bar summary.active::after { opacity: 1; }
+
+    .nav-icon {
+      width: 44px;
+      height: 44px;
+      min-width: 44px;
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, rgba(255,255,255,0.13), rgba(255,255,255,0.05));
+      border: 1px solid rgba(255,255,255,0.08);
+      color: #fff;
+      font-size: 17px;
+      position: relative;
+      z-index: 1;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+    }
+
+    .nav-text { display: flex; flex-direction: column; min-width: 0; position: relative; z-index: 1; }
+    .nav-text strong { font-size: 14px; font-weight: 700; color: #fff; line-height: 1.2; }
+    .nav-text span { margin-top: 4px; font-size: 11px; line-height: 1.45; color: #aabed8; }
+
+    .nav-arrow {
+      margin-left: auto;
+      font-size: 16px;
+      color: #93b2d8;
+      position: relative;
+      z-index: 1;
+      transition: transform 0.25s ease;
+    }
+
+    #side-bar a:hover .nav-arrow, #side-bar summary:hover .nav-arrow { transform: translateX(4px); }
+
+    main {
+      position: fixed;
+      top: var(--topbar-height);
+      left: var(--sidebar-width);
+      right: 0;
+      bottom: 0;
+      padding: 28px 30px;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    .hero-card {
+      background: linear-gradient(135deg, rgba(22, 61, 112, 0.88), rgba(12, 27, 53, 0.92));
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 24px;
+      padding: 30px 34px;
+      box-shadow: var(--shadow);
+      margin-bottom: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-card::after {
+      content: "";
+      position: absolute;
+      right: -80px;
+      top: -80px;
+      width: 220px;
+      height: 220px;
+      background: radial-gradient(circle, rgba(255, 122, 47, 0.18), transparent 70%);
+      border-radius: 50%;
+    }
+
+    .page-tag {
+      display: inline-block;
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      color: #ffb88f;
+      background: rgba(255, 122, 47, 0.16);
+      border: 1px solid rgba(255, 122, 47, 0.2);
+      margin-bottom: 14px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-card h1 {
+      margin: 0 0 10px;
+      font-size: 32px;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.15;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-card p {
+      margin: 0;
+      max-width: 900px;
+      font-size: 15px;
+      line-height: 1.8;
+      color: #d0def0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .panel-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+      margin-bottom: 24px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .section-header h2, .section-header h3 {
+      margin: 0;
+      font-size: 26px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .section-badge {
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #9ec3ff;
+      background: rgba(31, 119, 255, 0.14);
+      border: 1px solid rgba(31, 119, 255, 0.22);
+      white-space: nowrap;
+    }
+
+    .details-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(180px, 1fr));
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+
+    .details-grid.second { grid-template-columns: 1fr 1fr; }
+
+    .field label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+    }
+
+    .value-box, .field input, .field select {
+      width: 100%;
+      min-height: 48px;
+      border-radius: 14px !important;
+      border: 1px solid rgba(255, 255, 255, 0.08) !important;
+      background: rgba(255, 255, 255, 0.05) !important;
+      color: #fff !important;
+      padding: 12px 14px !important;
+      font-size: 14px;
+      outline: none;
+      box-shadow: none !important;
+      transition: 0.25s ease;
+    }
+
+    /* Month Dropdown Fix Only */
+#monthFilter{
+    height: 60px !important;
+    min-height: 60px !important;
+    padding: 0 18px !important;
+    font-size: 16px !important;
+    line-height: 60px !important;
+    color: #fff !important;
+    border-radius: 14px !important;
+    appearance: auto;
+    -webkit-appearance: menulist;
+}
+
+#monthFilter option{
+    color:#000 !important;
+}
+
+@media (max-width:768px){
+    #monthFilter{
+        height:60px !important;
+        min-height:60px !important;
+        font-size:16px !important;
+    }
+}
+
+    .field input:focus, .field select:focus {
+      border-color: rgba(31, 119, 255, 0.55) !important;
+      box-shadow: 0 0 0 4px rgba(31, 119, 255, 0.12) !important;
+    }
+
+    .field select option { color: #000; }
+    .submit-wrap { display: flex; align-items: end; }
+
+    .btn-primary.custom-btn {
+      border: none;
+      border-radius: 14px;
+      padding: 12px 24px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      cursor: pointer;
+      background: linear-gradient(135deg, var(--blue-1), var(--blue-2));
+      box-shadow: 0 12px 26px rgba(45, 125, 255, 0.25);
+      transition: 0.25s ease;
+      min-height: 48px;
+      width: 100%;
+    }
+
+    .btn-primary.custom-btn:hover { transform: translateY(-1px); }
+
+    .table-card {
+      background: rgba(10, 24, 42, 0.82);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 26px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .table-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .table-header h3 {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      border-radius: 16px;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 8px;
+    }
+
+    .table-wrap table {
+      width: 100%;
+      min-width: 1200px;
+      border-collapse: collapse;
+      overflow: hidden;
+      border-radius: 16px;
+    }
+
+    .table-wrap thead tr { background: linear-gradient(135deg, #183b6f, #102849); }
+
+    .table-wrap thead td, .table-wrap thead th {
+      padding: 16px 14px;
+      color: #fff;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      border: none;
+      text-align: center;
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+
+    .table-wrap tbody tr {
+      background: rgba(255, 255, 255, 0.03);
+      transition: 0.2s ease;
+    }
+
+    .table-wrap tbody tr:nth-child(even) { background: rgba(255, 255, 255, 0.05); }
+    .table-wrap tbody tr:hover { background: rgba(31, 119, 255, 0.10); }
+
+    .table-wrap tbody td {
+      padding: 15px 14px;
+      color: #eaf2ff;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      vertical-align: middle;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 28px !important;
+      color: #a8bdd8 !important;
+      font-style: italic;
+    }
+
+    .loading-state {
+      text-align: center;
+      padding: 28px !important;
+      color: #b6ffd5 !important;
+      font-weight: 700;
+    }
+
+    .note-box {
+      margin-top: 14px;
+      padding: 14px 16px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: #dbe7f7;
+      font-size: 13px;
+      line-height: 1.6;
+      display: none;
+    }
+
+    .note-box.show { display: block; }
+
+    @media (max-width: 1200px) {
+      .details-grid { grid-template-columns: repeat(2, minmax(220px, 1fr)); }
+    }
+
+    @media (max-width: 991px) {
+      html, body {
+        width: 100%;
+        min-height: 100%;
+        height: auto;
+        overflow-y: auto;
+        overflow-x: hidden;
+      }
+
+      .app-shell {
+        width: 100%;
+        height: auto;
+        min-height: 100vh;
+        overflow: visible;
+      }
+
+      .dashboard-layout {
+        width: 100%;
+        height: auto;
+        min-height: 100vh;
+        padding-top: var(--topbar-height);
+      }
+
+      nav.sidebar {
+        width: 100%;
+        min-width: 100%;
+        max-width: 100%;
+        position: relative;
+        top: auto;
+        left: auto;
+        right: auto;
+        bottom: auto;
+        height: auto;
+        max-height: none;
+        overflow: visible;
+        border-right: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 0 0 24px 24px;
+        z-index: 100;
+        padding: 14px;
+      }
+
+      .sidebar-top-card { margin-bottom: 18px; }
+      .sidebar-section-title { margin: 18px 8px 14px; }
+
+      #side-bar { display: none; gap: 10px; }
+      #side-bar.active { display: flex; flex-direction: column; margin-top: 12px; }
+
+      .sidebar-status-row { align-items: flex-start; flex-direction: column; }
+      .sidebar-status-text { text-align: left; }
+
+      main {
+        position: relative;
+        top: auto;
+        left: auto;
+        right: auto;
+        bottom: auto;
+        width: 100%;
+        padding: 18px;
+        overflow: visible;
+      }
+
+      .hero-card h1 { font-size: 24px; }
+      .details-grid, .details-grid.second { grid-template-columns: 1fr; }
+      .brand-subtitle { display: none; }
+    }
+
+    @media (max-width: 600px) {
+      .topbar { padding: 0 14px; }
+      .logout { padding: 9px 14px; font-size: 13px; }
+      .hero-card, .panel-card, .table-card { padding: 18px; border-radius: 18px; }
+    }
+    .details-grid.second {
+      grid-template-columns: 1fr 1fr;
+      align-items: end;
+    }
+
+    .submit-wrap {
+      display: flex;
+      align-items: end;
+    }
+
+    .note-box {
+      min-height: 48px;
+      padding: 14px 16px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.05);
+      color: #dce8f7;
+      font-size: 13px;
+      line-height: 1.55;
+      display: none;
+    }
+
+    .note-box.show { display: block; }
+
+    .print-section {
+      background: linear-gradient(180deg, rgba(10, 24, 42, 0.66), rgba(10, 24, 42, 0.50));
+    }
+
+    .payslip-actions {
+      display: flex;
+      justify-content: flex-end;
+      margin: 8px 0 16px;
+    }
+
+    .download-payslip-btn {
+      border: none;
+      border-radius: 14px;
+      padding: 12px 18px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      background: linear-gradient(135deg, #ff8a3c, #ff5a1f);
+      box-shadow: 0 12px 26px rgba(255, 90, 31, 0.25);
+      transition: 0.25s ease;
+      min-height: 48px;
+      cursor: pointer;
+    }
+
+    .download-payslip-btn:hover { transform: translateY(-1px); }
+
+    .download-payslip-btn:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .payslip-shell {
+      position: relative;
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 18px;
+      border-radius: 28px;
+      background:
+        radial-gradient(circle at top left, rgba(255, 122, 47, 0.10), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(31, 119, 255, 0.10), transparent 30%),
+        linear-gradient(135deg, rgba(245, 249, 255, 0.98), rgba(232, 240, 250, 0.95));
+      border: 1px solid rgba(7, 27, 57, 0.10);
+      box-shadow: 0 24px 70px rgba(6, 19, 38, 0.16);
+      overflow: hidden;
+    }
+
+    .payslip-card {
+      position: relative;
+      overflow: hidden;
+      border-radius: 24px;
+      background: linear-gradient(180deg, #fbfdff 0%, #eef5ff 100%);
+      color: #10243f;
+      border: 1px solid rgba(13, 45, 88, 0.14);
+      box-shadow:
+        0 24px 54px rgba(6, 19, 38, 0.16),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    }
+
+    .payslip-card::before {
+      content: "";
+      position: absolute;
+      right: -60px;
+      top: -60px;
+      width: 240px;
+      height: 240px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(31, 119, 255, 0.16), transparent 70%);
+      pointer-events: none;
+    }
+
+    .payslip-card::after {
+      content: "";
+      position: absolute;
+      left: -50px;
+      bottom: -55px;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 122, 47, 0.12), transparent 70%);
+      pointer-events: none;
+    }
+
+    .payslip-header {
+      position: relative;
+      min-height: 150px;
+      padding: 30px 34px 26px;
+      background: linear-gradient(135deg, #061326 0%, #0b2a52 58%, #173f77 100%);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      overflow: hidden;
+    }
+
+    .payslip-header::after {
+      content: "";
+      position: absolute;
+      right: -50px;
+      top: -35px;
+      width: 210px;
+      height: 210px;
+      background:
+        radial-gradient(circle at 35% 35%, rgba(255, 122, 47, 0.34), transparent 38%),
+        radial-gradient(circle at 65% 65%, rgba(31, 119, 255, 0.32), transparent 40%);
+      border-radius: 50%;
+      z-index: 0;
+    }
+
+    .payslip-company {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      max-width: 72%;
+    }
+
+    .payslip-brand-badge {
+      min-width: 64px;
+      height: 64px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.10);
+      border: 1px solid rgba(255,255,255,0.16);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: 900;
+      color: #fff;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.12);
+    }
+
+    .payslip-company-name {
+      font-size: 30px;
+      font-weight: 950;
+      line-height: 1.12;
+      margin: 0;
+      color: #fff;
+    }
+
+    .payslip-company-sub {
+      margin-top: 6px;
+      color: #d7e5f7;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .payslip-meta {
+      position: relative;
+      z-index: 1;
+      min-width: 220px;
+      text-align: right;
+      color: #fff;
+      font-size: 13px;
+      line-height: 1.8;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.10);
+      padding: 14px 16px;
+      border-radius: 18px;
+      backdrop-filter: blur(8px);
+    }
+
+    .payslip-body {
+      position: relative;
+      z-index: 1;
+      padding: 30px 34px 28px;
+    }
+
+    .payslip-info-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      margin-bottom: 20px;
+      padding-bottom: 20px;
+      border-bottom: 1px dashed rgba(16, 36, 63, 0.14);
+    }
+
+    .info-box {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 16px 16px 16px 18px;
+      border-radius: 20px;
+      background: linear-gradient(145deg, rgba(255,255,255,0.96), rgba(244,248,255,0.90));
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      box-shadow: 0 14px 28px rgba(15, 23, 42, 0.06), inset 0 1px 0 rgba(255,255,255,0.9);
+      overflow: hidden;
+    }
+
+    .info-box::after {
+      content: "";
+      position: absolute;
+      top: -18px;
+      right: -18px;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(31, 119, 255, 0.18), transparent 68%);
+    }
+
+    .info-icon {
+      width: 54px;
+      height: 54px;
+      min-width: 54px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #0b2a52, #1f77ff);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      box-shadow: 0 12px 20px rgba(31, 119, 255, 0.18);
+    }
+
+    .info-label {
+      color: #6b7c93;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .info-value {
+      color: #0f172a;
+      font-size: 16px;
+      font-weight: 900;
+      line-height: 1.2;
+    }
+
+    .salary-title {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      margin: 10px 0 16px;
+    }
+
+    .salary-title::before,
+    .salary-title::after {
+      content: "";
+      width: 78px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255, 122, 47, 0.95), transparent);
+    }
+
+    .salary-title h2 {
+      margin: 0;
+      color: #092452;
+      font-size: 26px;
+      font-weight: 950;
+      letter-spacing: 0.3px;
+    }
+
+    .salary-table-wrap {
+      border-radius: 18px;
+      overflow: hidden;
+      border: 1px solid rgba(15, 23, 42, 0.12);
+      box-shadow: 0 18px 34px rgba(15, 23, 42, 0.10);
+      background: #fff;
+    }
+
+    .salary-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+    }
+
+    .salary-table th {
+      padding: 14px 18px;
+      background: linear-gradient(135deg, #061326, #0b2a52 65%, #173f77);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+    }
+
+    .salary-table td {
+      padding: 12px 18px;
+      border-top: 1px solid rgba(15, 23, 42, 0.08);
+      color: #1e293b;
+      font-size: 14px;
+    }
+
+    .salary-table tr:nth-child(even) td { background: #f5f8fd; }
+    .salary-table tr:hover td { background: #eef5ff; }
+
+    .salary-table td:nth-child(2) {
+      text-align: right;
+      font-weight: 900;
+    }
+
+    .salary-table .total-row td {
+      background: linear-gradient(135deg, rgba(31, 119, 255, 0.10), rgba(255, 122, 47, 0.10)) !important;
+      font-weight: 950;
+    }
+
+    .salary-table .total-row td:last-child {
+      color: #0f172a;
+    }
+
+    .payslip-note {
+      margin-top: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      color: #5f6d83;
+      font-size: 13px;
+      font-style: italic;
+      background: rgba(255,255,255,0.66);
+      border: 1px solid rgba(15, 23, 42, 0.06);
+      border-radius: 999px;
+      padding: 10px 16px;
+      width: fit-content;
+      margin-left: auto;
+      margin-right: auto;
+      box-shadow: 0 12px 28px rgba(15, 23, 42, 0.05);
+    }
+
+    @media (max-width: 1100px) {
+      .details-grid { grid-template-columns: repeat(2, minmax(220px, 1fr)); }
+      .payslip-info-grid { grid-template-columns: 1fr; }
+      .payslip-company { max-width: 100%; }
+    }
+
+    @media (max-width: 900px) {
+      .payslip-shell { padding: 14px; border-radius: 22px; }
+      .payslip-header { flex-direction: column; align-items: flex-start; padding: 26px 20px 22px; }
+      .payslip-company { gap: 14px; }
+      .payslip-company-name { font-size: 22px; }
+      .payslip-meta { width: 100%; text-align: left; }
+      .payslip-body { padding: 24px 18px 22px; }
+      .salary-title h2 { font-size: 22px; }
+      .download-payslip-btn { width: 100%; }
+    }
+
+    @media (max-width: 600px) {
+      .payslip-card { border-radius: 20px; }
+      .payslip-brand-badge { min-width: 52px; height: 52px; font-size: 20px; }
+      .info-box { padding: 14px; }
+      .info-icon { width: 48px; height: 48px; min-width: 48px; font-size: 20px; }
+      .salary-table th, .salary-table td { padding: 11px 12px; font-size: 13px; }
+      .payslip-note { width: 100%; border-radius: 16px; }
+    }
+
+  
+    .payslip-shell--paper {
+      position: relative;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 14px;
+      border-radius: 24px;
+      background:
+        linear-gradient(135deg, rgba(18, 44, 78, 0.10), rgba(255, 255, 255, 0.65)),
+        #eef4fb;
+      border: 1px solid rgba(12, 33, 63, 0.08);
+      box-shadow: 0 24px 62px rgba(6, 19, 38, 0.12);
+      overflow: hidden;
+    }
+
+    .payroll-slip-card {
+      position: relative;
+      overflow: hidden;
+      border-radius: 20px;
+      background: linear-gradient(180deg, #ffffff 0%, #f6f9fd 100%);
+      color: #10243f;
+      border: 1px solid rgba(13, 45, 88, 0.12);
+      box-shadow: 0 18px 42px rgba(6, 19, 38, 0.10);
+      padding: 0;
+    }
+
+    .payroll-slip-card::before,
+    .payroll-slip-card::after {
+      content: "";
+      position: absolute;
+      pointer-events: none;
+      border-radius: 50%;
+      z-index: 0;
+    }
+
+    .payroll-slip-card::before {
+      right: -70px;
+      top: -70px;
+      width: 220px;
+      height: 220px;
+      background: radial-gradient(circle, rgba(31, 119, 255, 0.10), transparent 68%);
+    }
+
+    .payroll-slip-card::after {
+      left: -60px;
+      bottom: -60px;
+      width: 200px;
+      height: 200px;
+      background: radial-gradient(circle, rgba(255, 122, 47, 0.08), transparent 68%);
+    }
+
+    .payroll-slip-top,
+    .payroll-slip-info,
+    .payroll-table-wrap,
+    .payroll-slip-footer,
+    .payroll-slip-person,
+    .payslip-note {
+      position: relative;
+      z-index: 1;
+    }
+
+    .payroll-slip-top {
+      display: grid;
+      grid-template-columns: 1.7fr 1fr;
+      gap: 20px;
+      align-items: center;
+      padding: 28px 32px 18px;
+      background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
+    }
+
+    .payroll-slip-brand {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      min-width: 0;
+    }
+
+    .payroll-slip-logo {
+      width: 92px;
+      height: 92px;
+      min-width: 92px;
+      border-radius: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, rgba(31, 119, 255, 0.08), rgba(11, 42, 82, 0.04));
+      border: 1px solid rgba(13, 45, 88, 0.10);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.9);
+      padding: 14px;
+    }
+
+    .payroll-slip-logo svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .payroll-slip-company-name {
+      font-size: 34px;
+      line-height: 1.05;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      color: #0e1520;
+      margin: 0;
+    }
+
+    .payroll-slip-subtitle {
+      margin-top: 8px;
+      color: #64748b;
+      font-size: 13px;
+      line-height: 1.6;
+      max-width: 420px;
+    }
+
+    .payroll-slip-heading {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      justify-content: center;
+      gap: 14px;
+      text-align: right;
+    }
+
+    .payroll-slip-heading-kicker {
+      font-size: 34px;
+      font-weight: 900;
+      letter-spacing: 0.05em;
+      color: #2f6fb9;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+
+    .payroll-slip-meta {
+      width: min(290px, 100%);
+      padding: 14px 16px;
+      border-radius: 18px;
+      background: linear-gradient(180deg, #fefefe, #f2f7fd);
+      border: 1px solid rgba(13, 45, 88, 0.10);
+      box-shadow: 0 14px 30px rgba(15, 23, 42, 0.05);
+    }
+
+    .meta-line {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 6px 0;
+      font-size: 13px;
+      color: #334155;
+    }
+
+    .meta-line + .meta-line {
+      border-top: 1px solid rgba(15, 23, 42, 0.06);
+    }
+
+    .meta-line span {
+      font-weight: 700;
+      color: #5a6b82;
+      min-width: 82px;
+    }
+
+    .meta-line strong {
+      font-size: 13px;
+      font-weight: 800;
+      color: #111827;
+      text-align: right;
+    }
+
+    .payroll-slip-divider {
+      height: 1px;
+      margin: 0 32px;
+      background: linear-gradient(90deg, transparent, rgba(15, 23, 42, 0.22), transparent);
+    }
+
+    .payroll-slip-info {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px 18px;
+      padding: 22px 32px 8px;
+    }
+
+    .info-line {
+      display: grid;
+      grid-template-columns: 140px 1fr;
+      align-items: baseline;
+      gap: 12px;
+      padding: 1px 0;
+      font-size: 13px;
+    }
+
+    .info-line-label {
+      color: #475569;
+      font-weight: 700;
+    }
+
+    .info-line-label::after {
+      content: ":";
+      margin-left: 3px;
+      color: #94a3b8;
+    }
+
+    .info-line-value {
+      color: #111827;
+      font-weight: 800;
+      word-break: break-word;
+    }
+
+    .payroll-slip-section-title {
+      margin: 18px 32px 10px;
+      font-size: 18px;
+      font-weight: 900;
+      color: #1f2937;
+      line-height: 1.2;
+    }
+
+    .payroll-slip-section-title--spaced {
+      margin-top: 18px;
+    }
+
+    .payroll-table-wrap {
+      margin: 0 32px;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid rgba(13, 45, 88, 0.12);
+      background: #fff;
+      box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
+    }
+
+    .payroll-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+    }
+
+    .payroll-table thead th {
+      padding: 12px 16px;
+      background: linear-gradient(135deg, #7f9cc9 0%, #6f93c8 100%);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      text-transform: capitalize;
+      border: none;
+    }
+
+    .payroll-table thead th:first-child { text-align: left; }
+    .payroll-table thead th:last-child { text-align: center; }
+
+    .payroll-table tbody td {
+      padding: 10px 16px;
+      border-top: 1px solid rgba(15, 23, 42, 0.08);
+      font-size: 13px;
+      color: #253042;
+    }
+
+    .payroll-table tbody tr:nth-child(even) td {
+      background: #f8fbff;
+    }
+
+    .payroll-table tbody tr:hover td {
+      background: #eef5ff;
+    }
+
+    .payroll-table tbody td:last-child {
+      text-align: right;
+      font-weight: 800;
+      min-width: 140px;
+    }
+
+    .payroll-table .total-row td {
+      background: #ffffff !important;
+      font-weight: 900;
+    }
+
+    .payroll-table .total-row td:first-child {
+      text-align: center;
+      color: #1e293b;
+    }
+
+    .payroll-table .net-row td {
+      background: linear-gradient(135deg, rgba(31, 119, 255, 0.08), rgba(255, 122, 47, 0.08)) !important;
+      font-size: 14px;
+      font-weight: 950;
+    }
+
+    .payroll-table .net-row td:last-child {
+      color: #0f172a;
+    }
+
+    .payroll-slip-footer {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 18px;
+      align-items: end;
+      padding: 20px 32px 10px;
+    }
+
+    .payroll-slip-bank {
+      display: grid;
+      gap: 8px;
+      color: #334155;
+      font-size: 13px;
+    }
+
+    .payroll-slip-bank strong {
+      color: #111827;
+      font-weight: 800;
+    }
+
+    .payroll-slip-sign {
+      min-width: 260px;
+      text-align: center;
+      color: #374151;
+    }
+
+    .sign-line {
+      width: 220px;
+      height: 1px;
+      margin: 0 auto 10px;
+      background: rgba(15, 23, 42, 0.32);
+    }
+
+    .sign-text {
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .sign-text strong {
+      color: #111827;
+    }
+
+    .payroll-slip-person {
+      text-align: center;
+      padding: 18px 32px 4px;
+      font-size: 14px;
+      color: #374151;
+      font-weight: 500;
+    }
+
+    .payslip-note {
+      margin: 10px auto 26px;
+      width: fit-content;
+      max-width: calc(100% - 64px);
+      padding: 10px 16px;
+      border-radius: 999px;
+      background: linear-gradient(180deg, #ffffff, #f6f9fd);
+      border: 1px solid rgba(13, 45, 88, 0.08);
+      color: #5f6d83;
+      font-size: 13px;
+      line-height: 1.5;
+      text-align: center;
+      box-shadow: 0 10px 20px rgba(15, 23, 42, 0.05);
+    }
+
+    .payslip-actions {
+      display: flex;
+      justify-content: flex-end;
+      margin: 8px 0 16px;
+    }
+
+    .download-payslip-btn {
+      border: none;
+      border-radius: 14px;
+      padding: 12px 18px;
+      font-size: 14px;
+      font-weight: 800;
+      color: #fff;
+      background: linear-gradient(135deg, #0b2a52, #1f77ff);
+      box-shadow: 0 12px 26px rgba(31, 119, 255, 0.20);
+      transition: 0.25s ease;
+      min-height: 48px;
+      cursor: pointer;
+    }
+
+    .download-payslip-btn:hover { transform: translateY(-1px); }
+
+    .download-payslip-btn:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    @media (max-width: 1100px) {
+      .payroll-slip-top {
+        grid-template-columns: 1fr;
+      }
+
+      .payroll-slip-heading {
+        align-items: flex-start;
+        text-align: left;
+      }
+
+      .payroll-slip-heading-kicker {
+        font-size: 28px;
+      }
+
+      .payroll-slip-info {
+        grid-template-columns: 1fr;
+      }
+
+      .info-line {
+        grid-template-columns: 128px 1fr;
+      }
+
+      .payroll-slip-footer {
+        grid-template-columns: 1fr;
+      }
+
+      .payroll-slip-sign {
+        min-width: 0;
+        text-align: left;
+      }
+
+      .sign-line {
+        margin-left: 0;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .payslip-shell--paper {
+        padding: 10px;
+      }
+
+      .payroll-slip-top {
+        padding: 22px 18px 14px;
+      }
+
+      .payroll-slip-logo {
+        width: 72px;
+        height: 72px;
+        min-width: 72px;
+      }
+
+      .payroll-slip-company-name {
+        font-size: 24px;
+      }
+
+      .payroll-slip-subtitle {
+        max-width: none;
+      }
+
+      .payroll-slip-divider,
+      .payroll-slip-info,
+      .payroll-table-wrap,
+      .payroll-slip-section-title,
+      .payroll-slip-footer,
+      .payroll-slip-person {
+        margin-left: 18px;
+        margin-right: 18px;
+      }
+
+      .payroll-slip-divider {
+        margin-top: 0;
+      }
+
+      .payroll-slip-info {
+        padding-top: 18px;
+      }
+
+      .payroll-table-wrap {
+        margin-top: 0;
+      }
+
+      .payroll-slip-section-title {
+        margin-top: 16px;
+      }
+
+      .download-payslip-btn {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .payroll-slip-heading-kicker {
+        font-size: 22px;
+      }
+
+      .payroll-slip-meta {
+        width: 100%;
+      }
+
+      .info-line {
+        grid-template-columns: 1fr;
+        gap: 2px;
+      }
+
+      .info-line-label::after {
+        display: none;
+      }
+
+      .payroll-table thead th,
+      .payroll-table tbody td {
+        padding: 10px 12px;
+        font-size: 12px;
+      }
+
+      .payroll-slip-bank,
+      .sign-text {
+        font-size: 12px;
+      }
+
+      .payslip-note {
+        width: calc(100% - 24px);
+        max-width: none;
+      }
+    }
+@media (max-width:768px){
+
+  .details-grid{
+      grid-template-columns: 1fr !important;
+      gap:16px !important;
+  }
+
+  .details-grid.second{
+      grid-template-columns: 1fr !important;
+      gap:16px !important;
+      align-items:stretch !important;
+  }
+
+  .field{
+      width:100% !important;
+  }
+
+  .value-box,
+  .field input,
+  .field select{
+      width:100% !important;
+      height:60px !important;
+  }
+
+  #monthFilter{
+      width:100% !important;
+      height:60px !important;
+  }
+
+  .submit-wrap{
+      width:100% !important;
+  }
+
+  .submit-wrap .custom-btn{
+      width:100% !important;
+  }
+
+  #statusBox{
+      width:100% !important;
+  }
+
+}
+  </style>
+</head>
+
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+        <div class="brand-wrap">
+          <a href="#" class="brand-title">Site-Incharge Dashboard</a>
+          <p class="brand-subtitle">Payment Management & Wage Record Panel</p>
+        </div>
+      </div>
+
+      <div class="topbar-right">
+        <a href="#" class="logout" onclick="logoutUser()">Logout</a>
+      </div>
+    </header>
+
+    <div class="dashboard-layout">
+      <nav class="sidebar">
+        <div class="sidebar-top-card">
+          <div class="sidebar-mini-label">SI Panel</div>
+          <h3 class="sidebar-main-title">Command Center</h3>
+          <p class="sidebar-main-subtitle">
+            Access payment records and important Site-Incharge sections from one clean navigation area.
+          </p>
+
+          <div class="sidebar-status-row">
+            <span class="sidebar-status-badge">Payment Active</span>
+            <div class="sidebar-status-text">
+              Secure access<br />
+              Quick navigation
+            </div>
+          </div>
+        </div>
+
+        <div class="sidebar-section-title">Navigation</div>
+        <ul id="side-bar"></ul>
+      </nav>
+
+      
+      <main>
+        <section class="hero-card">
+          <span class="page-tag">PAYMENT MANAGEMENT PANEL</span>
+          <h1>Site-Incharge Payment Management</h1>
+          <p>
+            Month select karne par jo payment record table me aata hai, wahi record payslip me bhi use hota hai.
+            Jis month ka data save nahi hai, wo show nahi hoga.
+          </p>
+        </section>
+
+        <section class="panel-card">
+          <div class="section-header">
+            <h2>SI Details</h2>
+            <span class="section-badge">Profile & Filters</span>
+          </div>
+
+          <div class="details-grid">
+            <div class="field">
+              <label>SI Name</label>
+              <div class="value-box" id="supNameDisplay">-</div>
+            </div>
+
+            <div class="field">
+              <label>SI Id</label>
+              <div class="value-box" id="supIdDisplay">-</div>
+            </div>
+
+            <div class="field">
+              <label>Site</label>
+              <div class="value-box" id="supSiteDisplay">-</div>
+            </div>
+
+            <div class="field">
+              <label>Month</label>
+              <select id="monthFilter" class="form-control">
+                <option value="01">January</option>
+                <option value="02">February</option>
+                <option value="03">March</option>
+                <option value="04">April</option>
+                <option value="05">May</option>
+                <option value="06">June</option>
+                <option value="07">July</option>
+                <option value="08">August</option>
+                <option value="09">September</option>
+                <option value="10">October</option>
+                <option value="11">November</option>
+                <option value="12">December</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="details-grid second">
+            <div class="note-box" id="statusBox"></div>
+            <div class="submit-wrap">
+              <button id="siSubmitBtn" class="btn btn-primary custom-btn" type="button">Submit</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel-card">
+          <div class="section-header">
+            <h3>Payment Record</h3>
+            <span class="section-badge">Direct Firestore Data</span>
+          </div>
+
+          <div class="table-wrap table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>UID</th>
+                  <th>Name</th>
+                  <th>Month</th>
+                  <th>Basic Wages</th>
+                  <th>Allowance</th>
+                  <th>Bonus</th>
+                  <th>EPF (Employee Contribution)</th>
+                  <th>ESIC (Employee Contribution)</th>
+                  <th>Net Payment</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td colspan="9" class="empty-state">No payment records loaded yet.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        
+        <section class="panel-card print-section">
+          <div class="section-header">
+            <h2>Payslip Preview</h2>
+            <span class="section-badge">Download Ready</span>
+          </div>
+
+          <div class="payslip-actions">
+            <button id="downloadPayslipBtn" class="download-payslip-btn" type="button" disabled>⬇ Download Payslip</button>
+          </div>
+
+          <div class="payslip-shell payslip-shell--paper">
+            <div class="payroll-slip-card" id="payslipCard">
+              <div class="payroll-slip-top">
+                <div class="payroll-slip-brand">
+                  <div class="payroll-slip-logo" aria-hidden="true">
+                    <svg viewBox="0 0 64 64" role="img" focusable="false">
+                      <defs>
+                        <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                          <stop offset="0%" stop-color="#1f77ff"/>
+                          <stop offset="100%" stop-color="#0b2a52"/>
+                        </linearGradient>
+                      </defs>
+                      <rect x="6" y="46" width="52" height="4" rx="2" fill="url(#logoGrad)"/>
+                      <path d="M13 44V27l8-8v25h4V15l7-7 7 7v19h4V20l8 8v16" fill="none" stroke="url(#logoGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                      <path d="M21 20h6M21 27h6M21 34h6M31 15h6M31 22h6M31 29h6M41 25h6M41 32h6" stroke="#1f77ff" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                  </div>
+                  <div class="payroll-slip-brand-text">
+                    <div class="payroll-slip-company-name">Kamaleswar India Engineering pvt. ltd.</div>
+                    <div class="payroll-slip-subtitle">Monthly payroll statement generated from the selected payment record</div>
+                  </div>
+                </div>
+
+                <div class="payroll-slip-heading">
+                  <div class="payroll-slip-heading-kicker">PAYROLL SLIP</div>
+                  <div class="payroll-slip-meta">
+                    <div class="meta-line"><span>Month</span><strong id="psMonth">-</strong></div>
+                    <div class="meta-line"><span>Pay Date</span><strong id="psPayDate">-</strong></div>
+                    <div class="meta-line"><span>Status</span><strong id="psStatus">-</strong></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="payroll-slip-divider"></div>
+
+              <div class="payroll-slip-info">
+                <div class="info-line">
+                  <span class="info-line-label">Employee Name</span>
+                  <span class="info-line-value" id="psEmpName">-</span>
+                </div>
+                <div class="info-line">
+                  <span class="info-line-label">Employee ID</span>
+                  <span class="info-line-value" id="psEmpId">-</span>
+                </div>
+                <div class="info-line">
+                  <span class="info-line-label">Department</span>
+                  <span class="info-line-value" id="psSite">-</span>
+                </div>
+                <div class="info-line">
+                  <span class="info-line-label">Designation</span>
+                  <span class="info-line-value" id="psDesignation">Site-Incharge</span>
+                </div>
+                <div class="info-line">
+                  <span class="info-line-label">Pay Date</span>
+                  <span class="info-line-value" id="psPayDateBox">-</span>
+                </div>
+                <div class="info-line">
+                  <span class="info-line-label">Record</span>
+                  <span class="info-line-value" id="psRecordState">-</span>
+                </div>
+              </div>
+
+              <div class="payroll-slip-section-title">Earnings</div>
+
+              <div class="payroll-table-wrap">
+                <table class="payroll-table">
+                  <thead>
+                    <tr>
+                      <th>Description</th>
+                      <th>Amount (USD)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Basic Wages</td>
+                      <td id="psBasicWages">-</td>
+                    </tr>
+                    <tr>
+                      <td>Allowance</td>
+                      <td id="psAllowance">-</td>
+                    </tr>
+                    <tr>
+                      <td>Bonus</td>
+                      <td id="psBonus">-</td>
+                    </tr>
+                    <tr class="total-row">
+                      <td>Total Earnings</td>
+                      <td id="psTotalEarnings">-</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="payroll-slip-section-title payroll-slip-section-title--spaced">Deductions</div>
+
+              <div class="payroll-table-wrap">
+                <table class="payroll-table">
+                  <thead>
+                    <tr>
+                      <th>Description</th>
+                      <th>Amount (USD)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>EPF (Employee Contribution)</td>
+                      <td id="psEpf">-</td>
+                    </tr>
+                    <tr>
+                      <td>ESIC (Employee Contribution)</td>
+                      <td id="psEsic">-</td>
+                    </tr>
+                    <tr class="total-row">
+                      <td>Total Deductions</td>
+                      <td id="psTotalDeduction">-</td>
+                    </tr>
+                    <tr class="total-row net-row">
+                      <td>Net Pay</td>
+                      <td id="psNetPay">-</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="payroll-slip-footer">
+                <div class="payroll-slip-bank">
+                  <div><strong>Payment Mode:</strong> <span>Bank Transfer</span></div>
+                </div>
+
+                <div class="payroll-slip-sign">
+                  <div class="sign-line"></div>
+                  <div class="sign-text">
+                    <strong>Authorized by:</strong><br />
+                    Finance Manager – KIEPL
+                  </div>
+                </div>
+              </div>
+
+              <div class="payroll-slip-person">Kamaleswar India Engineering PVT. LTD.</div>
+
+              <div class="payslip-note" id="payslipNote">Select month and submit to generate payslip.</div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+    </div>
+  </div>
+
+  <script>
+    function toggleMenu() {
+      const sidebar = document.getElementById("side-bar");
+      sidebar.classList.toggle("active");
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const currentPage = window.location.pathname.split("/").pop();
+      const navLinks = document.querySelectorAll("#side-bar a");
+      navLinks.forEach(link => {
+        const href = link.getAttribute("href");
+        if (href === currentPage) link.classList.add("active");
+      });
+    });
+  </script>
+
+  
+  <script type="module">
+    import {
+      getFirestore,
+      collection,
+      doc,
+      getDoc,
+      getDocs
+    } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+    import { app } from "/public/firebase-config.js";
+
+    const db = getFirestore(app);
+    let supDataGlobal = null;
+    let currentMatchedRecord = null;
+    let currentMatchedMonthKey = "";
+    let currentMatchedMonthName = "";
+    let currentMatchedDocId = "";
+
+    const monthNames = {
+      "01": "January",
+      "02": "February",
+      "03": "March",
+      "04": "April",
+      "05": "May",
+      "06": "June",
+      "07": "July",
+      "08": "August",
+      "09": "September",
+      "10": "October",
+      "11": "November",
+      "12": "December"
+    };
+
+    const statusBox = document.getElementById("statusBox");
+    const payslipNote = document.getElementById("payslipNote");
+    const downloadPayslipBtn = document.getElementById("downloadPayslipBtn");
+
+    const psMonth = document.getElementById("psMonth");
+    const psPayDate = document.getElementById("psPayDate");
+    const psPayDateBox = document.getElementById("psPayDateBox");
+    const psStatus = document.getElementById("psStatus");
+    const psEmpName = document.getElementById("psEmpName");
+    const psEmpId = document.getElementById("psEmpId");
+    const psSite = document.getElementById("psSite");
+    const psDesignation = document.getElementById("psDesignation");
+    const psRecordState = document.getElementById("psRecordState");
+    const psBasicWages = document.getElementById("psBasicWages");
+    const psAllowance = document.getElementById("psAllowance");
+    const psBonus = document.getElementById("psBonus");
+    const psTotalEarnings = document.getElementById("psTotalEarnings");
+    const psEpf = document.getElementById("psEpf");
+    const psEsic = document.getElementById("psEsic");
+    const psTotalDeduction = document.getElementById("psTotalDeduction");
+    const psNetPay = document.getElementById("psNetPay");
+
+    function pickValue(data, keys, fallback = "-") {
+      for (const key of keys) {
+        const value = data?.[key];
+        if (value !== undefined && value !== null && value !== "") return value;
+      }
+      return fallback;
+    }
+
+    function formatAmount(value) {
+      if (value === null || value === undefined || value === "") return "-";
+      const num = Number(value);
+      return Number.isFinite(num) ? num.toFixed(2) : String(value);
+    }
+
+    function monthNumberToName(month) {
+      return monthNames[String(month).padStart(2, "0")] || String(month);
+    }
+
+    function getDocYearHint(docId, data) {
+      const candidates = [
+        data?.year,
+        data?.paymentYear,
+        data?.salaryYear,
+        data?.monthYear,
+        data?.date,
+        data?.payDate,
+        docId
+      ];
+      for (const item of candidates) {
+        if (!item) continue;
+        const match = String(item).match(/(20\d{2})/);
+        if (match) return Number(match[1]);
+      }
+      return new Date().getFullYear();
+    }
+
+    function getMonthLabelFromDoc(data, docId) {
+      const raw = String(
+        data?.monthName ??
+        data?.monthLabel ??
+        data?.periodName ??
+        data?.month ??
+        data?.Month ??
+        data?.monthText ??
+        docId ??
+        ""
+      ).trim();
+
+      if (!raw) return "-";
+
+      if (/^\d{1,2}$/.test(raw)) {
+        return monthNumberToName(raw.padStart(2, "0"));
+      }
+
+      if (/^\d{2}-\d{4}$/.test(raw)) {
+        const [mm, yyyy] = raw.split("-");
+        return `${monthNumberToName(mm)} ${yyyy}`;
+      }
+
+      return raw;
+    }
+
+    function isSelectedMonthMatch(data, docId, selectedMonth, selectedMonthName) {
+      const candidates = [
+        String(docId || "").toLowerCase(),
+        String(data?.month || "").toLowerCase(),
+        String(data?.monthName || "").toLowerCase(),
+        String(data?.Month || "").toLowerCase(),
+        String(data?.monthText || "").toLowerCase(),
+        String(data?.monthLabel || "").toLowerCase()
+      ];
+
+      const sm = String(selectedMonth || "").toLowerCase();
+      const smName = String(selectedMonthName || "").toLowerCase();
+
+      return candidates.some((value) => {
+        if (!value) return false;
+        return value === sm || value.includes(sm) || value === smName || value.includes(smName);
+      });
+    }
+
+    function clearTable() {
+      const tbody = document.querySelector("table tbody");
+      tbody.innerHTML = "";
+    }
+
+    function showStatus(message, isError = false) {
+      if (!statusBox) return;
+      statusBox.textContent = message;
+      statusBox.classList.add("show");
+      statusBox.style.color = isError ? "#ffd0d0" : "#dce8f7";
+      statusBox.style.borderColor = isError ? "rgba(255, 122, 122, 0.35)" : "rgba(255,255,255,0.08)";
+      statusBox.style.background = isError ? "rgba(255, 122, 122, 0.08)" : "rgba(255,255,255,0.05)";
+    }
+
+    function hideStatus() {
+      if (!statusBox) return;
+      statusBox.classList.remove("show");
+      statusBox.textContent = "";
+    }
+
+    function renderEmpty(message) {
+      const tbody = document.querySelector("table tbody");
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="9" class="empty-state">${message}</td>
+        </tr>
+      `;
+    }
+
+    function getAvailabilityMessage(selectedMonth) {
+      const monthName = monthNames[selectedMonth] || "Selected month";
+      const monthIndex = Number(selectedMonth);
+      const nextMonthIndex = monthIndex === 12 ? 1 : monthIndex + 1;
+      const nextMonthKey = String(nextMonthIndex).padStart(2, "0");
+      const nextMonthName = monthNames[nextMonthKey];
+      const nextYear = monthIndex === 12 ? new Date().getFullYear() + 1 : new Date().getFullYear();
+      return `${monthName} payment data will be available after 10 ${nextMonthName} ${nextYear}.`;
+    }
+
+    function appendRow(data, monthLabel, docId) {
+      const tbody = document.querySelector("table tbody");
+      const tr = document.createElement("tr");
+
+      const uid = pickValue(data, ["uid", "UID", "userId", "employeeId"], supDataGlobal?.uid || "-");
+      const name = pickValue(data, ["name", "Name", "supervisorName", "fullName"], supDataGlobal?.Name || "-");
+      const basicWages = pickValue(data, ["basicWages", "Basic Wages", "basic_wages", "basicWage"], 0);
+      const allowance = pickValue(data, ["allowance", "Allowance"], 0);
+      const bonus = pickValue(data, ["bonus", "Bonus"], 0);
+      const epf = pickValue(data, ["epfEmployee", "epf", "EPF", "epfEmployeeContribution"], 0);
+      const esic = pickValue(data, ["esicEmployee", "esic", "ESIC", "esicEmployeeContribution"], 0);
+      const netPayment = pickValue(data, ["netPayment", "netPay", "totalPayment", "net_amount"], 0);
+
+      tr.innerHTML = `
+        <td>${uid}</td>
+        <td>${name}</td>
+        <td>${monthLabel || docId || "-"}</td>
+        <td>${formatAmount(basicWages)}</td>
+        <td>${formatAmount(allowance)}</td>
+        <td>${formatAmount(bonus)}</td>
+        <td>${formatAmount(epf)}</td>
+        <td>${formatAmount(esic)}</td>
+        <td><strong>${formatAmount(netPayment)}</strong></td>
+      `;
+      tbody.appendChild(tr);
+    }
+
+    function clearPayslipCard(message = "Select month and submit to generate payslip.") {
+      currentMatchedRecord = null;
+      currentMatchedMonthKey = "";
+      currentMatchedMonthName = "";
+      currentMatchedDocId = "";
+
+      const setText = (el, value = "-") => { if (el) el.textContent = value; };
+
+      setText(psMonth);
+      setText(psPayDate);
+      setText(psPayDateBox);
+      setText(psStatus);
+      setText(psEmpName);
+      setText(psEmpId);
+      setText(psSite);
+      setText(psDesignation, "Site-Incharge");
+      setText(psRecordState);
+
+      setText(psBasicWages);
+      setText(psAllowance);
+      setText(psBonus);
+      setText(psTotalEarnings);
+      setText(psEpf);
+      setText(psEsic);
+      setText(psTotalDeduction);
+      setText(psNetPay);
+
+      if (payslipNote) payslipNote.textContent = message;
+      if (downloadPayslipBtn) downloadPayslipBtn.disabled = true;
+    }
+
+    function updatePayslipCard(record, selectedMonth, selectedMonthName, docId) {
+      currentMatchedRecord = record;
+      currentMatchedMonthKey = selectedMonth;
+      currentMatchedMonthName = selectedMonthName;
+      currentMatchedDocId = docId || "";
+
+      const year = getDocYearHint(docId, record);
+      const payDateText = `10 ${selectedMonthName} ${year}`;
+
+      const name = pickValue(record, ["name", "Name", "supervisorName", "fullName"], supDataGlobal?.Name || "-");
+      const uid = pickValue(record, ["uid", "UID", "userId", "employeeId"], supDataGlobal?.uid || "-");
+      const site = pickValue(record, ["site", "Site"], supDataGlobal?.Site || supDataGlobal?.site || "-");
+      const designation = "Site-Incharge";
+      const status = pickValue(record, ["status", "Status", "paymentStatus", "payment_status"], "Available");
+
+      const basic = Number(record?.basicWages ?? record?.basicWage ?? 0) || 0;
+      const allowance = Number(record?.allowance ?? 0) || 0;
+      const bonus = Number(record?.bonus ?? 0) || 0;
+      const epf = Number(record?.epfEmployee ?? record?.epf ?? 0) || 0;
+      const esic = Number(record?.esicEmployee ?? record?.esic ?? 0) || 0;
+      const totalEarnings = Number.isFinite(Number(record?.totalEarnings)) ? Number(record.totalEarnings) : (basic + allowance + bonus);
+      const totalDeduction = Number.isFinite(Number(record?.totalDeduction)) ? Number(record.totalDeduction) : (epf + esic);
+      const netPay = Number.isFinite(Number(record?.netPay ?? record?.netPayment ?? record?.totalAmount)) ? Number(record?.netPay ?? record?.netPayment ?? record?.totalAmount) : (totalEarnings - totalDeduction);
+
+      const setText = (el, value = "-") => { if (el) el.textContent = value; };
+
+      setText(psMonth, `${selectedMonthName} ${year}`);
+      setText(psPayDate, payDateText);
+      setText(psPayDateBox, payDateText);
+      setText(psStatus, status);
+      setText(psEmpName, name);
+      setText(psEmpId, uid);
+      setText(psSite, site);
+      setText(psDesignation, designation);
+      setText(psRecordState, "Loaded");
+
+      setText(psBasicWages, formatAmount(basic));
+      setText(psAllowance, formatAmount(allowance));
+      setText(psBonus, formatAmount(bonus));
+      setText(psTotalEarnings, formatAmount(totalEarnings));
+      setText(psEpf, formatAmount(epf));
+      setText(psEsic, formatAmount(esic));
+      setText(psTotalDeduction, formatAmount(totalDeduction));
+      setText(psNetPay, formatAmount(netPay));
+
+      if (payslipNote) {
+        payslipNote.textContent = `${selectedMonthName} ka record table aur payslip dono mein same data se load hua hai.`;
+      }
+      if (downloadPayslipBtn) downloadPayslipBtn.disabled = false;
+    }
+
+    async function loadPaymentRecord() {
+      if (!supDataGlobal) {
+        showStatus("SI profile is still loading. Please try again.", true);
+        return;
+      }
+
+      hideStatus();
+      clearTable();
+      renderEmpty("Loading payment record...");
+      clearPayslipCard("Loading payslip preview...");
+
+      const uid = supDataGlobal.uid;
+      const selectedMonth = document.getElementById("monthFilter").value;
+      const selectedMonthName = monthNames[selectedMonth];
+
+      try {
+        const snap = await getDocs(collection(db, "First Payment", uid, "PaymentRecords"));
+
+        const matched = [];
+        snap.forEach((docSnap) => {
+          const data = docSnap.data();
+          const docId = docSnap.id;
+          if (isSelectedMonthMatch(data, docId, selectedMonth, selectedMonthName)) {
+            matched.push({ id: docId, ...data });
+          }
+        });
+
+        if (!matched.length) {
+          renderEmpty("No payment record found for this month.");
+          clearPayslipCard("No saved payment record found for this month.");
+          showStatus(getAvailabilityMessage(selectedMonth));
+          return;
+        }
+
+        clearTable();
+        matched.forEach((item) => {
+          const monthLabel = getMonthLabelFromDoc(item, item.id);
+          appendRow(item, monthLabel, item.id);
+        });
+
+        const recordForPayslip = matched[0];
+        updatePayslipCard(recordForPayslip, selectedMonth, selectedMonthName, recordForPayslip.id);
+        showStatus(`${selectedMonthName} payment data loaded successfully.`);
+      } catch (err) {
+        console.error(err);
+        renderEmpty("Unable to load payment record.");
+        clearPayslipCard("Unable to load payslip preview.");
+        showStatus("Failed to fetch payment data.", true);
+      }
+    }
+
+    async function downloadPayslipPDF() {
+      if (!currentMatchedRecord) {
+        alert("Please submit month first.");
+        return;
+      }
+
+      const payslipCard = document.getElementById("payslipCard");
+      if (!payslipCard || !window.html2canvas || !window.jspdf) {
+        alert("Payslip download tools are not loaded.");
+        return;
+      }
+
+      const oldText = downloadPayslipBtn ? downloadPayslipBtn.textContent : "";
+      try {
+        if (downloadPayslipBtn) {
+          downloadPayslipBtn.disabled = true;
+          downloadPayslipBtn.textContent = "Preparing...";
+        }
+
+        const canvas = await window.html2canvas(payslipCard, {
+          scale: 2,
+          useCORS: true,
+          backgroundColor: null
+        });
+
+        const imgData = canvas.toDataURL("image/png");
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF("p", "mm", "a4");
+
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const pageHeight = pdf.internal.pageSize.getHeight();
+        const margin = 8;
+        const imgWidth = pageWidth - margin * 2;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+        let finalWidth = imgWidth;
+        let finalHeight = imgHeight;
+
+        if (finalHeight > pageHeight - margin * 2) {
+          finalHeight = pageHeight - margin * 2;
+          finalWidth = (canvas.width * finalHeight) / canvas.height;
+        }
+
+        const x = (pageWidth - finalWidth) / 2;
+        const y = margin;
+        pdf.addImage(imgData, "PNG", x, y, finalWidth, finalHeight);
+
+        const monthKey = `${currentMatchedMonthName}_${currentMatchedDocId || currentMatchedMonthKey}`.replace(/\s+/g, "_");
+        const fileName = `SiteIncharge_Payslip_${pickValue(currentMatchedRecord, ["uid", "UID"], "USER")}_${monthKey}.pdf`;
+        pdf.save(fileName);
+      } catch (err) {
+        console.error("PDF download error:", err);
+        alert("Payslip download karne mein problem aa raha hai.");
+      } finally {
+        if (downloadPayslipBtn) {
+          downloadPayslipBtn.disabled = false;
+          downloadPayslipBtn.textContent = oldText || "⬇ Download Payslip";
+        }
+      }
+    }
+
+    async function loadLoggedInProfile() {
+      const identifier = localStorage.getItem("siEmail") || localStorage.getItem("supervisorEmail") || localStorage.getItem("email");
+      if (!identifier) {
+        showStatus("No SI login found.", true);
+        clearPayslipCard("No SI login found.");
+        return null;
+      }
+
+      try {
+        const snap = await getDoc(doc(db, "Site-Incharge", identifier));
+        if (!snap.exists()) {
+          showStatus("Logged-in SI profile not found.", true);
+          clearPayslipCard("Logged-in SI profile not found.");
+          return null;
+        }
+        return snap.data();
+      } catch (err) {
+        console.error(err);
+        showStatus("Failed to load SI profile.", true);
+        clearPayslipCard("Failed to load SI profile.");
+        return null;
+      }
+    }
+
+    async function initDashboard() {
+      const profile = await loadLoggedInProfile();
+      if (!profile) return;
+
+      supDataGlobal = profile;
+
+      document.getElementById("supNameDisplay").innerText = profile.Name || profile.name || "-";
+      document.getElementById("supIdDisplay").innerText = profile.uid || profile.id || "-";
+      document.getElementById("supSiteDisplay").innerText = profile.Site || profile.site || "-";
+
+      const currentMonth = String(new Date().getMonth() + 1).padStart(2, "0");
+      const monthFilter = document.getElementById("monthFilter");
+      if (monthFilter) monthFilter.value = currentMonth;
+
+      document.getElementById("siSubmitBtn").addEventListener("click", loadPaymentRecord);
+      if (downloadPayslipBtn) downloadPayslipBtn.addEventListener("click", downloadPayslipPDF);
+
+      clearPayslipCard("Select month and submit to generate payslip.");
+      loadPaymentRecord();
+    }
+
+    document.addEventListener("DOMContentLoaded", initDashboard);
+    window.toggleMenu = toggleMenu;
+  </script>
+
+  <script type="module" src="/public/control.js"></script>
+
+</body>
+</html>

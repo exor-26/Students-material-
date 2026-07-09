@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>KIEPL Portal</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Segoe UI", Arial, sans-serif;
+    }
+
+    :root {
+      --navy: #07182f;
+      --navy2: #0b2b55;
+      --orange: #ff7200;
+      --orange2: #ff9f43;
+      --white: #ffffff;
+      --soft: #d8e6f8;
+      --muted: #9fb4d0;
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 12% 18%, rgba(255, 114, 0, 0.18), transparent 28%),
+        radial-gradient(circle at 85% 75%, rgba(55, 139, 255, 0.18), transparent 30%),
+        linear-gradient(135deg, #031026, #07182f 48%, #0b2b55);
+      color: var(--white);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .grid-bg {
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+      background-size: 44px 44px;
+      opacity: 0.35;
+      animation: gridMove 18s linear infinite;
+      pointer-events: none;
+    }
+
+    .glow {
+      position: fixed;
+      width: 360px;
+      height: 360px;
+      border-radius: 50%;
+      filter: blur(28px);
+      opacity: 0.8;
+      pointer-events: none;
+      animation: floatGlow 5s ease-in-out infinite alternate;
+    }
+
+    .glow.orange {
+      top: -130px;
+      right: -110px;
+      background: rgba(255, 114, 0, 0.22);
+    }
+
+    .glow.blue {
+      bottom: -140px;
+      left: -120px;
+      background: rgba(43, 130, 255, 0.18);
+      animation-delay: 1s;
+    }
+
+    .portal-wrapper {
+      position: relative;
+      z-index: 2;
+      width: min(100%, 1120px);
+      min-height: 640px;
+      border-radius: 36px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.085);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      box-shadow: 0 36px 110px rgba(0, 0, 0, 0.42);
+      backdrop-filter: blur(20px);
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      animation: pageIn 0.85s ease both;
+    }
+
+    .topbar {
+      padding: 28px 44px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .logo-box {
+      width: 64px;
+      height: 64px;
+      border-radius: 21px;
+      background: linear-gradient(135deg, var(--orange), var(--orange2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 34px;
+      font-weight: 900;
+      box-shadow: 0 20px 50px rgba(255, 114, 0, 0.36);
+      animation: logoPulse 1.8s ease-in-out infinite;
+    }
+
+    .brand h2 {
+      font-size: 28px;
+      letter-spacing: 0.8px;
+      line-height: 1.1;
+    }
+
+    .brand p {
+      margin-top: 4px;
+      font-size: 13px;
+      color: var(--soft);
+    }
+
+    .top-status {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 10px 15px;
+      border-radius: 999px;
+      background: rgba(18, 183, 106, 0.14);
+      border: 1px solid rgba(18, 183, 106, 0.34);
+      color: #a9f7cc;
+      font-size: 13px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #12b76a;
+      box-shadow: 0 0 13px rgba(18, 183, 106, 0.9);
+    }
+
+    .hero-area {
+      padding: 54px 44px 40px;
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 42px;
+      align-items: center;
+    }
+
+    .hero-left {
+      animation: slideLeft 0.85s ease both;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 15px;
+      border-radius: 999px;
+      background: rgba(255, 114, 0, 0.14);
+      border: 1px solid rgba(255, 114, 0, 0.34);
+      color: #ffbf86;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 22px;
+    }
+
+    .badge-line {
+      width: 18px;
+      height: 2px;
+      border-radius: 99px;
+      background: var(--orange);
+    }
+
+    .hero-left h1 {
+      font-size: 58px;
+      line-height: 1.05;
+      letter-spacing: -1.4px;
+      margin-bottom: 20px;
+    }
+
+    .hero-left h1 span {
+      color: var(--orange2);
+    }
+
+    .hero-left p {
+      max-width: 640px;
+      color: var(--soft);
+      font-size: 16px;
+      line-height: 1.75;
+      margin-bottom: 32px;
+    }
+
+    .feature-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-bottom: 34px;
+    }
+
+    .feature-card {
+      padding: 16px 14px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.075);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      transition: 0.3s;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-4px);
+      background: rgba(255, 255, 255, 0.11);
+      border-color: rgba(255, 114, 0, 0.35);
+    }
+
+    .feature-card strong {
+      display: block;
+      color: var(--orange2);
+      font-size: 22px;
+      margin-bottom: 7px;
+    }
+
+    .feature-card span {
+      font-size: 13px;
+      color: #e9f2ff;
+      line-height: 1.45;
+    }
+
+    .loading-block {
+      max-width: 640px;
+      padding: 20px;
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.075);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .loading-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .loading-head span {
+      color: #c9daf0;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .loading-head strong {
+      color: var(--orange2);
+      font-size: 14px;
+    }
+
+    .loader {
+      width: 100%;
+      height: 9px;
+      background: rgba(255, 255, 255, 0.14);
+      border-radius: 999px;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+
+    .loader-bar {
+      width: 0;
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--orange), #ffc078);
+      animation: loading 3.1s ease forwards;
+    }
+
+    .loader-note {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .hero-right {
+      position: relative;
+      min-height: 430px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: slideRight 0.85s ease both;
+    }
+
+    .system-card {
+      width: 100%;
+      max-width: 400px;
+      border-radius: 30px;
+      padding: 28px;
+      background:
+        linear-gradient(145deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.07));
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.28);
+      backdrop-filter: blur(16px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .system-card::before {
+      content: "";
+      position: absolute;
+      width: 190px;
+      height: 190px;
+      border-radius: 50%;
+      background: rgba(255, 114, 0, 0.16);
+      right: -70px;
+      top: -70px;
+    }
+
+    .system-card::after {
+      content: "";
+      position: absolute;
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      background: rgba(55, 139, 255, 0.12);
+      left: -55px;
+      bottom: -60px;
+    }
+
+    .system-content {
+      position: relative;
+      z-index: 2;
+    }
+
+    .system-title {
+      margin-bottom: 22px;
+    }
+
+    .system-title h3 {
+      font-size: 25px;
+      margin-bottom: 7px;
+    }
+
+    .system-title p {
+      color: #cbdaf0;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .access-list {
+      display: grid;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .access-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 13px 14px;
+      border-radius: 16px;
+      background: rgba(7, 24, 47, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .access-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 12px;
+      background: rgba(255, 114, 0, 0.18);
+      color: var(--orange2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      flex-shrink: 0;
+    }
+
+    .access-item div:last-child {
+      font-size: 13px;
+      color: #e8f2ff;
+      line-height: 1.4;
+    }
+
+    .mini-dashboard {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .mini-stat {
+      padding: 16px 10px;
+      border-radius: 17px;
+      text-align: center;
+      background: rgba(255, 114, 0, 0.14);
+      border: 1px solid rgba(255, 114, 0, 0.22);
+    }
+
+    .mini-stat strong {
+      display: block;
+      font-size: 24px;
+      color: var(--orange2);
+      margin-bottom: 4px;
+    }
+
+    .mini-stat span {
+      color: #dce9f8;
+      font-size: 12px;
+    }
+
+    .footer {
+      padding: 20px 44px;
+      border-top: 1px solid rgba(255, 255, 255, 0.10);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 18px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    .footer-links span {
+      color: #dce9f8;
+    }
+
+    @keyframes gridMove {
+      from {
+        transform: translate(0, 0);
+      }
+      to {
+        transform: translate(44px, 44px);
+      }
+    }
+
+    @keyframes floatGlow {
+      from {
+        transform: translateY(0) scale(1);
+      }
+      to {
+        transform: translateY(34px) scale(1.05);
+      }
+    }
+
+    @keyframes pageIn {
+      from {
+        opacity: 0;
+        transform: translateY(28px) scale(0.96);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @keyframes slideLeft {
+      from {
+        opacity: 0;
+        transform: translateX(-28px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes slideRight {
+      from {
+        opacity: 0;
+        transform: translateX(28px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes logoPulse {
+      0%, 100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.07);
+      }
+    }
+
+    @keyframes loading {
+      to {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 980px) {
+      body {
+        overflow-y: auto;
+      }
+
+      .portal-wrapper {
+        min-height: auto;
+      }
+
+      .hero-area {
+        grid-template-columns: 1fr;
+        padding: 42px 34px 34px;
+      }
+
+      .hero-right {
+        min-height: auto;
+      }
+
+      .system-card {
+        max-width: 100%;
+      }
+
+      .hero-left h1 {
+        font-size: 46px;
+      }
+    }
+
+    @media (max-width: 620px) {
+      body {
+        padding: 12px;
+      }
+
+      .portal-wrapper {
+        border-radius: 28px;
+      }
+
+      .topbar {
+        padding: 24px 22px;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .brand {
+        align-items: flex-start;
+      }
+
+      .logo-box {
+        width: 58px;
+        height: 58px;
+        border-radius: 18px;
+        font-size: 30px;
+      }
+
+      .brand h2 {
+        font-size: 25px;
+      }
+
+      .hero-area {
+        padding: 34px 22px 30px;
+        gap: 30px;
+      }
+
+      .hero-left h1 {
+        font-size: 36px;
+      }
+
+      .hero-left p {
+        font-size: 14px;
+      }
+
+      .feature-row {
+        grid-template-columns: 1fr;
+      }
+
+      .loading-head {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .system-card {
+        padding: 22px;
+        border-radius: 24px;
+      }
+
+      .mini-dashboard {
+        grid-template-columns: 1fr;
+      }
+
+      .footer {
+        padding: 20px 22px;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="grid-bg"></div>
+  <div class="glow orange"></div>
+  <div class="glow blue"></div>
+
+  <main class="portal-wrapper">
+
+    <header class="topbar">
+      <div class="brand">
+        <div class="logo-box">K</div>
+
+        <div>
+          <h2>KIEPL Portal</h2>
+          <p>Kamaleswar India Engineering Pvt. Ltd.</p>
+        </div>
+      </div>
+
+      <div class="top-status">
+        <span class="status-dot"></span>
+        Secure Portal Initializing
+      </div>
+    </header>
+
+    <section class="hero-area">
+
+      <div class="hero-left">
+        <div class="badge">
+          <span class="badge-line"></span>
+          Employee & Management System
+        </div>
+
+        <h1>
+          Smart Digital Portal <br />
+          For <span>KIEPL Operations</span>
+        </h1>
+
+        <p>
+          Manage attendance, employee records, payment details, allowances,
+          store equipment, bonus, leave and site-wise operational activities
+          through one secure role-based portal.
+        </p>
+
+        <div class="feature-row">
+          <div class="feature-card">
+            <strong>01</strong>
+            <span>Attendance & CLMS Records</span>
+          </div>
+
+          <div class="feature-card">
+            <strong>02</strong>
+            <span>Payment & Allowance Details</span>
+          </div>
+
+          <div class="feature-card">
+            <strong>03</strong>
+            <span>Store Equipment Tracking</span>
+          </div>
+        </div>
+
+        <div class="loading-block">
+          <div class="loading-head">
+            <span id="statusText">Preparing secure portal...</span>
+            <strong id="percentText">0%</strong>
+          </div>
+
+          <div class="loader">
+            <div class="loader-bar"></div>
+          </div>
+
+          <div class="loader-note">
+            Terms & Conditions page will open automatically before login access.
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-right">
+        <div class="system-card">
+          <div class="system-content">
+            <div class="system-title">
+              <h3>Portal Access Flow</h3>
+              <p>
+                Your login access is protected with terms confirmation and role-based dashboard control.
+              </p>
+            </div>
+
+            <div class="access-list">
+              <div class="access-item">
+                <div class="access-icon">1</div>
+                <div>Portal initialization and secure access check.</div>
+              </div>
+
+              <div class="access-item">
+                <div class="access-icon">2</div>
+                <div>Terms & Conditions confirmation before login.</div>
+              </div>
+
+              <div class="access-item">
+                <div class="access-icon">3</div>
+                <div>Login access for Admin, HR, SI, Supervisor and Employee.</div>
+              </div>
+            </div>
+
+            <div class="mini-dashboard">
+              <div class="mini-stat">
+                <strong>5+</strong>
+                <span>User Roles</span>
+              </div>
+
+              <div class="mini-stat">
+                <strong>24/7</strong>
+                <span>Portal Access</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <footer class="footer">
+      <div>© 2026 KIEPL. All Rights Reserved.</div>
+
+      <div class="footer-links">
+        <span>Admin</span>
+        <span>HR</span>
+        <span>Site Incharge</span>
+        <span>Supervisor</span>
+        <span>Employee</span>
+      </div>
+    </footer>
+
+  </main>
+
+  <script>
+    const statusText = document.getElementById("statusText");
+    const percentText = document.getElementById("percentText");
+
+    let percent = 0;
+
+    const loadingInterval = setInterval(() => {
+      percent += 4;
+
+      if (percent >= 100) {
+        percent = 100;
+        clearInterval(loadingInterval);
+      }
+
+      percentText.innerText = percent + "%";
+
+      if (percent >= 25 && percent < 55) {
+        statusText.innerText = "Checking portal modules...";
+      } else if (percent >= 55 && percent < 85) {
+        statusText.innerText = "Preparing terms verification...";
+      } else if (percent >= 85) {
+        statusText.innerText = "Opening Terms & Conditions...";
+      }
+    }, 110);
+
+    /*
+      Index page hamesha Terms & Conditions page open karega.
+      Login page sirf terms accept karne ke baad open hoga.
+    */
+    setTimeout(() => {
+      window.location.href = "terms.html";
+    }, 3200);
+  </script>
+
+</body>
+</html>

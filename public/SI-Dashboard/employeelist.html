@@ -1,0 +1,1598 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <title>SI Dashboard - Employee List</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/x-icon" href="logo2.ico" />
+  <link rel="stylesheet" type="text/css" href="employeelist.css" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap-theme.min.css" />
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --topbar-height: 78px;
+      --sidebar-width: 280px;
+      --card-bg: rgba(12, 25, 45, 0.86);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --text-main: #ffffff;
+      --text-soft: #c9d9ee;
+      --text-muted: #8ea4c5;
+      --orange-1: #ff8a3c;
+      --orange-2: #ff5a1f;
+      --blue-1: #2d7dff;
+      --blue-2: #1657cc;
+      --danger: #ef4d4d;
+      --shadow: 0 18px 40px rgba(0, 0, 0, 0.25);
+    }
+
+    html,
+    body {
+      width: 100%;
+      min-height: 100%;
+      margin: 0;
+      padding: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background:
+        linear-gradient(135deg, rgba(7, 16, 30, 0.95), rgba(14, 34, 56, 0.92)),
+        url("https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1600&q=80") center/cover no-repeat fixed;
+      color: var(--text-main);
+      overflow: hidden;
+    }
+
+    .app-shell {
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .topbar {
+      height: var(--topbar-height);
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(7, 16, 30, 0.88);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 2000;
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      min-width: 0;
+    }
+
+    .menu-toggle {
+      width: 46px;
+      height: 46px;
+      border: none;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
+      color: #fff;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: 0.25s ease;
+      flex-shrink: 0;
+    }
+
+    .menu-toggle:hover {
+      background: linear-gradient(135deg, rgba(255,122,47,0.18), rgba(31,119,255,0.16));
+      transform: translateY(-1px);
+    }
+
+    .brand-wrap {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-width: 0;
+    }
+
+    .brand-title {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 700;
+      color: #fff;
+      text-decoration: none !important;
+      line-height: 1.1;
+    }
+
+    .brand-title:hover,
+    .brand-title:focus {
+      color: #fff;
+      text-decoration: none !important;
+    }
+
+    .brand-subtitle {
+      margin: 2px 0 0;
+      color: var(--text-soft);
+      font-size: 13px;
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-shrink: 0;
+    }
+
+    .logout {
+      text-decoration: none !important;
+      color: #fff !important;
+      background: linear-gradient(135deg, var(--orange-1), var(--orange-2));
+      padding: 11px 18px;
+      border-radius: 12px;
+      font-weight: 700;
+      transition: 0.25s ease;
+      box-shadow: 0 10px 24px rgba(255, 90, 31, 0.24);
+      white-space: nowrap;
+    }
+
+    .logout:hover {
+      transform: translateY(-1px);
+      color: #fff !important;
+      text-decoration: none !important;
+    }
+
+    .dashboard-layout {
+      width: 100%;
+      height: 100vh;
+    }
+
+    /* ===== ONLY NAVBAR / SIDEBAR CHANGED ===== */
+    nav.sidebar {
+      width: var(--sidebar-width);
+      min-width: var(--sidebar-width);
+      max-width: var(--sidebar-width);
+      position: fixed;
+      top: var(--topbar-height);
+      left: 0;
+      bottom: 0;
+      padding: 20px 16px 22px;
+      background: linear-gradient(180deg, rgba(6, 16, 30, 0.98), rgba(8, 22, 40, 0.96));
+      backdrop-filter: blur(16px);
+      border-right: 1px solid rgba(255,255,255,0.06);
+      overflow-y: auto;
+      overflow-x: hidden;
+      z-index: 1500;
+      box-shadow: 18px 0 45px rgba(0, 0, 0, 0.24);
+    }
+
+    nav.sidebar::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    nav.sidebar::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,0.14);
+      border-radius: 999px;
+    }
+
+    .sidebar-top-card {
+      position: relative;
+      padding: 20px 18px 18px;
+      border-radius: 24px;
+      background:
+        linear-gradient(135deg, rgba(255,122,47,0.16), rgba(31,119,255,0.14)),
+        rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow:
+        0 16px 32px rgba(0,0,0,0.20),
+        inset 0 1px 0 rgba(255,255,255,0.06);
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+
+    .sidebar-top-card::after {
+      content: "";
+      position: absolute;
+      right: -30px;
+      top: -30px;
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,255,255,0.16), transparent 70%);
+    }
+
+    .sidebar-mini-label {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.4px;
+      color: #ffd8c2;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: 5px 10px;
+      border-radius: 999px;
+      margin-bottom: 12px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .sidebar-main-title {
+      font-size: 19px;
+      font-weight: 800;
+      color: #ffffff;
+      margin: 0 0 6px;
+      line-height: 1.2;
+      position: relative;
+      z-index: 1;
+    }
+
+    .sidebar-main-subtitle {
+      font-size: 13px;
+      color: #d5e2f1;
+      line-height: 1.7;
+      margin: 0 0 14px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .sidebar-status-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      position: relative;
+      z-index: 1;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .sidebar-status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #dfffe9;
+      background: rgba(20,184,106,0.14);
+      border: 1px solid rgba(20,184,106,0.22);
+    }
+
+    .sidebar-status-badge::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #4df39b;
+      box-shadow: 0 0 10px rgba(77,243,155,0.7);
+    }
+
+    .sidebar-status-text {
+      font-size: 11px;
+      color: #c6d8ec;
+      text-align: right;
+      line-height: 1.4;
+    }
+
+    .sidebar-section-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #8ea4c5;
+      margin: 0 8px 16px;
+      font-weight: 700;
+    }
+
+    #side-bar {
+      list-style: none;
+      padding-left: 0;
+      margin-bottom: 0;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    #side-bar li {
+      width: 100%;
+      margin: 0;
+    }
+
+    #side-bar a,
+    #side-bar summary {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      width: 100%;
+      padding: 15px 15px;
+      border-radius: 20px;
+      text-decoration: none !important;
+      color: #edf4ff !important;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.055), rgba(255,255,255,0.025));
+      border: 1px solid rgba(255,255,255,0.06);
+      transition: all 0.28s ease;
+      position: relative;
+      overflow: hidden;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+    }
+
+    #side-bar a::before,
+    #side-bar summary::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, rgba(255,122,47,0.13), rgba(31,119,255,0.11));
+      opacity: 0;
+      transition: opacity 0.28s ease;
+    }
+
+    #side-bar a::after,
+    #side-bar summary::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 18%;
+      width: 4px;
+      height: 64%;
+      border-radius: 999px;
+      background: linear-gradient(180deg, #ff8a3c, #1f77ff);
+      opacity: 0;
+      transition: opacity 0.28s ease;
+    }
+
+    #side-bar a:hover,
+    #side-bar summary:hover {
+      transform: translateX(6px);
+      border-color: rgba(255,255,255,0.10);
+      box-shadow: 0 14px 28px rgba(0,0,0,0.20);
+    }
+
+    #side-bar a:hover::before,
+    #side-bar summary:hover::before,
+    #side-bar a:hover::after,
+    #side-bar summary:hover::after {
+      opacity: 1;
+    }
+
+    #side-bar a.active,
+    #side-bar summary.active {
+      background: linear-gradient(135deg, rgba(255,122,47,0.18), rgba(31,119,255,0.16));
+      border-color: rgba(255,255,255,0.12);
+      box-shadow: 0 16px 30px rgba(0,0,0,0.24);
+    }
+
+    #side-bar a.active::before,
+    #side-bar summary.active::before,
+    #side-bar a.active::after,
+    #side-bar summary.active::after {
+      opacity: 1;
+    }
+
+    .nav-icon {
+      width: 44px;
+      height: 44px;
+      min-width: 44px;
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, rgba(255,255,255,0.13), rgba(255,255,255,0.05));
+      border: 1px solid rgba(255,255,255,0.08);
+      color: #fff;
+      font-size: 17px;
+      position: relative;
+      z-index: 1;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+    }
+
+    .nav-text {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .nav-text strong {
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.2;
+    }
+
+    .nav-text span {
+      margin-top: 4px;
+      font-size: 11px;
+      line-height: 1.45;
+      color: #aabed8;
+    }
+
+    .nav-arrow {
+      margin-left: auto;
+      font-size: 16px;
+      color: #93b2d8;
+      position: relative;
+      z-index: 1;
+      transition: transform 0.25s ease;
+    }
+
+    #side-bar a:hover .nav-arrow,
+    #side-bar summary:hover .nav-arrow {
+      transform: translateX(4px);
+    }
+    /* ===== END NAVBAR / SIDEBAR CHANGED ===== */
+
+    main {
+      position: fixed;
+      top: var(--topbar-height);
+      left: var(--sidebar-width);
+      right: 0;
+      bottom: 0;
+      padding: 28px 30px;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    .hero-card {
+      background: linear-gradient(135deg, rgba(22, 61, 112, 0.88), rgba(12, 27, 53, 0.92));
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 24px;
+      padding: 30px 34px;
+      box-shadow: var(--shadow);
+      margin-bottom: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-card::after {
+      content: "";
+      position: absolute;
+      right: -80px;
+      top: -80px;
+      width: 220px;
+      height: 220px;
+      background: radial-gradient(circle, rgba(255, 122, 47, 0.18), transparent 70%);
+      border-radius: 50%;
+    }
+
+    .page-tag {
+      display: inline-block;
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      color: #ffb88f;
+      background: rgba(255, 122, 47, 0.16);
+      border: 1px solid rgba(255, 122, 47, 0.2);
+      margin-bottom: 14px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-card h1 {
+      margin: 0 0 10px;
+      font-size: 32px;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.15;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-card p {
+      margin: 0;
+      max-width: 900px;
+      font-size: 15px;
+      line-height: 1.8;
+      color: #d0def0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .panel-card,
+    .table-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+      margin-bottom: 24px;
+    }
+
+    .section-header,
+    .table-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .section-header h2,
+    .table-header h3 {
+      margin: 0;
+      font-size: 22px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .section-badge {
+      display: inline-block;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(45, 125, 255, 0.14);
+      border: 1px solid rgba(45, 125, 255, 0.25);
+      color: #d9e8ff;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.4px;
+      white-space: nowrap;
+    }
+
+    .details-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(220px, 1fr));
+      gap: 18px;
+    }
+
+    .filter-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(220px, 1fr));
+      gap: 18px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      color: #b7cae6;
+      margin-bottom: 8px;
+      letter-spacing: 0.3px;
+    }
+
+    .value-box,
+    .form-control,
+    .auto-select {
+      width: 100%;
+      min-height: 48px;
+      border-radius: 16px !important;
+      border: 1px solid rgba(255, 255, 255, 0.08) !important;
+      background: rgba(255, 255, 255, 0.04) !important;
+      color: #fff !important;
+      box-shadow: none !important;
+    }
+
+    .value-box {
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .form-control,
+    .auto-select {
+      height: 48px !important;
+      padding: 0 14px !important;
+    }
+
+    .form-control::placeholder {
+      color: #99aecb;
+    }
+
+    select.form-control option,
+    select.auto-select option {
+      color: #000;
+    }
+
+    .btn-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 18px;
+      flex-wrap: wrap;
+    }
+
+    .action-btn {
+      border: none;
+      padding: 12px 22px;
+      border-radius: 14px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      transition: 0.25s ease;
+    }
+
+    .action-btn.primary {
+      background: linear-gradient(135deg, #2d7dff, #1657cc);
+      box-shadow: 0 12px 24px rgba(31, 119, 255, 0.25);
+    }
+
+    .action-btn.secondary {
+      background: linear-gradient(135deg, #ff8a3c, #ff5a1f);
+      box-shadow: 0 12px 24px rgba(255, 90, 31, 0.24);
+    }
+
+    .action-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .error-box {
+      display: none;
+      margin-top: 16px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: rgba(239, 77, 77, 0.12);
+      border: 1px solid rgba(239, 77, 77, 0.25);
+      color: #ffd3d3;
+      font-weight: 600;
+    }
+
+    .table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      border-radius: 18px;
+    }
+
+    .table-wrap table {
+      width: 100%;
+      min-width: 980px;
+      border-collapse: separate;
+      border-spacing: 0;
+      overflow: hidden;
+      border-radius: 18px;
+    }
+
+    .table-wrap thead th {
+      background: linear-gradient(135deg, #2d7dff, #1657cc);
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      text-align: center;
+      vertical-align: middle;
+      padding: 16px 14px !important;
+      border: none !important;
+      white-space: nowrap;
+    }
+
+    .table-wrap td {
+      padding: 16px 14px !important;
+      text-align: center;
+      vertical-align: middle;
+      color: #dce9f7;
+      border-top: 1px solid rgba(255, 255, 255, 0.05) !important;
+      background: rgba(255, 255, 255, 0.02);
+      white-space: nowrap;
+    }
+
+    .table-wrap tbody tr:hover td {
+      background: rgba(63, 131, 248, 0.08);
+    }
+
+    .uid-pill {
+      display: inline-block;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: rgba(31, 119, 255, 0.14);
+      color: #cfe2ff;
+      border: 1px solid rgba(31, 119, 255, 0.22);
+      font-size: 12px;
+      font-weight: 700;
+      min-width: 72px;
+    }
+
+    .empty-row {
+      text-align: center !important;
+      color: #a8bdd8 !important;
+      font-style: italic;
+    }
+
+    .helper-text {
+      margin-top: 8px;
+      color: #a9bdd8;
+      font-size: 12px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (max-width: 991px) {
+  html,
+  body {
+    width: 100%;
+    min-height: 100%;
+    height: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .app-shell {
+    width: 100%;
+    height: auto;
+    min-height: 100vh;
+    overflow: visible;
+  }
+
+  .dashboard-layout {
+    width: 100%;
+    height: auto;
+    min-height: 100vh;
+    padding-top: var(--topbar-height);
+  }
+
+  nav.sidebar {
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+
+    /* FIX: Command Center scroll ke saath upar jayega */
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    bottom: auto;
+
+    height: auto;
+    max-height: none;
+    overflow: visible;
+
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 0 0 24px 24px;
+    z-index: 100;
+    padding: 14px;
+  }
+
+  .sidebar-top-card {
+    margin-bottom: 18px;
+  }
+
+  .sidebar-section-title {
+    margin: 18px 8px 14px;
+  }
+
+  #side-bar {
+    display: none;
+    gap: 10px;
+  }
+
+  #side-bar.active {
+    display: flex;
+    flex-direction: column;
+    margin-top: 12px;
+  }
+
+  .sidebar-status-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .sidebar-status-text {
+    text-align: left;
+  }
+
+  main {
+    /* FIX: main normal page scroll mein rahega */
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    bottom: auto;
+
+    width: 100%;
+    padding: 18px;
+    overflow: visible;
+  }
+
+  .details-grid,
+  .filter-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .brand-subtitle {
+    display: none;
+  }
+}
+    @media (max-width: 600px) {
+      .topbar {
+        padding: 0 14px;
+      }
+
+      .brand-title {
+        font-size: 21px;
+      }
+
+      .logout {
+        padding: 9px 14px;
+        font-size: 13px;
+      }
+
+      .hero-card,
+      .panel-card,
+      .table-card {
+        padding: 18px;
+        border-radius: 18px;
+      }
+
+      .table-wrap table {
+        min-width: 860px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+        <div class="brand-wrap">
+          <a href="#" class="brand-title">SI Dashboard</a>
+          <p class="brand-subtitle">Employee List & Department Filter Panel</p>
+        </div>
+      </div>
+
+      <div class="topbar-right">
+        <a href="#" class="logout" onclick="logoutUser()">Logout</a>
+      </div>
+    </header>
+
+    <div class="dashboard-layout">
+      <nav class="sidebar">
+        <div class="sidebar-top-card">
+          <div class="sidebar-mini-label">SI Panel</div>
+          <h3 class="sidebar-main-title">Command Center</h3>
+          <p class="sidebar-main-subtitle">
+            Access employee directory, department filtering, and important SI sections from one clean navigation area.
+          </p>
+
+          <div class="sidebar-status-row">
+            <span class="sidebar-status-badge">Directory Active</span>
+            <div class="sidebar-status-text">
+              Secure access<br />
+              Quick navigation
+            </div>
+          </div>
+        </div>
+
+        <div class="sidebar-section-title">Navigation</div>
+        <ul id="side-bar"></ul>
+      </nav>
+
+      <main>
+        <section class="hero-card">
+          <span class="page-tag">SITE EMPLOYEE DIRECTORY</span>
+          <h1>Employee List</h1>
+          <p>
+            Filter employee records by department, employee name, and employee ID.
+            This page only shows employees belonging to the logged-in SI scope.
+          </p>
+        </section>
+
+        <section class="panel-card">
+          <div class="section-header">
+            <h2>SI Details</h2>
+            <span class="section-badge">Profile</span>
+          </div>
+
+          <div class="details-grid">
+            <div class="field">
+              <label>SI Name</label>
+              <div class="value-box" id="siNameDisplay">Loading...</div>
+            </div>
+
+            <div class="field">
+              <label>SI ID</label>
+              <div class="value-box" id="siIdDisplay">Loading...</div>
+            </div>
+
+            <div class="field">
+              <label>Site</label>
+              <div class="value-box" id="siSiteDisplay">Loading...</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel-card">
+          <div class="section-header">
+            <h2>Filter Employee List</h2>
+            <span class="section-badge">Search Panel</span>
+          </div>
+
+          <div class="filter-grid">
+            <div class="field">
+              <label>Department</label>
+              <select id="departmentFilter" class="form-control">
+                <option value="">Select Department</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>Employee Name</label>
+              <input type="text" id="employeeNameFilter" class="form-control" placeholder="Enter employee name" />
+              <div class="helper-text">Same name ke multiple employee mile toh niche ID dropdown aayega.</div>
+            </div>
+
+            <div class="field">
+              <label>Employee ID</label>
+              <input type="text" id="employeeIdFilter" class="form-control" placeholder="Enter employee ID" />
+            </div>
+          </div>
+
+          <div class="filter-grid" style="margin-top: 14px;">
+            <div class="field hidden" id="matchedIdWrapper">
+              <label>Select Employee ID</label>
+              <select id="matchedIdSelect" class="auto-select">
+                <option value="">Select Employee ID</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="btn-row">
+            <button class="action-btn primary" id="submitBtn">Submit</button>
+            <button class="action-btn secondary" id="resetBtn">Reset</button>
+          </div>
+
+          <div class="error-box" id="errorBox"></div>
+        </section>
+
+        <section class="table-card">
+          <div class="table-header">
+            <h3>Employee Directory</h3>
+            <span class="section-badge" id="masterListBadge">Master List = 0</span>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Employee ID</th>
+                  <th>Email ID</th>
+                  <th>Role</th>
+                  <th>Employee Name</th>
+                  <th>Contact Number</th>
+                  <th>Department</th>
+                  <th>Site</th>
+                </tr>
+              </thead>
+              <tbody id="employeeTableBody">
+                <tr>
+                  <td colspan="7" class="empty-row">Loading employee records...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    function toggleMenu() {
+      const sidebar = document.getElementById("side-bar");
+      if (sidebar) sidebar.classList.toggle("active");
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const currentPage = window.location.pathname.split("/").pop();
+      const navLinks = document.querySelectorAll("#side-bar a");
+
+      navLinks.forEach(link => {
+        const href = link.getAttribute("href");
+        if (href === currentPage) {
+          link.classList.add("active");
+        }
+      });
+    });
+  </script>
+
+  <script type="module" src="/public/control.js"></script>
+
+  
+  <script type="module">
+    import {
+      getFirestore,
+      doc,
+      getDoc,
+      collection,
+      getDocs
+    } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+    import { app } from "/public/firebase-config.js";
+
+    const db = getFirestore(app);
+
+    const siNameDisplay = document.getElementById("siNameDisplay");
+    const siIdDisplay = document.getElementById("siIdDisplay");
+    const siSiteDisplay = document.getElementById("siSiteDisplay");
+
+    const departmentFilter = document.getElementById("departmentFilter");
+    const employeeNameFilter = document.getElementById("employeeNameFilter");
+    const employeeIdFilter = document.getElementById("employeeIdFilter");
+    const matchedIdWrapper = document.getElementById("matchedIdWrapper");
+    const matchedIdSelect = document.getElementById("matchedIdSelect");
+
+    const submitBtn = document.getElementById("submitBtn");
+    const resetBtn = document.getElementById("resetBtn");
+
+    const errorBox = document.getElementById("errorBox");
+    const employeeTableBody = document.getElementById("employeeTableBody");
+    const masterListBadge = document.getElementById("masterListBadge");
+
+    let siProfile = null;
+    let directoryRecords = [];
+    let siDepartments = [];
+
+    function getValue(value) {
+      return (value || "").toString().trim();
+    }
+
+    function getLower(value) {
+      return getValue(value).toLowerCase();
+    }
+
+    function normalizeForMatch(value) {
+      return getLower(value)
+        .replace(/\s+/g, " ")
+        .replace(/[|]/g, " ")
+        .replace(/[_-]+/g, " ")
+        .trim();
+    }
+
+    function setText(el, value) {
+      if (el) el.textContent = value || "-";
+    }
+
+    function setMasterCount(count) {
+      masterListBadge.textContent = `Master List = ${count}`;
+    }
+
+    function showError(message) {
+      errorBox.style.display = "block";
+      errorBox.textContent = message;
+    }
+
+    function hideError() {
+      errorBox.style.display = "none";
+      errorBox.textContent = "";
+    }
+
+    function showEmpty(message) {
+      employeeTableBody.innerHTML = `
+        <tr>
+          <td colspan="7" class="empty-row">${message}</td>
+        </tr>
+      `;
+      setMasterCount(0);
+    }
+
+    function renderTable(records) {
+      if (!records.length) {
+        showEmpty("No employee records found.");
+        return;
+      }
+
+      employeeTableBody.innerHTML = "";
+      setMasterCount(records.length);
+
+      records.forEach(emp => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td><span class="uid-pill">${emp.uid || "-"}</span></td>
+          <td>${emp.email || "-"}</td>
+          <td>${emp.role || "-"}</td>
+          <td>${emp.fullName || "-"}</td>
+          <td>${emp.telephone || "-"}</td>
+          <td>${emp.department || "-"}</td>
+          <td>${emp.site || "-"}</td>
+        `;
+        employeeTableBody.appendChild(tr);
+      });
+    }
+
+    function populateDepartmentDropdown() {
+      departmentFilter.innerHTML = `<option value="">Select Department</option>`;
+      siDepartments.forEach(dep => {
+        departmentFilter.innerHTML += `<option value="${dep}">${dep}</option>`;
+      });
+    }
+
+    function resetMatchedIdDropdown() {
+      matchedIdWrapper.classList.add("hidden");
+      matchedIdSelect.innerHTML = `<option value="">Select Employee ID</option>`;
+    }
+
+    function buildMatchedIdDropdownByName() {
+      const nameValue = getLower(employeeNameFilter.value);
+
+      resetMatchedIdDropdown();
+
+      if (!nameValue) return;
+
+      const matchedByName = directoryRecords.filter(emp => getLower(emp.fullName) === nameValue);
+
+      if (matchedByName.length > 1) {
+        matchedIdWrapper.classList.remove("hidden");
+        matchedIdSelect.innerHTML = `<option value="">Select Employee ID</option>`;
+
+        matchedByName.forEach(emp => {
+          matchedIdSelect.innerHTML += `<option value="${emp.uid}">${emp.uid} - ${emp.fullName}</option>`;
+        });
+      } else if (matchedByName.length === 1) {
+        employeeIdFilter.value = matchedByName[0].uid || "";
+      }
+    }
+
+    function cleanDepartmentText(value) {
+      const raw = getValue(value);
+      if (!raw) return "";
+
+      let text = raw;
+
+      if (text.includes("||")) {
+        const parts = text.split("||").map(part => part.trim()).filter(Boolean);
+        text = parts[parts.length - 1] || text;
+      }
+
+      text = text.replace(/\s*\(\s*\d+\s*\)\s*$/, "").trim();
+
+      return text;
+    }
+
+    function extractJobs(data) {
+      const jobs = [];
+
+      if (Array.isArray(data.jobs)) {
+        data.jobs.forEach(item => {
+          if (typeof item === "string") {
+            const cleaned = cleanDepartmentText(item);
+            if (cleaned) jobs.push(cleaned);
+          } else if (item && typeof item === "object") {
+            Object.values(item).forEach(value => {
+              const cleaned = cleanDepartmentText(value);
+              if (cleaned) jobs.push(cleaned);
+            });
+          }
+        });
+      }
+
+      return [...new Set(jobs)];
+    }
+
+    function extractDirectDepartment(data) {
+      return getValue(
+        data.departmentSelect ||
+        data.Department ||
+        data.department ||
+        data.departmentName
+      );
+    }
+
+    function extractDisplayDepartment(data, roleLabel) {
+      const jobs = extractJobs(data);
+      const directDepartment = cleanDepartmentText(extractDirectDepartment(data));
+
+      if (roleLabel === "Supervisor" || roleLabel === "AS") {
+        if (jobs.length) return jobs.join(" | ");
+        return directDepartment;
+      }
+
+      if (directDepartment) return directDepartment;
+      if (jobs.length) return jobs.join(" | ");
+      return "";
+    }
+
+    function extractDepartmentCandidates(data, roleLabel) {
+      const candidates = [];
+
+      if (roleLabel === "Supervisor" || roleLabel === "AS") {
+        const jobs = extractJobs(data);
+        if (jobs.length) {
+          candidates.push(...jobs);
+        } else {
+          const directDepartment = cleanDepartmentText(extractDirectDepartment(data));
+          if (directDepartment) candidates.push(directDepartment);
+        }
+        return [...new Set(candidates)];
+      }
+
+      const directDepartment = cleanDepartmentText(extractDirectDepartment(data));
+      if (directDepartment) candidates.push(directDepartment);
+
+      const jobs = extractJobs(data);
+      if (!candidates.length && jobs.length) {
+        candidates.push(...jobs);
+      }
+
+      return [...new Set(candidates)];
+    }
+
+    function addDepartmentCandidate(set, value) {
+      const text = cleanDepartmentText(value);
+      if (text) set.add(text);
+    }
+
+    function collectDepartmentsFromRecord(record) {
+      const departments = new Set();
+
+      if (record.role === "Supervisor" || record.role === "AS") {
+        (record.departmentCandidates || []).forEach(dep => addDepartmentCandidate(departments, dep));
+      } else {
+        addDepartmentCandidate(departments, record.department);
+        (record.departmentCandidates || []).forEach(dep => addDepartmentCandidate(departments, dep));
+      }
+
+      return departments;
+    }
+
+    function extractSite(data) {
+      return getValue(
+        data.Site ||
+        data.site ||
+        data.siteName ||
+        data.siteSelect ||
+        data.industry ||
+        data.industrySelect ||
+        data.projectSite
+      );
+    }
+
+    function extractEmployeeName(data) {
+      return getValue(
+        data.fullName ||
+        data.Name ||
+        data.name ||
+        data.employeeName
+      );
+    }
+
+    function extractEmployeeId(data, fallbackId = "") {
+      return getValue(
+        data.uid ||
+        data.employeeId ||
+        data.empId ||
+        data.id ||
+        fallbackId
+      );
+    }
+
+    function extractPhone(data) {
+      return getValue(
+        data.telephone ||
+        data.contactNumber ||
+        data.mobile ||
+        data.phone ||
+        data.contact
+      );
+    }
+
+    function getSiEmailFromLocalStorage() {
+      return (
+        localStorage.getItem("siEmail") ||
+        localStorage.getItem("siteInchargeEmail") ||
+        localStorage.getItem("siteInchargeMail") ||
+        localStorage.getItem("SIEmail") ||
+        ""
+      );
+    }
+
+    async function getSiDocument(siEmail) {
+      const possibleCollections = [
+        "Site-Incharge",
+        "SiteIncharge",
+        "SiteInCharge",
+        "SI"
+      ];
+
+      for (const collectionName of possibleCollections) {
+        try {
+          const ref = doc(db, collectionName, siEmail);
+          const snap = await getDoc(ref);
+          if (snap.exists()) {
+            return snap.data();
+          }
+        } catch (err) {
+          console.warn(`Error checking ${collectionName}:`, err);
+        }
+      }
+
+      return null;
+    }
+
+    function getSiSite(siData) {
+      return getValue(
+        siData.Site ||
+        siData.site ||
+        siData.siteName ||
+        siData.siteSelect ||
+        siData.industry ||
+        siData.industrySelect ||
+        siData.projectSite
+      );
+    }
+
+    function getSiDepartments(siData) {
+      const extracted = new Set();
+
+      const jobs = extractJobs(siData);
+      jobs.forEach(job => extracted.add(job));
+
+      if (!jobs.length) {
+        const directDepartment = cleanDepartmentText(
+          siData.jobSelect ||
+          siData.departmentSelect ||
+          siData.Department ||
+          siData.department ||
+          siData.departmentName ||
+          siData.designation
+        );
+        if (directDepartment) extracted.add(directDepartment);
+      }
+
+      return [...extracted].filter(Boolean);
+    }
+
+    function recordBelongsToCurrentSI(record) {
+      const recordSite = getLower(record.site);
+      const currentSiSite = getLower(siProfile.site);
+
+      if (!recordSite || !currentSiSite || recordSite !== currentSiSite) return false;
+
+      const recordRaw = record.raw || {};
+
+      const recordSiId = getLower(
+        recordRaw.siId ||
+        recordRaw.siteInchargeId ||
+        recordRaw.siteInchargeUID ||
+        recordRaw.siteInchargeUid ||
+        recordRaw.siteInchargeuid ||
+        recordRaw.SIId ||
+        recordRaw.siuid
+      );
+
+      const recordSiName = getLower(
+        recordRaw.siName ||
+        recordRaw.siteInchargeName ||
+        recordRaw.SIName
+      );
+
+      const currentSiId = getLower(siProfile.uid);
+      const currentSiName = getLower(siProfile.name);
+
+      if (recordSiId) return recordSiId === currentSiId;
+      if (recordSiName) return recordSiName === currentSiName;
+
+      return true;
+    }
+
+    function recordMatchesDepartment(record, selectedDepartment) {
+      if (!selectedDepartment) return true;
+
+      const selected = normalizeForMatch(selectedDepartment);
+      const candidates = [
+        record.department,
+        ...(record.departmentCandidates || [])
+      ];
+
+      return candidates.some(candidate => {
+        const normalized = normalizeForMatch(candidate);
+        return (
+          normalized &&
+          (
+            normalized === selected ||
+            normalized.includes(selected) ||
+            selected.includes(normalized)
+          )
+        );
+      });
+    }
+
+    async function loadSIProfile() {
+      const siEmail = getSiEmailFromLocalStorage();
+
+      if (!siEmail) {
+        setText(siNameDisplay, "Not Found");
+        setText(siIdDisplay, "Not Found");
+        setText(siSiteDisplay, "Not Found");
+        showEmpty("SI email not found in localStorage.");
+        return false;
+      }
+
+      const siData = await getSiDocument(siEmail);
+
+      if (!siData) {
+        setText(siNameDisplay, "Not Found");
+        setText(siIdDisplay, "Not Found");
+        setText(siSiteDisplay, "Not Found");
+        showEmpty("SI profile not found.");
+        return false;
+      }
+
+      siProfile = {
+        name: getValue(siData.Name || siData.fullName || siData.name),
+        uid: getValue(siData.uid || siData.employeeId || siData.empId),
+        site: getSiSite(siData),
+        departments: getSiDepartments(siData),
+        raw: siData
+      };
+
+      setText(siNameDisplay, siProfile.name);
+      setText(siIdDisplay, siProfile.uid);
+      setText(siSiteDisplay, siProfile.site);
+
+      return true;
+    }
+
+    async function loadCollectionRecords(collectionName, roleLabel) {
+      const snapshot = await getDocs(collection(db, collectionName));
+      const records = [];
+
+      snapshot.forEach(docSnap => {
+        const data = docSnap.data();
+
+        const record = {
+          uid: extractEmployeeId(data, docSnap.id || ""),
+          email: docSnap.id || "",
+          fullName: extractEmployeeName(data),
+          telephone: extractPhone(data),
+          department: extractDisplayDepartment(data, roleLabel),
+          site: extractSite(data),
+          role: roleLabel,
+          collectionName,
+          jobs: extractJobs(data),
+          departmentCandidates: extractDepartmentCandidates(data, roleLabel),
+          raw: data
+        };
+
+        if (recordBelongsToCurrentSI(record)) {
+          records.push(record);
+        }
+      });
+
+      return records;
+    }
+
+    async function loadAllDirectoryRecords() {
+      try {
+        showEmpty("Loading employee records...");
+
+        const [employeeRecords, supervisorRecords, asRecords] = await Promise.all([
+          loadCollectionRecords("Employee", "Employee"),
+          loadCollectionRecords("Supervisor", "Supervisor"),
+          loadCollectionRecords("AS", "AS")
+        ]);
+
+        directoryRecords = [
+          ...employeeRecords,
+          ...supervisorRecords,
+          ...asRecords
+        ];
+
+        const departmentSet = new Set();
+        directoryRecords.forEach(record => {
+          collectDepartmentsFromRecord(record).forEach(dep => departmentSet.add(dep));
+        });
+
+        siDepartments = [...departmentSet].sort((a, b) => a.localeCompare(b));
+
+        if (siProfile.departments.length) {
+          const filteredDepartments = siDepartments.filter(dep =>
+            siProfile.departments.some(siDep =>
+              normalizeForMatch(siDep) === normalizeForMatch(dep) ||
+              normalizeForMatch(siDep).includes(normalizeForMatch(dep)) ||
+              normalizeForMatch(dep).includes(normalizeForMatch(siDep))
+            )
+          );
+          siDepartments = filteredDepartments.length ? filteredDepartments : siDepartments;
+        }
+
+        populateDepartmentDropdown();
+        showEmpty("Select filter and click submit.");
+      } catch (error) {
+        console.error("Directory loading error:", error);
+        showEmpty("Error loading employee records.");
+      }
+    }
+
+    function applyFilters() {
+      hideError();
+
+      const selectedDepartment = getLower(departmentFilter.value);
+      const employeeName = getLower(employeeNameFilter.value);
+      const employeeId = getLower(employeeIdFilter.value) || getLower(matchedIdSelect.value);
+
+      if (!selectedDepartment && !employeeName && !employeeId) {
+        showError("Please select at least one filter.");
+        showEmpty("Please select filter and click submit.");
+        return;
+      }
+
+      let filteredRecords = [...directoryRecords];
+
+      if (selectedDepartment) {
+        filteredRecords = filteredRecords.filter(record => recordMatchesDepartment(record, selectedDepartment));
+      }
+
+      if (employeeName) {
+        filteredRecords = filteredRecords.filter(record => getLower(record.fullName) === employeeName);
+      }
+
+      if (employeeId) {
+        filteredRecords = filteredRecords.filter(record => getLower(record.uid) === employeeId);
+      }
+
+      if (employeeId && filteredRecords.length === 0) {
+        showError("Entered Employee ID does not exist in your SI directory list.");
+        showEmpty("No employee found for this Employee ID.");
+        return;
+      }
+
+      if (employeeName && filteredRecords.length === 0) {
+        showError("Entered Employee Name does not exist in your SI directory list.");
+        showEmpty("No employee found for this Employee Name.");
+        return;
+      }
+
+      if (selectedDepartment && filteredRecords.length === 0) {
+        showError("No Employee, AS, or Supervisor record matched the selected department.");
+        showEmpty("No records found for selected department.");
+        return;
+      }
+
+      if (filteredRecords.length === 0) {
+        showError("No employee records found for selected filter.");
+        showEmpty("No employee records found for selected filter.");
+        return;
+      }
+
+      renderTable(filteredRecords);
+    }
+
+    function resetFilters() {
+      hideError();
+      departmentFilter.value = "";
+      employeeNameFilter.value = "";
+      employeeIdFilter.value = "";
+      resetMatchedIdDropdown();
+      showEmpty("Select filter and click submit.");
+    }
+
+    employeeNameFilter.addEventListener("input", () => {
+      employeeIdFilter.value = "";
+      buildMatchedIdDropdownByName();
+    });
+
+    matchedIdSelect.addEventListener("change", () => {
+      employeeIdFilter.value = matchedIdSelect.value || "";
+    });
+
+    submitBtn.addEventListener("click", applyFilters);
+    resetBtn.addEventListener("click", resetFilters);
+
+    window.addEventListener("DOMContentLoaded", async () => {
+      const loaded = await loadSIProfile();
+      if (!loaded) return;
+      await loadAllDirectoryRecords();
+    });
+  </script>
+
+</body>
+</html>

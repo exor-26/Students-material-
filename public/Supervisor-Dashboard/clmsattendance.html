@@ -1,0 +1,1734 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <title>Supervisor Dashboard - CLMS Attendance</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="stylesheet" type="text/css" href="supAttendance.css" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap-theme.min.css" />
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --topbar-height: 78px;
+      --sidebar-width: 280px;
+      --bg-dark: #081523;
+      --bg-mid: #0e2238;
+      --card-bg: rgba(12, 25, 45, 0.88);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --text-main: #ffffff;
+      --text-soft: #c9d9ee;
+      --text-muted: #8ea4c5;
+      --orange-1: #ff8a3c;
+      --orange-2: #ff5a1f;
+      --blue-1: #2d7dff;
+      --blue-2: #1657cc;
+      --green-1: #20c997;
+      --shadow: 0 18px 40px rgba(0, 0, 0, 0.25);
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background:
+        linear-gradient(135deg, rgba(7, 16, 30, 0.95), rgba(14, 34, 56, 0.92)),
+        url("https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1600&q=80") center/cover no-repeat fixed;
+      color: var(--text-main);
+      overflow: hidden;
+    }
+
+    .app-shell {
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .topbar {
+      height: var(--topbar-height);
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(7, 16, 30, 0.88);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 2000;
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      min-width: 0;
+    }
+
+    .menu-toggle {
+      width: 46px;
+      height: 46px;
+      border: none;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
+      color: #fff;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: 0.25s ease;
+      flex-shrink: 0;
+    }
+
+    .menu-toggle:hover {
+      background: linear-gradient(135deg, rgba(255,122,47,0.18), rgba(31,119,255,0.16));
+      transform: translateY(-1px);
+    }
+
+    .brand-wrap {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-width: 0;
+    }
+
+    .brand-title {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 700;
+      color: #fff;
+      text-decoration: none !important;
+      line-height: 1.1;
+    }
+
+    .brand-subtitle {
+      margin: 2px 0 0;
+      color: var(--text-soft);
+      font-size: 13px;
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    #bellContainer {
+      position: relative;
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.07);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: 0.25s ease;
+    }
+
+    #bellContainer:hover {
+      background: rgba(255, 255, 255, 0.14);
+      transform: translateY(-1px);
+    }
+
+    #bellBadge {
+      position: absolute;
+      top: 3px;
+      right: 3px;
+      min-width: 18px;
+      height: 18px;
+      padding: 0 5px;
+      border-radius: 999px;
+      background: #ff4d4f;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .logout {
+      text-decoration: none !important;
+      color: #fff !important;
+      background: linear-gradient(135deg, var(--orange-1), var(--orange-2));
+      padding: 11px 18px;
+      border-radius: 12px;
+      font-weight: 700;
+      transition: 0.25s ease;
+      box-shadow: 0 10px 24px rgba(255, 90, 31, 0.24);
+      white-space: nowrap;
+    }
+
+    .logout:hover {
+      transform: translateY(-1px);
+      color: #fff !important;
+      text-decoration: none !important;
+    }
+
+    #notificationBox {
+      display: none;
+      position: fixed;
+      top: calc(var(--topbar-height) - 8px);
+      right: 85px;
+      width: 320px;
+      max-height: 330px;
+      overflow-y: auto;
+      background: rgba(8, 21, 39, 0.98);
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      padding: 14px;
+      box-shadow: 0 22px 46px rgba(0, 0, 0, 0.32);
+      z-index: 2200;
+    }
+
+    .notification-item {
+      padding: 12px 14px;
+      margin-bottom: 10px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .notification-item p {
+      margin: 0 0 6px;
+      color: var(--text-soft);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .notification-item p:last-child {
+      margin-bottom: 0;
+    }
+
+    .dashboard-layout {
+      width: 100%;
+      height: 100vh;
+    }
+
+    nav.sidebar {
+      width: var(--sidebar-width);
+      min-width: var(--sidebar-width);
+      max-width: var(--sidebar-width);
+      position: fixed;
+      top: var(--topbar-height);
+      left: 0;
+      bottom: 0;
+      padding: 20px 16px 22px;
+      background: linear-gradient(180deg, rgba(6, 16, 30, 0.98), rgba(8, 22, 40, 0.96));
+      backdrop-filter: blur(16px);
+      border-right: 1px solid rgba(255,255,255,0.06);
+      overflow-y: auto;
+      overflow-x: hidden;
+      z-index: 1500;
+      box-shadow: 18px 0 45px rgba(0, 0, 0, 0.24);
+    }
+
+    nav.sidebar::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    nav.sidebar::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,0.14);
+      border-radius: 999px;
+    }
+
+    .sidebar-top-card {
+      position: relative;
+      padding: 20px 18px 18px;
+      border-radius: 24px;
+      background:
+        linear-gradient(135deg, rgba(255,122,47,0.16), rgba(31,119,255,0.14)),
+        rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow:
+        0 16px 32px rgba(0,0,0,0.20),
+        inset 0 1px 0 rgba(255,255,255,0.06);
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+
+    .sidebar-top-card::after {
+      content: "";
+      position: absolute;
+      right: -30px;
+      top: -30px;
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,255,255,0.16), transparent 70%);
+    }
+
+    .sidebar-mini-label {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.4px;
+      color: #ffd8c2;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: 5px 10px;
+      border-radius: 999px;
+      margin-bottom: 12px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .sidebar-main-title {
+      font-size: 19px;
+      font-weight: 800;
+      color: #ffffff;
+      margin: 0 0 6px;
+      line-height: 1.2;
+      position: relative;
+      z-index: 1;
+    }
+
+    .sidebar-main-subtitle {
+      font-size: 13px;
+      color: #d5e2f1;
+      line-height: 1.7;
+      margin: 0 0 14px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .sidebar-status-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      position: relative;
+      z-index: 1;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .sidebar-status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #dfffe9;
+      background: rgba(20,184,106,0.14);
+      border: 1px solid rgba(20,184,106,0.22);
+    }
+
+    .sidebar-status-badge::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #4df39b;
+      box-shadow: 0 0 10px rgba(77,243,155,0.7);
+    }
+
+    .sidebar-status-text {
+      font-size: 11px;
+      color: #c6d8ec;
+      text-align: right;
+      line-height: 1.4;
+    }
+
+    .sidebar-section-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #8ea4c5;
+      margin: 0 8px 16px;
+      font-weight: 700;
+    }
+
+    #side-bar {
+      list-style: none;
+      padding-left: 0;
+      margin-bottom: 0;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    #side-bar li {
+      width: 100%;
+      margin: 0;
+    }
+
+    #side-bar a,
+    #side-bar summary {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      width: 100%;
+      padding: 15px 15px;
+      border-radius: 20px;
+      text-decoration: none !important;
+      color: #edf4ff !important;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.055), rgba(255,255,255,0.025));
+      border: 1px solid rgba(255,255,255,0.06);
+      transition: all 0.28s ease;
+      position: relative;
+      overflow: hidden;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+    }
+
+    #side-bar a::before,
+    #side-bar summary::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, rgba(255,122,47,0.13), rgba(31,119,255,0.11));
+      opacity: 0;
+      transition: opacity 0.28s ease;
+    }
+
+    #side-bar a::after,
+    #side-bar summary::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 18%;
+      width: 4px;
+      height: 64%;
+      border-radius: 999px;
+      background: linear-gradient(180deg, #ff8a3c, #1f77ff);
+      opacity: 0;
+      transition: opacity 0.28s ease;
+    }
+
+    #side-bar a:hover,
+    #side-bar summary:hover {
+      transform: translateX(6px);
+      border-color: rgba(255,255,255,0.10);
+      box-shadow: 0 14px 28px rgba(0,0,0,0.20);
+    }
+
+    #side-bar a:hover::before,
+    #side-bar summary:hover::before,
+    #side-bar a:hover::after,
+    #side-bar summary:hover::after {
+      opacity: 1;
+    }
+
+    #side-bar a.active,
+    #side-bar summary.active {
+      background: linear-gradient(135deg, rgba(255,122,47,0.18), rgba(31,119,255,0.16));
+      border-color: rgba(255,255,255,0.12);
+      box-shadow: 0 16px 30px rgba(0,0,0,0.24);
+    }
+
+    #side-bar a.active::before,
+    #side-bar summary.active::before,
+    #side-bar a.active::after,
+    #side-bar summary.active::after {
+      opacity: 1;
+    }
+
+    main {
+      position: fixed;
+      top: var(--topbar-height);
+      left: var(--sidebar-width);
+      right: 0;
+      bottom: 0;
+      padding: 28px 30px;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    .hero-card {
+      background: linear-gradient(135deg, rgba(22, 61, 112, 0.88), rgba(12, 27, 53, 0.92));
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 24px;
+      padding: 30px 34px;
+      box-shadow: var(--shadow);
+      margin-bottom: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-card::after {
+      content: "";
+      position: absolute;
+      right: -80px;
+      top: -80px;
+      width: 220px;
+      height: 220px;
+      background: radial-gradient(circle, rgba(255, 122, 47, 0.18), transparent 70%);
+      border-radius: 50%;
+    }
+
+    .page-tag {
+      display: inline-block;
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      color: #ffb88f;
+      background: rgba(255, 122, 47, 0.16);
+      border: 1px solid rgba(255, 122, 47, 0.2);
+      margin-bottom: 14px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-card h1 {
+      margin: 0 0 10px;
+      font-size: 32px;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.15;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-card p {
+      margin: 0;
+      max-width: 900px;
+      font-size: 15px;
+      line-height: 1.8;
+      color: #d0def0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .panel-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+      margin-bottom: 24px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .section-header h2 {
+      margin: 0;
+      font-size: 26px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .section-badge {
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #9ec3ff;
+      background: rgba(31, 119, 255, 0.14);
+      border: 1px solid rgba(31, 119, 255, 0.22);
+      white-space: nowrap;
+    }
+
+    .details-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .filter-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr auto auto;
+      gap: 16px;
+      align-items: end;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+    }
+
+    .value-box{
+    width:100%;
+
+    height:52px !important;
+    min-height:52px !important;
+
+    border-radius:16px !important;
+
+    border:1px solid rgba(255,255,255,0.10) !important;
+
+    background:rgba(255,255,255,0.06) !important;
+
+    color:#fff !important;
+
+    padding:0 18px !important;
+
+    font-size:15px !important;
+    font-weight:500;
+
+    display:flex;
+    align-items:center;
+
+    box-sizing:border-box;
+
+    transition:0.25s ease;
+}
+
+
+/* INPUT + DROPDOWN */
+.field input,
+.field select{
+
+    width:100%;
+
+    height:52px !important;
+    min-height:52px !important;
+
+    border-radius:16px !important;
+
+    border:1px solid rgba(255,255,255,0.10) !important;
+
+    background:rgba(255,255,255,0.06) !important;
+
+    color:#fff !important;
+
+    padding:0 16px !important;
+
+    font-size:15px !important;
+    font-weight:500;
+
+    outline:none;
+
+    box-shadow:none !important;
+
+    transition:all 0.25s ease;
+
+    box-sizing:border-box;
+
+    -webkit-appearance:none;
+    appearance:none;
+}
+
+
+/* DROPDOWN UI */
+.field select{
+
+    padding-right:42px !important;
+
+    background-image:
+        linear-gradient(45deg, transparent 50%, #9fb4cf 50%),
+        linear-gradient(135deg, #9fb4cf 50%, transparent 50%);
+
+    background-position:
+        calc(100% - 20px) calc(50% - 3px),
+        calc(100% - 14px) calc(50% - 3px);
+
+    background-size:6px 6px;
+
+    background-repeat:no-repeat;
+
+    cursor:pointer;
+}
+
+
+/* OPTION COLOR */
+.field select option{
+    color:#000 !important;
+    background:#fff !important;
+}
+
+
+/* FOCUS EFFECT */
+.field input:focus,
+.field select:focus{
+
+    border-color:rgba(31,119,255,0.65) !important;
+
+    box-shadow:
+        0 0 0 4px rgba(31,119,255,0.10) !important;
+
+    background:rgba(255,255,255,0.08) !important;
+}
+
+
+/* PLACEHOLDER */
+.field input::placeholder{
+    color:#9fb4cf !important;
+}
+
+
+/* iPad Safari Fix */
+@supports (-webkit-touch-callout: none){
+
+    .field select,
+    .field input{
+
+        height:52px !important;
+
+        line-height:normal !important;
+
+        padding-top:0 !important;
+        padding-bottom:0 !important;
+
+        -webkit-appearance:none;
+        appearance:none;
+    }
+}
+    .field input:focus,
+    .field select:focus {
+      border-color: rgba(31, 119, 255, 0.55) !important;
+      box-shadow: 0 0 0 4px rgba(31, 119, 255, 0.12) !important;
+    }
+
+    .field input::placeholder {
+      color: #9fb4cf;
+    }
+
+    .field select option {
+      color: #000;
+    }
+
+    #attendanceSubmit,
+    #resetBtn {
+      min-height: 48px;
+      border: none;
+      border-radius: 14px !important;
+      color: #fff !important;
+      font-size: 15px;
+      font-weight: 700;
+      padding: 12px 22px !important;
+      transition: 0.25s ease;
+      margin-left: 0 !important;
+      white-space: nowrap;
+    }
+
+    #attendanceSubmit {
+      background: linear-gradient(135deg, var(--orange-1), var(--orange-2)) !important;
+      box-shadow: 0 10px 24px rgba(255, 90, 31, 0.24);
+    }
+
+    #resetBtn {
+      background: linear-gradient(135deg, #6c757d, #343a40) !important;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
+    }
+
+    #attendanceSubmit:hover,
+    #resetBtn:hover {
+      transform: translateY(-1px);
+      color: #fff !important;
+    }
+
+    .table-card {
+      background: rgba(10, 24, 42, 0.82);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 26px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .table-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .table-header h3 {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      border-radius: 18px;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .table-wrap table {
+      width: 100%;
+      min-width: 1500px;
+      margin: 0;
+      border-collapse: collapse;
+      overflow: hidden;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .table-wrap thead tr {
+      background: linear-gradient(135deg, #183b6f, #102849);
+    }
+
+    .table-wrap th {
+      color: #fff4cc;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      text-align: center;
+      vertical-align: middle;
+      padding: 14px 10px !important;
+      border: none !important;
+      white-space: nowrap;
+    }
+
+    .table-wrap td {
+      padding: 12px 10px !important;
+      text-align: center;
+      vertical-align: middle;
+      color: #dce9f7;
+      border-top: 1px solid rgba(255, 255, 255, 0.05) !important;
+      background: rgba(255, 255, 255, 0.02);
+      white-space: nowrap;
+    }
+
+    .table-wrap tbody tr:hover td {
+      background: rgba(63, 131, 248, 0.08);
+    }
+
+    .empty-row td {
+      color: #9fb4cf;
+      font-style: italic;
+    }
+
+    .day-box {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: rgba(255, 255, 255, 0.06);
+      color: #cfe0f4;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 800;
+      transition: 0.22s ease;
+      user-select: none;
+    }
+
+    .day-box:hover {
+      transform: translateY(-1px);
+      border-color: rgba(32, 201, 151, 0.55);
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.22);
+    }
+
+    .day-box.active {
+      background: linear-gradient(135deg, #20c997, #11936c);
+      color: #fff;
+      border-color: rgba(32, 201, 151, 0.75);
+      box-shadow: 0 8px 18px rgba(32, 201, 151, 0.22);
+    }
+
+    .day-box.disabled {
+      opacity: 0.25;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    @media (max-width: 991px) {
+  html,
+  body {
+    width: 100%;
+    min-height: 100%;
+    height: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .app-shell {
+    width: 100%;
+    height: auto;
+    min-height: 100vh;
+    overflow: visible;
+  }
+
+  .dashboard-layout {
+    width: 100%;
+    height: auto;
+    min-height: 100vh;
+    padding-top: var(--topbar-height);
+  }
+
+  nav.sidebar {
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+
+    /* FIX: Command Center scroll ke saath upar jayega */
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    bottom: auto;
+
+    height: auto;
+    max-height: none;
+    overflow: visible;
+
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 0 0 24px 24px;
+    z-index: 100;
+    padding: 14px;
+  }
+
+  .sidebar-top-card {
+    margin-bottom: 18px;
+  }
+
+  .sidebar-section-title {
+    margin: 18px 8px 14px;
+  }
+
+  #side-bar {
+    display: none;
+    gap: 10px;
+  }
+
+  #side-bar.active {
+    display: flex;
+    flex-direction: column;
+    margin-top: 12px;
+  }
+
+  .sidebar-status-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .sidebar-status-text {
+    text-align: left;
+  }
+
+  main {
+    /* FIX: main normal page scroll mein rahega */
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    bottom: auto;
+
+    width: 100%;
+    padding: 18px;
+    overflow: visible;
+  }
+
+  .details-grid,
+  .filter-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .brand-subtitle {
+    display: none;
+  }
+}
+    @media (max-width: 600px) {
+      .topbar {
+        padding: 0 14px;
+      }
+
+      .brand-title {
+        font-size: 21px;
+      }
+
+      .logout {
+        padding: 9px 14px;
+        font-size: 13px;
+      }
+
+      .hero-card,
+      .panel-card,
+      .table-card {
+        padding: 18px;
+        border-radius: 18px;
+      }
+
+      #notificationBox {
+        width: 280px;
+        right: 16px;
+      }
+
+      .hero-card h1 {
+        font-size: 26px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+        <div class="brand-wrap">
+          <a href="#" class="brand-title">Supervisor Dashboard</a>
+          <p class="brand-subtitle">CLMS Attendance Overview</p>
+        </div>
+      </div>
+
+      <div class="topbar-right">
+        <div id="bellContainer">
+          <span class="glyphicon glyphicon-bell" style="font-size:24px;"></span>
+          <span id="bellBadge" class="badge" style="display:none;">0</span>
+        </div>
+        <a href="#" class="logout" onclick="logoutUser()">Logout</a>
+      </div>
+    </header>
+
+    <div id="notificationBox"></div>
+
+    <div class="dashboard-layout">
+      <nav class="sidebar">
+        <div class="sidebar-top-card">
+          <div class="sidebar-mini-label">Supervisor Panel</div>
+          <h3 class="sidebar-main-title">Command Center</h3>
+          <p class="sidebar-main-subtitle">
+            Access CLMS attendance, employee filter, and important supervisor sections from one clean navigation area.
+          </p>
+
+          <div class="sidebar-status-row">
+            <span class="sidebar-status-badge">CLMS Active</span>
+            <div class="sidebar-status-text">
+              Secure access<br />
+              Quick navigation
+            </div>
+          </div>
+        </div>
+
+        <div class="sidebar-section-title">Navigation</div>
+        <ul id="side-bar"></ul>
+      </nav>
+
+      <main>
+        <section class="hero-card">
+          <span class="page-tag">CLMS ATTENDANCE PANEL</span>
+          <h1>CLMS Attendance</h1>
+          <p>
+            Select month to load all employees under this supervisor department.
+            You can also search by employee name. If the same name exists multiple times,
+            the employee ID dropdown will automatically appear.
+          </p>
+        </section>
+
+        <section class="panel-card">
+          <div class="section-header">
+            <h2>Supervisor Details</h2>
+            <span class="section-badge">Profile Information</span>
+          </div>
+
+          <div class="details-grid">
+            <div class="field">
+              <label>Supervisor Name</label>
+              <div class="value-box" id="supNameDisplay">Loading...</div>
+            </div>
+
+            <div class="field">
+              <label>Supervisor ID</label>
+              <div class="value-box" id="supIdDisplay">Loading...</div>
+            </div>
+
+            <div class="field">
+              <label>Site</label>
+              <div class="value-box" id="supSiteDisplay">Loading...</div>
+            </div>
+
+            <div class="field">
+              <label>Department</label>
+              <select id="supDepartmentSelect" class="form-control">
+                <option>Loading…</option>
+              </select>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel-card">
+          <div class="section-header">
+            <h2>Filter CLMS Attendance</h2>
+            <span class="section-badge">Month / Name / ID</span>
+          </div>
+
+          <div class="filter-grid">
+            <div class="field">
+              <label>Month</label>
+              <input type="month" id="clmsMonth" />
+            </div>
+
+            <div class="field">
+              <label>Employee Name</label>
+              <input type="text" id="employeeNameInput" list="employeeNameList" placeholder="Optional" autocomplete="off" />
+              <datalist id="employeeNameList"></datalist>
+            </div>
+
+            <div class="field">
+              <label>Employee ID</label>
+              <select id="employeeIdSelect" class="form-control">
+                <option value="">All Employee IDs</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>&nbsp;</label>
+              <button type="button" id="attendanceSubmit" class="btn btn-primary">Submit</button>
+            </div>
+
+            <div class="field">
+              <label>&nbsp;</label>
+              <button type="button" id="resetBtn" class="btn btn-default">Reset</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="table-card">
+          <div class="table-header">
+            <h3>CLMS Attendance Table</h3>
+            <span class="section-badge">Tap Date Box To Save / Remove</span>
+          </div>
+
+          <div class="table-wrap">
+            <table id="clmsAttendanceTable">
+              <thead id="attendanceTableHead">
+                <tr>
+                  <th>Employee ID</th>
+                  <th>Employee Name</th>
+                </tr>
+              </thead>
+              <tbody id="attendanceTableBody">
+                <tr class="empty-row">
+                  <td colspan="2">Please select month and click submit.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    function toggleMenu() {
+      const sidebar = document.getElementById("side-bar");
+      sidebar.classList.toggle("active");
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const currentPage = window.location.pathname.split("/").pop();
+      const navLinks = document.querySelectorAll("#side-bar a");
+
+      navLinks.forEach(link => {
+        const href = link.getAttribute("href");
+        if (href === currentPage) {
+          link.classList.add("active");
+        }
+      });
+    });
+  </script>
+
+  <script type="module" src="/public/control.js"></script>
+
+  <script type="module">
+    import {
+      getFirestore,
+      doc,
+      getDoc,
+      setDoc,
+      deleteDoc,
+      collection,
+      getDocs,
+      query,
+      where
+    } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+
+    import { app } from "/public/firebase-config.js";
+
+    const db = getFirestore(app);
+
+    let CURRENT_DEPARTMENT = "";
+    let CURRENT_SITE = "";
+    let SUPERVISOR_JOB_CODE = null;
+
+    const employeeCacheByDepartment = new Map();
+    const employeeNameIndexByDepartment = new Map();
+
+    const bell = document.getElementById("bellContainer");
+    const badge = document.getElementById("bellBadge");
+    const box = document.getElementById("notificationBox");
+
+    const supNameDisplay = document.getElementById("supNameDisplay");
+    const supIdDisplay = document.getElementById("supIdDisplay");
+    const supSiteDisplay = document.getElementById("supSiteDisplay");
+    const supDepartmentSelect = document.getElementById("supDepartmentSelect");
+
+    const clmsMonthInput = document.getElementById("clmsMonth");
+    const employeeNameInput = document.getElementById("employeeNameInput");
+    const employeeIdSelect = document.getElementById("employeeIdSelect");
+    const employeeNameList = document.getElementById("employeeNameList");
+    const attendanceSubmitBtn = document.getElementById("attendanceSubmit");
+    const resetBtn = document.getElementById("resetBtn");
+
+    const tableHead = document.getElementById("attendanceTableHead");
+    const tableBody = document.getElementById("attendanceTableBody");
+
+    function extractJobCode(jobStr = "") {
+      if (!jobStr) return null;
+      const s = jobStr.toString();
+      const m = s.match(/\((\d+)\)/);
+      if (m) return m[1];
+
+      const groups = s.match(/(\d{4,})/g);
+      if (groups && groups.length) return groups[groups.length - 1];
+
+      return null;
+    }
+
+    function normalizeText(val = "") {
+      return val.toString().trim().toLowerCase();
+    }
+
+    function escapeHTML(value = "") {
+      return value
+        .toString()
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function getMonthParts(monthValue) {
+      const [year, month] = monthValue.split("-").map(Number);
+      const totalDays = new Date(year, month, 0).getDate();
+
+      return {
+        year,
+        month,
+        totalDays
+      };
+    }
+
+    function makeDateKey(monthValue, day) {
+      const { year, month } = getMonthParts(monthValue);
+      const dd = String(day).padStart(2, "0");
+      const mm = String(month).padStart(2, "0");
+      return `${dd}-${mm}-${year}`;
+    }
+
+    function makeDocDateId(monthValue, day) {
+      const dd = String(day).padStart(2, "0");
+      return `${monthValue}-${dd}`;
+    }
+
+    function setEmptyMessage(message, colspan = 2) {
+      tableBody.innerHTML = `<tr class="empty-row"><td colspan="${colspan}">${message}</td></tr>`;
+    }
+
+    function renderTableHeader(totalDays) {
+      let headHTML = `
+        <tr>
+          <th>Employee ID</th>
+          <th>Employee Name</th>
+      `;
+
+      for (let day = 1; day <= totalDays; day++) {
+        headHTML += `<th>${day}</th>`;
+      }
+
+      headHTML += `</tr>`;
+      tableHead.innerHTML = headHTML;
+    }
+
+    function resetTableOnly() {
+      tableHead.innerHTML = `
+        <tr>
+          <th>Employee ID</th>
+          <th>Employee Name</th>
+        </tr>
+      `;
+      setEmptyMessage("Table reset successfully. Please select month and click submit.", 2);
+    }
+
+    async function refreshNotifications() {
+      try {
+        const snap = await getDocs(collection(db, "Employee"));
+        const today = new Date();
+        const soon = new Date();
+        soon.setDate(today.getDate() + 3);
+
+        const items = [];
+
+        snap.forEach(docSnap => {
+          const d = docSnap.data();
+          if (!d.passes_end) return;
+
+          const end = new Date(d.passes_end);
+
+          if (end >= today && end <= soon) {
+            items.push({
+              name: d.fullName || "",
+              uid: d.uid || "",
+              pass: d.passes || "",
+              renew: d.passes_end || ""
+            });
+          }
+        });
+
+        if (items.length) {
+          badge.innerText = items.length;
+          badge.style.display = "";
+        } else {
+          badge.style.display = "none";
+        }
+
+        box.innerHTML = "";
+
+        if (!items.length) {
+          box.innerHTML = "<p>No passes expiring in 3 days.</p>";
+        } else {
+          for (const it of items) {
+            const div = document.createElement("div");
+            div.className = "notification-item";
+            div.innerHTML = `
+              <p><strong>Name:</strong> ${escapeHTML(it.name)}</p>
+              <p><strong>User ID:</strong> ${escapeHTML(it.uid)}</p>
+              <p><strong>Pass Type:</strong> ${escapeHTML(it.pass)}</p>
+              <p><strong>Renew Date:</strong> ${escapeHTML(it.renew)}</p>
+            `;
+            box.appendChild(div);
+          }
+        }
+      } catch (e) {
+        console.error("Notification load error:", e);
+      }
+    }
+
+    bell.addEventListener("click", () => {
+      box.style.display = box.style.display === "none" ? "block" : "none";
+    });
+
+    document.addEventListener("DOMContentLoaded", refreshNotifications);
+
+    const now = new Date();
+    const currentMonthValue = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+    clmsMonthInput.value = currentMonthValue;
+
+    async function loadEmployeesForDepartment(departmentValue) {
+      if (!departmentValue) return [];
+
+      if (employeeCacheByDepartment.has(departmentValue)) {
+        return employeeCacheByDepartment.get(departmentValue);
+      }
+
+      const q = query(
+        collection(db, "Employee"),
+        where("departmentSelect", "==", departmentValue)
+      );
+
+      const snap = await getDocs(q);
+
+      const employees = snap.docs.map(docSnap => {
+        const d = docSnap.data();
+
+        return {
+          uid: (d.uid || "").toString().trim(),
+          fullName: (d.fullName || "").toString().trim(),
+          departmentSelect: d.departmentSelect || "",
+          jobSelect: d.jobSelect || "",
+          site: d.site || d.Site || d.industry || d.Industry || d.companySite || "",
+          Status: d.Status || ""
+        };
+      });
+
+      employeeCacheByDepartment.set(departmentValue, employees);
+
+      const nameMap = new Map();
+
+      employees.forEach(emp => {
+        if (!emp.fullName || !emp.uid) return;
+
+        const key = normalizeText(emp.fullName);
+
+        if (!nameMap.has(key)) nameMap.set(key, []);
+        nameMap.get(key).push(emp);
+      });
+
+      employeeNameIndexByDepartment.set(departmentValue, nameMap);
+
+      return employees;
+    }
+
+    async function buildNameSuggestions(departmentValue) {
+      const employees = await loadEmployeesForDepartment(departmentValue);
+
+      const uniqueNames = [...new Set(
+        employees
+          .map(emp => emp.fullName)
+          .filter(Boolean)
+          .sort((a, b) => a.localeCompare(b))
+      )];
+
+      employeeNameList.innerHTML = uniqueNames
+        .map(name => `<option value="${escapeHTML(name)}"></option>`)
+        .join("");
+    }
+
+    async function syncEmployeeIdDropdown() {
+      const departmentValue = supDepartmentSelect.value;
+      const typedName = employeeNameInput.value.trim();
+
+      employeeIdSelect.innerHTML = `<option value="">All Employee IDs</option>`;
+
+      if (!departmentValue || !typedName) return;
+
+      await loadEmployeesForDepartment(departmentValue);
+
+      const nameMap = employeeNameIndexByDepartment.get(departmentValue) || new Map();
+      const matches = nameMap.get(normalizeText(typedName)) || [];
+
+      if (!matches.length) return;
+
+      if (matches.length === 1) {
+        employeeIdSelect.innerHTML = `
+          <option value="${escapeHTML(matches[0].uid)}" selected>${escapeHTML(matches[0].uid)}</option>
+        `;
+        return;
+      }
+
+      employeeIdSelect.innerHTML = `
+        <option value="">Select Employee ID</option>
+        ${matches.map(emp => `<option value="${escapeHTML(emp.uid)}">${escapeHTML(emp.uid)}</option>`).join("")}
+      `;
+    }
+
+    function filterValidEmployees(employees, selectedDepartment) {
+      SUPERVISOR_JOB_CODE = extractJobCode(selectedDepartment);
+
+      return employees.filter(emp => {
+        if (!emp.uid) return false;
+        if (emp.Status === "Irregular") return false;
+
+        const firstChar = emp.uid.charAt(0);
+
+        if (firstChar === "3" || firstChar === "5" || firstChar === "6") return false;
+
+        const empJobStr = (emp.jobSelect || emp.departmentSelect || "").toString().trim();
+        const employeeJobCode = extractJobCode(empJobStr);
+
+        if (SUPERVISOR_JOB_CODE && employeeJobCode && employeeJobCode !== SUPERVISOR_JOB_CODE) {
+          return false;
+        }
+
+        return true;
+      });
+    }
+
+    async function getExistingCLMSMap(targetEmployees, monthValue) {
+      const attendanceMap = new Map();
+
+      await Promise.all(
+        targetEmployees.map(async emp => {
+          const recQ = query(
+            collection(db, "CLMS Attendance", emp.uid, "Records"),
+            where("monthValue", "==", monthValue)
+          );
+
+          const snap = await getDocs(recQ);
+          const daySet = new Set();
+
+          snap.forEach(docSnap => {
+            const d = docSnap.data();
+
+            if (d.day) {
+              daySet.add(Number(d.day));
+            }
+          });
+
+          attendanceMap.set(emp.uid, daySet);
+        })
+      );
+
+      return attendanceMap;
+    }
+
+    async function toggleCLMSAttendance(cell, emp, day, monthValue) {
+      const isActive = cell.classList.contains("active");
+      const docDateId = makeDocDateId(monthValue, day);
+      const displayDate = makeDateKey(monthValue, day);
+
+      const recRef = doc(db, "CLMS Attendance", emp.uid, "Records", docDateId);
+
+      cell.classList.add("disabled");
+
+      try {
+        if (isActive) {
+          await deleteDoc(recRef);
+          cell.classList.remove("active");
+          cell.innerHTML = "";
+          cell.title = "Absent / Not Marked";
+        } else {
+          await setDoc(recRef, {
+            attendanceType: "CLMS attendance",
+            collectionName: "CLMS Attendance",
+            uid: emp.uid,
+            employeeId: emp.uid,
+            fullName: emp.fullName,
+            employeeName: emp.fullName,
+            departmentSelect: CURRENT_DEPARTMENT,
+            department: CURRENT_DEPARTMENT,
+            site: CURRENT_SITE,
+            supUid: supIdDisplay.innerText,
+            supervisorId: supIdDisplay.innerText,
+            supervisorName: supNameDisplay.innerText,
+            monthValue: monthValue,
+            day: day,
+            date: displayDate,
+            docDateId: docDateId,
+            Marking: "Present",
+            createdAt: new Date().toISOString()
+          }, { merge: true });
+
+          cell.classList.add("active");
+          cell.innerHTML = "✓";
+          cell.title = "Present";
+        }
+      } catch (err) {
+        console.error("CLMS attendance update error:", err);
+        alert("CLMS attendance update failed. Console check karo.");
+      } finally {
+        cell.classList.remove("disabled");
+      }
+    }
+
+    function renderCLMSTable(targetEmployees, attendanceMap, monthValue, totalDays) {
+      renderTableHeader(totalDays);
+      tableBody.innerHTML = "";
+
+      if (!targetEmployees.length) {
+        setEmptyMessage("No matching employees found.", totalDays + 2);
+        return;
+      }
+
+      targetEmployees
+        .sort((a, b) => (a.fullName || "").localeCompare(b.fullName || ""))
+        .forEach(emp => {
+          const tr = document.createElement("tr");
+
+          let rowHTML = `
+            <td>${escapeHTML(emp.uid)}</td>
+            <td>${escapeHTML(emp.fullName)}</td>
+          `;
+
+          const existingDays = attendanceMap.get(emp.uid) || new Set();
+
+          for (let day = 1; day <= totalDays; day++) {
+            const active = existingDays.has(day);
+
+            rowHTML += `
+              <td>
+                <span
+                  class="day-box ${active ? "active" : ""}"
+                  data-uid="${escapeHTML(emp.uid)}"
+                  data-day="${day}"
+                  title="${active ? "Present" : "Absent / Not Marked"}"
+                >${active ? "✓" : ""}</span>
+              </td>
+            `;
+          }
+
+          tr.innerHTML = rowHTML;
+          tableBody.appendChild(tr);
+
+          const boxes = tr.querySelectorAll(".day-box");
+
+          boxes.forEach(box => {
+            box.addEventListener("click", async () => {
+              const clickedDay = Number(box.dataset.day);
+              await toggleCLMSAttendance(box, emp, clickedDay, monthValue);
+            });
+          });
+        });
+    }
+
+    async function initializeSupervisor() {
+      const supEmail = localStorage.getItem("supEmail");
+
+      if (!supEmail) {
+        console.error("No Supervisor email found in localStorage.");
+        setEmptyMessage("Supervisor login data not found.");
+        return;
+      }
+
+      try {
+        const supDocRef = doc(db, "Supervisor", supEmail);
+        const docSnap = await getDoc(supDocRef);
+
+        if (!docSnap.exists()) {
+          console.error("No Supervisor document found for email:", supEmail);
+          setEmptyMessage("Supervisor record not found.");
+          return;
+        }
+
+        const supData = docSnap.data();
+
+        supNameDisplay.innerText = supData.Name || supData.name || "N/A";
+        supIdDisplay.innerText = supData.uid || supData.UID || "N/A";
+
+        CURRENT_SITE =
+          supData.site ||
+          supData.Site ||
+          supData.industry ||
+          supData.Industry ||
+          supData.companySite ||
+          supData.location ||
+          "N/A";
+
+        supSiteDisplay.innerText = CURRENT_SITE;
+
+        if (Array.isArray(supData.jobs) && supData.jobs.length) {
+          supDepartmentSelect.innerHTML = supData.jobs
+            .map(job => `<option value="${escapeHTML(job)}">${escapeHTML(job)}</option>`)
+            .join("");
+        } else if (supData.departmentSelect || supData.department) {
+          const dept = supData.departmentSelect || supData.department;
+          supDepartmentSelect.innerHTML = `<option value="${escapeHTML(dept)}">${escapeHTML(dept)}</option>`;
+        } else {
+          supDepartmentSelect.innerHTML = `<option value="">No Department Available</option>`;
+        }
+
+        CURRENT_DEPARTMENT = supDepartmentSelect.value || "";
+        SUPERVISOR_JOB_CODE = extractJobCode(CURRENT_DEPARTMENT);
+
+        await buildNameSuggestions(CURRENT_DEPARTMENT);
+
+        supDepartmentSelect.addEventListener("change", async () => {
+          CURRENT_DEPARTMENT = supDepartmentSelect.value || "";
+          SUPERVISOR_JOB_CODE = extractJobCode(CURRENT_DEPARTMENT);
+
+          employeeNameInput.value = "";
+          employeeIdSelect.innerHTML = `<option value="">All Employee IDs</option>`;
+
+          await buildNameSuggestions(CURRENT_DEPARTMENT);
+          resetTableOnly();
+        });
+      } catch (err) {
+        console.error("Error fetching Supervisor details:", err);
+        setEmptyMessage("Error fetching supervisor details.");
+      }
+    }
+
+    employeeNameInput.addEventListener("input", async () => {
+      await syncEmployeeIdDropdown();
+    });
+
+    resetBtn.addEventListener("click", () => {
+      employeeNameInput.value = "";
+      employeeIdSelect.innerHTML = `<option value="">All Employee IDs</option>`;
+      resetTableOnly();
+    });
+
+    attendanceSubmitBtn.addEventListener("click", async () => {
+      try {
+        const selectedMonth = clmsMonthInput.value;
+        const selectedDepartment = supDepartmentSelect.value;
+        const typedEmployeeName = employeeNameInput.value.trim();
+        const selectedEmployeeId = employeeIdSelect.value.trim();
+
+        if (!selectedMonth) {
+          alert("Please select month.");
+          return;
+        }
+
+        if (!selectedDepartment) {
+          alert("Please select department.");
+          return;
+        }
+
+        attendanceSubmitBtn.disabled = true;
+        attendanceSubmitBtn.innerText = "Loading...";
+
+        CURRENT_DEPARTMENT = selectedDepartment;
+        SUPERVISOR_JOB_CODE = extractJobCode(selectedDepartment);
+
+        const { totalDays } = getMonthParts(selectedMonth);
+
+        const employees = await loadEmployeesForDepartment(selectedDepartment);
+        let targetEmployees = filterValidEmployees(employees, selectedDepartment);
+
+        if (typedEmployeeName) {
+          const exactNameMatches = targetEmployees.filter(emp =>
+            normalizeText(emp.fullName) === normalizeText(typedEmployeeName)
+          );
+
+          if (!exactNameMatches.length) {
+            renderTableHeader(totalDays);
+            setEmptyMessage("No data found. This employee is not under this supervisor department.", totalDays + 2);
+            return;
+          }
+
+          if (exactNameMatches.length > 1 && !selectedEmployeeId) {
+            renderTableHeader(totalDays);
+            setEmptyMessage("Same name multiple employees found. Please select Employee ID from dropdown.", totalDays + 2);
+            return;
+          }
+
+          targetEmployees = exactNameMatches;
+        }
+
+        if (selectedEmployeeId) {
+          targetEmployees = targetEmployees.filter(emp => emp.uid === selectedEmployeeId);
+        }
+
+        if (!targetEmployees.length) {
+          renderTableHeader(totalDays);
+          setEmptyMessage("No matching employees found for selected filters.", totalDays + 2);
+          return;
+        }
+
+        const attendanceMap = await getExistingCLMSMap(targetEmployees, selectedMonth);
+        renderCLMSTable(targetEmployees, attendanceMap, selectedMonth, totalDays);
+
+      } catch (err) {
+        console.error("CLMS attendance load error:", err);
+        alert("CLMS Attendance system mein error aa raha hai. Console check karo.");
+      } finally {
+        attendanceSubmitBtn.disabled = false;
+        attendanceSubmitBtn.innerText = "Submit";
+      }
+    });
+
+    initializeSupervisor();
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>AS Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="stylesheet" type="text/css" href="AS.css" />
+    <link rel="icon" type="image/x-icon" href="logo2.ico" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap-theme.min.css" />
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --topbar-height: 78px;
+            --sidebar-width: 280px;
+            --bg-dark: #081523;
+            --bg-mid: #0e2238;
+            --card-bg: rgba(12, 25, 45, 0.85);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --text-main: #ffffff;
+            --text-soft: #b8c9df;
+            --accent: #ff7a2f;
+            --accent-2: #1f77ff;
+            --shadow: 0 18px 40px rgba(0, 0, 0, 0.25);
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background:
+                linear-gradient(135deg, rgba(7, 16, 30, 0.95), rgba(14, 34, 56, 0.92)),
+                url("https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1600&q=80") center/cover no-repeat fixed;
+            color: var(--text-main);
+        }
+
+        .app-shell {
+            height: 100vh;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .topbar {
+            height: var(--topbar-height);
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            background: rgba(7, 16, 30, 0.88);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 2000;
+            flex-wrap: nowrap;
+            overflow: hidden;
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            min-width: 0;
+            flex: 1 1 auto;
+        }
+
+        .topbar-left > div {
+            min-width: 0;
+            overflow: hidden;
+        }
+
+        .menu-btn {
+            width: 46px;
+            height: 46px;
+            border: none;
+            border-radius: 14px;
+            background: rgba(255,255,255,0.08);
+            color: #fff;
+            font-size: 20px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .brand-title {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 700;
+            color: #fff;
+            text-decoration: none;
+            display: inline-block;
+            line-height: 1.1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
+        }
+
+        .brand-subtitle {
+            margin-top: 3px;
+            color: #b8c9df;
+            font-size: 13px;
+            line-height: 1.35;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
+        }
+
+        .logout {
+            flex-shrink: 0;
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+        }
+
+        .logout a {
+            text-decoration: none;
+            color: #fff;
+            background: linear-gradient(135deg, #ff8a3c, #ff5a1f);
+            padding: 11px 18px;
+            border-radius: 12px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            white-space: nowrap;
+        }
+
+        .sidebar {
+            width: var(--sidebar-width);
+            position: fixed;
+            top: var(--topbar-height);
+            left: 0;
+            bottom: 0;
+            padding: 28px 16px 20px;
+            background: rgba(6, 16, 30, 0.97);
+            overflow-y: auto;
+        }
+
+        .sidebar-top-card {
+            padding: 20px;
+            border-radius: 22px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
+            margin-top: 4px;
+        }
+
+        .sidebar-mini-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: #ffd8c2;
+            display: inline-block;
+            margin-bottom: 8px;
+        }
+
+        .sidebar-main-title {
+            margin-top: 8px;
+            font-size: 22px;
+            font-weight: 800;
+            line-height: 1.15;
+        }
+
+        .sidebar-main-subtitle {
+            margin-top: 10px;
+            font-size: 13px;
+            line-height: 1.7;
+            color: #d5e2f1;
+        }
+
+        .sidebar-section-title {
+            margin: 24px 8px 16px;
+            font-size: 11px;
+            color: #8ea4c5;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        #side-bar {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        #side-bar li {
+            margin-bottom: 12px;
+        }
+
+        #side-bar a {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 15px;
+            border-radius: 18px;
+            text-decoration: none;
+            color: #fff;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.06);
+            transition: 0.3s;
+        }
+
+        #side-bar a:hover {
+            transform: translateX(5px);
+            background: rgba(255,122,47,0.15);
+        }
+
+        .main-area {
+            position: fixed;
+            top: var(--topbar-height);
+            left: var(--sidebar-width);
+            right: 0;
+            bottom: 0;
+            padding: 28px 30px;
+            overflow-y: auto;
+        }
+
+        .welcome-strip {
+            margin-bottom: 24px;
+            padding: 14px 18px;
+            border-radius: 16px;
+            background: rgba(255,255,255,0.06);
+            color: #dce8ff;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .hero-card {
+            background: linear-gradient(135deg, rgba(22, 61, 112, 0.88), rgba(12, 27, 53, 0.92));
+            border-radius: 24px;
+            padding: 32px;
+            margin-bottom: 24px;
+        }
+
+        .page-tag {
+            display: inline-block;
+            padding: 7px 12px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #ffb88f;
+            background: rgba(255, 122, 47, 0.16);
+            margin-bottom: 14px;
+        }
+
+        .hero-card h1 {
+            font-size: 34px;
+            font-weight: 800;
+            margin-bottom: 12px;
+        }
+
+        .hero-card p {
+            color: #d0def0;
+            line-height: 1.8;
+        }
+
+        .quick-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin-bottom: 24px;
+        }
+
+        .quick-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 22px;
+        }
+
+        .quick-label {
+            font-size: 12px;
+            color: #9fb6d4;
+            text-transform: uppercase;
+        }
+
+        .quick-value {
+            font-size: 28px;
+            font-weight: 800;
+            margin: 10px 0;
+        }
+
+        .quick-note {
+            font-size: 13px;
+            color: #b8c9df;
+            line-height: 1.6;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 24px;
+        }
+
+        .panel-card {
+            background: var(--card-bg);
+            border-radius: 22px;
+            padding: 24px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .section-header h2 {
+            font-size: 24px;
+            font-weight: 800;
+        }
+
+        .section-badge {
+            padding: 6px 12px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+            background: rgba(31, 119, 255, 0.14);
+            color: #9ec3ff;
+        }
+
+        .welcome-text {
+            line-height: 1.9;
+            color: #d0def0;
+            margin-bottom: 20px;
+        }
+
+        .highlight-box {
+            display: grid;
+            gap: 14px;
+        }
+
+        .highlight-item {
+            display: flex;
+            gap: 12px;
+            padding: 14px 16px;
+            border-radius: 16px;
+            background: rgba(255,255,255,0.04);
+        }
+
+        .highlight-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 12px;
+            background: rgba(31, 119, 255, 0.16);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .highlight-content h3 {
+            margin-bottom: 5px;
+        }
+
+        .highlight-content p {
+            color: #b8c9df;
+            line-height: 1.7;
+            font-size: 13px;
+        }
+
+        .hr-points {
+            display: grid;
+            gap: 12px;
+        }
+
+        .hr-point {
+            padding: 14px 16px;
+            border-radius: 16px;
+            background: rgba(255,255,255,0.04);
+            line-height: 1.8;
+            color: #dbe7f6;
+        }
+
+        @media (max-width: 900px) {
+
+    html,
+    body {
+        overflow: auto;
+        height: auto;
+    }
+
+    .app-shell {
+        height: auto;
+        overflow: visible;
+    }
+
+    .topbar {
+        height: var(--topbar-height);
+        padding: 0 14px;
+        flex-wrap: nowrap;
+    }
+
+    .topbar-left {
+        gap: 12px;
+        min-width: 0;
+    }
+
+    .brand-title {
+        font-size: 20px;
+    }
+
+    .brand-subtitle {
+        font-size: 12px;
+    }
+
+    /* =========================
+       FIXED SIDEBAR SPACING
+    ========================== */
+
+    .sidebar {
+        width: 100%;
+        position: relative;
+        top: auto;
+        bottom: auto;
+        height: auto;
+
+        /* IMPORTANT FIX */
+        margin-top: 95px;
+
+        padding: 24px 14px 20px;
+    }
+
+    .sidebar-top-card {
+
+        /* IMPORTANT FIX */
+        margin-top: 12px;
+
+        padding: 20px;
+        border-radius: 22px;
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .main-area {
+        position: relative;
+        left: 0;
+        top: auto;
+        right: 0;
+        bottom: auto;
+        padding: 20px 16px;
+        overflow: visible;
+    }
+
+    .quick-grid,
+    .content-grid {
+        grid-template-columns: 1fr;
+    }
+
+    #side-bar {
+        display: none;
+    }
+
+    #side-bar.active {
+        display: block;
+    }
+}
+
+        @media (max-width: 600px) {
+            .topbar {
+                padding: 0 12px;
+            }
+
+            .menu-btn {
+                width: 42px;
+                height: 42px;
+                border-radius: 12px;
+                font-size: 18px;
+            }
+
+            .brand-title {
+                font-size: 18px;
+                max-width: 170px;
+            }
+
+            .brand-subtitle {
+                display: none;
+            }
+
+            .logout a {
+                padding: 9px 12px;
+                font-size: 13px;
+                border-radius: 11px;
+            }
+
+            .sidebar {
+                padding-top: 20px;
+            }
+
+            .sidebar-top-card {
+                margin-top: 10px;
+                padding: 18px;
+            }
+
+            .sidebar-main-title {
+                margin-top: 6px;
+                font-size: 20px;
+            }
+
+            .hero-card {
+                padding: 22px;
+            }
+
+            .hero-card h1 {
+                font-size: 26px;
+            }
+
+            .section-header h2 {
+                font-size: 20px;
+            }
+
+            .quick-value {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="app-shell">
+
+    <header class="topbar">
+        <div class="topbar-left">
+            <button class="menu-btn" onclick="toggleMenu()">☰</button>
+
+            <div>
+                <a href="/AShome.html" class="brand-title">AS Dashboard</a>
+                <p class="brand-subtitle">
+                    Assistant Supervisor Management & Operation Control Panel
+                </p>
+            </div>
+        </div>
+
+        <div class="logout">
+            <a href="#" onclick="logoutUser()">Logout</a>
+        </div>
+    </header>
+
+    <aside class="sidebar">
+
+        <div class="sidebar-top-card">
+            <div class="sidebar-mini-label">AS PANEL</div>
+
+            <h3 class="sidebar-main-title">Command Center</h3>
+
+            <p class="sidebar-main-subtitle">
+                Access workforce monitoring, attendance coordination,
+                site operations, employee supervision,
+                and important AS sections from one clean navigation area.
+            </p>
+        </div>
+
+        <div class="sidebar-section-title">Navigation</div>
+
+        <ul id="side-bar">
+
+            <li>
+                <a href="AShome.html">
+                    🏠 Home
+                </a>
+            </li>
+
+            <li>
+                <a href="employee.html">
+                    👥 Employee
+                </a>
+            </li>
+
+            <li>
+                <a href="attendance.html">
+                    📅 Attendance
+                </a>
+            </li>
+
+            <li>
+                <a href="payments.html">
+                    💰 Payments
+                </a>
+            </li>
+
+            <li>
+                <a href="reports.html">
+                    📄 Reports
+                </a>
+            </li>
+
+        </ul>
+
+    </aside>
+
+    <main class="main-area">
+
+        <div class="welcome-strip">
+            Welcome to Kamaleswar India Eng. Private Limited.
+        </div>
+
+        <section class="hero-card">
+
+            <span class="page-tag">AS CONTROL PANEL</span>
+
+            <h1>Welcome To Assistant Supervisor Department</h1>
+
+            <p>
+                The Assistant Supervisor department manages workforce coordination,
+                employee supervision, attendance monitoring,
+                site support, operational workflow,
+                and field activity management.
+            </p>
+
+        </section>
+
+        <section class="quick-grid">
+
+            <div class="quick-card">
+                <span class="quick-label">Department Role</span>
+                <div class="quick-value">AS</div>
+
+                <div class="quick-note">
+                    Workforce supervision and operational coordination access.
+                </div>
+            </div>
+
+            <div class="quick-card">
+                <span class="quick-label">Employee Monitoring</span>
+                <div class="quick-value">Active</div>
+
+                <div class="quick-note">
+                    Manage workforce attendance and operational support.
+                </div>
+            </div>
+
+            <div class="quick-card">
+                <span class="quick-label">Site Operations</span>
+                <div class="quick-value">Live</div>
+
+                <div class="quick-note">
+                    Coordinate daily operational activities and workforce flow.
+                </div>
+            </div>
+
+            <div class="quick-card">
+                <span class="quick-label">System Status</span>
+                <div class="quick-value">Ready</div>
+
+                <div class="quick-note">
+                    Dashboard is ready for monitoring activities.
+                </div>
+            </div>
+
+        </section>
+
+        <section class="content-grid">
+
+            <div class="panel-card">
+
+                <div class="section-header">
+                    <h2>Department Overview</h2>
+                    <span class="section-badge">Overview</span>
+                </div>
+
+                <p class="welcome-text">
+                    The Assistant Supervisor department plays an important role
+                    in workforce coordination and operational support.
+                    From attendance supervision to employee monitoring,
+                    site coordination, and operational management,
+                    AS keeps daily workflow organized and efficient.
+                </p>
+
+                <div class="highlight-box">
+
+                    <div class="highlight-item">
+                        <div class="highlight-icon">👥</div>
+
+                        <div class="highlight-content">
+                            <h3>Workforce Supervision</h3>
+
+                            <p>
+                                Monitor employee activities,
+                                attendance flow,
+                                and workforce management.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="highlight-item">
+                        <div class="highlight-icon">📄</div>
+
+                        <div class="highlight-content">
+                            <h3>Site Coordination</h3>
+
+                            <p>
+                                Support operational activities and
+                                site-related management processes.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="highlight-item">
+                        <div class="highlight-icon">💰</div>
+
+                        <div class="highlight-content">
+                            <h3>Attendance Monitoring</h3>
+
+                            <p>
+                                Track employee attendance,
+                                shift activities,
+                                and daily operational records.
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="panel-card">
+
+                <div class="section-header">
+                    <h2>AS Focus</h2>
+                    <span class="section-badge">Responsibilities</span>
+                </div>
+
+                <div class="hr-points">
+
+                    <div class="hr-point">
+                        <strong>Attendance Monitoring:</strong>
+                        Supervise workforce attendance and employee activity flow.
+                    </div>
+
+                    <div class="hr-point">
+                        <strong>Operational Support:</strong>
+                        Coordinate operational activities and workflow management.
+                    </div>
+
+                    <div class="hr-point">
+                        <strong>Employee Supervision:</strong>
+                        Assist in workforce supervision and reporting.
+                    </div>
+
+                    <div class="hr-point">
+                        <strong>Record Maintenance:</strong>
+                        Keep operational data and attendance records organized.
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+<script>
+function toggleMenu() {
+    const sidebar = document.getElementById("side-bar");
+    sidebar.classList.toggle("active");
+}
+
+function logoutUser() {
+    localStorage.clear();
+    sessionStorage.clear();
+    window.location.href = "/index.html";
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    const currentPage = window.location.pathname.split("/").pop();
+    const navLinks = document.querySelectorAll("#side-bar a");
+
+    navLinks.forEach(link => {
+        const href = link.getAttribute("href");
+        if (href === currentPage) {
+            link.classList.add("active");
+        }
+    });
+});
+</script>
+
+<script type="module" src="./control.js"></script>
+
+</body>
+</html>

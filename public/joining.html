@@ -1,0 +1,1265 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Admin Dashboard</title>
+
+    <link rel="stylesheet" type="text/css" href="joining.css" />
+<link rel="icon" type="image/x-icon" href="logo2.ico" />
+    <!-- Latest compiled and minified CSS -->
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css"
+    />
+
+    <!-- Optional theme --><!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Admin Dashboard - Employee Joining Form</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="stylesheet" type="text/css" href="joining.css" />
+
+  <link
+    rel="stylesheet"
+    href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css"
+  />
+  <link
+    rel="stylesheet"
+    href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap-theme.min.css"
+  />
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+
+  <style>
+    *, *::before, *::after {
+  cursor:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" viewBox="0 0 24 24"><path fill="%23FFF" stroke="%23FF2711" stroke-width="2" d="M5.5 3.21V20.8c0 .45.54.67.85.35l4.86-4.86a.5.5 0 0 1 .35-.15h6.87a.5.5 0 0 0 .35-.85L6.35 2.85a.5.5 0 0 0-.85.35Z"></path></svg>') 5 5, auto;
+}
+
+a, button, input[type="submit"], input[type="button"],
+label, select, .dropbtn, .sub-btn, .btn, .cn,
+.carousel-control, .hideMenuButton, .item a,
+input[type="text"], input[type="search"], textarea {
+  cursor:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="%23FFF" stroke="%23FF2711" stroke-width="2" stroke-linejoin="round" d="M10 11V8.99c0-.88.59-1.64 1.44-1.86h.05A1.99 1.99 0 0 1 14 9.05V12v-2c0-.88.6-1.65 1.46-1.87h.05A1.98 1.98 0 0 1 18 10.06V13v-1.94a2 2 0 0 1 1.51-1.94h0A2 2 0 0 1 22 11.06V14c0 .6-.08 1.27-.21 1.97a7.96 7.96 0 0 1-7.55 6.48 54.98 54.98 0 0 1-4.48 0 7.96 7.96 0 0 1-7.55-6.48C2.08 15.27 2 14.59 2 14v-1.49c0-1.11.9-2.01 2.01-2.01h0a2 2 0 0 1 2.01 2.03l-.01.97v-10c0-1.1.9-2 2-2h0a2 2 0 0 1 2 2V11Z"></path></svg>') 5 5, auto;
+}
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --topbar-height: 78px;
+      --sidebar-width: 260px;
+      --bg-dark: #081523;
+      --bg-mid: #0e2238;
+      --card-bg: rgba(12, 25, 45, 0.85);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --text-main: #ffffff;
+      --text-soft: #b8c9df;
+      --accent: #ff7a2f;
+      --accent-2: #1f77ff;
+      --success: #14b86a;
+      --warning: #ffc048;
+      --danger: #ef4d4d;
+      --shadow: 0 18px 40px rgba(0, 0, 0, 0.25);
+      --radius: 22px;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      background:
+        linear-gradient(135deg, rgba(7, 16, 30, 0.95), rgba(14, 34, 56, 0.92)),
+        url("https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1600&q=80") center/cover no-repeat fixed;
+      color: var(--text-main);
+    }
+
+    .app-shell {
+      height: 100vh;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    .topbar {
+      height: var(--topbar-height);
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(7, 16, 30, 0.88);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 2000;
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      min-width: 0;
+    }
+
+    .menu-btn {
+      width: 44px;
+      height: 44px;
+      border: none;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.07);
+      color: #fff;
+      font-size: 20px;
+      cursor: pointer;
+      transition: 0.25s ease;
+      flex-shrink: 0;
+    }
+
+    .menu-btn:hover {
+      background: rgba(255, 255, 255, 0.14);
+      transform: translateY(-1px);
+    }
+
+    .brand-title {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 700;
+      color: #fff;
+      text-decoration: none !important;
+    }
+
+    .brand-subtitle {
+      margin: 2px 0 0;
+      color: var(--text-soft);
+      font-size: 13px;
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-shrink: 0;
+    }
+
+    .logout-btn {
+      text-decoration: none !important;
+      color: #fff !important;
+      background: linear-gradient(135deg, #ff8a3c, #ff5a1f);
+      padding: 11px 18px;
+      border-radius: 12px;
+      font-weight: 700;
+      transition: 0.25s ease;
+      box-shadow: 0 10px 24px rgba(255, 90, 31, 0.24);
+      white-space: nowrap;
+    }
+
+    .logout-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .dashboard-layout {
+      display: block;
+      width: 100%;
+      height: 100vh;
+    }
+
+    .sidebar {
+      width: var(--sidebar-width);
+      min-width: var(--sidebar-width);
+      max-width: var(--sidebar-width);
+      position: fixed;
+      top: var(--topbar-height);
+      left: 0;
+      bottom: 0;
+      padding: 24px 16px;
+      background: rgba(6, 15, 28, 0.88);
+      backdrop-filter: blur(8px);
+      border-right: 1px solid rgba(255,255,255,0.05);
+      overflow-y: auto;
+      overflow-x: hidden;
+      z-index: 1500;
+    }
+
+    .sidebar-title {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: #8ea4c5;
+      margin-bottom: 16px;
+      padding-left: 10px;
+    }
+
+    #side-bar {
+      list-style: none;
+      padding-left: 0;
+      margin-bottom: 0;
+      width: 100%;
+    }
+
+    #side-bar li {
+      margin-bottom: 8px;
+      width: 100%;
+    }
+
+    #side-bar a,
+    #side-bar summary {
+      display: block;
+      padding: 12px 14px;
+      border-radius: 12px;
+      text-decoration: none !important;
+      color: #ebf2ff !important;
+      transition: 0.25s ease;
+      background: transparent;
+      width: 100%;
+      word-break: break-word;
+    }
+
+    #side-bar a:hover,
+    #side-bar summary:hover {
+      background: rgba(255,255,255,0.08);
+    }
+
+    .main-area {
+      position: fixed;
+      top: var(--topbar-height);
+      left: var(--sidebar-width);
+      right: 0;
+      bottom: 0;
+      min-width: 0;
+      padding: 28px 30px;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    .back-row {
+      margin-bottom: 20px;
+    }
+
+    .back-button {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: #fff;
+      padding: 10px 16px;
+      border-radius: 12px;
+      font-weight: 700;
+      transition: 0.25s ease;
+    }
+
+    .back-button:hover {
+      background: rgba(255,255,255,0.14);
+    }
+
+    .hero-card {
+      background: linear-gradient(135deg, rgba(22, 61, 112, 0.88), rgba(12, 27, 53, 0.92));
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 24px;
+      padding: 30px 34px;
+      box-shadow: var(--shadow);
+      margin-bottom: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-card::after {
+      content: "";
+      position: absolute;
+      right: -80px;
+      top: -80px;
+      width: 220px;
+      height: 220px;
+      background: radial-gradient(circle, rgba(255,122,47,0.18), transparent 70%);
+      border-radius: 50%;
+    }
+
+    .page-tag {
+      display: inline-block;
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      color: #ffb88f;
+      background: rgba(255, 122, 47, 0.16);
+      border: 1px solid rgba(255, 122, 47, 0.2);
+      margin-bottom: 14px;
+    }
+
+    .hero-card h1 {
+      margin: 0 0 10px;
+      font-size: 34px;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.15;
+    }
+
+    .hero-card p {
+      margin: 0;
+      max-width: 850px;
+      font-size: 15px;
+      line-height: 1.8;
+      color: #d0def0;
+    }
+
+    .form-wrapper {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .section-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 22px;
+      margin-bottom: 24px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    .section-title {
+      background: linear-gradient(135deg, #183b6f, #102849);
+      color: #fff;
+      padding: 16px 22px;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(260px, 1fr));
+      gap: 18px 22px;
+      padding: 24px 22px 26px;
+    }
+
+    .form-group-custom {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .form-group-custom.full {
+      grid-column: 1 / -1;
+    }
+
+    .form-group-custom label {
+      font-size: 12px;
+      font-weight: 700;
+      color: #9db4d0;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    .form-control,
+    input[type="file"] {
+      width: 100%;
+      min-height: 48px;
+      border-radius: 14px !important;
+      border: 1px solid rgba(255,255,255,0.08) !important;
+      box-shadow: none !important;
+      padding: 12px 14px !important;
+      background: rgba(255,255,255,0.05) !important;
+      color: #fff !important;
+    }
+
+    .form-control:focus {
+      border-color: rgba(31, 119, 255, 0.55) !important;
+      box-shadow: 0 0 0 4px rgba(31, 119, 255, 0.12) !important;
+    }
+
+    select.form-control option {
+      color: #000;
+    }
+
+    input[type="file"] {
+      padding: 10px 12px !important;
+    }
+
+    .radio-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+      min-height: 48px;
+      align-items: center;
+      padding: 8px 2px;
+      background: rgba(255,255,255,0.03);
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .radio-group label {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 600;
+      color: #dce8ff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-transform: none;
+      letter-spacing: normal;
+      padding: 0 10px;
+    }
+
+    .radio-group input[type="radio"] {
+      margin: 0;
+      width: auto;
+      height: auto;
+    }
+
+    .confirmation {
+      background: rgba(31, 119, 255, 0.12);
+      border: 1px solid rgba(31, 119, 255, 0.2);
+      color: #dce8ff;
+      padding: 16px 18px;
+      border-radius: 14px;
+      margin: 8px 0 24px;
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1.7;
+    }
+
+    .action-bar {
+      display: flex;
+      justify-content: center;
+      padding-bottom: 10px;
+    }
+
+    .submit-button-down {
+      background: linear-gradient(135deg, #16a34a, #15803d);
+      color: #fff;
+      border: none;
+      padding: 14px 34px;
+      border-radius: 14px;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      box-shadow: 0 10px 24px rgba(21, 128, 61, 0.24);
+      transition: 0.25s ease;
+    }
+
+    .submit-button-down:hover {
+      transform: translateY(-1px);
+      opacity: 0.96;
+    }
+
+    @media (max-width: 1200px) {
+      .form-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 900px) {
+      html,
+      body {
+        overflow-y: auto;
+      }
+
+      .sidebar {
+        width: 100%;
+        min-width: 100%;
+        max-width: 100%;
+        height: auto;
+        max-height: none;
+        position: fixed;
+        top: var(--topbar-height);
+        left: 0;
+        right: 0;
+        bottom: auto;
+        border-right: none;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+        z-index: 1600;
+      }
+
+      #side-bar {
+        display: none;
+      }
+
+      #side-bar.active {
+        display: block;
+        margin-top: 12px;
+      }
+
+      .main-area {
+        top: 150px;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        padding: 18px;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-card h1 {
+        font-size: 24px;
+      }
+
+      .brand-subtitle {
+        display: none;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .topbar {
+        padding: 0 14px;
+      }
+
+      .topbar-right {
+        gap: 10px;
+      }
+
+      .logout-btn {
+        padding: 9px 14px;
+        font-size: 13px;
+      }
+
+      .hero-card,
+      .section-card {
+        border-radius: 18px;
+      }
+
+      .hero-card {
+        padding: 20px;
+      }
+
+      .form-grid {
+        padding: 18px 14px 20px;
+      }
+
+      .section-title {
+        font-size: 16px;
+      }
+
+      .submit-button-down {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="menu-btn" onclick="toggleMenu()">☰</button>
+        <div>
+          <a href="" class="brand-title">Admin Dashboard</a>
+          <p class="brand-subtitle">Employee Joining & Registration Management</p>
+        </div>
+      </div>
+
+      <div class="topbar-right">
+        <a href="#" class="logout" onclick="logoutUser()">Logout</a>
+      </div>
+    </header>
+
+    <div class="dashboard-layout">
+      <aside class="sidebar">
+        <div class="sidebar-title">Navigation</div>
+        <ul id="side-bar"></ul>
+      </aside>
+
+      <main class="main-area">
+        <div class="form-wrapper">
+          <div class="back-row">
+            <button class="back-button" onclick="window.history.back()">← Back</button>
+          </div>
+
+          <section class="hero-card">
+            <span class="page-tag">JOINING CONTROL PANEL</span>
+            <h1>Employee Joining Form</h1>
+            <p>
+              Fill all employee onboarding details carefully before submitting.
+              Make sure industry, personal, contact, emergency, education,
+              job, banking, and declaration details are entered correctly.
+            </p>
+          </section>
+
+          <form>
+            <div class="section-card">
+              <div class="section-title">Industry Information</div>
+              <div class="form-grid">
+                <div class="form-group-custom">
+                  <label>Industry</label>
+                  <select class="form-control">
+                    <option value="" disabled selected>Select an option</option>
+                    <option value="option1">Hindalco</option>
+                  </select>
+                </div>
+
+                <div class="form-group-custom">
+                  <label>Department</label>
+                  <select class="form-control">
+                    <option value="" disabled selected>Select an option</option>
+                    <option value="option1">IT</option>
+                    <option value="option2">Technical</option>
+                    <option value="option3">Mechanical</option>
+                    <option value="option4">Civil</option>
+                  </select>
+                </div>
+
+                <div class="form-group-custom">
+                  <label>User Type</label>
+                  <select class="form-control">
+                    <option value="" disabled selected>Select an option</option>
+                    <option value="option1">Admin</option>
+                    <option value="option2">Employee</option>
+                    <option value="option3">Vendor</option>
+                  </select>
+                </div>
+
+                <div class="form-group-custom">
+                  <label>Card Type</label>
+                  <select class="form-control">
+                    <option value="" disabled selected>Select an option</option>
+                    <option value="option1">AMC CONTRACTOR</option>
+                    <option value="option2">REGULAR CONTRACTOR (K-LTS)</option>
+                    <option value="option3">REGULAR CONTRACTOR (NON-LTS)</option>
+                    <option value="option4">REGULAR CONTRACTOR (Y-LTS)</option>
+                    <option value="option5">SHUT DOWN CONTRACTOR (NON-LTS)</option>
+                  </select>
+                </div>
+
+                <div class="form-group-custom">
+                  <label>ESI No / WC Policy No</label>
+                  <input type="text" class="form-control" />
+                </div>
+
+                <div class="form-group-custom">
+                  <label>PF No</label>
+                  <input type="text" class="form-control" />
+                </div>
+
+                <div class="form-group-custom">
+                  <label>IME No</label>
+                  <input type="text" class="form-control" />
+                </div>
+
+                <div class="form-group-custom">
+                  <label>VTC No</label>
+                  <input type="text" class="form-control" />
+                </div>
+              </div>
+            </div>
+
+            <div class="section-card">
+              <div class="section-title">Personal Information</div>
+              <div class="form-grid">
+                <div class="form-group-custom">
+                  <label>Full Name</label>
+                  <input type="text" class="form-control" />
+                </div>
+
+                <div class="form-group-custom">
+                  <label>Gender</label>
+                  <div class="radio-group">
+                    <label><input type="radio" name="gender" value="male" /> Male</label>
+                    <label><input type="radio" name="gender" value="female" /> Female</label>
+                    <label><input type="radio" name="gender" value="other" /> Other</label>
+                  </div>
+                </div>
+
+                <div class="form-group-custom">
+                  <label>Date of Birth</label>
+                  <input type="date" class="form-control" />
+                </div>
+
+                <div class="form-group-custom">
+                  <label>Nationality</label>
+                  <input type="text" class="form-control" />
+                </div>
+
+                <div class="form-group-custom">
+                  <label>Marital Status</label>
+                  <input type="text" class="form-control" />
+                </div>
+
+                <div class="form-group-custom">
+                  <label>Identity</label>
+                  <input type="file" />
+                </div>
+              </div>
+            </div>
+
+            <div class="section-card">
+              <div class="section-title">Contact Information</div>
+              <div class="form-grid">
+                <div class="form-group-custom full">
+                  <label>Permanent Address</label>
+                  <input type="text" class="form-control" />
+                </div>
+
+                <div class="form-group-custom full">
+                  <label>Current Address</label>
+                  <input type="text" class="form-control" />
+                </div>
+
+                <div class="form-group-custom">
+                  <label>Telephone Number</label>
+                  <input type="tel" class="form-control" />
+                </div>
+
+                <div class="form-group-custom">
+                  <label>E-mail Address</label>
+                  <input type="email" class="form-control" />
+                </div>
+              </div>
+            </div>
+
+            <div class="section-card">
+              <div class="section-title">Emergency Contact Information</div>
+              <div class="form-grid">
+                <div class="form-group-custom">
+                  <label>Full Name</label>
+                  <input type="text" class="form-control" />
+                </div>
+
+                <div class="form-group-custom">
+                  <label>Relationship</label>
+                  <input type="text" class="form-control" />
+                </div>
+
+                <div class="form-group-custom">
+                  <label>Telephone Number</label>
+                  <input type="tel" class="form-control" />
+                </div>
+
+                <div class="form-group-custom">
+                  <label>E-mail Address</label>
+                  <input type="email" class="form-control" />
+                </div>
+
+                <div class="form-group-custom full">
+                  <label>Address</label>
+                  <input type="text" class="form-control" />
+                </div>
+              </div>
+            </div>
+
+            <div class="section-card">
+              <div class="section-title">Education Information</div>
+              <div class="form-grid">
+                <div class="form-group-custom">
+                  <label>University Name</label>
+                  <input type="text" class="form-control" />
+                </div>
+
+                <div class="form-group-custom">
+                  <label>Degree</label>
+                  <input type="text" class="form-control" />
+                </div>
+
+                <div class="form-group-custom">
+                  <label>Year of Graduation</label>
+                  <input type="text" class="form-control" />
+                </div>
+              </div>
+            </div>
+
+            <div class="section-card">
+              <div class="section-title">Job Information</div>
+              <div class="form-grid">
+                <div class="form-group-custom">
+                  <label>Position Title</label>
+                  <input type="text" class="form-control" />
+                </div>
+
+                <div class="form-group-custom">
+                  <label>Department</label>
+                  <input type="text" class="form-control" />
+                </div>
+
+                <div class="form-group-custom">
+                  <label>Start Date</label>
+                  <input type="date" class="form-control" />
+                </div>
+              </div>
+            </div>
+
+            <div class="section-card">
+              <div class="section-title">Previous Employment Information</div>
+              <div class="form-grid">
+                <div class="form-group-custom">
+                  <label>Company</label>
+                  <input type="text" class="form-control" />
+                </div>
+
+                <div class="form-group-custom">
+                  <label>Position Held</label>
+                  <input type="text" class="form-control" />
+                </div>
+
+                <div class="form-group-custom full">
+                  <label>Reason for Leaving</label>
+                  <input type="text" class="form-control" />
+                </div>
+              </div>
+            </div>
+
+            <div class="section-card">
+              <div class="section-title">Banking Information</div>
+              <div class="form-grid">
+                <div class="form-group-custom">
+                  <label>Bank Name</label>
+                  <input type="text" class="form-control" />
+                </div>
+
+                <div class="form-group-custom">
+                  <label>Account Number</label>
+                  <input type="text" class="form-control" />
+                </div>
+
+                <div class="form-group-custom">
+                  <label>Account Holder's Name</label>
+                  <input type="text" class="form-control" />
+                </div>
+
+                <div class="form-group-custom">
+                  <label>Bank Branch</label>
+                  <input type="text" class="form-control" />
+                </div>
+
+                <div class="form-group-custom">
+                  <label>IFSC</label>
+                  <input type="text" class="form-control" />
+                </div>
+
+                <div class="form-group-custom">
+                  <label>UAN No</label>
+                  <input type="text" class="form-control" />
+                </div>
+              </div>
+            </div>
+
+            <div class="section-card">
+              <div class="section-title">Reference</div>
+              <div class="form-grid">
+                <div class="form-group-custom">
+                  <label>Full Name</label>
+                  <input type="text" class="form-control" />
+                </div>
+
+                <div class="form-group-custom">
+                  <label>Relationship</label>
+                  <input type="text" class="form-control" />
+                </div>
+
+                <div class="form-group-custom">
+                  <label>Telephone Number</label>
+                  <input type="tel" class="form-control" />
+                </div>
+
+                <div class="form-group-custom">
+                  <label>E-mail</label>
+                  <input type="email" class="form-control" />
+                </div>
+              </div>
+            </div>
+
+            <div class="section-card">
+              <div class="section-title">Declaration</div>
+              <div class="form-grid">
+                <div class="form-group-custom">
+                  <label>Signature</label>
+                  <input type="file" />
+                </div>
+
+                <div class="form-group-custom">
+                  <label>Date</label>
+                  <input type="date" class="form-control" />
+                </div>
+
+                <div class="form-group-custom">
+                  <label>PAN Card</label>
+                  <input type="file" />
+                </div>
+
+                <div class="form-group-custom">
+                  <label>Adhar Card</label>
+                  <input type="file" />
+                </div>
+              </div>
+            </div>
+
+            <div class="confirmation">
+              <p>
+                I hereby confirm that all the above information is accurate
+                to the best of my knowledge.
+              </p>
+            </div>
+
+            <div class="action-bar">
+              <input type="submit" class="submit-button-down" value="Submit Form" />
+            </div>
+          </form>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    function toggleMenu() {
+      const sidebar = document.getElementById("side-bar");
+      sidebar.classList.toggle("active");
+    }
+  </script>
+
+  <script src="control.js"></script>
+</body>
+</html>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap-theme.min.css"
+    />
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+  </head>
+  <body>
+    <div>
+      <header class="header">
+        <a href="">Admin Dashboard</a>
+
+        <div class="logout">
+          <a href="" class="btn btn-primary">Logout</a>
+        </div>
+      </header>
+      
+      <div class="down-part">
+        <nav>
+            <ul id="side-bar"> 
+            
+          </ul>
+        </nav>
+
+        <main>
+        
+              
+              <link rel="stylesheet" href="joining.css" />
+            <body>
+              <div class="container">
+                <!-- Back Button -->
+                <button class="back-button" onclick="window.history.back()">← Back</button>
+            
+                
+            
+              <div class="container">
+                <h1>Employee Joining Form</h1>
+
+                <table>
+                  <tr>
+                    <th colspan="2">Industry Information</th>
+                  </tr>
+                  <tr>
+                    <td>Industry</td>
+                    <td>
+                      <select>
+                        <option value="" disabled selected>
+                          Select an option
+                        </option>
+                        <option value="option1">Hindalco</option>
+                      </select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Department</td>
+                    <td>
+                      <select>
+                        <option value="" disabled selected>
+                          Select an option
+                        </option>
+                        <option value="option1">IT</option>
+                        <option value="option2">Technical</option>
+                        <option value="option3">Mechanical</option>
+                        <option value="option4">Civil</option>
+                      </select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>User Type</td>
+                    <td>
+                      <select>
+                        <option value="" disabled selected>
+                          Select an option
+                        </option>
+                        <option value="option1">Admin</option>
+                        <option value="option2">Employee</option>
+                        <option value="option3">Vendor</option>
+                      </select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Card Type</td>
+                    <td>
+                      <select>
+                        <option value="" disabled selected>
+                          Select an option
+                        </option>
+                        <option value="option1">AMC CONTRACTOR</option>
+                        <option value="option2">REGULAR CONTRACTOR (K-LTS)</option>
+                        <option value="option3">REGULAR CONTRACTOR (NON-LTS)</option>
+                        <option value="option4">REGULAR CONTRACTOR (Y-LTS)</option>
+                        <option value="option5">SHUT DOWN CONTRACTOR (NON-LTS)</option>
+                      </select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>ESI No/WC Policy No:</td>
+                    <td><input type="text" /></td>
+                  </tr>
+                  <tr>
+                    <td>PF No:</td>
+                    <td><input type="text" /></td>
+                  </tr>
+                  <tr>
+                    <td>IME No:</td>
+                    <td><input type="text" /></td>
+                  </tr>
+                  <tr>
+                    <td>VTC No:</td>
+                    <td><input type="text" /></td>
+                  </tr>
+                </table>
+
+                <table>
+                  <tr>
+                    <th colspan="2">Personal Information</th>
+                  </tr>
+                  <tr>
+                    <td>Full Name:</td>
+                    <td><input type="text" /></td>
+                  </tr>
+                  <tr>
+                    <td>Gender:</td>
+                    <td>
+                      <label
+                        ><input type="radio" name="gender" value="male" />
+                        Male</label
+                      >
+                      <label
+                        ><input type="radio" name="gender" value="female" />
+                        Female</label
+                      >
+                      <label
+                        ><input type="radio" name="gender" value="female" />
+                        Other</label
+                      >
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Date of Birth:</td>
+                    <td><input type="date" /></td>
+                  </tr>
+                  <tr>
+                    <td>Nationality:</td>
+                    <td><input type="text" /></td>
+                  </tr>
+                  <tr>
+                    <td>Marital Status:</td>
+                    <td><input type="text" /></td>
+                  </tr>
+                  <tr>
+                    <td>Identity</td>
+                    <td><input type="file" /></td>
+                  </tr>
+                </table>
+
+                <table>
+                  <tr>
+                    <th colspan="2">Contact Information</th>
+                  </tr>
+                  <tr>
+                    <td>Permanent Address:</td>
+                    <td><input type="text" /></td>
+                  </tr>
+                  <tr>
+                    <td>Current Address:</td>
+                    <td><input type="text" /></td>
+                  </tr>
+                  <tr>
+                    <td>Telephone Number:</td>
+                    <td><input type="tel" /></td>
+                  </tr>
+                  <tr>
+                    <td>E-mail Address:</td>
+                    <td><input type="email" /></td>
+                  </tr>
+                </table>
+
+                <table>
+                  <tr>
+                    <th colspan="2">Emergency Contact Information</th>
+                  </tr>
+                  <tr>
+                    <td>Full Name:</td>
+                    <td><input type="text" /></td>
+                  </tr>
+                  <tr>
+                    <td>Relationship:</td>
+                    <td><input type="text" /></td>
+                  </tr>
+                  <tr>
+                    <td>Telephone Number:</td>
+                    <td><input type="tel" /></td>
+                  </tr>
+                  <tr>
+                    <td>E-mail Address:</td>
+                    <td><input type="email" /></td>
+                  </tr>
+                  <tr>
+                    <td>Address:</td>
+                    <td><input type="text" /></td>
+                  </tr>
+                </table>
+
+                <table>
+                  <tr>
+                    <th colspan="2">Education Information</th>
+                  </tr>
+                  <tr>
+                    <td>University Name:</td>
+                    <td><input type="text" /></td>
+                  </tr>
+                  <tr>
+                    <td>Degree:</td>
+                    <td><input type="text" /></td>
+                  </tr>
+                  <tr>
+                    <td>Year of Graduation:</td>
+                    <td><input type="text" /></td>
+                  </tr>
+                </table>
+
+                <table>
+                  <tr>
+                    <th colspan="2">Job Information</th>
+                  </tr>
+                  <tr>
+                    <td>Position Title:</td>
+                    <td><input type="text" /></td>
+                  </tr>
+                  <tr>
+                    <td>Department:</td>
+                    <td><input type="text" /></td>
+                  </tr>
+                  <tr>
+                    <td>Start Date:</td>
+                    <td><input type="date" /></td>
+                  </tr>
+                </table>
+
+                <table>
+                  <tr>
+                    <th colspan="2">Previous Employment Information</th>
+                  </tr>
+                  <tr>
+                    <td>Company:</td>
+                    <td><input type="text" /></td>
+                  </tr>
+                  <tr>
+                    <td>Position Held:</td>
+                    <td><input type="text" /></td>
+                  </tr>
+                  <tr>
+                    <td>Reason for Leaving:</td>
+                    <td><input type="text" /></td>
+                  </tr>
+                </table>
+
+                <table>
+                  <tr>
+                    <th colspan="2">Banking Information</th>
+                  </tr>
+                  <tr>
+                    <td>Bank Name:</td>
+                    <td><input type="text" /></td>
+                  </tr>
+                  <tr>
+                    <td>Account Number:</td>
+                    <td><input type="text" /></td>
+                  </tr>
+                  <tr>
+                    <td>Account Holder's Name:</td>
+                    <td><input type="text" /></td>
+                  </tr>
+                  <tr>
+                    <td>Bank Branch:</td>
+                    <td><input type="text" /></td>
+                  </tr>
+                  <tr>
+                    <td>IFSC:</td>
+                    <td><input type="text" /></td>
+                  </tr>
+                  <tr>
+                    <td>UAN No:</td>
+                    <td><input type="text" /></td>
+                  </tr>
+                </table>
+
+                <table>
+                  <tr>
+                    <th colspan="2">Reference</th>
+                  </tr>
+                  <tr>
+                    <td>Full Name:</td>
+                    <td><input type="text" /></td>
+                  </tr>
+                  <tr>
+                    <td>Relationship:</td>
+                    <td><input type="text" /></td>
+                  </tr>
+                  <tr>
+                    <td>Telephone Number:</td>
+                    <td><input type="tel" /></td>
+                  </tr>
+                  <tr>
+                    <td>E-mail:</td>
+                    <td><input type="email" /></td>
+                  </tr>
+                </table>
+
+                <table>
+                  <tr>
+                    <th colspan="2">Declaration</th>
+                  </tr>
+                  <tr>
+                    <td>Signature:</td>
+                    <td><input type="file" /></td>
+                  </tr>
+                  <tr>
+                    <td>Date:</td>
+                    <td><input type="date" /></td>
+                  </tr>
+                  <tr>
+                    <td>PAN Card</td>
+                    <td><input type="file" /></td>
+                  </tr>
+                  <tr>
+                    <td>Adhar Card</td>
+                    <td><input type="file" /></td>
+                  </tr>
+                </table>
+
+                <div class="confirmation">
+                  <p>
+                    I hereby confirm that all the above information is accurate
+                    to the best of my knowledge.
+                  </p>
+                </div>
+                <input type="submit" class="submit-button-down" />
+
+              </div>
+        </main>
+      </div>
+    </div>
+  </body>
+  <script src="control.js"></script>
+</html>

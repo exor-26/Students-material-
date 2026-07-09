@@ -1,0 +1,2627 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>HR Dashboard - Attendance</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="icon" type="image/x-icon" href="logo2.ico" />
+  <link rel="stylesheet" type="text/css" href="Hremployeeattendence.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap-theme.min.css">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+
+  <style>
+    *, *::before, *::after {
+      cursor:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" viewBox="0 0 24 24"><path fill="%23FFF" stroke="%23FF2711" stroke-width="2" d="M5.5 3.21V20.8c0 .45.54.67.85.35l4.86-4.86a.5.5 0 0 1 .35-.15h6.87a.5.5 0 0 0 .35-.85L6.35 2.85a.5.5 0 0 0-.85.35Z"></path></svg>') 5 5, auto;
+    }
+
+    a, button, input[type="submit"], input[type="button"],
+    label, select, .dropbtn, .sub-btn, .btn, .cn,
+    .carousel-control, .hideMenuButton, .item a,
+    input[type="text"], input[type="search"], textarea {
+      cursor:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="%23FFF" stroke="%23FF2711" stroke-width="2" stroke-linejoin="round" d="M10 11V8.99c0-.88.59-1.64 1.44-1.86h.05A1.99 1.99 0 0 1 14 9.05V12v-2c0-.88.6-1.65 1.46-1.87h.05A1.98 1.98 0 0 1 18 10.06V13v-1.94a2 2 0 0 1 1.51-1.94h0A2 2 0 0 1 22 11.06V14c0 .6-.08 1.27-.21 1.97a7.96 7.96 0 0 1-7.55 6.48 54.98 54.98 0 0 1-4.48 0 7.96 7.96 0 0 1-7.55-6.48C2.08 15.27 2 14.59 2 14v-1.49c0-1.11.9-2.01 2.01-2.01h0a2 2 0 0 1 2.01 2.03l-.01.97v-10c0-1.1.9-2 2-2h0a2 2 0 0 1 2 2V11Z"></path></svg>') 5 5, auto;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --topbar-height: 78px;
+      --sidebar-width: 280px;
+
+      --bg-1: #06111f;
+      --bg-2: #0b233f;
+      --card: rgba(10, 24, 42, 0.86);
+      --card-2: rgba(13, 31, 53, 0.94);
+      --border: rgba(255, 255, 255, 0.08);
+      --text-soft: #cddcf1;
+      --text-dim: #99afca;
+      --gold: #fff0b8;
+      --blue-1: #1c75bc;
+      --blue-2: #125c9b;
+      --blue-3: #2d7dff;
+      --blue-4: #1657cc;
+      --orange-1: #ff8a3c;
+      --orange-2: #ff5a1f;
+      --shadow: 0 18px 40px rgba(0, 0, 0, 0.26);
+    }
+
+    html,
+    body {
+      width: 100%;
+      min-height: 100%;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background:
+        linear-gradient(135deg, rgba(6, 17, 31, 0.96), rgba(11, 35, 63, 0.94)),
+        radial-gradient(circle at top right, rgba(48, 105, 194, 0.15), transparent 35%);
+      color: #fff;
+      overflow: hidden;
+    }
+
+    body {
+      position: relative;
+    }
+
+    .header {
+      height: var(--topbar-height);
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(7, 17, 31, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1100;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      min-width: 0;
+    }
+
+    .top-menu-toggle {
+      width: 46px;
+      height: 46px;
+      border: none;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
+      color: #fff;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: 0.25s ease;
+      flex-shrink: 0;
+    }
+
+    .top-menu-toggle:hover {
+      background: linear-gradient(135deg, rgba(255,122,47,0.18), rgba(31,119,255,0.16));
+      transform: translateY(-1px);
+    }
+
+    .header-brand {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-width: 0;
+    }
+
+    .header-brand a {
+      color: #fff !important;
+      text-decoration: none !important;
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+      line-height: 1.1;
+    }
+
+    .header-brand a:hover {
+      color: #fff !important;
+      text-decoration: none !important;
+    }
+
+    .header-subtitle {
+      margin-top: 4px;
+      color: var(--text-dim);
+      font-size: 13px;
+      font-weight: 500;
+      line-height: 1.3;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    #bellContainer {
+      position: relative;
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      transition: 0.25s ease;
+    }
+
+    #bellContainer:hover {
+      background: rgba(255, 255, 255, 0.12);
+      transform: translateY(-1px);
+    }
+
+    #bellBadge {
+      position: absolute;
+      top: 3px;
+      right: 3px;
+      min-width: 18px;
+      height: 18px;
+      padding: 0 5px;
+      border-radius: 999px;
+      background: #ff4d4f;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .logout {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 10px 18px;
+      border-radius: 14px;
+      text-decoration: none !important;
+      color: #fff !important;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--orange-1), var(--orange-2));
+      box-shadow: 0 12px 26px rgba(255, 90, 31, 0.22);
+      transition: 0.25s ease;
+    }
+
+    .logout:hover {
+      transform: translateY(-1px);
+      color: #fff !important;
+      text-decoration: none !important;
+    }
+
+    #notificationBox {
+      display: none;
+      position: fixed;
+      top: calc(var(--topbar-height) - 8px);
+      right: 85px;
+      width: 320px;
+      max-height: 330px;
+      overflow-y: auto;
+      background: rgba(8, 21, 39, 0.98);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 14px;
+      box-shadow: 0 22px 46px rgba(0, 0, 0, 0.32);
+      z-index: 1200;
+    }
+
+    .notification-item {
+      padding: 12px 14px;
+      margin-bottom: 10px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .notification-item p {
+      margin: 0 0 6px;
+      color: var(--text-soft);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .notification-item p:last-child {
+      margin-bottom: 0;
+    }
+
+    .down-part {
+      width: 100%;
+      height: 100vh;
+    }
+
+    /* ===== ONLY NAVBAR / SIDEBAR CHANGED ===== */
+    nav {
+      position: fixed;
+      top: var(--topbar-height);
+      left: 0;
+      bottom: 0;
+      width: var(--sidebar-width);
+      padding: 20px 16px 24px;
+      background: linear-gradient(180deg, rgba(6, 16, 30, 0.98), rgba(8, 22, 40, 0.96));
+      backdrop-filter: blur(16px);
+      border-right: 1px solid rgba(255,255,255,0.06);
+      overflow-y: auto;
+      overflow-x: hidden;
+      z-index: 1000;
+      box-shadow: 18px 0 45px rgba(0, 0, 0, 0.24);
+    }
+
+    nav::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    nav::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,0.14);
+      border-radius: 999px;
+    }
+
+    .sidebar-top-card {
+      position: relative;
+      padding: 20px 18px 18px;
+      border-radius: 24px;
+      background:
+        linear-gradient(135deg, rgba(255,122,47,0.16), rgba(31,119,255,0.14)),
+        rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow:
+        0 16px 32px rgba(0,0,0,0.20),
+        inset 0 1px 0 rgba(255,255,255,0.06);
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+
+    .sidebar-top-card::after {
+      content: "";
+      position: absolute;
+      right: -30px;
+      top: -30px;
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,255,255,0.16), transparent 70%);
+    }
+
+    .sidebar-mini-label {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.4px;
+      color: #ffd8c2;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: 5px 10px;
+      border-radius: 999px;
+      margin-bottom: 12px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .sidebar-main-title {
+      font-size: 19px;
+      font-weight: 800;
+      color: #ffffff;
+      margin: 0 0 6px;
+      line-height: 1.2;
+      position: relative;
+      z-index: 1;
+    }
+
+    .sidebar-main-subtitle {
+      font-size: 13px;
+      color: #d5e2f1;
+      line-height: 1.7;
+      margin: 0 0 14px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .sidebar-status-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      position: relative;
+      z-index: 1;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .sidebar-status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #dfffe9;
+      background: rgba(20,184,106,0.14);
+      border: 1px solid rgba(20,184,106,0.22);
+    }
+
+    .sidebar-status-badge::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #4df39b;
+      box-shadow: 0 0 10px rgba(77,243,155,0.7);
+    }
+
+    .sidebar-status-text {
+      font-size: 11px;
+      color: #c6d8ec;
+      text-align: right;
+      line-height: 1.4;
+    }
+
+    .sidebar-section-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #8ea4c5;
+      margin: 0 8px 16px;
+      font-weight: 700;
+    }
+
+    #side-bar {
+      list-style: none;
+      padding-left: 0;
+      margin-bottom: 0;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    #side-bar li {
+      width: 100%;
+      margin: 0;
+    }
+
+    #side-bar a,
+    #side-bar summary {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      width: 100%;
+      padding: 15px 15px;
+      border-radius: 20px;
+      text-decoration: none !important;
+      color: #edf4ff !important;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.055), rgba(255,255,255,0.025));
+      border: 1px solid rgba(255,255,255,0.06);
+      transition: all 0.28s ease;
+      position: relative;
+      overflow: hidden;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+    }
+
+    #side-bar a::before,
+    #side-bar summary::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, rgba(255,122,47,0.13), rgba(31,119,255,0.11));
+      opacity: 0;
+      transition: opacity 0.28s ease;
+    }
+
+    #side-bar a::after,
+    #side-bar summary::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 18%;
+      width: 4px;
+      height: 64%;
+      border-radius: 999px;
+      background: linear-gradient(180deg, #ff8a3c, #1f77ff);
+      opacity: 0;
+      transition: opacity 0.28s ease;
+    }
+
+    #side-bar a:hover,
+    #side-bar summary:hover {
+      transform: translateX(6px);
+      border-color: rgba(255,255,255,0.10);
+      box-shadow: 0 14px 28px rgba(0,0,0,0.20);
+    }
+
+    #side-bar a:hover::before,
+    #side-bar summary:hover::before,
+    #side-bar a:hover::after,
+    #side-bar summary:hover::after {
+      opacity: 1;
+    }
+
+    #side-bar a.active,
+    #side-bar summary.active {
+      background: linear-gradient(135deg, rgba(255,122,47,0.18), rgba(31,119,255,0.16));
+      border-color: rgba(255,255,255,0.12);
+      box-shadow: 0 16px 30px rgba(0,0,0,0.24);
+    }
+
+    #side-bar a.active::before,
+    #side-bar summary.active::before,
+    #side-bar a.active::after,
+    #side-bar summary.active::after {
+      opacity: 1;
+    }
+
+    .nav-icon {
+      width: 44px;
+      height: 44px;
+      min-width: 44px;
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, rgba(255,255,255,0.13), rgba(255,255,255,0.05));
+      border: 1px solid rgba(255,255,255,0.08);
+      color: #fff;
+      font-size: 17px;
+      position: relative;
+      z-index: 1;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+    }
+
+    .nav-text {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .nav-text strong {
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.2;
+    }
+
+    .nav-text span {
+      margin-top: 4px;
+      font-size: 11px;
+      line-height: 1.45;
+      color: #aabed8;
+    }
+
+    .nav-arrow {
+      margin-left: auto;
+      font-size: 16px;
+      color: #93b2d8;
+      position: relative;
+      z-index: 1;
+      transition: transform 0.25s ease;
+    }
+
+    #side-bar a:hover .nav-arrow,
+    #side-bar summary:hover .nav-arrow {
+      transform: translateX(4px);
+    }
+    /* ===== END NAVBAR / SIDEBAR CHANGED ===== */
+
+    main {
+      position: fixed;
+      top: var(--topbar-height);
+      left: var(--sidebar-width);
+      right: 0;
+      bottom: 0;
+      overflow-y: auto;
+      padding: 28px;
+    }
+
+    .content {
+      background: linear-gradient(135deg, rgba(22, 61, 112, 0.88), rgba(12, 27, 53, 0.94));
+      border: 1px solid var(--border);
+      border-radius: 26px;
+      padding: 30px 34px;
+      margin-bottom: 22px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .content::after {
+      content: "";
+      position: absolute;
+      top: -70px;
+      right: -80px;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 122, 47, 0.2), transparent 68%);
+    }
+
+    .page-tag {
+      display: inline-block;
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      color: #ffb88f;
+      background: rgba(255, 122, 47, 0.16);
+      border: 1px solid rgba(255, 122, 47, 0.2);
+      margin-bottom: 14px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .content h1 {
+      margin: 0 0 10px;
+      font-size: 32px;
+      font-weight: 800;
+      color: #fff;
+      position: relative;
+      z-index: 1;
+    }
+
+    .content p {
+      margin: 0;
+      max-width: 860px;
+      color: var(--text-soft);
+      font-size: 15px;
+      line-height: 1.75;
+      position: relative;
+      z-index: 1;
+    }
+
+    .main-container {
+      margin: 0 0 22px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    .container-employee-details,
+    .container-filter-details {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .section-header h2 {
+      margin: 0;
+      font-size: 26px !important;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .section-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #d6e9ff;
+      background: rgba(80, 145, 255, 0.14);
+      border: 1px solid rgba(80, 145, 255, 0.22);
+      white-space: nowrap;
+    }
+
+    .hr-info-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .filter-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .details {
+      margin-bottom: 0;
+      position: relative;
+    }
+
+    .index {
+      display: block;
+      width: 100% !important;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+
+    /* HR DETAILS ALIGNMENT */
+.value{
+  width:100%;
+
+  height:52px !important;
+  min-height:52px !important;
+
+  border-radius:16px !important;
+
+  border:1px solid rgba(255,255,255,0.10) !important;
+
+  background:rgba(255,255,255,0.06) !important;
+
+  color:#fff !important;
+
+  padding:0 18px !important;
+
+  font-size:15px !important;
+  font-weight:500;
+
+  display:flex;
+  align-items:center;
+
+  box-sizing:border-box;
+
+  transition:0.25s ease;
+}
+
+
+/* INPUT + DROPDOWN */
+.value input,
+.value select,
+.details input[type="text"],
+.details input[type="date"],
+.details select{
+
+  width:100% !important;
+
+  height:52px !important;
+  min-height:52px !important;
+
+  border-radius:16px !important;
+
+  border:1px solid rgba(255,255,255,0.10) !important;
+
+  background:rgba(255,255,255,0.06) !important;
+
+  color:#fff !important;
+
+  padding:0 16px !important;
+
+  font-size:15px !important;
+  font-weight:500;
+
+  outline:none !important;
+
+  box-shadow:none !important;
+
+  transition:all 0.25s ease;
+
+  box-sizing:border-box;
+
+  -webkit-appearance:none;
+  appearance:none;
+}
+
+
+/* DROPDOWN UI */
+.value select,
+.details select{
+
+  padding-right:42px !important;
+
+  background-image:
+    linear-gradient(45deg, transparent 50%, #9fb4cf 50%),
+    linear-gradient(135deg, #9fb4cf 50%, transparent 50%);
+
+  background-position:
+    calc(100% - 20px) calc(50% - 3px),
+    calc(100% - 14px) calc(50% - 3px);
+
+  background-size:6px 6px;
+
+  background-repeat:no-repeat;
+
+  cursor:pointer;
+}
+
+
+/* OPTION COLOR */
+.value select option,
+.details select option{
+  color:#000 !important;
+  background:#fff !important;
+}
+
+
+/* FOCUS EFFECT */
+.value input:focus,
+.value select:focus,
+.details input:focus,
+.details select:focus{
+
+  border-color:rgba(31,119,255,0.65) !important;
+
+  box-shadow:
+    0 0 0 4px rgba(31,119,255,0.10) !important;
+
+  background:rgba(255,255,255,0.08) !important;
+}
+
+
+/* PLACEHOLDER */
+.details input::placeholder{
+  color:#9fb4cf !important;
+}
+
+
+/* DATE ALIGN FIX */
+input[type="date"]::-webkit-date-and-time-value{
+  text-align:left;
+}
+
+
+/* iPad Safari Fix */
+@supports (-webkit-touch-callout: none){
+
+  .value input,
+  .value select,
+  .details input,
+  .details select{
+
+    height:52px !important;
+
+    line-height:normal !important;
+
+    padding-top:0 !important;
+    padding-bottom:0 !important;
+
+    -webkit-appearance:none;
+    appearance:none;
+  }
+}
+
+
+    .details input::placeholder {
+      color: #a0b4cd;
+    }
+
+    .details select option {
+      color: #000;
+      background: #fff;
+    }
+
+    #nameSuggestions {
+      display: none;
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0;
+      right: 0;
+      background: rgba(8, 21, 39, 0.98);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      box-shadow: 0 16px 30px rgba(0, 0, 0, 0.28);
+      z-index: 100;
+      max-height: 220px;
+      overflow-y: auto;
+    }
+
+    .suggestion-item {
+      padding: 12px 14px;
+      cursor: pointer;
+      color: #dce9f7;
+      font-size: 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .suggestion-item:last-child {
+      border-bottom: none;
+    }
+
+    .suggestion-item:hover {
+      background: rgba(63, 131, 248, 0.12);
+    }
+
+    .submit-wrap {
+      margin-top: 18px;
+    }
+
+    #attendanceSubmit.btn.btn-primary {
+      min-height: 50px;
+      padding: 12px 20px !important;
+      margin-left: 0 !important;
+      border: none !important;
+      border-radius: 14px !important;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--blue-3), var(--blue-4)) !important;
+      box-shadow: 0 12px 26px rgba(45, 125, 255, 0.22);
+      width: 100%;
+      position: relative;
+      transition: 0.2s ease;
+    }
+
+    #attendanceSubmit[disabled] {
+      opacity: 0.8;
+      cursor: not-allowed;
+    }
+
+    .attendance-section {
+      background: rgba(10, 24, 42, 0.82);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 26px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .attendance-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .attendance-header h3 {
+      margin: 0;
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--gold);
+      letter-spacing: 0.2px;
+    }
+
+    .attendance-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #d6e9ff;
+      background: rgba(80, 145, 255, 0.14);
+      border: 1px solid rgba(80, 145, 255, 0.22);
+      white-space: nowrap;
+    }
+
+    .table {
+      margin: 0;
+      background: transparent;
+      padding: 0;
+      box-shadow: none;
+      border: none;
+    }
+
+    .table-wrap {
+  border-radius: 18px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  background: rgba(18, 36, 61, 0.96);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+    .table table {
+  min-width: 1000px;
+  width: max-content;
+  margin: 0;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+    .table thead tr {
+      background: linear-gradient(135deg, var(--blue-1), var(--blue-2));
+    }
+
+    .table th {
+      color: #fff4cc;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      text-align: center;
+      vertical-align: middle;
+      padding: 16px 12px !important;
+      border: none !important;
+      white-space: nowrap;
+    }
+
+    .table td {
+      padding: 16px 12px !important;
+      text-align: center;
+      vertical-align: middle;
+      color: #dce9f7;
+      border-top: 1px solid rgba(255, 255, 255, 0.05) !important;
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .table tbody tr:hover td {
+      background: rgba(63, 131, 248, 0.08);
+    }
+
+    .attendanceCheckbox {
+      transform: scale(1.15);
+      cursor: pointer;
+      accent-color: #2d7dff;
+    }
+
+    .view-calendar {
+      border: none !important;
+      border-radius: 10px !important;
+      padding: 8px 14px !important;
+      background: linear-gradient(135deg, #1dcf78, #119b57) !important;
+      color: #fff !important;
+      font-size: 12px;
+      font-weight: 700;
+      box-shadow: none !important;
+    }
+
+    .empty-state {
+      padding: 24px 14px !important;
+      text-align: center;
+      color: #9fb5ca !important;
+      font-style: italic;
+      font-size: 13px;
+      background: rgba(255, 255, 255, 0.02) !important;
+    }
+
+    #floatingCalendar {
+      display: none;
+      position: fixed !important;
+      background: #ffffff !important;
+      color: #1a1a1a;
+      border: none !important;
+      padding: 14px !important;
+      border-radius: 16px !important;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.28) !important;
+      z-index: 2000 !important;
+      width: min(560px, calc(100vw - 16px));
+      max-width: calc(100vw - 16px);
+      max-height: min(82vh, 760px);
+      overflow: auto;
+      box-sizing: border-box;
+    }
+
+    #floatingCalendarTitle {
+      margin: 0 0 12px 0 !important;
+      font-size: 16px !important;
+      font-weight: 800;
+      color: #0b2340;
+    }
+
+    #floatingCalendarContent {
+      width: 100%;
+      box-sizing: border-box;
+      grid-template-columns: repeat(7, minmax(0, 1fr)) !important;
+      gap: 6px !important;
+    }
+
+    #floatingCalendarContent>div {
+      min-height: 46px;
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1.3;
+      font-size: 11px;
+      padding: 6px 2px !important;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+
+    @media (max-width: 991px) {
+  html,
+  body {
+    width: 100%;
+    min-height: 100%;
+    height: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .down-part {
+    width: 100%;
+    height: auto;
+    min-height: 100vh;
+    overflow: visible;
+    padding-top: var(--topbar-height);
+  }
+
+  nav {
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+
+    /* FIX: Command Center scroll ke saath upar jayega */
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    bottom: auto;
+
+    height: auto;
+    max-height: none;
+    overflow: visible;
+
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 0 0 24px 24px;
+    z-index: 100;
+    padding: 14px;
+  }
+
+  #side-bar {
+    display: none;
+    gap: 10px;
+    margin-top: 10px;
+  }
+
+  #side-bar.active {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sidebar-status-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .sidebar-status-text {
+    text-align: left;
+  }
+
+  main {
+    /* FIX: main normal page scroll mein rahega */
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    bottom: auto;
+
+    width: 100%;
+    padding: 18px;
+    overflow: visible;
+  }
+
+  .hr-info-grid,
+  .filter-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .content h1 {
+    font-size: 28px;
+  }
+}
+
+
+@media (max-width: 1024px) {
+  .table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .table table {
+    min-width: 1000px;
+  }
+}
+
+
+    @media (max-width: 600px) {
+      .header {
+        padding: 0 14px;
+      }
+
+      .header-brand a {
+        font-size: 20px;
+      }
+
+      .header-subtitle {
+        font-size: 11px;
+      }
+
+      .content,
+      .container-employee-details,
+      .container-filter-details,
+      .attendance-section {
+        padding: 18px;
+      }
+
+      .table-wrap {
+        overflow-x: auto;
+      }
+
+      #notificationBox {
+        width: 280px;
+        right: 16px;
+      }
+
+      #floatingCalendar {
+        width: calc(100vw - 16px) !important;
+        max-width: calc(100vw - 16px) !important;
+        left: 8px !important;
+        right: 8px !important;
+        transform: none !important;
+        padding: 12px !important;
+      }
+
+      #floatingCalendarContent {
+        gap: 4px !important;
+      }
+
+      #floatingCalendarContent > div {
+        font-size: 10px;
+        min-height: 42px;
+        padding: 4px 1px !important;
+      }
+
+      #floatingCalendar {
+        width: calc(100vw - 16px) !important;
+        max-width: calc(100vw - 16px) !important;
+        padding: 12px !important;
+      }
+
+      #floatingCalendarContent {
+        gap: 4px !important;
+      }
+
+      #floatingCalendarContent > div {
+        font-size: 10px;
+        min-height: 42px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="header">
+    <div class="header-left">
+      <button class="top-menu-toggle" onclick="toggleMenu()">☰</button>
+
+      <div class="header-brand">
+        <a href="#">HR Dashboard</a>
+        <div class="header-subtitle">Attendance Management & Workforce Tracking Panel</div>
+      </div>
+    </div>
+
+    <div class="header-right">
+      <div id="bellContainer">
+        <span class="glyphicon glyphicon-bell" style="font-size:24px;"></span>
+        <span id="bellBadge" class="badge" style="display:none;">0</span>
+      </div>
+      <a href="#" class="logout" onclick="logoutUser()">Logout</a>
+    </div>
+  </div>
+
+  <div id="notificationBox"></div>
+
+  <div class="down-part">
+    <nav>
+      <div class="sidebar-top-card">
+        <div class="sidebar-mini-label">HR Panel</div>
+        <h3 class="sidebar-main-title">Command Center</h3>
+        <p class="sidebar-main-subtitle">
+          Access attendance records, employee filtering, and important HR sections from one clean navigation area.
+        </p>
+
+        <div class="sidebar-status-row">
+          <span class="sidebar-status-badge">Attendance Active</span>
+          <div class="sidebar-status-text">
+            Secure access<br />
+            Quick navigation
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-section-title">Navigation</div>
+      <ul id="side-bar"></ul>
+    </nav>
+
+    <main>
+      <div class="content">
+        <span class="page-tag">ATTENDANCE MANAGEMENT</span>
+        <h1>Attendance</h1>
+        <p>
+          The administrative department manages workforce attendance records, daily tracking,
+          and employee-wise monitoring in one unified HR dashboard panel.
+        </p>
+      </div>
+
+      <div class="main-container">
+        <div class="container-employee-details">
+          <div class="section-header">
+            <h2>HR Details</h2>
+            <span class="section-badge">Basic Information</span>
+          </div>
+
+          <div class="hr-info-grid">
+            <div class="details">
+              <div class="index">HR Name</div>
+              <div class="value" id="hrNameDisplay">Loading...</div>
+            </div>
+
+            <div class="details">
+              <div class="index">HR Id</div>
+              <div class="value" id="hrIdDisplay">Loading...</div>
+            </div>
+
+            <div class="details">
+              <div class="index">Joining Year</div>
+              <div class="value" id="joiningYearDisplay">Loading...</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="container-filter-details">
+          <div class="section-header">
+            <h2>Filter Attendance</h2>
+            <span class="section-badge">Search Workforce Records</span>
+          </div>
+
+          
+<div class="filter-grid">
+            <div class="details">
+              <div class="index">Date</div>
+              <div class="value" style="display:block; background:transparent; border:none; padding:0;">
+                <input type="date" id="hrDate">
+              </div>
+            </div>
+
+            <div class="details">
+              <div class="index">Site</div>
+              <div class="value" style="display:block; background:transparent; border:none; padding:0;">
+                <select id="siteSelect" class="form-control">
+                  <option value="">All Sites</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="details">
+              <div class="index">Department</div>
+              <div class="value" style="display:block; background:transparent; border:none; padding:0;">
+                <select id="deptSelect" class="form-control">
+                  <option value="">All Departments</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="details">
+              <div class="index">Job Role</div>
+              <div class="value" style="display:block; background:transparent; border:none; padding:0;">
+                <select id="roleSelect" class="form-control">
+                  <option value="">All Roles</option>
+                  <option value="SI">SI</option>
+                  <option value="Supervisor">Supervisor</option>
+                  <option value="AS">AS</option>
+                  <option value="Employee">Employee</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="details">
+              <div class="index">Employee Name</div>
+              <div class="value" style="display:block; background:transparent; border:none; padding:0;">
+                <input type="text" id="employeeNameInput" class="form-control" placeholder="Type employee name">
+              </div>
+              <div id="nameSuggestions"></div>
+            </div>
+
+            <div class="details">
+              <div class="index">Employee Id</div>
+              <div class="value" style="display:block; background:transparent; border:none; padding:0;">
+                <select id="employeeIdSelect" class="form-control">
+                  <option value="">Auto Fetch Employee ID</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="submit-wrap">
+            <button type="button" id="attendanceSubmit" class="btn btn-primary">Submit</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="attendance-section">
+        <div class="attendance-header">
+          <h3>Attendance Records</h3>
+          <span class="attendance-badge">Monthly View</span>
+        </div>
+
+        <div class="table">
+          <div class="table-wrap">
+            <table>
+              
+<thead>
+                <tr>
+                  <th>No. of Absent</th>
+                  <th>No. of Present</th>
+                  <th>Total Days</th>
+                  <th>UID</th>
+                  <th>Name</th>
+                  <th>Site</th>
+                  <th>Job Role</th>
+                  <th>Mark Attendance</th>
+                  <th>Calendar</th>
+                </tr>
+              </thead>
+
+              <tbody id="attendanceTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div id="floatingCalendar">
+        <h4 id="floatingCalendarTitle"></h4>
+        <div id="floatingCalendarContent" style="display:grid; grid-template-columns: repeat(7, 1fr); gap:6px;"></div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    function toggleMenu() {
+      const sidebar = document.getElementById("side-bar");
+      sidebar.classList.toggle("active");
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const currentPage = window.location.pathname.split("/").pop();
+      const navLinks = document.querySelectorAll("#side-bar a");
+
+      navLinks.forEach(link => {
+        const href = link.getAttribute("href");
+        if (href === currentPage) {
+          link.classList.add("active");
+        }
+      });
+    });
+  </script>
+
+  <script type="module" src="/public/control.js"></script>
+
+<script type="module">
+  import {
+    getFirestore,
+    doc,
+    getDoc,
+    getDocs,
+    setDoc,
+    updateDoc,
+    collection
+  } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+  import { app } from "/public/firebase-config.js";
+
+  const db = getFirestore(app);
+
+  const EMPLOYEE_COLLECTIONS = ["AS", "Supervisor", "Site-Incharge", "Employee"];
+
+  let currentHrUid = "";
+  let currentHrName = "";
+  let currentHrEmail = "";
+  let currentHrSites = [];
+  let currentHrDepartments = [];
+  let allHrEmployees = [];
+
+  const hrNameDisplay = document.getElementById("hrNameDisplay");
+  const hrIdDisplay = document.getElementById("hrIdDisplay");
+  const joiningYearDisplay = document.getElementById("joiningYearDisplay");
+
+  const hrDateInput = document.getElementById("hrDate");
+  const siteSelect = document.getElementById("siteSelect");
+  const deptSelect = document.getElementById("deptSelect");
+  const roleSelect = document.getElementById("roleSelect");
+  const employeeNameInput = document.getElementById("employeeNameInput");
+  const employeeIdSelect = document.getElementById("employeeIdSelect");
+  const nameSuggestions = document.getElementById("nameSuggestions");
+  const attendanceSubmitBtn = document.getElementById("attendanceSubmit");
+  const tableBody = document.getElementById("attendanceTableBody");
+
+  function setSubmitLoading(isLoading) {
+    attendanceSubmitBtn.disabled = isLoading;
+    attendanceSubmitBtn.textContent = isLoading ? "Submitting..." : "Submit";
+  }
+
+  function normalizeText(value) {
+    return String(value ?? "").replace(/\s+/g, " ").trim();
+  }
+
+  function normalizeComparableText(value) {
+    return normalizeText(value)
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "");
+  }
+
+  function looseTextMatches(a, b) {
+    const left = normalizeComparableText(a);
+    const right = normalizeComparableText(b);
+    if (!left || !right) return false;
+    return left === right || left.includes(right) || right.includes(left);
+  }
+
+  function splitValues(value) {
+    if (!value) return [];
+    return String(value)
+      .split(/[,|/\n]/)
+      .map(item => normalizeText(item))
+      .filter(Boolean);
+  }
+
+  function uniqueBy(arr, keyFn) {
+    const seen = new Set();
+    return arr.filter(item => {
+      const key = keyFn(item);
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+  }
+
+  function formatDate(inputDate) {
+    const dateObj = new Date(inputDate);
+    const day = ("0" + dateObj.getDate()).slice(-2);
+    const month = ("0" + (dateObj.getMonth() + 1)).slice(-2);
+    const year = dateObj.getFullYear().toString().slice(-2);
+    return `${day}-${month}-${year}`;
+  }
+
+  function getMonthSuffix(formattedDate) {
+    return formattedDate.slice(3);
+  }
+
+  function getEmployeeUid(emp) {
+    return normalizeText(
+      emp.uid ||
+      emp.siuid ||
+      emp.userId ||
+      emp.userID ||
+      emp.empId ||
+      emp.employeeId ||
+      emp.email ||
+      emp.Email ||
+      emp.__docId ||
+      ""
+    );
+  }
+
+  function getEmployeeDisplayName(emp) {
+    return normalizeText(
+      emp.fullName ||
+      emp.FullName ||
+      emp.Name ||
+      emp.name ||
+      emp.employeeName ||
+      emp.EmployeeName ||
+      emp.__docId ||
+      getEmployeeUid(emp) ||
+      "Unknown"
+    );
+  }
+
+  function getEmployeeSites(emp) {
+    const raw =
+      emp.site ??
+      emp.Site ??
+      emp.sites ??
+      emp.Sites ??
+      emp.siteName ??
+      emp.site_name ??
+      emp.siteSelect ??
+      emp.workSite ??
+      emp.worksite ??
+      emp.location ??
+      emp.Location ??
+      emp.siteCode ??
+      emp.sitecode ??
+      "";
+
+    let values = [];
+
+    if (Array.isArray(raw)) {
+      values = raw.flatMap(item => splitValues(item));
+    } else if (raw && typeof raw === "object") {
+      values = Object.values(raw).flatMap(item => splitValues(item));
+    } else {
+      values = splitValues(raw);
+    }
+
+    return uniqueBy(values, v => normalizeText(v).toLowerCase());
+  }
+
+  function getEmployeePrimarySite(emp) {
+    return getEmployeeSites(emp)[0] || "";
+  }
+
+  function isLikelyDepartmentLabel(value) {
+    const text = normalizeText(value);
+    if (!text) return false;
+
+    const lower = text.toLowerCase();
+
+    if (lower.includes("@")) return false;
+    if (lower.includes("||")) return false;
+
+    const deptKeywords = [
+      "admin", "attendance", "civil", "construction", "dispatch", "electrical",
+      "engineering", "equipment", "fabrication", "gearbox", "maintenance",
+      "mechanical", "overhauling", "painting", "packing", "plant", "power",
+      "production", "project", "ptm", "quality", "stores", "store", "utility",
+      "workshop", "welding", "site"
+    ];
+
+    const hasDeptKeyword = deptKeywords.some(k => lower.includes(k));
+    const hasDeptShape = /[\d/&(),.-]/.test(text);
+    const wordCount = text.split(/\s+/).filter(Boolean).length;
+
+    // Reject obvious person-name style strings unless they contain a department keyword.
+    const isNameLike = /^[A-Z][a-z]+(?:\s+[A-Z][a-z]+){1,3}$/.test(text) && !hasDeptShape;
+    if (isNameLike && !hasDeptKeyword) return false;
+
+    // Reject isolated single-word labels such as "Mechanical" that are too generic
+    // to be a department on their own, while still allowing real multi-word departments.
+    if (hasDeptKeyword && wordCount < 2 && !hasDeptShape) return false;
+
+    return hasDeptKeyword || hasDeptShape;
+  }
+
+  function collectDepartmentCandidates(input, out) {
+    if (input == null) return;
+
+    if (Array.isArray(input)) {
+      input.forEach(item => collectDepartmentCandidates(item, out));
+      return;
+    }
+
+    if (typeof input === "object") {
+      Object.entries(input).forEach(([key, value]) => {
+        if (isLikelyDepartmentLabel(key)) {
+          out.push(normalizeText(key));
+        }
+        collectDepartmentCandidates(value, out);
+      });
+      return;
+    }
+
+    const textValue = normalizeText(input);
+    if (!textValue) return;
+
+    if (textValue.includes("||")) {
+      const parts = textValue.split("||").map(part => normalizeText(part)).filter(Boolean);
+      const candidateParts = parts.slice(1); // ignore the employee-name portion at the front
+      candidateParts.forEach(part => {
+        const cleaned = part.replace(/\(\d+\)\s*$/, "").trim();
+        if (isLikelyDepartmentLabel(cleaned)) out.push(cleaned);
+      });
+      return;
+    }
+
+    const cleaned = textValue.replace(/\(\d+\)\s*$/, "").trim();
+    if (isLikelyDepartmentLabel(cleaned)) out.push(cleaned);
+  }
+
+  function pruneStandaloneDepartmentSingles(values = []) {
+    return values.filter(value => {
+      const text = normalizeText(value);
+      if (!text) return false;
+
+      const lower = text.toLowerCase();
+      const words = text.split(/\s+/).filter(Boolean);
+      const deptKeywords = [
+        "admin", "attendance", "civil", "construction", "dispatch", "electrical",
+        "engineering", "equipment", "fabrication", "gearbox", "maintenance",
+        "mechanical", "overhauling", "painting", "packing", "plant", "power",
+        "production", "project", "ptm", "quality", "stores", "store", "utility",
+        "workshop", "welding", "site"
+      ];
+
+      const hasKeyword = deptKeywords.some(k => lower.includes(k));
+      const hasShape = /[\d/&(),.-]/.test(text);
+
+      if (words.length === 1 && hasKeyword && !hasShape) {
+        return false;
+      }
+
+      return true;
+    });
+  }
+
+  function getEmployeeDepartments(emp) {
+    // Keep every plausible department source. Some employee docs store the real
+    // department in departmentSelect, while others keep it inside jobs/jobSelect.
+    const rawSources = [
+      emp.jobs,
+      emp.Jobs,
+      emp.jobList,
+      emp.joblist,
+      emp.jobMapping,
+      emp.jobmapping,
+      emp.jobSelect,
+      emp.jobselect,
+      emp.job_select,
+      emp.department,
+      emp.Department,
+      emp.dept,
+      emp.Dept,
+      emp.departmentName,
+      emp.DepartmentName,
+      emp.department_type,
+      emp.departmentType,
+      emp.departmentSelect,
+      emp.DepartmentSelect
+    ];
+
+    const candidates = [];
+    rawSources.forEach(source => collectDepartmentCandidates(source, candidates));
+
+    return uniqueBy(
+      candidates.filter(Boolean),
+      v => normalizeText(v).toLowerCase()
+    );
+  }
+
+  function getEmployeePrimaryDepartment(emp) {
+    return getEmployeeDepartments(emp)[0] || "";
+  }
+
+  function normalizeRoleLabel(value) {
+    const raw = normalizeText(value).toLowerCase();
+    if (!raw) return "";
+
+    if (raw === "all") return "All";
+    if (raw === "si" || raw.includes("site incharge") || raw.includes("site-incharge") || raw.includes("site engineer") || raw.includes("site engineer/incharge")) return "SI";
+    if (raw === "supervisor" || raw.includes("supervisor")) return "Supervisor";
+    if (raw === "as" || raw === "a.s" || raw.includes("assistant supervisor")) return "AS";
+    if (raw === "employee" || raw.includes("employee") || raw.includes("worker") || raw.includes("labour") || raw.includes("labor")) return "Employee";
+
+    return normalizeText(value);
+  }
+
+  function getEmployeeRole(emp) {
+    const collectionRoleMap = {
+      "AS": "AS",
+      "Supervisor": "Supervisor",
+      "Site-Incharge": "SI",
+      "Employee": "Employee"
+    };
+
+    const collectionRole = collectionRoleMap[normalizeText(emp.__collectionName)] || "";
+
+    const explicitRoleCandidates = [
+      emp.jobRole,
+      emp.jobrole,
+      emp.role,
+      emp.Role,
+      emp.designation,
+      emp.Designation,
+      emp.position,
+      emp.Position,
+      emp.post,
+      emp.Post
+    ];
+
+    for (const candidate of explicitRoleCandidates) {
+      const normalized = normalizeRoleLabel(candidate);
+      if (normalized === "SI" || normalized === "Supervisor" || normalized === "AS" || normalized === "Employee") {
+        return normalized;
+      }
+    }
+
+    // Default to the source collection role so role filtering works even when the
+    // document stores jobSelect / job label text that is not a real role.
+    return collectionRole || "Employee";
+  }
+
+  function normalizeSitesFromHr(hrData) {
+    const raw =
+      hrData.site ??
+      hrData.Site ??
+      hrData.sites ??
+      hrData.Sites ??
+      hrData.siteName ??
+      hrData.site_name ??
+      hrData.workSite ??
+      hrData.worksite ??
+      "";
+
+    let sites = [];
+
+    if (Array.isArray(raw)) {
+      sites = raw.flatMap(item => splitValues(item));
+    } else if (raw && typeof raw === "object") {
+      sites = Object.values(raw).flatMap(item => splitValues(item));
+    } else {
+      sites = splitValues(raw);
+    }
+
+    return uniqueBy(sites, site => normalizeText(site).toLowerCase()).sort((a, b) => a.localeCompare(b));
+  }
+
+  function extractDepartmentLabelsFromHrJobs(jobsInput) {
+    const candidates = [];
+
+    const pushCandidate = (value) => {
+      const cleaned = normalizeText(value).replace(/\(\d+\)\s*$/, "").trim();
+      if (cleaned && isLikelyDepartmentLabel(cleaned)) {
+        candidates.push(cleaned);
+      }
+    };
+
+    const visit = (entry) => {
+      if (entry == null) return;
+
+      if (Array.isArray(entry)) {
+        entry.forEach(visit);
+        return;
+      }
+
+      if (typeof entry === "string") {
+        pushCandidate(entry);
+        return;
+      }
+
+      if (typeof entry === "object") {
+        Object.keys(entry).forEach(pushCandidate);
+      }
+    };
+
+    visit(jobsInput);
+
+    return uniqueBy(
+      candidates.filter(Boolean),
+      value => normalizeText(value).toLowerCase()
+    );
+  }
+
+  function normalizeDepartmentsFromHr(hrData) {
+    // HR-level department list should come from the HR jobs mapping first.
+    const jobsSource =
+      hrData.jobs ??
+      hrData.Jobs ??
+      hrData.jobSelect ??
+      hrData.jobselect ??
+      hrData.departmentJobs ??
+      hrData.departmentJobList ??
+      [];
+
+    const jobDepartments = pruneStandaloneDepartmentSingles(
+      extractDepartmentLabelsFromHrJobs(jobsSource)
+    ).sort((a, b) => a.localeCompare(b));
+
+    if (jobDepartments.length) {
+      return jobDepartments;
+    }
+
+    // Fallback only when no job mapping exists.
+    const rawSources = [
+      hrData.department,
+      hrData.Department,
+      hrData.departments,
+      hrData.Departments,
+      hrData.dept,
+      hrData.Dept,
+      hrData.departmentName,
+      hrData.DepartmentName,
+      hrData.departmentList,
+      hrData.departmentSelect
+    ];
+
+    const candidates = [];
+    rawSources.forEach(source => collectDepartmentCandidates(source, candidates));
+
+    return pruneStandaloneDepartmentSingles(
+      uniqueBy(
+        candidates.filter(Boolean),
+        dept => normalizeText(dept).toLowerCase()
+      )
+    ).sort((a, b) => a.localeCompare(b));
+  }
+
+
+
+  function populateSiteOptions(sites = []) {
+    const normalizedSites = uniqueBy(
+      (Array.isArray(sites) ? sites : [])
+        .map(site => normalizeText(site))
+        .filter(Boolean),
+      site => site.toLowerCase()
+    ).sort((a, b) => a.localeCompare(b));
+
+    if (!normalizedSites.length) {
+      siteSelect.innerHTML = `<option value="">No Site Assigned</option>`;
+      siteSelect.disabled = true;
+      siteSelect.value = "";
+      siteSelect.title = "No site is assigned to this HR account.";
+      return;
+    }
+
+    siteSelect.disabled = normalizedSites.length === 1;
+    siteSelect.title = normalizedSites.length === 1
+      ? "Your HR account is locked to this site."
+      : "Select one of your assigned sites.";
+
+    siteSelect.innerHTML = "";
+    normalizedSites.forEach(site => {
+      const option = document.createElement("option");
+      option.value = site;
+      option.textContent = site;
+      siteSelect.appendChild(option);
+    });
+
+    siteSelect.value = normalizedSites[0];
+  }
+
+  function populateDepartmentOptions(departments = [], keepCurrentSelection = true) {
+    const previousValue = keepCurrentSelection ? normalizeText(deptSelect.value) : "";
+
+    const normalizedDepartments = uniqueBy(
+      (Array.isArray(departments) ? departments : [])
+        .map(dept => normalizeText(dept))
+        .filter(Boolean),
+      dept => dept.toLowerCase()
+    ).sort((a, b) => a.localeCompare(b));
+
+    deptSelect.innerHTML = `<option value="">All Departments</option>`;
+    normalizedDepartments.forEach(dept => {
+      const option = document.createElement("option");
+      option.value = dept;
+      option.textContent = dept;
+      deptSelect.appendChild(option);
+    });
+
+    if (previousValue && normalizedDepartments.some(dept => dept.toLowerCase() === previousValue.toLowerCase())) {
+      deptSelect.value = previousValue;
+    } else {
+      deptSelect.value = "";
+    }
+  }
+
+  function getSelectedHrSite() {
+    return normalizeText(siteSelect.value) || currentHrSites[0] || "";
+  }
+
+  function getDepartmentsForSite(siteName = "") {
+    const targetSite = normalizeText(siteName).toLowerCase();
+
+    // Prefer the HR-level department list because it reflects the actual department buckets.
+    if (currentHrDepartments.length) {
+      return currentHrDepartments.slice();
+    }
+
+    const sourceEmployees = targetSite
+      ? allHrEmployees.filter(emp =>
+          getEmployeeSites(emp).some(site => normalizeText(site).toLowerCase() === targetSite)
+        )
+      : allHrEmployees;
+
+    const candidates = [];
+    sourceEmployees.forEach(emp => {
+      getEmployeeDepartments(emp).forEach(dept => candidates.push(dept));
+    });
+
+    return pruneStandaloneDepartmentSingles(
+      uniqueBy(
+        candidates.filter(Boolean),
+        dept => normalizeText(dept).toLowerCase()
+      )
+    ).sort((a, b) => a.localeCompare(b));
+  }
+
+
+  function refreshDepartmentOptionsForSelectedSite() {
+    populateDepartmentOptions(getDepartmentsForSite(getSelectedHrSite()));
+  }
+
+  function populateRoleOptions() {
+
+    roleSelect.innerHTML = `
+      <option value="">All Roles</option>
+      <option value="SI">SI</option>
+      <option value="Supervisor">Supervisor</option>
+      <option value="AS">AS</option>
+      <option value="Employee">Employee</option>
+    `;
+  }
+
+  function clearTable(message = "No records found.") {
+    tableBody.innerHTML = `<tr><td colspan="9" class="empty-state">${message}</td></tr>`;
+  }
+
+  function hideSuggestions() {
+    nameSuggestions.style.display = "none";
+    nameSuggestions.innerHTML = "";
+  }
+
+  function showSuggestions(names = []) {
+    if (!names.length) {
+      hideSuggestions();
+      return;
+    }
+
+    nameSuggestions.innerHTML = "";
+    names.forEach(name => {
+      const item = document.createElement("div");
+      item.className = "suggestion-item";
+      item.textContent = name;
+      item.addEventListener("click", () => {
+        employeeNameInput.value = name;
+        hideSuggestions();
+        autoResolveEmployeeIdByName();
+      });
+      nameSuggestions.appendChild(item);
+    });
+
+    nameSuggestions.style.display = "block";
+  }
+
+  async function fetchEmployeesFromCollections() {
+    const batches = await Promise.all(
+      EMPLOYEE_COLLECTIONS.map(async (collectionName) => {
+        try {
+          const snap = await getDocs(collection(db, collectionName));
+          return snap.docs.map(docSnap => ({
+            ...docSnap.data(),
+            __collectionName: collectionName,
+            __docId: docSnap.id
+          }));
+        } catch (err) {
+          console.warn(`Failed to load collection ${collectionName}:`, err);
+          return [];
+        }
+      })
+    );
+
+    const merged = batches.flat();
+
+    return uniqueBy(merged, emp => {
+      const uid = getEmployeeUid(emp).toLowerCase();
+      if (uid) return `uid:${uid}`;
+      const email = normalizeText(emp.email || emp.Email || emp.officalEmail || emp.officialEmail || emp.officialOTPEmail || emp.lastOtpEmail || "").toLowerCase();
+      if (email) return `email:${email}`;
+      return `doc:${emp.__collectionName}:${emp.__docId}`;
+    });
+  }
+
+  function employeeSiteMatchesHrSite(emp) {
+    if (!currentHrSites.length) return true;
+    const empSites = getEmployeeSites(emp);
+    return empSites.some(site =>
+      currentHrSites.some(allowedSite => looseTextMatches(site, allowedSite))
+    );
+  }
+
+  function matchesHrEmployee(emp) {
+    const empHrUid = normalizeText(
+      emp.hrUid ||
+      emp.hrId ||
+      emp.hrID ||
+      emp.HrId ||
+      emp.HRId ||
+      emp.hr_uid ||
+      emp.hrUID ||
+      ""
+    ).toLowerCase();
+
+    const empHrName = normalizeText(
+      emp.hrName ||
+      emp.HRName ||
+      emp.hr ||
+      emp.HrName ||
+      emp.hrname ||
+      ""
+    ).toLowerCase();
+
+    const targetUid = normalizeText(currentHrUid).toLowerCase();
+    const targetName = normalizeText(currentHrName).toLowerCase();
+
+    const explicitHrMatch =
+      (targetUid && empHrUid && empHrUid === targetUid) ||
+      (targetName && empHrName && empHrName === targetName);
+
+    if (explicitHrMatch) return true;
+
+    return employeeSiteMatchesHrSite(emp);
+  }
+
+  function employeeMatchesSelectedSite(emp) {
+    const selectedSite = normalizeText(siteSelect.value);
+    if (!selectedSite) return true;
+    return getEmployeeSites(emp).some(site => looseTextMatches(site, selectedSite));
+  }
+
+  function employeeMatchesSelectedDepartment(emp) {
+    const selectedDept = normalizeText(deptSelect.value);
+    if (!selectedDept) return true;
+    return getEmployeeDepartments(emp).some(dept => looseTextMatches(dept, selectedDept));
+  }
+
+  function employeeMatchesSelectedRole(emp) {
+    const selectedRole = normalizeText(roleSelect.value);
+    if (!selectedRole) return true;
+    return normalizeRoleLabel(getEmployeeRole(emp)).toLowerCase() === selectedRole.toLowerCase();
+  }
+
+  function employeeMatchesName(emp) {
+    const typedName = normalizeText(employeeNameInput.value).toLowerCase();
+    if (!typedName) return true;
+    return getEmployeeDisplayName(emp).toLowerCase() === typedName;
+  }
+
+  function employeeMatchesUid(emp) {
+    const selectedUid = normalizeText(employeeIdSelect.value).toLowerCase();
+    if (!selectedUid) return true;
+    return getEmployeeUid(emp).toLowerCase() === selectedUid;
+  }
+
+  function employeeIsEligible(emp) {
+    const status = normalizeText(emp.Status || emp.status || "");
+    return status.toLowerCase() !== "irregular";
+  }
+
+  function getFilteredEmployees() {
+    return allHrEmployees.filter(emp =>
+      employeeIsEligible(emp) &&
+      employeeMatchesSelectedSite(emp) &&
+      employeeMatchesSelectedDepartment(emp) &&
+      employeeMatchesSelectedRole(emp) &&
+      employeeMatchesName(emp) &&
+      employeeMatchesUid(emp)
+    );
+  }
+
+  function getMatchingEmployeesForTypedName(exactOnly = false) {
+    const typedName = normalizeText(employeeNameInput.value).toLowerCase();
+
+    let employees = allHrEmployees.filter(emp =>
+      employeeIsEligible(emp) &&
+      employeeMatchesSelectedSite(emp) &&
+      employeeMatchesSelectedDepartment(emp) &&
+      employeeMatchesSelectedRole(emp)
+    );
+
+    if (!typedName) return employees;
+
+    if (exactOnly) {
+      return employees.filter(emp => getEmployeeDisplayName(emp).toLowerCase() === typedName);
+    }
+
+    return employees.filter(emp => getEmployeeDisplayName(emp).toLowerCase().includes(typedName));
+  }
+
+  function resetEmployeeIdDropdown(defaultText = "Auto Fetch Employee ID") {
+    employeeIdSelect.innerHTML = `<option value="">${defaultText}</option>`;
+  }
+
+  function resetNameAndIdFilters() {
+    employeeNameInput.value = "";
+    resetEmployeeIdDropdown();
+    hideSuggestions();
+  }
+
+  function handleNameSuggestions() {
+    const typedName = normalizeText(employeeNameInput.value);
+
+    resetEmployeeIdDropdown();
+
+    if (!typedName) {
+      hideSuggestions();
+      return;
+    }
+
+    const matchingEmployees = getMatchingEmployeesForTypedName(false);
+    const uniqueNames = uniqueBy(
+      matchingEmployees.map(emp => ({ name: getEmployeeDisplayName(emp) })),
+      item => item.name.toLowerCase()
+    ).map(item => item.name);
+
+    if (uniqueNames.length === 1 && uniqueNames[0].toLowerCase() === typedName.toLowerCase()) {
+      hideSuggestions();
+    } else {
+      showSuggestions(uniqueNames);
+    }
+  }
+
+  function autoResolveEmployeeIdByName() {
+    const typedName = normalizeText(employeeNameInput.value);
+
+    if (!typedName) {
+      resetEmployeeIdDropdown();
+      return;
+    }
+
+    const exactMatches = getMatchingEmployeesForTypedName(true).sort((a, b) =>
+      getEmployeeUid(a).localeCompare(getEmployeeUid(b))
+    );
+
+    if (exactMatches.length === 1) {
+      const uid = getEmployeeUid(exactMatches[0]);
+      employeeIdSelect.innerHTML = `<option value="${uid}">${uid}</option>`;
+      employeeIdSelect.value = uid;
+    } else if (exactMatches.length > 1) {
+      employeeIdSelect.innerHTML = `<option value="">Select Employee ID</option>`;
+      exactMatches.forEach(emp => {
+        const uid = getEmployeeUid(emp);
+        employeeIdSelect.innerHTML += `<option value="${uid}">${uid}</option>`;
+      });
+    } else {
+      resetEmployeeIdDropdown("No matching Employee ID");
+    }
+  }
+
+  async function ensureAttendanceRecord(emp, formattedDate) {
+    const uid = getEmployeeUid(emp);
+    if (!uid) return null;
+
+    const recRef = doc(db, "Attendance", uid, "Records", formattedDate);
+    const recSnap = await getDoc(recRef);
+
+    if (!recSnap.exists()) {
+      await setDoc(recRef, {
+        fullName: getEmployeeDisplayName(emp),
+        site: getEmployeePrimarySite(emp),
+        department: getEmployeePrimaryDepartment(emp),
+        jobRole: getEmployeeRole(emp),
+        hrUid: currentHrUid,
+        hrName: currentHrName,
+        Marking: "Absent",
+        date: formattedDate,
+        uid: uid,
+        Request: ""
+      });
+    }
+
+    return recRef.path;
+  }
+
+  async function fetchEmployeeMonthRecords(uid) {
+    const recordsSnap = await getDocs(collection(db, "Attendance", uid, "Records"));
+    return recordsSnap.docs.map(docSnap => docSnap.data());
+  }
+
+  function openCalendar(btn, fullName, records, monthSuf) {
+    const cal = document.getElementById("floatingCalendar");
+    const title = document.getElementById("floatingCalendarTitle");
+    const content = document.getElementById("floatingCalendarContent");
+
+    title.textContent = `Attendance: ${fullName} (${monthSuf})`;
+    content.innerHTML = "";
+
+    const [mm, yy] = monthSuf.split("-");
+    const fullYear = Number(`20${yy}`);
+    const monthNum = Number(mm);
+    const daysInMonth = new Date(fullYear, monthNum, 0).getDate();
+
+    const recordMap = {};
+    const extraDates = [];
+
+    records.forEach(r => {
+      if (!r.date) return;
+      const dayNum = Number(String(r.date).split("-")[0]);
+      if (Number.isNaN(dayNum)) return;
+
+      if (dayNum <= daysInMonth) {
+        recordMap[String(dayNum).padStart(2, "0")] = r.Marking || r.marking || "-";
+      } else {
+        extraDates.push(r);
+      }
+    });
+
+    for (let d = 1; d <= daysInMonth; d++) {
+      const mark = recordMap[String(d).padStart(2, "0")] || "-";
+      const cell = document.createElement("div");
+      cell.textContent = `${d}\n${mark}`;
+      cell.style.whiteSpace = "pre";
+      cell.style.textAlign = "center";
+      cell.style.padding = "4px";
+      cell.style.borderRadius = "4px";
+      cell.style.border = "1px solid #ccc";
+      cell.style.fontSize = "12px";
+      cell.style.background =
+        mark === "Present" ? "#d4edda" :
+        mark === "Absent" ? "#f8d7da" : "#f1f1f1";
+      content.appendChild(cell);
+    }
+
+    if (extraDates.length > 0) {
+      const sepCell = document.createElement("div");
+      sepCell.textContent = "Extra Shifts";
+      sepCell.style.gridColumn = "1 / -1";
+      sepCell.style.textAlign = "center";
+      sepCell.style.fontWeight = "bold";
+      sepCell.style.padding = "6px 0";
+      sepCell.style.marginTop = "4px";
+      sepCell.style.background = "#f0f0f0";
+      sepCell.style.borderRadius = "4px";
+      content.appendChild(sepCell);
+
+      extraDates.sort((a, b) => Number(a.date.split("-")[0]) - Number(b.date.split("-")[0]));
+
+      extraDates.forEach(extra => {
+        const dayNum = Number(extra.date.split("-")[0]);
+        const mark = extra.Marking || extra.marking || "-";
+        const cell = document.createElement("div");
+        cell.textContent = `${dayNum}\n${mark}`;
+        cell.style.whiteSpace = "pre";
+        cell.style.textAlign = "center";
+        cell.style.padding = "4px";
+        cell.style.borderRadius = "4px";
+        cell.style.border = "1px solid #ccc";
+        cell.style.fontSize = "12px";
+        cell.style.background =
+          mark === "Present" ? "#d4edda" :
+          mark === "Absent" ? "#f8d7da" : "#f1f1f1";
+        content.appendChild(cell);
+      });
+    }
+
+    cal.style.display = "block";
+
+    requestAnimationFrame(() => {
+      const margin = 8;
+      const isMobile = window.innerWidth <= 600;
+
+      if (isMobile) {
+        const width = Math.max(0, window.innerWidth - 16);
+        cal.style.width = `${width}px`;
+        cal.style.maxWidth = `${width}px`;
+        cal.style.left = `${margin}px`;
+        cal.style.right = `${margin}px`;
+        cal.style.top = `${Math.max(margin, (window.innerHeight - cal.offsetHeight) / 2)}px`;
+        cal.style.transform = "none";
+        return;
+      }
+
+      const rect = cal.getBoundingClientRect();
+      const desiredLeft = (window.innerWidth - rect.width) / 2;
+      const desiredTop = (window.innerHeight - rect.height) / 2;
+
+      const clampedLeft = Math.max(margin, Math.min(desiredLeft, window.innerWidth - rect.width - margin));
+      const clampedTop = Math.max(margin, Math.min(desiredTop, window.innerHeight - rect.height - margin));
+
+      cal.style.left = `${Math.max(margin, clampedLeft)}px`;
+      cal.style.top = `${Math.max(margin, clampedTop)}px`;
+    });
+
+    function handleOutsideClick(event) {
+      if (!cal.contains(event.target) && event.target !== btn) {
+        cal.style.display = "none";
+        document.removeEventListener("click", handleOutsideClick);
+      }
+    }
+
+    setTimeout(() => {
+      document.addEventListener("click", handleOutsideClick);
+    }, 0);
+  }
+
+  async function renderAttendanceRecords(employees, formattedDate) {
+    const monthSuffix = getMonthSuffix(formattedDate);
+    tableBody.innerHTML = "";
+
+    if (!employees.length) {
+      clearTable("No employees found for the selected filter.");
+      return;
+    }
+
+    await Promise.all(employees.map(emp => ensureAttendanceRecord(emp, formattedDate)));
+
+    const renderData = await Promise.all(
+      employees.map(async emp => {
+        const uid = getEmployeeUid(emp);
+        const fullName = getEmployeeDisplayName(emp);
+        const monthlyRecords = await fetchEmployeeMonthRecords(uid);
+
+        let present = 0;
+        let absent = 0;
+        let todayMarking = "Absent";
+        const calendarRecords = [];
+
+        monthlyRecords.forEach(record => {
+          if (!record.date) return;
+          if (record.date.slice(3) !== monthSuffix) return;
+
+          const mark = record.Marking || record.marking || "Absent";
+          calendarRecords.push({
+            date: record.date,
+            marking: mark
+          });
+
+          if (mark === "Present") present++;
+          else absent++;
+
+          if (record.date === formattedDate) {
+            todayMarking = mark;
+          }
+        });
+
+        return {
+          uid,
+          fullName,
+          site: getEmployeePrimarySite(emp),
+          department: getEmployeePrimaryDepartment(emp),
+          role: getEmployeeRole(emp),
+          present,
+          absent,
+          total: present + absent,
+          todayMarking,
+          specificRef: `Attendance/${uid}/Records/${formattedDate}`,
+          calendarRecords
+        };
+      })
+    );
+
+    if (!renderData.length) {
+      clearTable("No attendance data found.");
+      return;
+    }
+
+    renderData.forEach(info => {
+      const tr = document.createElement("tr");
+
+      tr.innerHTML = `
+        <td>${info.absent}</td>
+        <td>${info.present}</td>
+        <td>${info.total}</td>
+        <td>${info.uid}</td>
+        <td>${info.fullName}</td>
+        <td>${info.site || "-"}</td>
+        <td>${info.role || "-"}</td>
+        <td>
+          <input
+            type="checkbox"
+            class="attendanceCheckbox"
+            data-ref="${info.specificRef}"
+            ${info.todayMarking === "Present" ? "checked" : ""}
+          >
+        </td>
+        <td>
+          <button class="btn btn-sm btn-success view-calendar">View</button>
+        </td>
+      `;
+
+      tableBody.appendChild(tr);
+
+      const checkbox = tr.querySelector(".attendanceCheckbox");
+      checkbox.addEventListener("change", async (e) => {
+        try {
+          await updateDoc(doc(db, e.target.dataset.ref), {
+            Marking: e.target.checked ? "Present" : "Absent"
+          });
+        } catch (err) {
+          console.error("Error updating attendance:", err);
+          alert("Attendance update failed.");
+        }
+      });
+
+      const viewBtn = tr.querySelector(".view-calendar");
+      viewBtn.addEventListener("click", () => {
+        openCalendar(viewBtn, info.fullName, info.calendarRecords, monthSuffix);
+      });
+    });
+  }
+
+
+  async function loadHrEmployees() {
+    if (!currentHrUid && !currentHrName) return;
+
+    try {
+      const allEmployees = await fetchEmployeesFromCollections();
+
+      // Primary scope: HR's allowed site(s). If an employee has an explicit HR mapping, that also passes.
+      allHrEmployees = allEmployees.filter(emp => matchesHrEmployee(emp));
+
+      refreshDepartmentOptionsForSelectedSite();
+      resetEmployeeIdDropdown();
+    } catch (err) {
+      console.error("Error loading HR employees:", err);
+      clearTable("Error loading HR employees.");
+    }
+  }
+
+
+  async function loadHrDetails() {
+    currentHrEmail = localStorage.getItem("hrEmail");
+
+    if (!currentHrEmail) {
+      console.error("No HR email found in localStorage.");
+      alert("HR email not found in localStorage.");
+      return;
+    }
+
+    try {
+      const hrDocRef = doc(db, "HR", currentHrEmail);
+      const hrDocSnap = await getDoc(hrDocRef);
+
+      if (!hrDocSnap.exists()) {
+        console.error("No HR document found for:", currentHrEmail);
+        alert("HR details not found.");
+        return;
+      }
+
+      const hrData = hrDocSnap.data();
+
+      currentHrUid = normalizeText(hrData.uid || hrData.hrUid || hrData.hrId || hrData.id || "");
+      currentHrName = normalizeText(hrData.Name || hrData.name || hrData.fullName || hrData.FullName || "");
+      currentHrSites = normalizeSitesFromHr(hrData);
+      currentHrDepartments = normalizeDepartmentsFromHr(hrData);
+
+      hrNameDisplay.innerText = currentHrName || "N/A";
+      hrIdDisplay.innerText = currentHrUid || "N/A";
+      joiningYearDisplay.innerText = hrData.joiningDate || hrData.joiningYear || "N/A";
+
+      populateSiteOptions(currentHrSites);
+      refreshDepartmentOptionsForSelectedSite();
+      populateRoleOptions();
+
+      await loadHrEmployees();
+    } catch (err) {
+      console.error("Error fetching HR details:", err);
+      alert("Error fetching HR details.");
+    }
+  }
+
+  const bell = document.getElementById("bellContainer");
+
+  const badge = document.getElementById("bellBadge");
+  const box = document.getElementById("notificationBox");
+
+  async function refreshNotifications() {
+    try {
+      const allEmployees = await fetchEmployeesFromCollections();
+      const today = new Date();
+      const soon = new Date();
+      soon.setDate(today.getDate() + 3);
+
+      const items = [];
+      allEmployees.forEach(d => {
+        if (!d.passes_end) return;
+        const end = new Date(d.passes_end);
+        if (end >= today && end <= soon) {
+          items.push({
+            name: getEmployeeDisplayName(d),
+            uid: getEmployeeUid(d),
+            pass: d.passes,
+            renew: d.passes_end
+          });
+        }
+      });
+
+      if (items.length) {
+        badge.innerText = items.length;
+        badge.style.display = "";
+      } else {
+        badge.style.display = "none";
+      }
+
+      box.innerHTML = "";
+      if (!items.length) {
+        box.innerHTML = "<p>No passes expiring in 3 days.</p>";
+      } else {
+        for (const it of items) {
+          const div = document.createElement("div");
+          div.className = "notification-item";
+          div.innerHTML = `
+            <p><strong>Name:</strong> ${it.name}</p>
+            <p><strong>User ID:</strong> ${it.uid}</p>
+            <p><strong>Pass Type:</strong> ${it.pass}</p>
+            <p><strong>Renew Date:</strong> ${it.renew}</p>
+          `;
+          box.appendChild(div);
+        }
+      }
+    } catch (e) {
+      console.error("Notification load error:", e);
+    }
+  }
+
+  bell.addEventListener("click", () => {
+    box.style.display = box.style.display === "none" ? "block" : "none";
+  });
+
+  siteSelect.addEventListener("change", () => {
+    deptSelect.value = "";
+    refreshDepartmentOptionsForSelectedSite();
+    resetNameAndIdFilters();
+    clearTable("Select filters and click Submit");
+  });
+
+  deptSelect.addEventListener("change", () => {
+    resetNameAndIdFilters();
+    clearTable("Select filters and click Submit");
+  });
+
+  roleSelect.addEventListener("change", () => {
+    resetNameAndIdFilters();
+    clearTable("Select filters and click Submit");
+  });
+
+  employeeNameInput.addEventListener("input", () => {
+    handleNameSuggestions();
+    autoResolveEmployeeIdByName();
+  });
+
+  employeeNameInput.addEventListener("blur", () => {
+    setTimeout(() => {
+      hideSuggestions();
+      autoResolveEmployeeIdByName();
+    }, 180);
+  });
+
+  document.addEventListener("click", (e) => {
+    if (e.target !== employeeNameInput && !nameSuggestions.contains(e.target)) {
+      hideSuggestions();
+    }
+  });
+
+  attendanceSubmitBtn.addEventListener("click", async () => {
+    try {
+      setSubmitLoading(true);
+
+      const selectedDate = hrDateInput.value;
+      if (!selectedDate) {
+        alert("Please select a date.");
+        return;
+      }
+
+      const typedName = normalizeText(employeeNameInput.value);
+      const selectedId = normalizeText(employeeIdSelect.value);
+
+      if (typedName) {
+        const exactMatches = getMatchingEmployeesForTypedName(true);
+        if (exactMatches.length > 1 && !selectedId) {
+          alert("Same name ke multiple employees mile. Please Employee ID select karo.");
+          return;
+        }
+      }
+
+      const formattedDate = formatDate(selectedDate);
+      await renderAttendanceRecords(getFilteredEmployees(), formattedDate);
+    } catch (error) {
+      console.error("Submit error:", error);
+      alert("Something went wrong while loading attendance.");
+    } finally {
+      setSubmitLoading(false);
+    }
+  });
+
+  const today = new Date();
+  const todayStr = today.toISOString().split("T")[0];
+  hrDateInput.max = todayStr;
+
+  const past62 = new Date(today);
+  past62.setDate(past62.getDate() - 62);
+  hrDateInput.min = past62.toISOString().split("T")[0];
+  hrDateInput.value = todayStr;
+
+  document.addEventListener("DOMContentLoaded", async () => {
+    await loadHrDetails();
+    await refreshNotifications();
+    resetEmployeeIdDropdown();
+    clearTable("Select date and click submit to view attendance.");
+  });
+</script>
+</body>
+</html>

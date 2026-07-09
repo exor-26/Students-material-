@@ -1,0 +1,1542 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <title>HR Dashboard - Joining Edit</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/x-icon" href="logo2.ico" />
+  <link rel="stylesheet" type="text/css" href="joiningedit.css" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap-theme.min.css" />
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+
+  <style>
+    *, *::before, *::after {
+      cursor:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" viewBox="0 0 24 24"><path fill="%23FFF" stroke="%23FF2711" stroke-width="2" d="M5.5 3.21V20.8c0 .45.54.67.85.35l4.86-4.86a.5.5 0 0 1 .35-.15h6.87a.5.5 0 0 0 .35-.85L6.35 2.85a.5.5 0 0 0-.85.35Z"></path></svg>') 5 5, auto;
+    }
+
+    a, button, input[type="submit"], input[type="button"],
+    label, select, .dropbtn, .sub-btn, .btn, .cn,
+    .carousel-control, .hideMenuButton, .item a,
+    input[type="text"], input[type="search"], textarea {
+      cursor:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="%23FFF" stroke="%23FF2711" stroke-width="2" stroke-linejoin="round" d="M10 11V8.99c0-.88.59-1.64 1.44-1.86h.05A1.99 1.99 0 0 1 14 9.05V12v-2c0-.88.6-1.65 1.46-1.87h.05A1.98 1.98 0 0 1 18 10.06V13v-1.94a2 2 0 0 1 1.51-1.94h0A2 2 0 0 1 22 11.06V14c0 .6-.08 1.27-.21 1.97a7.96 7.96 0 0 1-7.55 6.48 54.98 54.98 0 0 1-4.48 0 7.96 7.96 0 0 1-7.55-6.48C2.08 15.27 2 14.59 2 14v-1.49c0-1.11.9-2.01 2.01-2.01h0a2 2 0 0 1 2.01 2.03l-.01.97v-10c0-1.1.9-2 2-2h0a2 2 0 0 1 2 2V11Z"></path></svg>') 5 5, auto;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    :root {
+      --topbar-height: 78px;
+      --sidebar-width: 280px;
+      --card-bg: rgba(12, 25, 45, 0.86);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --text-main: #ffffff;
+      --text-soft: #c9d9ee;
+      --text-muted: #8ea4c5;
+      --orange-1: #ff8a3c;
+      --orange-2: #ff5a1f;
+      --blue-1: #2d7dff;
+      --blue-2: #1657cc;
+      --shadow: 0 18px 40px rgba(0, 0, 0, 0.25);
+    }
+
+    html,
+    body {
+      width: 100%;
+      min-height: 100%;
+      margin: 0;
+      padding: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background:
+        linear-gradient(135deg, rgba(7, 16, 30, 0.95), rgba(14, 34, 56, 0.92)),
+        url("https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1600&q=80") center/cover no-repeat fixed;
+      color: var(--text-main);
+      overflow: hidden;
+    }
+
+    .app-shell {
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .topbar {
+      height: var(--topbar-height);
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(7, 16, 30, 0.88);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 2000;
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      min-width: 0;
+    }
+
+    .menu-toggle {
+      width: 46px;
+      height: 46px;
+      border: none;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
+      color: #fff;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: 0.25s ease;
+      flex-shrink: 0;
+    }
+
+    .menu-toggle:hover {
+      background: linear-gradient(135deg, rgba(255,122,47,0.18), rgba(31,119,255,0.16));
+      transform: translateY(-1px);
+    }
+
+    .brand-wrap {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-width: 0;
+    }
+
+    .brand-title {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 700;
+      color: #fff;
+      text-decoration: none !important;
+      line-height: 1.1;
+    }
+
+    .brand-subtitle {
+      margin: 2px 0 0;
+      color: var(--text-soft);
+      font-size: 13px;
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-shrink: 0;
+    }
+
+    .logout a {
+      text-decoration: none !important;
+      color: #fff !important;
+      background: linear-gradient(135deg, var(--orange-1), var(--orange-2));
+      padding: 11px 18px;
+      border-radius: 12px;
+      font-weight: 700;
+      transition: 0.25s ease;
+      box-shadow: 0 10px 24px rgba(255, 90, 31, 0.24);
+      border: none;
+      display: inline-block;
+    }
+
+    .logout a:hover {
+      transform: translateY(-1px);
+      color: #fff !important;
+      text-decoration: none !important;
+    }
+
+    .dashboard-layout {
+      width: 100%;
+      height: 100vh;
+    }
+
+    nav.sidebar {
+      width: var(--sidebar-width);
+      min-width: var(--sidebar-width);
+      max-width: var(--sidebar-width);
+      position: fixed;
+      top: var(--topbar-height);
+      left: 0;
+      bottom: 0;
+      padding: 20px 16px 22px;
+      background: linear-gradient(180deg, rgba(6, 16, 30, 0.98), rgba(8, 22, 40, 0.96));
+      backdrop-filter: blur(16px);
+      border-right: 1px solid rgba(255,255,255,0.06);
+      overflow-y: auto;
+      overflow-x: hidden;
+      z-index: 1500;
+      box-shadow: 18px 0 45px rgba(0, 0, 0, 0.24);
+    }
+
+    nav.sidebar::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    nav.sidebar::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,0.14);
+      border-radius: 999px;
+    }
+
+    .sidebar-top-card {
+      position: relative;
+      padding: 20px 18px 18px;
+      border-radius: 24px;
+      background:
+        linear-gradient(135deg, rgba(255,122,47,0.16), rgba(31,119,255,0.14)),
+        rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow:
+        0 16px 32px rgba(0,0,0,0.20),
+        inset 0 1px 0 rgba(255,255,255,0.06);
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+
+    .sidebar-top-card::after {
+      content: "";
+      position: absolute;
+      right: -30px;
+      top: -30px;
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,255,255,0.16), transparent 70%);
+    }
+
+    .sidebar-mini-label {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.4px;
+      color: #ffd8c2;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: 5px 10px;
+      border-radius: 999px;
+      margin-bottom: 12px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .sidebar-main-title {
+      font-size: 19px;
+      font-weight: 800;
+      color: #ffffff;
+      margin: 0 0 6px;
+      line-height: 1.2;
+      position: relative;
+      z-index: 1;
+    }
+
+    .sidebar-main-subtitle {
+      font-size: 13px;
+      color: #d5e2f1;
+      line-height: 1.7;
+      margin: 0 0 14px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .sidebar-status-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      position: relative;
+      z-index: 1;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .sidebar-status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #dfffe9;
+      background: rgba(20,184,106,0.14);
+      border: 1px solid rgba(20,184,106,0.22);
+    }
+
+    .sidebar-status-badge::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #4df39b;
+      box-shadow: 0 0 10px rgba(77,243,155,0.7);
+    }
+
+    .sidebar-status-text {
+      font-size: 11px;
+      color: #c6d8ec;
+      text-align: right;
+      line-height: 1.4;
+    }
+
+    .sidebar-section-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #8ea4c5;
+      margin: 0 8px 16px;
+      font-weight: 700;
+    }
+
+    #side-bar {
+      list-style: none;
+      padding-left: 0;
+      margin-bottom: 0;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    #side-bar li {
+      width: 100%;
+      margin: 0;
+    }
+
+    #side-bar a,
+    #side-bar summary {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      width: 100%;
+      padding: 15px 15px;
+      border-radius: 20px;
+      text-decoration: none !important;
+      color: #edf4ff !important;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.055), rgba(255,255,255,0.025));
+      border: 1px solid rgba(255,255,255,0.06);
+      transition: all 0.28s ease;
+      position: relative;
+      overflow: hidden;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+    }
+
+    #side-bar a::before,
+    #side-bar summary::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, rgba(255,122,47,0.13), rgba(31,119,255,0.11));
+      opacity: 0;
+      transition: opacity 0.28s ease;
+    }
+
+    #side-bar a::after,
+    #side-bar summary::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 18%;
+      width: 4px;
+      height: 64%;
+      border-radius: 999px;
+      background: linear-gradient(180deg, #ff8a3c, #1f77ff);
+      opacity: 0;
+      transition: opacity 0.28s ease;
+    }
+
+    #side-bar a:hover,
+    #side-bar summary:hover {
+      transform: translateX(6px);
+      border-color: rgba(255,255,255,0.10);
+      box-shadow: 0 14px 28px rgba(0,0,0,0.20);
+    }
+
+    #side-bar a:hover::before,
+    #side-bar summary:hover::before,
+    #side-bar a:hover::after,
+    #side-bar summary:hover::after {
+      opacity: 1;
+    }
+
+    #side-bar a.active,
+    #side-bar summary.active {
+      background: linear-gradient(135deg, rgba(255,122,47,0.18), rgba(31,119,255,0.16));
+      border-color: rgba(255,255,255,0.12);
+      box-shadow: 0 16px 30px rgba(0,0,0,0.24);
+    }
+
+    #side-bar a.active::before,
+    #side-bar summary.active::before,
+    #side-bar a.active::after,
+    #side-bar summary.active::after {
+      opacity: 1;
+    }
+
+    .nav-icon {
+      width: 44px;
+      height: 44px;
+      min-width: 44px;
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, rgba(255,255,255,0.13), rgba(255,255,255,0.05));
+      border: 1px solid rgba(255,255,255,0.08);
+      color: #fff;
+      font-size: 17px;
+      position: relative;
+      z-index: 1;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+    }
+
+    .nav-text {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .nav-text strong {
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.2;
+    }
+
+    .nav-text span {
+      margin-top: 4px;
+      font-size: 11px;
+      line-height: 1.45;
+      color: #aabed8;
+    }
+
+    .nav-arrow {
+      margin-left: auto;
+      font-size: 16px;
+      color: #93b2d8;
+      position: relative;
+      z-index: 1;
+      transition: transform 0.25s ease;
+    }
+
+    #side-bar a:hover .nav-arrow,
+    #side-bar summary:hover .nav-arrow {
+      transform: translateX(4px);
+    }
+
+    main {
+      position: fixed;
+      top: var(--topbar-height);
+      left: var(--sidebar-width);
+      right: 0;
+      bottom: 0;
+      padding: 28px 30px;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    .hero-card {
+      background: linear-gradient(135deg, rgba(22, 61, 112, 0.88), rgba(12, 27, 53, 0.92));
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 24px;
+      padding: 30px 34px;
+      box-shadow: var(--shadow);
+      margin-bottom: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-card::after {
+      content: "";
+      position: absolute;
+      right: -80px;
+      top: -80px;
+      width: 220px;
+      height: 220px;
+      background: radial-gradient(circle, rgba(255, 122, 47, 0.18), transparent 70%);
+      border-radius: 50%;
+    }
+
+    .page-tag {
+      display: inline-block;
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      color: #ffb88f;
+      background: rgba(255, 122, 47, 0.16);
+      border: 1px solid rgba(255, 122, 47, 0.2);
+      margin-bottom: 14px;
+    }
+
+    .hero-card h1 {
+      margin: 0 0 10px;
+      font-size: 32px;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.15;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-card p {
+      margin: 0;
+      max-width: 900px;
+      font-size: 15px;
+      line-height: 1.8;
+      color: #d0def0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .form-shell {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .top-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .top-actions h2 {
+      margin: 0;
+      font-size: 26px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .section-badge {
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #9ec3ff;
+      background: rgba(31, 119, 255, 0.14);
+      border: 1px solid rgba(31, 119, 255, 0.22);
+      white-space: nowrap;
+    }
+
+    .back-button {
+      border: none;
+      border-radius: 12px;
+      padding: 11px 18px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      background: linear-gradient(135deg, var(--orange-1), var(--orange-2));
+      box-shadow: 0 10px 24px rgba(255, 90, 31, 0.24);
+      transition: 0.25s ease;
+    }
+
+    .back-button:hover {
+      transform: translateY(-1px);
+    }
+
+    .form-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 20px;
+      padding: 18px;
+    }
+
+    .form-card h1 {
+      margin: 0 0 18px;
+      font-size: 28px;
+      font-weight: 800;
+      color: #fff;
+      text-align: center;
+    }
+
+    table {
+      width: 100%;
+      margin-bottom: 22px !important;
+      border-collapse: separate;
+      border-spacing: 0;
+      overflow: hidden;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    table th {
+      background: linear-gradient(135deg, #183b6f, #102849) !important;
+      color: #fff4cc !important;
+      font-size: 13px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 16px 14px !important;
+      border: none !important;
+      text-align: left;
+    }
+
+    table td {
+      padding: 14px !important;
+      vertical-align: middle !important;
+      color: #eaf2ff;
+      border-top: 1px solid rgba(255, 255, 255, 0.05) !important;
+      border-left: none !important;
+      border-right: none !important;
+      border-bottom: none !important;
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    table tr:hover td {
+      background: rgba(31, 119, 255, 0.08);
+    }
+
+    .form-control,
+    input[type="text"],
+    input[type="email"],
+    input[type="date"],
+    input[type="tel"],
+    input[type="file"],
+    select {
+      width: 100% !important;
+      min-height: 46px;
+      border-radius: 12px !important;
+      border: 1px solid rgba(255, 255, 255, 0.08) !important;
+      background: rgba(255, 255, 255, 0.05) !important;
+      color: #fff !important;
+      padding: 10px 12px !important;
+      box-shadow: none !important;
+      outline: none !important;
+    }
+
+    input:focus,
+    select:focus,
+    .form-control:focus {
+      border-color: rgba(31, 119, 255, 0.55) !important;
+      box-shadow: 0 0 0 4px rgba(31, 119, 255, 0.12) !important;
+    }
+
+    input::placeholder {
+      color: #9fb4cf;
+    }
+
+    select option {
+      color: #000;
+    }
+
+    input[disabled],
+    select[disabled] {
+      opacity: 1;
+      color: #dce8ff !important;
+      background: rgba(255, 255, 255, 0.07) !important;
+      cursor: not-allowed;
+    }
+
+    label {
+      font-weight: 600;
+      color: #dce8ff;
+      margin-right: 16px;
+    }
+
+    input[type="radio"] {
+      margin-right: 6px;
+      transform: translateY(1px);
+    }
+
+    .confirmation {
+      background: rgba(31, 119, 255, 0.08);
+      border: 1px solid rgba(31, 119, 255, 0.16);
+      border-radius: 16px;
+      padding: 16px 18px;
+      margin-top: 6px;
+      margin-bottom: 18px;
+    }
+
+    .confirmation p {
+      margin: 0;
+      color: #d8e9ff;
+      line-height: 1.7;
+      font-size: 14px;
+    }
+
+    .submit-button,
+    .submit-button-down,
+    #submitBtn {
+      width: 100%;
+      border: none;
+      border-radius: 14px;
+      padding: 14px 20px;
+      font-size: 15px;
+      font-weight: 800;
+      color: #fff;
+      cursor: pointer;
+      background: linear-gradient(135deg, var(--blue-1), var(--blue-2));
+      box-shadow: 0 12px 26px rgba(45, 125, 255, 0.25);
+      transition: 0.25s ease;
+    }
+
+    .submit-button:hover,
+    .submit-button-down:hover,
+    #submitBtn:hover {
+      transform: translateY(-1px);
+    }
+
+
+    .editable-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .editable-row .form-control {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .edit-toggle-btn {
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: linear-gradient(135deg, rgba(255, 138, 60, 0.18), rgba(31, 119, 255, 0.16));
+      color: #fff;
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-size: 13px;
+      font-weight: 800;
+      white-space: nowrap;
+      transition: 0.25s ease;
+      min-width: 84px;
+      flex-shrink: 0;
+    }
+
+    .edit-toggle-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .edit-toggle-btn.is-active {
+      background: linear-gradient(135deg, rgba(31, 119, 255, 0.22), rgba(45, 125, 255, 0.20));
+      border-color: rgba(99, 176, 255, 0.25);
+    }
+
+
+    @media (max-width: 991px) {
+  html,
+  body {
+    width: 100%;
+    min-height: 100%;
+    height: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .app-shell {
+    width: 100%;
+    height: auto;
+    min-height: 100vh;
+    overflow: visible;
+  }
+
+  .dashboard-layout {
+    width: 100%;
+    height: auto;
+    min-height: 100vh;
+    padding-top: var(--topbar-height);
+  }
+
+  nav.sidebar {
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+
+    /* FIX: Command Center scroll ke saath upar jayega */
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    bottom: auto;
+
+    height: auto;
+    max-height: none;
+    overflow: visible;
+
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 0 0 24px 24px;
+    z-index: 100;
+    padding: 14px;
+  }
+
+  .sidebar-top-card {
+    margin-bottom: 18px;
+  }
+
+  .sidebar-section-title {
+    margin: 18px 8px 14px;
+  }
+
+  #side-bar {
+    display: none;
+    gap: 10px;
+  }
+
+  #side-bar.active {
+    display: flex;
+    flex-direction: column;
+    margin-top: 12px;
+  }
+
+  .sidebar-status-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .sidebar-status-text {
+    text-align: left;
+  }
+
+  main {
+    /* FIX: main normal page scroll mein rahega */
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    bottom: auto;
+
+    width: 100%;
+    padding: 18px;
+    overflow: visible;
+  }
+
+  .hero-card h1 {
+    font-size: 24px;
+  }
+
+  .brand-subtitle {
+    display: none;
+  }
+}
+    @media (max-width: 600px) {
+      .topbar {
+        padding: 0 14px;
+      }
+
+      .logout a {
+        padding: 9px 14px;
+        font-size: 13px;
+      }
+
+      .hero-card,
+      .form-shell {
+        padding: 18px;
+        border-radius: 18px;
+      }
+
+      .form-card {
+        padding: 14px;
+      }
+
+      .top-actions {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .back-button {
+        width: 100%;
+      }
+
+      table td,
+      table th {
+        padding: 12px !important;
+      }
+
+      label {
+        display: inline-block;
+        margin-bottom: 8px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="topbar-left">
+        <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+        <div class="brand-wrap">
+          <a href="#" class="brand-title">HR Dashboard</a>
+          <p class="brand-subtitle">Employee Joining Edit & Record Update Panel</p>
+        </div>
+      </div>
+
+      <div class="topbar-right">
+        <div class="logout">
+          <a href="#" class="logout" onclick="logoutUser()">Logout</a>
+        </div>
+      </div>
+    </header>
+
+    <div class="dashboard-layout">
+      <nav class="sidebar">
+        <div class="sidebar-top-card">
+          <div class="sidebar-mini-label">HR Panel</div>
+          <h3 class="sidebar-main-title">Command Center</h3>
+          <p class="sidebar-main-subtitle">
+            Access joining edit records, employee update forms, and important HR sections from one clean navigation area.
+          </p>
+
+          <div class="sidebar-status-row">
+            <span class="sidebar-status-badge">Edit Active</span>
+            <div class="sidebar-status-text">
+              Secure access<br />
+              Quick navigation
+            </div>
+          </div>
+        </div>
+
+        <div class="sidebar-section-title">Navigation</div>
+        <ul id="side-bar"></ul>
+      </nav>
+
+      <main>
+        <section class="hero-card">
+          <span class="page-tag">JOINING EDIT PANEL</span>
+          <h1>Employee Joining Editing Form</h1>
+          <p>
+            Update employee joining details, personal records, pass validity, banking information,
+            and emergency contact details from the same premium HR dashboard theme.
+          </p>
+        </section>
+
+        <section class="form-shell">
+          <div class="top-actions">
+            <button class="back-button" onclick="window.history.back()">← Back</button>
+            <div class="section-badge">Edit Existing Employee Record</div>
+          </div>
+
+          <div class="form-card">
+            <h1>Employee Joining Editing Form</h1>
+
+            <form id="joiningForm">
+              <table class="table table-bordered">
+                <tr>
+                  <th colspan="2">Industry Information</th>
+                </tr>
+                <tr>
+                  <td>Industry</td>
+                  <td>
+                    <input type="text" id="Site" class="form-control" disabled required>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Department (Job Code)</td>
+                  <td>
+                    <div class="editable-row">
+                      <input type="text" id="departmentSelect" class="form-control" disabled required list="departmentOptionsList" placeholder="Select Department">
+                      <datalist id="departmentOptionsList"></datalist>
+                      <button type="button" id="departmentEditBtn" class="edit-toggle-btn">Edit</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Job</td>
+                  <td>
+                    <input type="text" id="jobSelect" class="form-control" disabled required list="jobOptionsList" placeholder="Select Job Code">
+                    <datalist id="jobOptionsList"></datalist>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Employee Type</td>
+    
+                  <td>
+                    <select id="EmployeeType" class="form-control" required>
+                      <option value="" disabled selected>Select an option</option>
+                      <option value="ELECTRICIAN">ELECTRICIAN</option>
+                      <option value="WELDER/G.CUTTER">WELDER/G.CUTTER</option>
+                      <option value="MILLWRIGHTER FITTER">MILLWRIGHTER FITTER</option>
+                      <option value="FITTER">FITTER</option>
+                      <option value="AC TECHNICIAN">AC TECHNICIAN</option>
+                      <option value="FITTER/ F.WATCHER">FITTER/ F.WATCHER</option>
+                      <option value="WORKER">WORKER</option>
+                      <option value="SUPERVISOR">SUPERVISOR</option>
+                      <option value="Shift In-Charge">Shift In-Charge</option>
+                    </select>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Card Type</td>
+                  <td>
+                    <select id="CardType" class="form-control" required>
+                      <option value="" disabled selected>Select an option</option>
+                      <option value="Un-Skilled">UN-SKILLED</option>
+                      <option value="Semi-Skilled">SEMI-SKILLED</option>
+                      <option value="Skilled">SKILLED</option>
+                      <option value="High-Skilled">HIGH-SKILLED</option>
+                    </select>
+                  </td>
+                </tr>
+                <tr>
+                  <td>ESI No/WC Policy No:</td>
+                  <td><input type="text" id="esi_wc" class="form-control" required></td>
+                </tr>
+                <tr>
+                  <td>UAN No:</td>
+                  <td><input type="text" id="uan" class="form-control" required></td>
+                </tr>
+                <tr>
+                  <td>PF No:</td>
+                  <td><input type="text" id="pf" class="form-control" required></td>
+                </tr>
+                <tr>
+                  <td>Supervisor</td>
+                  <td>
+                    <input type="text" id="supervisorSelect" class="form-control" disabled required>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Asst. Supervisor</td>
+                  <td>
+                    <input type="text" id="asSelect" class="form-control" disabled required>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Site In-charge</td>
+                  <td>
+                    <input type="text" id="siteInchargeSelect" class="form-control" disabled required>
+                  </td>
+                </tr>
+              </table>
+
+              <table>
+                <tr>
+                  <th colspan="2">Personal Information</th>
+                </tr>
+                <tr>
+                  <td>Full Name:</td>
+                  <td><input type="text" id="fullName" class="form-control" required></td>
+                </tr>
+                <tr>
+                  <td>Default Email ID:</td>
+                  <td><input type="email" id="defaultEmail" class="form-control" disabled></td>
+                </tr>
+                <tr>
+                  <td>Working Type:</td>
+                  <td>
+                    <select id="workingType" class="form-control" required>
+                      <option value="" disabled selected>Select Working Type</option>
+                      <option value="Continue Duty">Continue Duty</option>
+                      <option value="Monthly Duty">Monthly Duty</option>
+                    </select>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Gender:</td>
+                  <td>
+                    <label><input type="radio" name="gender" value="male" id="Male"> Male</label>
+                    <label><input type="radio" name="gender" value="female" id="Female"> Female</label>
+                    <label><input type="radio" name="gender" value="other" id="Other"> Other</label>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Date of Birth:</td>
+                  <td><input type="date" id="dob" class="form-control" required></td>
+                </tr>
+                <tr>
+                  <td>NATIONALITY</td>
+                  <td>
+                    <select id="nationality" class="form-control" required>
+                      <option value="" disabled selected>Select an option</option>
+                      <option value="Indian">INDIAN</option>
+                    </select>
+                  </td>
+                </tr>
+                <tr>
+                  <td>RELIGION</td>
+                  <td>
+                    <select id="religion" class="form-control" required>
+                      <option value="" disabled selected>Select an option</option>
+                      <option value="Hindu">HINDU</option>
+                      <option value="Christian">CHRISTIAN</option>
+                      <option value="Muslim">MUSLIM</option>
+                      <option value="Boudh">BOUDH</option>
+                    </select>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Marital Status</td>
+                  <td>
+                    <select id="marital" class="form-control" required>
+                      <option value="" disabled selected>Select an option</option>
+                      <option value="Married">Married</option>
+                      <option value="Un-Married">Un-Married</option>
+                    </select>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Blood Group</td>
+                  <td>
+                    <select id="blood" class="form-control" required>
+                      <option value="" disabled selected>Select an option</option>
+                      <option value="A+">A+</option>
+                      <option value="A-">A-</option>
+                      <option value="B+">B+</option>
+                      <option value="B-">B-</option>
+                      <option value="AB+">AB+</option>
+                      <option value="AB-">AB-</option>
+                      <option value="O+">O+</option>
+                      <option value="O-">O-</option>
+                    </select>
+                  </td>
+                </tr>
+                <tr>
+                  <td>ISMW:</td>
+                  <td>
+                    <label><input type="radio" name="ismw" value="yes" id="ismwYes"> Yes</label>
+                    <label><input type="radio" name="ismw" value="no" id="ismwNo"> No</label>
+                  </td>
+                </tr>
+                
+              </table>
+
+              <table>
+                <tr>
+                  <th colspan="2">Contact Information</th>
+                </tr>
+                <tr>
+                  <td>Permanent Address:</td>
+                  <td><input type="text" id="p_address" class="form-control" required></td>
+                </tr>
+                <tr>
+                  <td>Current Address:</td>
+                  <td><input type="text" id="address" class="form-control" required></td>
+                </tr>
+                <tr>
+                  <td>Telephone Number:</td>
+                  <td><input type="tel" id="telephone" class="form-control" required></td>
+                </tr>
+                <tr>
+                  <td>E-mail Address:</td>
+                  <td><input type="email" id="emailInput" class="form-control" required></td>
+                </tr>
+              </table>
+
+              <table>
+                <tr>
+                  <th colspan="2">Emergency Contact Information</th>
+                </tr>
+                <tr>
+                  <td>Full Name:</td>
+                  <td><input type="text" id="e_name" class="form-control" required></td>
+                </tr>
+                <tr>
+                  <td>Relationship:</td>
+                  <td><input type="text" id="relationship" class="form-control" required></td>
+                </tr>
+                <tr>
+                  <td>Telephone Number:</td>
+                  <td><input type="text" id="e_tel" class="form-control" required></td>
+                </tr>
+                <tr>
+                  <td>E-mail Address:</td>
+                  <td><input type="email" id="e_email" class="form-control" required></td>
+                </tr>
+                <tr>
+                  <td>Address:</td>
+                  <td><input type="text" id="e_address" class="form-control" required></td>
+                </tr>
+              </table>
+
+              <table>
+                <tr>
+                  <th colspan="2">Education Information</th>
+                </tr>
+                <tr>
+                  <td>University Name:</td>
+                  <td><input type="text" id="university" class="form-control" required></td>
+                </tr>
+                <tr>
+                  <td>Qualification:</td>
+                  <td><input type="text" id="qualification" class="form-control" required></td>
+                </tr>
+              </table>
+
+              <table>
+                <tr>
+                  <th colspan="2">Passes Validity</th>
+                </tr>
+                <tr>
+                  <td>Passes:</td>
+                  <td>
+                    <select id="passes" class="form-control" required>
+                      <option value="" disabled selected>Select an option</option>
+                      <option value="GATE PASS">GATE PASS</option>
+                    </select>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Start Date:</td>
+                  <td><input type="date" id="passes_start" class="form-control" required></td>
+                </tr>
+                <tr>
+                  <td>End Date:</td>
+                  <td><input type="date" id="passes_end" class="form-control" required></td>
+                </tr>
+              </table>
+
+              <table>
+                <tr>
+                  <th colspan="2">Banking Information</th>
+                </tr>
+                <tr>
+                  <td>Bank Name:</td>
+                  <td><input type="text" id="bank" class="form-control" required></td>
+                </tr>
+                <tr>
+                  <td>Account Number:</td>
+                  <td><input type="text" id="ac_no" class="form-control" required></td>
+                </tr>
+                <tr>
+                  <td>Account Holder's Name:</td>
+                  <td><input type="text" id="holder_name" class="form-control" required></td>
+                </tr>
+                <tr>
+                  <td>Bank Branch:</td>
+                  <td><input type="text" id="bank_branch" class="form-control" required></td>
+                </tr>
+                <tr>
+                  <td>IFSC:</td>
+                  <td><input type="text" id="ifsc" class="form-control" required></td>
+                </tr>
+              </table>
+
+              <div class="confirmation">
+                <p>I hereby confirm that all the above information is accurate to the best of my knowledge.</p>
+              </div>
+
+              <button type="submit" id="submitBtn" class="submit-button">Submit</button>
+            </form>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    function toggleMenu() {
+      const sidebar = document.getElementById("side-bar");
+      sidebar.classList.toggle("active");
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const currentPage = window.location.pathname.split("/").pop();
+      const navLinks = document.querySelectorAll("#side-bar a");
+
+      navLinks.forEach(link => {
+        const href = link.getAttribute("href");
+        if (href === currentPage) {
+          link.classList.add("active");
+        }
+      });
+    });
+  </script>
+
+  <script type="module" src="/public/control.js"></script>
+
+  <!-- Firebase & Fetch Script -->
+  
+  <script type="module">
+    import { getFirestore, doc, getDoc, setDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+    import { app } from "/public/firebase-config.js";
+    const db = getFirestore(app);
+
+    const departmentJobMap = new Map();
+
+    function normalizeText(value) {
+      return value === null || value === undefined ? "" : String(value).trim();
+    }
+
+    function getFirstValue(data, keys) {
+      for (const key of keys) {
+        const value = normalizeText(data?.[key]);
+        if (value) return value;
+      }
+      return "";
+    }
+
+    function addDepartmentJob(department, job = "") {
+      const dept = normalizeText(department);
+      const jobName = normalizeText(job);
+      if (!dept) return;
+      if (!departmentJobMap.has(dept)) {
+        departmentJobMap.set(dept, new Set());
+      }
+      if (jobName) {
+        departmentJobMap.get(dept).add(jobName);
+      }
+    }
+
+    function sortedUnique(values) {
+      return [...new Set(values.filter(Boolean))].sort((a, b) => a.localeCompare(b, undefined, { sensitivity: "base" }));
+    }
+
+    function fillDataList(listElement, values, selectedValue = "") {
+      if (!listElement) return;
+      listElement.innerHTML = "";
+
+      const finalValues = sortedUnique(values);
+      finalValues.forEach((value) => {
+        const option = document.createElement("option");
+        option.value = value;
+        listElement.appendChild(option);
+      });
+
+      const currentValue = normalizeText(selectedValue);
+      if (currentValue && !finalValues.includes(currentValue)) {
+        const option = document.createElement("option");
+        option.value = currentValue;
+        listElement.appendChild(option);
+      }
+    }
+
+    async function loadDepartmentCatalog() {
+      departmentJobMap.clear();
+
+      try {
+        const snapshot = await getDocs(collection(db, "Employee"));
+        snapshot.forEach((employeeDoc) => {
+          const data = employeeDoc.data() || {};
+          const department = getFirstValue(data, [
+            "departmentSelect",
+            "department",
+            "Department",
+            "dept",
+            "departmentName"
+          ]);
+          const job = getFirstValue(data, [
+            "jobSelect",
+            "job",
+            "Job",
+            "jobCode",
+            "jobTitle"
+          ]);
+          if (department) {
+            addDepartmentJob(department, job);
+          }
+        });
+      } catch (error) {
+        console.error("loadDepartmentCatalog error", error);
+      }
+    }
+
+    function refreshDepartmentOptions(selectedDepartment = "") {
+      const departmentInput = document.getElementById("departmentSelect");
+      const departmentList = document.getElementById("departmentOptionsList");
+      if (!departmentInput || !departmentList) return;
+
+      const currentValue = normalizeText(selectedDepartment || departmentInput.value);
+      fillDataList(departmentList, [...departmentJobMap.keys()], currentValue);
+      departmentInput.value = currentValue;
+    }
+
+    function refreshJobOptions(selectedDepartment = "", selectedJob = "") {
+      const jobInput = document.getElementById("jobSelect");
+      const jobList = document.getElementById("jobOptionsList");
+      if (!jobInput || !jobList) return;
+
+      const dept = normalizeText(selectedDepartment || document.getElementById("departmentSelect")?.value);
+      const currentJob = normalizeText(selectedJob || jobInput.value);
+      const jobValues = dept ? [...(departmentJobMap.get(dept) || new Set())] : [];
+
+      fillDataList(jobList, jobValues, currentJob);
+      jobInput.value = currentJob;
+    }
+
+    function ensureCurrentValuesInCatalog(department, job) {
+      const dept = normalizeText(department);
+      const jobName = normalizeText(job);
+      if (!dept) return;
+      addDepartmentJob(dept, jobName);
+    }
+
+    function setDepartmentEditMode(enabled) {
+      const departmentInput = document.getElementById("departmentSelect");
+      const jobInput = document.getElementById("jobSelect");
+      const editBtn = document.getElementById("departmentEditBtn");
+
+      if (departmentInput) departmentInput.disabled = !enabled;
+      if (jobInput) jobInput.disabled = !enabled;
+      if (editBtn) {
+        editBtn.textContent = enabled ? "Lock" : "Edit";
+        editBtn.classList.toggle("is-active", enabled);
+        editBtn.setAttribute("aria-pressed", String(enabled));
+      }
+    }
+
+    async function populateJoiningForm() {
+      console.log("populateJoiningForm: start");
+      const params = new URLSearchParams(window.location.search);
+      const email = params.get("userIntent");
+      console.log("populateJoiningForm: email=", email);
+      if (!email) return;
+
+      try {
+        const empSnap = await getDoc(doc(db, "Employee", email));
+        if (!empSnap.exists()) {
+          console.warn("No doc for", email);
+          return;
+        }
+
+        const data = empSnap.data();
+        console.log("populateJoiningForm: data=", data);
+
+        if (!data.defaultEmail) {
+          data.defaultEmail = data.officialEmail || email;
+        }
+
+        const departmentValue = getFirstValue(data, [
+          "departmentSelect",
+          "department",
+          "Department",
+          "dept",
+          "departmentName"
+        ]);
+        const jobValue = getFirstValue(data, [
+          "jobSelect",
+          "job",
+          "Job",
+          "jobCode",
+          "jobTitle"
+        ]);
+
+        ensureCurrentValuesInCatalog(departmentValue, jobValue);
+        refreshDepartmentOptions(departmentValue);
+        refreshJobOptions(departmentValue, jobValue);
+
+        // Radios
+        ["gender", "ismw"].forEach(name => {
+          if (data[name]) {
+            const r = document.querySelector(`input[name="${name}"][value="${data[name]}"]`);
+            if (r) r.checked = true;
+          }
+        });
+
+        // All other fields
+        Object.entries(data).forEach(([key, val]) => {
+          if (["gender", "ismw"].includes(key)) return;
+          const el = document.getElementById(key);
+          if (!el) return;
+          const wasDisabled = el.disabled;
+          if (wasDisabled) el.disabled = false;
+          el.value = val || "";
+          if (wasDisabled) el.disabled = true;
+        });
+
+        // Make sure these always stay in sync after general population
+        const departmentInput = document.getElementById("departmentSelect");
+        const jobInput = document.getElementById("jobSelect");
+        if (departmentInput) departmentInput.value = departmentValue;
+        if (jobInput) jobInput.value = jobValue;
+
+        setDepartmentEditMode(false);
+      } catch (err) {
+        console.error("populateJoiningForm error", err);
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", async () => {
+      await loadDepartmentCatalog();
+      await populateJoiningForm();
+
+      const form = document.getElementById("joiningForm");
+      const departmentInput = document.getElementById("departmentSelect");
+      const jobInput = document.getElementById("jobSelect");
+      const editBtn = document.getElementById("departmentEditBtn");
+
+      if (editBtn) {
+        editBtn.addEventListener("click", () => {
+          const isDisabled = departmentInput ? departmentInput.disabled : true;
+          setDepartmentEditMode(isDisabled);
+          if (isDisabled && departmentInput) {
+            departmentInput.focus();
+            departmentInput.select?.();
+          }
+        });
+      }
+
+      if (departmentInput) {
+        departmentInput.addEventListener("input", () => {
+          const dept = normalizeText(departmentInput.value);
+          const currentJob = jobInput ? jobInput.value : "";
+          ensureCurrentValuesInCatalog(dept, currentJob);
+          refreshDepartmentOptions(dept);
+          refreshJobOptions(dept, currentJob);
+        });
+
+        departmentInput.addEventListener("change", () => {
+          const dept = normalizeText(departmentInput.value);
+          const currentJob = jobInput ? jobInput.value : "";
+          ensureCurrentValuesInCatalog(dept, currentJob);
+          refreshDepartmentOptions(dept);
+          refreshJobOptions(dept, currentJob);
+        });
+      }
+
+      if (jobInput) {
+        jobInput.addEventListener("input", () => {
+          const dept = departmentInput ? normalizeText(departmentInput.value) : "";
+          const job = normalizeText(jobInput.value);
+          if (dept) addDepartmentJob(dept, job);
+          refreshJobOptions(dept, job);
+        });
+      }
+
+      form.addEventListener("submit", async e => {
+        e.preventDefault();
+        console.log("submit handler start");
+
+        const email = new URLSearchParams(window.location.search).get("userIntent");
+        console.log("submit handler: email=", email);
+
+        if (!email) return;
+
+        const data = {};
+
+        form.querySelectorAll("input, select, textarea").forEach(el => {
+          if (el.type === "file") return;
+
+          if (el.type === "radio") {
+            if (el.checked) data[el.name] = el.value;
+          } else {
+            data[el.id] = el.value;
+          }
+
+          console.log("submit: ", el.id || el.name, "=", el.value);
+        });
+
+        try {
+          await setDoc(doc(db, "Employee", email), data, { merge: true });
+          console.log("Data updated");
+          alert("Data successfully updated");
+        } catch (err) {
+          console.error("submit error", err);
+          alert("Error updating, check console");
+        }
+      });
+    });
+  </script>
+</body>
+
+</body>
+
+</html>

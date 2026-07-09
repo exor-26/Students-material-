@@ -1,0 +1,2126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HR Bulk Transfer Dashboard - CLMS</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap-theme.min.css" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    :root{
+      --topbar-height: 78px;
+      --sidebar-width: 286px;
+      --bg-0:#05111d;
+      --bg-1:#081523;
+      --bg-2:#0e2238;
+      --card: rgba(10, 24, 42, 0.88);
+      --card-strong: rgba(12, 28, 49, 0.96);
+      --border: rgba(255,255,255,.08);
+      --text:#fff;
+      --muted:#a8bed8;
+      --soft:#d7e5f3;
+      --orange-1:#ff8a3c;
+      --orange-2:#ff5a1f;
+      --blue-1:#2d7dff;
+      --blue-2:#1657cc;
+      --green-1:#20c997;
+      --red-1:#ff4d4f;
+      --shadow: 0 18px 40px rgba(0,0,0,.26);
+      --radius-lg: 26px;
+      --radius-md: 18px;
+      --radius-sm: 14px;
+    }
+    html, body{
+      width:100%;
+      min-height:100%;
+      font-family:"Segoe UI", Arial, sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at top right, rgba(48,105,194,.16), transparent 28%),
+        radial-gradient(circle at bottom left, rgba(255,122,47,.10), transparent 24%),
+        linear-gradient(135deg, rgba(6,17,31,.96), rgba(11,35,63,.94));
+      overflow:hidden;
+    }
+    a, button, input, select { outline:none !important; }
+    ::selection{ background: rgba(45,125,255,.35); color:#fff; }
+
+    .topbar{
+      height: var(--topbar-height);
+      padding:0 24px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      background: rgba(7,17,31,.92);
+      backdrop-filter: blur(14px);
+      border-bottom:1px solid rgba(255,255,255,.06);
+      position:fixed;
+      top:0; left:0; right:0;
+      z-index:2000;
+    }
+    .topbar-left, .topbar-right{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      min-width:0;
+    }
+    .menu-toggle{
+      width:46px; height:46px;
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:14px;
+      background: linear-gradient(135deg, rgba(255,255,255,.09), rgba(255,255,255,.03));
+      color:#fff;
+      font-size:20px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      cursor:pointer;
+      transition:.25s ease;
+      flex-shrink:0;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.05);
+    }
+    .menu-toggle:hover{
+      transform: translateY(-1px);
+      background: linear-gradient(135deg, rgba(255,122,47,.16), rgba(31,119,255,.16));
+      border-color: rgba(255,255,255,.12);
+    }
+    .brand-wrap{ display:flex; flex-direction:column; justify-content:center; min-width:0; }
+    .brand-title{
+      margin:0;
+      font-size:24px;
+      font-weight:800;
+      color:#fff;
+      text-decoration:none !important;
+      line-height:1.1;
+      letter-spacing:.2px;
+    }
+    .brand-subtitle{
+      margin:2px 0 0;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.3;
+    }
+    #bellContainer{
+      position:relative;
+      width:46px;
+      height:46px;
+      border-radius:14px;
+      background: rgba(255,255,255,.07);
+      border:1px solid rgba(255,255,255,.06);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      cursor:pointer;
+      transition:.25s ease;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.05);
+    }
+    #bellContainer:hover{ transform: translateY(-1px); background: rgba(255,255,255,.12); }
+    #bellBadge{
+      position:absolute;
+      top:3px; right:3px;
+      min-width:18px;
+      height:18px;
+      padding:0 5px;
+      border-radius:999px;
+      background:var(--red-1);
+      color:#fff;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:10px;
+      font-weight:700;
+      line-height:1;
+    }
+    .logout{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-height:44px;
+      padding:10px 18px;
+      border-radius:14px;
+      text-decoration:none !important;
+      color:#fff !important;
+      font-weight:800;
+      background: linear-gradient(135deg, var(--orange-1), var(--orange-2));
+      box-shadow: 0 12px 26px rgba(255,90,31,.22);
+      transition:.25s ease;
+      white-space:nowrap;
+    }
+    .logout:hover{ transform: translateY(-1px); }
+    #notificationBox{
+      display:none;
+      position:fixed;
+      top: calc(var(--topbar-height) - 8px);
+      right: 85px;
+      width: 340px;
+      max-height: 340px;
+      overflow-y: auto;
+      background: rgba(8,21,39,.98);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius:18px;
+      padding:14px;
+      box-shadow: 0 22px 46px rgba(0,0,0,.32);
+      z-index:2200;
+    }
+    .notification-item{
+      padding:12px 14px;
+      margin-bottom:10px;
+      border-radius:14px;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.06);
+    }
+    .notification-item p{
+      margin:0 0 6px;
+      color:var(--soft);
+      font-size:13px;
+      line-height:1.55;
+    }
+    .dashboard-layout{ width:100%; height:100vh; }
+    .sidebar{
+      width: var(--sidebar-width);
+      min-width: var(--sidebar-width);
+      max-width: var(--sidebar-width);
+      position:fixed;
+      top: var(--topbar-height);
+      left:0; bottom:0;
+      padding:20px 16px 22px;
+      background: linear-gradient(180deg, rgba(6,16,30,.98), rgba(8,22,40,.96));
+      backdrop-filter: blur(16px);
+      border-right:1px solid rgba(255,255,255,.06);
+      overflow-y:auto;
+      overflow-x:hidden;
+      z-index:1500;
+      box-shadow: 18px 0 45px rgba(0,0,0,.24);
+    }
+    .sidebar::-webkit-scrollbar{ width:6px; }
+    .sidebar::-webkit-scrollbar-thumb{ background: rgba(255,255,255,.14); border-radius:999px; }
+    .sidebar-top-card{
+      position:relative;
+      padding:20px 18px 18px;
+      border-radius:24px;
+      background:
+        linear-gradient(135deg, rgba(255,122,47,.16), rgba(31,119,255,.14)),
+        rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.08);
+      box-shadow: 0 16px 32px rgba(0,0,0,.20), inset 0 1px 0 rgba(255,255,255,.06);
+      overflow:hidden;
+      margin-bottom:24px;
+    }
+    .sidebar-top-card::after{
+      content:"";
+      position:absolute;
+      right:-30px; top:-30px;
+      width:100px; height:100px;
+      border-radius:50%;
+      background: radial-gradient(circle, rgba(255,255,255,.16), transparent 70%);
+    }
+    .sidebar-mini-label{
+      display:inline-block;
+      font-size:11px;
+      font-weight:800;
+      text-transform:uppercase;
+      letter-spacing:1.4px;
+      color:#ffd8c2;
+      background: rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.08);
+      padding:5px 10px;
+      border-radius:999px;
+      margin-bottom:12px;
+      position:relative;
+      z-index:1;
+    }
+    .sidebar-main-title{
+      font-size:19px;
+      font-weight:900;
+      color:#fff;
+      margin:0 0 6px;
+      line-height:1.2;
+      position:relative;
+      z-index:1;
+    }
+    .sidebar-main-subtitle{
+      font-size:13px;
+      color:#d5e2f1;
+      line-height:1.7;
+      margin:0 0 14px;
+      position:relative;
+      z-index:1;
+    }
+    .sidebar-status-row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      position:relative;
+      z-index:1;
+      padding-top:12px;
+      border-top:1px solid rgba(255,255,255,.08);
+    }
+    .sidebar-status-badge{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:11px;
+      font-weight:800;
+      color:#dfffe9;
+      background: rgba(20,184,106,.14);
+      border:1px solid rgba(20,184,106,.22);
+    }
+    .sidebar-status-badge::before{
+      content:"";
+      width:8px; height:8px;
+      border-radius:50%;
+      background:#4df39b;
+      box-shadow:0 0 10px rgba(77,243,155,.7);
+    }
+    .sidebar-section-title{
+      font-size:11px;
+      text-transform:uppercase;
+      letter-spacing:1.5px;
+      color:#8ea4c5;
+      margin: 0 8px 16px;
+      font-weight:800;
+    }
+    #side-bar{
+      list-style:none;
+      padding-left:0;
+      margin-bottom:0;
+      width:100%;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+    #side-bar li{ width:100%; margin:0; }
+    #side-bar a{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      width:100%;
+      padding:15px 15px;
+      border-radius:20px;
+      text-decoration:none !important;
+      color:#edf4ff !important;
+      background: linear-gradient(135deg, rgba(255,255,255,.055), rgba(255,255,255,.025));
+      border:1px solid rgba(255,255,255,.06);
+      transition: all .28s ease;
+      position:relative;
+      overflow:hidden;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
+    }
+    #side-bar a::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background: linear-gradient(90deg, rgba(255,122,47,.13), rgba(31,119,255,.11));
+      opacity:0;
+      transition: opacity .28s ease;
+    }
+    #side-bar a::after{
+      content:"";
+      position:absolute;
+      left:0;
+      top:18%;
+      width:4px;
+      height:64%;
+      border-radius:999px;
+      background: linear-gradient(180deg, #ff8a3c, #1f77ff);
+      opacity:0;
+      transition: opacity .28s ease;
+    }
+    #side-bar a:hover{
+      transform: translateX(6px);
+      border-color: rgba(255,255,255,.10);
+      box-shadow: 0 14px 28px rgba(0,0,0,.20);
+    }
+    #side-bar a:hover::before, #side-bar a:hover::after{ opacity:1; }
+    #side-bar a.active{
+      background: linear-gradient(135deg, rgba(255,122,47,.18), rgba(31,119,255,.16));
+      border-color: rgba(255,255,255,.12);
+      box-shadow: 0 16px 30px rgba(0,0,0,.24);
+    }
+    #side-bar a.active::before, #side-bar a.active::after{ opacity:1; }
+    .nav-icon{
+      width:44px; height:44px;
+      min-width:44px;
+      border-radius:15px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background: linear-gradient(135deg, rgba(255,255,255,.13), rgba(255,255,255,.05));
+      border:1px solid rgba(255,255,255,.08);
+      color:#fff;
+      font-size:17px;
+      position:relative;
+      z-index:1;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.08);
+    }
+    .nav-text{
+      display:flex;
+      flex-direction:column;
+      min-width:0;
+      position:relative;
+      z-index:1;
+    }
+    .nav-text strong{
+      font-size:14px;
+      font-weight:800;
+      color:#fff;
+      line-height:1.2;
+    }
+    .nav-text span{
+      margin-top:4px;
+      font-size:11px;
+      line-height:1.45;
+      color:#aabed8;
+    }
+
+    main{
+      position:fixed;
+      top:var(--topbar-height);
+      left:var(--sidebar-width);
+      right:0;
+      bottom:0;
+      padding:28px 30px;
+      overflow-y:auto;
+      overflow-x:hidden;
+    }
+    main::-webkit-scrollbar{ width:10px; height:10px; }
+    main::-webkit-scrollbar-thumb{ background: rgba(255,255,255,.12); border-radius:999px; }
+
+    .hero-card, .panel-card, .table-card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:var(--radius-lg);
+      padding:24px;
+      box-shadow:var(--shadow);
+      margin-bottom:24px;
+      position:relative;
+      overflow:hidden;
+    }
+    .hero-card{
+      background: linear-gradient(135deg, rgba(22,61,112,.90), rgba(12,27,53,.94));
+      padding:30px 34px;
+    }
+    .hero-card::after, .hero-card::before{
+      content:"";
+      position:absolute;
+      border-radius:50%;
+      pointer-events:none;
+    }
+    .hero-card::after{
+      right:-80px;
+      top:-80px;
+      width:220px;
+      height:220px;
+      background: radial-gradient(circle, rgba(255,122,47,.18), transparent 70%);
+    }
+    .hero-card::before{
+      left:-60px;
+      bottom:-80px;
+      width:180px;
+      height:180px;
+      background: radial-gradient(circle, rgba(45,125,255,.16), transparent 70%);
+    }
+    .section-badge{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:8px 14px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:800;
+      color:#d6e9ff;
+      background: rgba(80,145,255,.14);
+      border:1px solid rgba(80,145,255,.22);
+      white-space:nowrap;
+    }
+    .hero-card h1{
+      margin:12px 0 10px;
+      font-size:34px;
+      font-weight:900;
+      color:#fff;
+      line-height:1.15;
+      letter-spacing:.2px;
+    }
+    .hero-card p{
+      margin:0;
+      max-width: 1000px;
+      font-size:15px;
+      line-height:1.8;
+      color:#d0def0;
+    }
+    .section-header, .table-header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:18px;
+      flex-wrap:wrap;
+    }
+    .section-header h2, .table-header h3{
+      margin:0;
+      font-weight:900;
+      color:#fff;
+    }
+    .section-header h2{ font-size:26px; }
+    .table-header h3{ font-size:24px; }
+
+    .details-grid{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap:16px;
+    }
+    .filter-grid{
+      display:grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap:16px;
+      align-items:end;
+    }
+    .field{ position:relative; }
+    .field label{
+      display:block;
+      margin-bottom:8px;
+      font-size:12px;
+      font-weight:800;
+      color:var(--muted);
+      letter-spacing:.4px;
+      text-transform:uppercase;
+    }
+    .value-box,
+    .field input,
+    .field select,
+    .field textarea{
+      width:100%;
+      min-height:52px;
+      border-radius:16px !important;
+      border:1px solid rgba(255,255,255,.08) !important;
+      background: rgba(255,255,255,.055) !important;
+      color:#fff !important;
+      padding:12px 14px !important;
+      font-size:14px;
+      outline:none;
+      box-shadow:none !important;
+      transition:.22s ease;
+    }
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus{
+      border-color: rgba(45,125,255,.62) !important;
+      box-shadow: 0 0 0 4px rgba(45,125,255,.12) !important;
+      background: rgba(255,255,255,.075) !important;
+    }
+    .field select option{ color:#000; }
+
+    .toggle-group{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .toggle-pill{
+      flex:1 1 150px;
+      min-height:52px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.055);
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding: 12px 14px;
+      cursor:pointer;
+      transition:.22s ease;
+      user-select:none;
+    }
+    .toggle-pill:hover{ border-color: rgba(45,125,255,.55); }
+    .toggle-pill input{ margin:0; }
+    .toggle-pill span{
+      color:#e7f1ff;
+      font-weight:800;
+      font-size:13px;
+    }
+
+    .btn-ghost, .btn-blue, .btn-orange, .btn-gray{
+      min-height:52px;
+      width:100%;
+      border:none;
+      border-radius:16px !important;
+      color:#fff !important;
+      font-size:15px;
+      font-weight:900;
+      padding:12px 22px !important;
+      transition:.22s ease;
+      white-space:nowrap;
+    }
+    .btn-blue{ background: linear-gradient(135deg, var(--blue-1), var(--blue-2)) !important; box-shadow: 0 12px 26px rgba(45,125,255,.22); }
+    .btn-orange{ background: linear-gradient(135deg, var(--orange-1), var(--orange-2)) !important; box-shadow: 0 12px 26px rgba(255,90,31,.22); }
+    .btn-gray{ background: linear-gradient(135deg, #6c757d, #343a40) !important; box-shadow: 0 10px 24px rgba(0,0,0,.22); }
+    .btn-blue:hover, .btn-orange:hover, .btn-gray:hover{ transform: translateY(-1px); color:#fff !important; }
+
+    .filter-summary{
+      margin-top:18px;
+      padding:16px;
+      border-radius:18px;
+      background: rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.06);
+    }
+    .filter-summary-title{
+      font-size:12px;
+      font-weight:900;
+      text-transform:uppercase;
+      letter-spacing:1.4px;
+      color:#9fb5d4;
+      margin-bottom:10px;
+    }
+    .filter-chip-list{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+    }
+    .filter-chip{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 12px;
+      border-radius:999px;
+      background: rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.07);
+      color:#e6f1fb;
+      font-size:12px;
+      font-weight:700;
+      line-height:1;
+    }
+    .filter-chip strong{ color:#fff; font-weight:900; }
+
+    .helper-text{
+      margin-top:10px;
+      font-size:12px;
+      color:#a9bfd7;
+      line-height:1.55;
+    }
+    .small-note{
+      font-size:12px;
+      color:#a9bfd7;
+      line-height:1.6;
+      margin-top:10px;
+    }
+    .inline-alert{
+      margin-top:14px;
+      padding:12px 14px;
+      border-radius:16px;
+      background: rgba(32,201,151,.09);
+      border:1px solid rgba(32,201,151,.18);
+      color:#dfffe9;
+      font-size:13px;
+      line-height:1.6;
+    }
+    .inline-danger{
+      margin-top:14px;
+      padding:12px 14px;
+      border-radius:16px;
+      background: rgba(255,77,79,.09);
+      border:1px solid rgba(255,77,79,.18);
+      color:#ffd9da;
+      font-size:13px;
+      line-height:1.6;
+    }
+
+    .table-card{
+      background: rgba(10,24,42,.84);
+      border-radius:26px;
+    }
+    .table-wrap{
+      width:100%;
+      overflow:auto;
+      border-radius:18px;
+      background: rgba(18,36,61,.96);
+      border:1px solid rgba(255,255,255,.06);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.03);
+    }
+    .table-wrap table{
+      width:100%;
+      margin:0;
+      min-width: 1100px;
+      border-collapse:collapse;
+      background: rgba(255,255,255,.02);
+      border-radius:18px;
+      overflow:hidden;
+    }
+    .table-wrap thead tr{ background: linear-gradient(135deg, var(--blue-1), var(--blue-2)); }
+    .table-wrap th{
+      position:sticky;
+      top:0;
+      z-index:2;
+      color:#fff4cc;
+      font-size:12px;
+      font-weight:900;
+      text-transform:uppercase;
+      letter-spacing:.5px;
+      text-align:center;
+      vertical-align:middle;
+      padding:16px 12px !important;
+      border:none !important;
+      white-space:nowrap;
+      box-shadow: 0 2px 0 rgba(255,255,255,.06);
+    }
+    .table-wrap td{
+      padding:14px 12px !important;
+      text-align:center;
+      vertical-align:middle;
+      color:#dce9f7;
+      border-top:1px solid rgba(255,255,255,.05) !important;
+      background: rgba(255,255,255,.02);
+      white-space:nowrap;
+    }
+    .table-wrap tbody tr:nth-child(even) td{ background: rgba(255,255,255,.025); }
+    .table-wrap tbody tr:hover td{ background: rgba(63,131,248,.08); }
+    .empty-row td{
+      color:#9fb4cf;
+      font-style:italic;
+      padding:24px 14px !important;
+    }
+    .row-checkbox{
+      width:20px;
+      height:20px;
+      cursor:pointer;
+    }
+
+    .day-box{
+      width:34px;
+      height:34px;
+      border-radius:10px;
+      border:1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.06);
+      color:#cfe0f4;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      cursor:pointer;
+      font-size:16px;
+      font-weight:900;
+      transition:.22s ease;
+      user-select:none;
+    }
+    .day-box:hover{
+      transform:translateY(-1px);
+      border-color: rgba(32,201,151,.55);
+      box-shadow:0 8px 18px rgba(0,0,0,.22);
+    }
+    .day-box.active{
+      background: linear-gradient(135deg, #20c997, #11936c);
+      color:#fff;
+      border-color: rgba(32,201,151,.75);
+      box-shadow:0 8px 18px rgba(32,201,151,.22);
+    }
+    .day-box.disabled{
+      opacity:.25;
+      cursor:not-allowed;
+      pointer-events:none;
+    }
+
+    .stack-actions{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+    .stack-actions .field{ flex:1 1 170px; }
+
+    #historyInfo, #previewInfo{
+      margin-top:8px;
+      font-size:12px;
+      color:#a9bfd7;
+      line-height:1.6;
+    }
+
+    @media (max-width:1200px){
+      .details-grid{ grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .filter-grid{ grid-template-columns: repeat(2, minmax(0,1fr)); }
+    }
+    @media (max-width:991px){
+      html, body{
+        width:100%;
+        min-height:100%;
+        height:auto;
+        overflow-y:auto;
+        overflow-x:hidden;
+      }
+      .dashboard-layout{
+        width:100%;
+        height:auto;
+        min-height:100vh;
+        padding-top: var(--topbar-height);
+      }
+      .sidebar{
+        width:100%;
+        min-width:100%;
+        max-width:100%;
+        position:relative;
+        top:auto; left:auto; right:auto; bottom:auto;
+        height:auto;
+        overflow:visible;
+        border-right:none;
+        border-bottom:1px solid rgba(255,255,255,.05);
+        border-radius:0 0 24px 24px;
+        z-index:100;
+        padding:14px;
+      }
+      #side-bar{ display:none; gap:10px; }
+      #side-bar.active{ display:flex; flex-direction:column; margin-top:12px; }
+      .sidebar-status-row{ align-items:flex-start; flex-direction:column; }
+      main{
+        position:relative;
+        top:auto; left:auto; right:auto; bottom:auto;
+        width:100%;
+        padding:18px;
+        overflow:visible;
+      }
+      .details-grid, .filter-grid{ grid-template-columns: 1fr; }
+      .brand-subtitle{ display:none; }
+    }
+    @media (max-width:600px){
+      .topbar{ padding:0 14px; }
+      .brand-title{ font-size:21px; }
+      .logout{ padding:9px 14px; font-size:13px; }
+      .hero-card, .panel-card, .table-card{ padding:18px; border-radius:18px; }
+      #notificationBox{ width:280px; right:16px; }
+      .hero-card h1{ font-size:26px; }
+      .filter-summary{ padding:14px; }
+      .filter-chip{ width:100%; justify-content:space-between; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-left">
+      <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+      <div class="brand-wrap">
+        <a href="#" class="brand-title">HR Bulk Transfer</a>
+        <p class="brand-subtitle">CLMS Employee Transfer & History</p>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div id="bellContainer">
+        <span class="glyphicon glyphicon-bell" style="font-size:24px;"></span>
+        <span id="bellBadge" class="badge" style="display:none;">0</span>
+      </div>
+      <a href="#" class="logout" onclick="logoutUser()">Logout</a>
+    </div>
+  </header>
+
+  <div id="notificationBox"></div>
+
+  <div class="dashboard-layout">
+    <nav class="sidebar">
+      <div class="sidebar-top-card">
+        <div class="sidebar-mini-label">HR Panel</div>
+        <h3 class="sidebar-main-title">Command Center</h3>
+        <p class="sidebar-main-subtitle">Employee transfer, department change, reporting-manager updates, and transfer history in one place.</p>
+        <div class="sidebar-status-row">
+          <span class="sidebar-status-badge">CLMS Active</span>
+          <div style="font-size:11px;color:#c6d8ec;text-align:right;line-height:1.4">Bulk transfer ready<br/>Secure navigation</div>
+        </div>
+      </div>
+      <div class="sidebar-section-title">Navigation</div>
+      <ul id="side-bar">
+        <li><a href="#"><span class="nav-icon glyphicon glyphicon-user"></span><span class="nav-text"><strong>Joining</strong><span>Employee joining and edits</span></span></a></li>
+        <li><a href="#"><span class="nav-icon glyphicon glyphicon-list-alt"></span><span class="nav-text"><strong>Employee Status</strong><span>Status and activation</span></span></a></li>
+        <li><a href="#"><span class="nav-icon glyphicon glyphicon-th-list"></span><span class="nav-text"><strong>Employee list</strong><span>Master employee list</span></span></a></li>
+        <li><a href="#"><span class="nav-icon glyphicon glyphicon-calendar"></span><span class="nav-text"><strong>Employee Attendance</strong><span>Attendance overview</span></span></a></li>
+        <li><a href="#"><span class="nav-icon glyphicon glyphicon-lock"></span><span class="nav-text"><strong>Access</strong><span>Access control tools</span></span></a></li>
+        <li><a href="#"><span class="nav-icon glyphicon glyphicon-ok-circle"></span><span class="nav-text"><strong>Leave Approval</strong><span>Approve leave requests</span></span></a></li>
+        <li><a href="#"><span class="nav-icon glyphicon glyphicon-cog"></span><span class="nav-text"><strong>Store Equipment</strong><span>Equipment issue management</span></span></a></li>
+        <li><a href="#"><span class="nav-icon glyphicon glyphicon-cutlery"></span><span class="nav-text"><strong>Food Allowance</strong><span>Allowance tracking</span></span></a></li>
+        <li><a href="#"><span class="nav-icon glyphicon glyphicon-usd"></span><span class="nav-text"><strong>Allowance</strong><span>Allowance processing</span></span></a></li>
+        <li><a href="#"><span class="nav-icon glyphicon glyphicon-transfer"></span><span class="nav-text"><strong>Bulk Transfer</strong><span>Department & manager transfer</span></span></a></li>
+      </ul>
+    </nav>
+
+    <main>
+      <section class="hero-card">
+        <span class="section-badge">HR BULK TRANSFER PANEL</span>
+        <h1>Employee, Department, Supervisor, AS &amp; SI Transfer</h1>
+        <p>Select a department, transfer type, date, and current/new assignment. Preview the exact employees first, then submit one bulk update to Firestore with complete transfer history logging.</p>
+      </section>
+
+      <section class="panel-card">
+        <div class="section-header">
+          <h2>HR Details</h2>
+          <span class="section-badge">Profile Information</span>
+        </div>
+        <div class="details-grid">
+          <div class="field"><label>HR Name</label><div class="value-box" id="hrNameDisplay">Loading...</div></div>
+          <div class="field"><label>HR ID</label><div class="value-box" id="hrIdDisplay">Loading...</div></div>
+          <div class="field"><label>Assigned Site</label><div class="value-box" id="hrSiteDisplay">Loading...</div></div>
+        </div>
+      </section>
+
+      <section class="panel-card">
+        <div class="section-header">
+          <h2>Transfer Setup</h2>
+          <span class="section-badge">Department / Date / Type / New Assignment</span>
+        </div>
+
+        <div class="filter-grid">
+          <div class="field">
+            <label>Department</label>
+            <select id="departmentSelect">
+              <option value="">Select department</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label>Change Date</label>
+            <input type="date" id="changeDate" />
+          </div>
+
+          <div class="field">
+            <label>Site</label>
+            <input type="text" id="siteReadonly" readonly />
+          </div>
+
+          <div class="field">
+            <label>Transfer Type</label>
+            <select id="transferType">
+              <option value="">Select transfer type</option>
+              <option value="DEPARTMENT">Employee → Department Change</option>
+              <option value="SUPERVISOR">Employee → Supervisor Change</option>
+              <option value="AS">Employee → AS Change</option>
+              <option value="SI">Employee → SI Change</option>
+            </select>
+          </div>
+
+          <div class="field" id="currentContainer">
+            <label id="currentLabel">Current Assignment</label>
+            <select id="currentAssignment">
+              <option value="">Select current assignment</option>
+            </select>
+          </div>
+
+          <div class="field" id="newContainer">
+            <label id="newLabel">New Assignment</label>
+            <select id="newAssignment">
+              <option value="">Select new assignment</option>
+            </select>
+          </div>
+
+          <div class="field" id="newDepartmentContainer" style="display:none;">
+            <label>New Department</label>
+            <select id="newDepartment">
+              <option value="">Select new department</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label>&nbsp;</label>
+            <button type="button" class="btn-blue" id="loadPreviewBtn">Load Preview</button>
+          </div>
+        </div>
+
+        <div class="filter-summary">
+          <div class="filter-summary-title">Setup summary</div>
+          <div class="filter-chip-list">
+            <span class="filter-chip" id="chipDepartment">Department: --</span>
+            <span class="filter-chip" id="chipDate">Date: --</span>
+            <span class="filter-chip" id="chipSite">Site: --</span>
+            <span class="filter-chip" id="chipType">Transfer: --</span>
+            <span class="filter-chip" id="chipCurrent">Current: --</span>
+            <span class="filter-chip" id="chipNew">New: --</span>
+          </div>
+          <div class="helper-text">Same old and new ID selection is blocked. New supervisor/AS/SI list is filtered by the chosen department and role before allowing submit.</div>
+          <div id="setupMessage" class="inline-alert" style="display:none;"></div>
+          <div id="setupError" class="inline-danger" style="display:none;"></div>
+        </div>
+      </section>
+
+      <section class="panel-card">
+        <div class="section-header">
+          <h2>Employee Scope</h2>
+          <span class="section-badge">All Employees / Particular Employee</span>
+        </div>
+
+        <div class="filter-grid" style="margin-bottom:16px;">
+          <div class="field">
+            <label>Scope</label>
+            <select id="employeeScope">
+              <option value="ALL">All Employees</option>
+              <option value="PARTICULAR">Particular Employee</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Search Employee</label>
+            <input type="text" id="employeeSearch" placeholder="Type employee name or UID" />
+          </div>
+          <div class="field">
+            <label>Total Selected</label>
+            <div class="value-box" id="selectedCount">0</div>
+          </div>
+          <div class="field">
+            <label>&nbsp;</label>
+            <button type="button" class="btn-gray" id="resetBtn">Reset</button>
+          </div>
+        </div>
+
+        <div class="small-note" id="scopeHint">All Employees mode freezes the search box. Particular Employee mode unlocks it for name/UID search.</div>
+
+        <div class="table-wrap" style="margin-top:16px;">
+          <table id="employeeTable">
+            <thead id="employeeTableHead">
+              <tr>
+                <th style="width:60px;"><input type="checkbox" id="selectAllBox" /></th>
+                <th>Employee Name</th>
+                <th>UID</th>
+                <th>Department</th>
+                <th>Current Value</th>
+                <th>New Value</th>
+                <th>Collection</th>
+              </tr>
+            </thead>
+            <tbody id="employeeTableBody">
+              <tr class="empty-row"><td colspan="7">Please select setup and click Load Preview.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="stack-actions" style="margin-top:16px;">
+          <div class="field"><button type="button" class="btn-orange" id="submitBtn">Submit Transfer</button></div>
+          <div class="field"><button type="button" class="btn-gray" id="refreshHistoryBtn">Refresh History</button></div>
+        </div>
+
+        <div id="previewInfo">Preview will show the exact employees to be updated, along with the old and new values.</div>
+      </section>
+
+      <section class="table-card">
+        <div class="section-header">
+          <h2>Transfer History</h2>
+          <span class="section-badge">Filtered by Date / Department / Site</span>
+        </div>
+
+        <div class="filter-grid" style="grid-template-columns:minmax(0,1fr) 220px; margin-bottom:16px;">
+          <div class="field">
+            <label>History Transfer Type</label>
+            <select id="historyTransferTypeSelect">
+              <option value="">All Transfer Types</option>
+              <option value="DEPARTMENT">Employee → Department Change</option>
+              <option value="SUPERVISOR">Employee → Supervisor Change</option>
+              <option value="AS">Employee → AS Change</option>
+              <option value="SI">Employee → SI Change</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>&nbsp;</label>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table id="historyTable">
+            <thead>
+              <tr>
+                <th>Change Date</th>
+                <th>Employee Name</th>
+                <th>UID</th>
+                <th>Department</th>
+                <th>Transfer Type</th>
+                <th>Old Value</th>
+                <th>New Value</th>
+                <th>Changed By</th>
+              </tr>
+            </thead>
+            <tbody id="historyTableBody">
+              <tr class="empty-row"><td colspan="8">No history loaded yet.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div id="historyInfo">Choose a date and department, then load preview or submit a transfer to see the history log below.</div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    function toggleMenu(){ document.getElementById("side-bar").classList.toggle("active"); }
+    document.addEventListener("DOMContentLoaded", ()=>{
+      const currentPage = window.location.pathname.split("/").pop();
+      document.querySelectorAll("#side-bar a").forEach(link=>{
+        if (link.getAttribute("href") === currentPage) link.classList.add("active");
+      });
+    });
+  </script>
+
+  <script type="module" src="/public/control.js"></script>
+
+  <script type="module">
+    import {
+      getFirestore, doc, getDoc, getDocs, setDoc, collection, query, where,
+      writeBatch, addDoc, orderBy, limit
+    } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+    import { app } from "/public/firebase-config.js";
+
+    const db = getFirestore(app);
+
+    const HR_EMAIL = localStorage.getItem("hrEmail") || localStorage.getItem("userEmail") || "";
+    const EMPLOYEE_COLLECTIONS = ["AS", "Supervisor", "Site-Incharge", "Employee"];
+
+    const hrNameDisplay = document.getElementById("hrNameDisplay");
+    const hrIdDisplay = document.getElementById("hrIdDisplay");
+    const hrSiteDisplay = document.getElementById("hrSiteDisplay");
+    const siteReadonly = document.getElementById("siteReadonly");
+    const departmentSelect = document.getElementById("departmentSelect");
+    const newDepartment = document.getElementById("newDepartment");
+    const transferType = document.getElementById("transferType");
+    const currentAssignment = document.getElementById("currentAssignment");
+    const newAssignment = document.getElementById("newAssignment");
+    const currentContainer = document.getElementById("currentContainer");
+    const newContainer = document.getElementById("newContainer");
+    const newDepartmentContainer = document.getElementById("newDepartmentContainer");
+    const currentLabel = document.getElementById("currentLabel");
+    const newLabel = document.getElementById("newLabel");
+    const changeDate = document.getElementById("changeDate");
+    const employeeScope = document.getElementById("employeeScope");
+    const employeeSearch = document.getElementById("employeeSearch");
+    const selectedCount = document.getElementById("selectedCount");
+    const selectAllBox = document.getElementById("selectAllBox");
+    const employeeTableBody = document.getElementById("employeeTableBody");
+    const historyTableBody = document.getElementById("historyTableBody");
+    const loadPreviewBtn = document.getElementById("loadPreviewBtn");
+    const submitBtn = document.getElementById("submitBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const refreshHistoryBtn = document.getElementById("refreshHistoryBtn");
+    const historyTransferTypeSelect = document.getElementById("historyTransferTypeSelect");
+    const setupMessage = document.getElementById("setupMessage");
+    const setupError = document.getElementById("setupError");
+    const scopeHint = document.getElementById("scopeHint");
+    const previewInfo = document.getElementById("previewInfo");
+    const historyInfo = document.getElementById("historyInfo");
+
+    const chipDepartment = document.getElementById("chipDepartment");
+    const chipDate = document.getElementById("chipDate");
+    const chipSite = document.getElementById("chipSite");
+    const chipType = document.getElementById("chipType");
+    const chipCurrent = document.getElementById("chipCurrent");
+    const chipNew = document.getElementById("chipNew");
+
+    const bell = document.getElementById("bellContainer");
+    const badge = document.getElementById("bellBadge");
+    const box = document.getElementById("notificationBox");
+
+    const state = {
+      hr: null,
+      hrUid: "",
+      hrName: "",
+      hrSites: [],
+      hrDepartments: [],
+      allEmployees: [],
+      filteredEmployees: [],
+      previewEmployees: [],
+      selectedMap: new Map(),
+      currentAssignmentMeta: null,
+      newAssignmentMeta: null
+    };
+
+    function normalizeText(value = "") {
+      return String(value ?? "").replace(/\s+/g, " ").trim();
+    }
+    function lowerText(value = "") {
+      return normalizeText(value).toLowerCase();
+    }
+    function escapeHTML(value = "") {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+    function uniqueBy(arr, keyFn) {
+      const seen = new Set();
+      return (arr || []).filter(item => {
+        const key = keyFn(item);
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      });
+    }
+    function uniqueSorted(values = []) {
+      return uniqueBy((values || []).map(v => normalizeText(v)).filter(Boolean), v => lowerText(v))
+        .sort((a,b)=>a.localeCompare(b));
+    }
+    function splitValues(value) {
+      if (!value) return [];
+      if (Array.isArray(value)) return value.flatMap(splitValues);
+      if (typeof value === "object") return Object.values(value).flatMap(splitValues);
+      return String(value).split(/[,|/\n]/).map(s => normalizeText(s)).filter(Boolean);
+    }
+    function firstNonEmpty(...values) {
+      for (const value of values) {
+        if (value === null || value === undefined) continue;
+        const text = String(value).trim();
+        if (text) return text;
+      }
+      return "";
+    }
+    function makeOptionValue(meta) {
+      return `${meta.uid}|||${meta.name}`;
+    }
+    function parseOptionValue(value = "") {
+      const [uid = "", name = ""] = String(value).split("|||");
+      return { uid: normalizeText(uid), name: normalizeText(name) };
+    }
+    function looseMatch(a, b) {
+      const x = lowerText(a).replace(/[^a-z0-9]+/g, "");
+      const y = lowerText(b).replace(/[^a-z0-9]+/g, "");
+      return !!(x && y && (x === y || x.includes(y) || y.includes(x)));
+    }
+
+    function getCollectionRole(collectionName = "") {
+      const n = lowerText(collectionName);
+      if (n === "si" || n.includes("site incharge") || n.includes("site-incharge")) return "SI";
+      if (n === "supervisor") return "Supervisor";
+      if (n === "as") return "AS";
+      if (n === "employee") return "Employee";
+      return "";
+    }
+
+    function extractHrDepartments(hrData = {}) {
+      const departments = [];
+      const seen = new Set();
+      const push = (value) => {
+        const text = normalizeText(value)
+          .replace(/^["']|["']$/g, "")
+          .replace(/\(\d+\)\s*$/, "")
+          .trim();
+        if (!text) return;
+        const key = lowerText(text);
+        if (key === "object object" || key === "[object object]") return;
+        if (seen.has(key)) return;
+        seen.add(key);
+        departments.push(text);
+      };
+
+      const source = []
+        .concat(hrData.jobs ?? [])
+        .concat(hrData.Jobs ?? [])
+        .concat(hrData.departments ?? [])
+        .concat(hrData.Departments ?? []);
+
+      source.forEach(entry => {
+        if (entry == null) return;
+        if (typeof entry === "string") {
+          push(entry);
+          return;
+        }
+        if (Array.isArray(entry)) {
+          entry.forEach(item => {
+            if (typeof item === "string") push(item);
+            else if (item && typeof item === "object") {
+              Object.keys(item).forEach(key => push(key));
+            }
+          });
+          return;
+        }
+        if (typeof entry === "object") {
+          Object.keys(entry).forEach(key => push(key));
+        }
+      });
+
+      return departments.sort((a, b) => a.localeCompare(b));
+    }
+
+    function normalizeRoleLabel(value = "") {
+      const n = lowerText(value);
+      if (!n) return "";
+      if (n === "si" || n.includes("site incharge") || n.includes("site-incharge")) return "SI";
+      if (n === "supervisor" || n.includes("supervisor")) return "Supervisor";
+      if (n === "as" || n === "a.s" || n.includes("assistant supervisor")) return "AS";
+      if (n === "employee" || n.includes("worker") || n.includes("labour") || n.includes("labor")) return "Employee";
+      return normalizeText(value);
+    }
+
+    function getEmployeeUid(emp) {
+      return normalizeText(firstNonEmpty(emp.uid, emp.UID, emp.userId, emp.userID, emp.empId, emp.employeeId, emp.email, emp.Email, emp.__docId));
+    }
+    function getEmployeeName(emp) {
+      return normalizeText(firstNonEmpty(emp.fullName, emp.FullName, emp.name, emp.Name, emp.employeeName, emp.EmployeeName, emp.e_name, emp.eName, emp.__docId, getEmployeeUid(emp)));
+    }
+    function getEmployeeRole(emp) {
+      const collectionRole = getCollectionRole(emp.__collectionName);
+      if (collectionRole) return collectionRole;
+      const candidates = [emp.jobRole, emp.jobrole, emp.role, emp.Role, emp.designation, emp.Designation, emp.position, emp.Position, emp.post, emp.Post];
+      for (const c of candidates) {
+        const role = normalizeRoleLabel(c);
+        if (["SI","Supervisor","AS","Employee"].includes(role)) return role;
+      }
+      return "Employee";
+    }
+    function collectDepartmentsFromValue(value, out) {
+      if (value == null) return;
+      if (Array.isArray(value)) {
+        value.forEach(v => collectDepartmentsFromValue(v, out));
+        return;
+      }
+      if (typeof value === "object") {
+        Object.entries(value).forEach(([k,v]) => {
+          const key = normalizeText(k).replace(/\(\d+\)\s*$/, "").trim();
+          if (key) out.push(key);
+          collectDepartmentsFromValue(v, out);
+        });
+        return;
+      }
+      const text = normalizeText(value).replace(/\(\d+\)\s*$/, "").trim();
+      if (!text) return;
+      if (text.includes("||")) {
+        const parts = text.split("||").map(x => normalizeText(x)).filter(Boolean);
+        parts.slice(1).forEach(p => out.push(p.replace(/\(\d+\)\s*$/, "").trim()));
+        return;
+      }
+      out.push(text);
+    }
+    function getEmployeeDepartments(emp) {
+      const result = [];
+      collectDepartmentsFromValue(emp.departmentSelect, result);
+      collectDepartmentsFromValue(emp.department, result);
+      collectDepartmentsFromValue(emp.Department, result);
+      collectDepartmentsFromValue(emp.dept, result);
+      collectDepartmentsFromValue(emp.Dept, result);
+      collectDepartmentsFromValue(emp.departmentName, result);
+      collectDepartmentsFromValue(emp.departmentType, result);
+      collectDepartmentsFromValue(emp.jobs, result);
+      return uniqueBy(result.filter(Boolean), v => lowerText(v));
+    }
+    function getEmployeePrimaryDepartment(emp) {
+      return getEmployeeDepartments(emp)[0] || "";
+    }
+    function getEmployeeSites(emp) {
+      const raw = emp.site ?? emp.Site ?? emp.sites ?? emp.Sites ?? emp.siteName ?? emp.site_name ?? emp.workSite ?? emp.worksite ?? emp.location ?? emp.Location ?? "";
+      return uniqueBy(splitValues(raw), v => lowerText(v));
+    }
+    function getEmployeePrimarySite(emp) {
+      return getEmployeeSites(emp)[0] || "";
+    }
+    function getEmployeeValueByTransferType(emp, type) {
+      if (type === "DEPARTMENT") return getEmployeePrimaryDepartment(emp) || "";
+      if (type === "SUPERVISOR") return normalizeText(firstNonEmpty(emp.supervisorSelect, emp.supervisorName, emp.supervisor, emp.supervisorId, emp.supervisorUID));
+      if (type === "AS") return normalizeText(firstNonEmpty(emp.asSelect, emp.asName, emp.as, emp.asId, emp.asUID));
+      if (type === "SI") return normalizeText(firstNonEmpty(emp.siteInchargeSelect, emp.siteInchargeName, emp.siteIncharge, emp.siteInchargeId, emp.siteInchargeUID));
+      return "";
+    }
+
+    function showSetupMessage(message) {
+      setupMessage.textContent = message;
+      setupMessage.style.display = "block";
+      setupError.style.display = "none";
+    }
+    function showSetupError(message) {
+      setupError.textContent = message;
+      setupError.style.display = "block";
+      setupMessage.style.display = "none";
+    }
+    function clearSetupAlerts() {
+      setupMessage.style.display = "none";
+      setupError.style.display = "none";
+      setupMessage.textContent = "";
+      setupError.textContent = "";
+    }
+
+    function setChipText() {
+      chipDepartment.textContent = `Department: ${departmentSelect.value || "--"}`;
+      chipDate.textContent = `Date: ${changeDate.value || "--"}`;
+      chipSite.textContent = `Site: ${siteReadonly.value || "--"}`;
+      const typeLabel = transferType.value === "DEPARTMENT" ? "Department Change"
+        : transferType.value === "SUPERVISOR" ? "Supervisor Change"
+        : transferType.value === "AS" ? "AS Change"
+        : transferType.value === "SI" ? "SI Change" : "--";
+      chipType.textContent = `Transfer: ${typeLabel}`;
+      const currentText = currentAssignment.value ? currentAssignment.options[currentAssignment.selectedIndex]?.textContent || currentAssignment.value : "--";
+      const newText = newDepartmentContainer.style.display !== "none"
+        ? (newDepartment.value || "--")
+        : (newAssignment.value ? newAssignment.options[newAssignment.selectedIndex]?.textContent || newAssignment.value : "--");
+      chipCurrent.textContent = `Current: ${currentText}`;
+      chipNew.textContent = `New: ${newText}`;
+    }
+
+    function renderSelect(selectEl, items, placeholder, selectedValue = "") {
+      const safeItems = uniqueSorted(items);
+      selectEl.innerHTML = `<option value="">${placeholder}</option>` + safeItems.map(item => `<option value="${escapeHTML(item)}">${escapeHTML(item)}</option>`).join("");
+      if (selectedValue && safeItems.some(item => lowerText(item) === lowerText(selectedValue))) {
+        selectEl.value = selectedValue;
+      }
+    }
+
+    function renderManagerSelect(selectEl, items, placeholder, selectedKey = "") {
+      const unique = uniqueBy(items, item => item.uid.toLowerCase());
+      selectEl.innerHTML = `<option value="">${placeholder}</option>` + unique
+        .sort((a,b)=>a.name.localeCompare(b.name))
+        .map(item => `<option value="${escapeHTML(makeOptionValue(item))}">${escapeHTML(item.name)} (${escapeHTML(item.uid)})</option>`)
+        .join("");
+      if (selectedKey) selectEl.value = selectedKey;
+    }
+
+    function populateStaticDepartmentOptions() {
+      const departments = uniqueSorted(state.hrDepartments);
+      renderSelect(departmentSelect, departments, "Select department");
+      renderSelect(newDepartment, departments, "Select new department");
+
+      if (departments.length === 1) {
+        departmentSelect.value = departments[0];
+        newDepartment.value = departments[0];
+      }
+
+      if (departmentSelect.value && !departments.some(d => lowerText(d) === lowerText(departmentSelect.value))) {
+        departmentSelect.value = "";
+      }
+      if (newDepartment.value && !departments.some(d => lowerText(d) === lowerText(newDepartment.value))) {
+        newDepartment.value = "";
+      }
+    }
+
+    function getScopedEmployees() {
+      const site = normalizeText(siteReadonly.value);
+      if (!site) return state.allEmployees;
+      const scoped = state.allEmployees.filter(emp => {
+        const empSites = getEmployeeSites(emp);
+        if (!empSites.length) return true;
+        return empSites.some(s => looseMatch(s, site));
+      });
+      return scoped.length ? scoped : state.allEmployees;
+    }
+
+    function getCurrentDepartment() {
+      return normalizeText(departmentSelect.value);
+    }
+
+    function getAvailableManagers(type, department) {
+      const scoped = getScopedEmployees().filter(emp => {
+        const departments = getEmployeeDepartments(emp);
+        const matchesDepartment = !department ? true : departments.some(d => looseMatch(d, department));
+        const role = getEmployeeRole(emp);
+        if (type === "SUPERVISOR") return matchesDepartment && role === "Supervisor";
+        if (type === "AS") return matchesDepartment && role === "AS";
+        if (type === "SI") return matchesDepartment && role === "SI";
+        return false;
+      });
+      return uniqueBy(scoped.map(emp => ({
+        uid: getEmployeeUid(emp),
+        name: getEmployeeName(emp),
+        collection: emp.__collectionName,
+        docId: emp.__docId
+      })).filter(x => x.uid && x.name), x => x.uid.toLowerCase());
+    }
+
+    function getCurrentFieldLabel(type) {
+      if (type === "DEPARTMENT") return "Current Department";
+      if (type === "SUPERVISOR") return "Current Supervisor";
+      if (type === "AS") return "Current AS";
+      if (type === "SI") return "Current SI";
+      return "Current Assignment";
+    }
+    function getNewFieldLabel(type) {
+      if (type === "DEPARTMENT") return "New Department";
+      if (type === "SUPERVISOR") return "New Supervisor";
+      if (type === "AS") return "New AS";
+      if (type === "SI") return "New SI";
+      return "New Assignment";
+    }
+    function getTransferFieldInfo(type) {
+      if (type === "DEPARTMENT") return { field: "departmentSelect / department", label: "Department change" };
+      if (type === "SUPERVISOR") return { field: "supervisorId / supervisorSelect", label: "Supervisor change" };
+      if (type === "AS") return { field: "asId / asSelect", label: "AS change" };
+      if (type === "SI") return { field: "siteInchargeId / siteInchargeSelect", label: "SI change" };
+      return { field: "", label: "" };
+    }
+
+    function updateTransferUI() {
+      const type = transferType.value;
+      currentLabel.textContent = getCurrentFieldLabel(type);
+      newLabel.textContent = getNewFieldLabel(type);
+
+      const isDept = type === "DEPARTMENT";
+      currentContainer.style.display = isDept ? "none" : "block";
+      newContainer.style.display = isDept ? "none" : "block";
+      newDepartmentContainer.style.display = isDept ? "block" : "none";
+
+      currentAssignment.disabled = isDept;
+      newAssignment.disabled = isDept;
+      newDepartment.disabled = !isDept;
+      setChipText();
+    }
+
+    function getTypeSpecificSelection() {
+      if (transferType.value === "DEPARTMENT") return normalizeText(newDepartment.value);
+      return parseOptionValue(newAssignment.value);
+    }
+
+    function getCurrentSelection() {
+      return parseOptionValue(currentAssignment.value);
+    }
+
+    function filterEmployeesForPreview() {
+      const dept = getCurrentDepartment();
+      const type = transferType.value;
+      const scope = employeeScope.value;
+      const search = lowerText(employeeSearch.value);
+
+      let rows = getScopedEmployees().filter(emp => {
+        const empDepartmentList = getEmployeeDepartments(emp);
+        if (dept && !empDepartmentList.some(d => looseMatch(d, dept))) return false;
+        if (type === "SUPERVISOR") {
+          const sel = getCurrentSelection();
+          if (sel.uid && normalizeText(firstNonEmpty(emp.supervisorId, emp.supervisorUID)) !== sel.uid) return false;
+        }
+        if (type === "AS") {
+          const sel = getCurrentSelection();
+          if (sel.uid && normalizeText(firstNonEmpty(emp.asId, emp.asUID)) !== sel.uid) return false;
+        }
+        if (type === "SI") {
+          const sel = getCurrentSelection();
+          if (sel.uid && normalizeText(firstNonEmpty(emp.siteInchargeId, emp.siteInchargeUID)) !== sel.uid) return false;
+        }
+        if (search) {
+          const hay = `${getEmployeeName(emp)} ${getEmployeeUid(emp)} ${getEmployeePrimaryDepartment(emp)} ${getEmployeePrimarySite(emp)} ${getEmployeeRole(emp)}`.toLowerCase();
+          if (!hay.includes(search)) return false;
+        }
+        return true;
+      });
+
+      if (scope === "PARTICULAR" && state.selectedMap.size) {
+        rows = rows.filter(emp => state.selectedMap.get(getEmployeeUid(emp)));
+      }
+
+      return rows;
+    }
+
+    function makeCurrentValue(emp) {
+      const type = transferType.value;
+      if (type === "DEPARTMENT") return getEmployeePrimaryDepartment(emp) || "-";
+      if (type === "SUPERVISOR") return normalizeText(firstNonEmpty(emp.supervisorSelect, emp.supervisorId, emp.supervisorName, emp.supervisor)) || "-";
+      if (type === "AS") return normalizeText(firstNonEmpty(emp.asSelect, emp.asId, emp.asName, emp.as)) || "-";
+      if (type === "SI") return normalizeText(firstNonEmpty(emp.siteInchargeSelect, emp.siteInchargeId, emp.siteInchargeName, emp.siteIncharge)) || "-";
+      return "-";
+    }
+
+    function makeNewValue() {
+      const type = transferType.value;
+      if (type === "DEPARTMENT") return normalizeText(newDepartment.value) || "-";
+      const item = parseOptionValue(newAssignment.value);
+      return item.uid ? `${item.name} (${item.uid})` : "-";
+    }
+
+    function getTargetUpdateObject(emp) {
+      const type = transferType.value;
+      const currentDept = getCurrentDepartment();
+      const oldValue = makeCurrentValue(emp);
+      const newDept = normalizeText(newDepartment.value);
+      const newMeta = parseOptionValue(newAssignment.value);
+
+      const base = {
+        updatedAt: new Date().toISOString(),
+        updatedByEmail: HR_EMAIL,
+        updatedByName: state.hrName,
+        updatedByUid: state.hrUid,
+        transferDate: changeDate.value,
+        transferDepartment: currentDept,
+        transferSite: siteReadonly.value,
+        transferType: type
+      };
+
+      if (type === "DEPARTMENT") {
+        return {
+          updateData: {
+            ...base,
+            departmentSelect: newDept,
+            department: newDept
+          },
+          oldValue,
+          newValue: newDept
+        };
+      }
+      if (type === "SUPERVISOR") {
+        return {
+          updateData: {
+            ...base,
+            supervisorId: newMeta.uid,
+            supervisorSelect: newMeta.name
+          },
+          oldValue,
+          newValue: `${newMeta.name} (${newMeta.uid})`
+        };
+      }
+      if (type === "AS") {
+        return {
+          updateData: {
+            ...base,
+            asId: newMeta.uid,
+            asSelect: newMeta.name
+          },
+          oldValue,
+          newValue: `${newMeta.name} (${newMeta.uid})`
+        };
+      }
+      if (type === "SI") {
+        return {
+          updateData: {
+            ...base,
+            siteInchargeId: newMeta.uid,
+            siteInchargeSelect: newMeta.name
+          },
+          oldValue,
+          newValue: `${newMeta.name} (${newMeta.uid})`
+        };
+      }
+      return { updateData: base, oldValue, newValue: "" };
+    }
+
+    async function loadEmployees() {
+      const batches = await Promise.all(EMPLOYEE_COLLECTIONS.map(async collectionName => {
+        try {
+          const snap = await getDocs(collection(db, collectionName));
+          return snap.docs.map(d => ({
+            ...d.data(),
+            __collectionName: collectionName,
+            __docId: d.id
+          }));
+        } catch (err) {
+          console.warn("Failed loading collection", collectionName, err);
+          return [];
+        }
+      }));
+      state.allEmployees = uniqueBy(
+        batches.flat().map(emp => ({
+          ...emp,
+          __uid: getEmployeeUid(emp),
+          __name: getEmployeeName(emp),
+          __role: getEmployeeRole(emp)
+        })).filter(emp => emp.__uid && emp.__name),
+        emp => `${emp.__collectionName}:${emp.__docId}`.toLowerCase()
+      );
+    }
+
+    async function loadHRDetails() {
+      if (!HR_EMAIL) {
+        hrNameDisplay.textContent = "N/A";
+        hrIdDisplay.textContent = "N/A";
+        hrSiteDisplay.textContent = "N/A";
+        siteReadonly.value = "";
+        showSetupError("HR login data not found.");
+        return;
+      }
+      const collectionsToTry = ["HR", "Hr", "HumanResource", "Supervisor"];
+      let hrData = null;
+
+      for (const c of collectionsToTry) {
+        try {
+          const snap = await getDoc(doc(db, c, HR_EMAIL));
+          if (snap.exists()) {
+            hrData = { ...snap.data(), __collectionName: c, __docId: snap.id };
+            break;
+          }
+        } catch (err) {
+          console.warn("HR doc read failed", c, err);
+        }
+      }
+
+      if (!hrData) {
+        hrNameDisplay.textContent = "N/A";
+        hrIdDisplay.textContent = "N/A";
+        hrSiteDisplay.textContent = "N/A";
+        siteReadonly.value = "";
+        showSetupError("HR record not found.");
+        return;
+      }
+
+      state.hr = hrData;
+      state.hrUid = normalizeText(firstNonEmpty(hrData.uid, hrData.hrUid, hrData.hrId, hrData.id));
+      state.hrName = normalizeText(firstNonEmpty(hrData.Name, hrData.name, hrData.fullName, hrData.FullName));
+      state.hrSites = uniqueSorted(splitValues(firstNonEmpty(hrData.site, hrData.Site, hrData.sites, hrData.Sites, hrData.siteName, hrData.workSite, hrData.worksite)));
+      state.hrDepartments = extractHrDepartments(hrData);
+
+      hrNameDisplay.textContent = state.hrName || "N/A";
+      hrIdDisplay.textContent = state.hrUid || "N/A";
+      hrSiteDisplay.textContent = state.hrSites.length ? state.hrSites.join(", ") : "N/A";
+      siteReadonly.value = state.hrSites[0] || hrData.site || hrData.Site || "";
+
+      showSetupMessage("HR profile loaded. Now choose department, date and transfer type.");
+    }
+
+    function syncChipsAndUI() {
+      setChipText();
+      updateTransferUI();
+    }
+
+    function buildManagerOptions() {
+      const type = transferType.value;
+      const dept = getCurrentDepartment();
+      const managers = getAvailableManagers(type, dept);
+      const currentValue = currentAssignment.value;
+      const currentUid = parseOptionValue(currentValue).uid;
+
+      renderManagerSelect(currentAssignment, managers, `Select current ${type === "DEPARTMENT" ? "department" : type.toLowerCase()}`, currentValue);
+      const filteredNew = managers.filter(m => m.uid !== currentUid);
+      renderManagerSelect(newAssignment, filteredNew, `Select new ${type === "DEPARTMENT" ? "department" : type.toLowerCase()}`, newAssignment.value && filteredNew.some(m => makeOptionValue(m) === newAssignment.value) ? newAssignment.value : "");
+
+      if (type === "DEPARTMENT") {
+        renderSelect(newDepartment, uniqueSorted(state.hrDepartments), "Select new department", newDepartment.value);
+      }
+    }
+
+    function validateSetup() {
+      clearSetupAlerts();
+
+      if (!departmentSelect.value) {
+        showSetupError("Please select a department.");
+        return false;
+      }
+      if (!changeDate.value) {
+        showSetupError("Please select a change date.");
+        return false;
+      }
+      if (!transferType.value) {
+        showSetupError("Please select a transfer type.");
+        return false;
+      }
+
+      if (transferType.value === "DEPARTMENT") {
+        if (!newDepartment.value) {
+          showSetupError("Please select a new department.");
+          return false;
+        }
+        if (lowerText(departmentSelect.value) === lowerText(newDepartment.value)) {
+          showSetupError("Old and new department cannot be same.");
+          return false;
+        }
+      } else {
+        const current = parseOptionValue(currentAssignment.value);
+        const next = parseOptionValue(newAssignment.value);
+        if (!current.uid) {
+          showSetupError("Please select current supervisor / AS / SI.");
+          return false;
+        }
+        if (!next.uid) {
+          showSetupError("Please select new supervisor / AS / SI.");
+          return false;
+        }
+        if (current.uid === next.uid) {
+          showSetupError("Current and new ID cannot be same.");
+          return false;
+        }
+      }
+
+      return true;
+    }
+
+    function getTypeFieldName() {
+      if (transferType.value === "DEPARTMENT") return "department";
+      if (transferType.value === "SUPERVISOR") return "supervisorId";
+      if (transferType.value === "AS") return "asId";
+      if (transferType.value === "SI") return "siteInchargeId";
+      return "";
+    }
+
+    function renderEmployeeTable(rows) {
+      state.previewEmployees = rows;
+      selectedCount.textContent = String(rows.filter(emp => state.selectedMap.get(getEmployeeUid(emp)) !== false).length || rows.length);
+      if (!rows.length) {
+        employeeTableBody.innerHTML = `<tr class="empty-row"><td colspan="7">No matching employees found.</td></tr>`;
+        selectedCount.textContent = "0";
+        previewInfo.textContent = "No employees match the current filters.";
+        return;
+      }
+
+      const type = transferType.value;
+      const newValueText = makeNewValue();
+      employeeTableBody.innerHTML = "";
+      rows.forEach(emp => {
+        const uid = getEmployeeUid(emp);
+        const checked = state.selectedMap.size ? state.selectedMap.get(uid) !== false : true;
+        if (!state.selectedMap.has(uid)) state.selectedMap.set(uid, true);
+
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td><input type="checkbox" class="row-checkbox" data-uid="${escapeHTML(uid)}" ${checked ? "checked" : ""} /></td>
+          <td>${escapeHTML(getEmployeeName(emp))}</td>
+          <td>${escapeHTML(uid)}</td>
+          <td>${escapeHTML(getEmployeePrimaryDepartment(emp) || "-")}</td>
+          <td>${escapeHTML(makeCurrentValue(emp) || "-")}</td>
+          <td>${escapeHTML(newValueText)}</td>
+          <td>${escapeHTML(emp.__collectionName || "-")}</td>
+        `;
+        employeeTableBody.appendChild(tr);
+      });
+
+      previewInfo.textContent = `${rows.length} employees loaded for preview. In particular mode, uncheck the employees you do not want to transfer.`;
+      bindRowCheckboxes();
+      updateSelectedCount();
+    }
+
+    function bindRowCheckboxes() {
+      document.querySelectorAll(".row-checkbox").forEach(cb => {
+        cb.addEventListener("change", () => {
+          state.selectedMap.set(cb.dataset.uid, cb.checked);
+          updateSelectedCount();
+        });
+      });
+    }
+
+    function updateSelectedCount() {
+      const selected = state.previewEmployees.filter(emp => state.selectedMap.get(getEmployeeUid(emp)) !== false).length;
+      selectedCount.textContent = String(selected);
+      selectAllBox.checked = state.previewEmployees.length > 0 && selected === state.previewEmployees.length;
+    }
+
+    function updateSelectionMode() {
+      const isAll = employeeScope.value === "ALL";
+      employeeSearch.disabled = isAll;
+      employeeSearch.placeholder = isAll ? "Frozen for All Employees" : "Type employee name or UID";
+      employeeSearch.style.opacity = isAll ? "0.55" : "1";
+      employeeSearch.style.cursor = isAll ? "not-allowed" : "text";
+
+      if (isAll) {
+        employeeSearch.value = "";
+        state.previewEmployees.forEach(emp => state.selectedMap.set(getEmployeeUid(emp), true));
+      }
+      updateSelectedCount();
+    }
+
+    async function loadHistory() {
+      try {
+        const dept = normalizeText(departmentSelect.value);
+        const date = normalizeText(changeDate.value);
+        const site = normalizeText(siteReadonly.value);
+        const historyType = normalizeText(historyTransferTypeSelect.value);
+
+        let q = collection(db, "EmployeeTransferHistory");
+        const clauses = [];
+        if (site) clauses.push(where("site", "==", site));
+        if (dept) clauses.push(where("department", "==", dept));
+        if (date) clauses.push(where("changeDate", "==", date));
+        if (historyType) clauses.push(where("transferType", "==", historyType));
+
+        if (clauses.length) q = query(q, ...clauses);
+        else q = query(q, orderBy("createdAt", "desc"), limit(30));
+
+        const snap = await getDocs(q);
+        const rows = [];
+        snap.forEach(d => rows.push({ id: d.id, ...d.data() }));
+
+        rows.sort((a,b) => String(b.createdAt || "").localeCompare(String(a.createdAt || "")));
+
+        if (!rows.length) {
+          historyTableBody.innerHTML = `<tr class="empty-row"><td colspan="8">No history found for the selected filters.</td></tr>`;
+          historyInfo.textContent = "No history found for the selected filters.";
+          return;
+        }
+
+        historyTableBody.innerHTML = rows.map(item => `
+          <tr>
+            <td>${escapeHTML(item.changeDate || "-")}</td>
+            <td>${escapeHTML(item.employeeName || "-")}</td>
+            <td>${escapeHTML(item.uid || "-")}</td>
+            <td>${escapeHTML(item.department || "-")}</td>
+            <td>${escapeHTML(item.transferTypeLabel || item.transferType || "-")}</td>
+            <td>${escapeHTML(item.oldValue || "-")}</td>
+            <td>${escapeHTML(item.newValue || "-")}</td>
+            <td>${escapeHTML(item.changedByName || item.changedByUid || "-")}</td>
+          </tr>
+        `).join("");
+        historyInfo.textContent = `${rows.length} transfer history record(s) loaded for the selected filter.`;
+      } catch (err) {
+        console.error("History load error:", err);
+        historyTableBody.innerHTML = `<tr class="empty-row"><td colspan="8">History load failed. Check console.</td></tr>`;
+        historyInfo.textContent = "History load failed.";
+      }
+    }
+
+    async function loadPreview() {
+      try {
+        if (!validateSetup()) return;
+        buildManagerOptions();
+        const rows = filterEmployeesForPreview();
+        state.selectedMap.clear();
+        rows.forEach(emp => state.selectedMap.set(getEmployeeUid(emp), true));
+
+        if (employeeScope.value === "PARTICULAR") {
+          // keep current selected map state if user already adjusted rows
+          rows.forEach(emp => {
+            const uid = getEmployeeUid(emp);
+            if (!state.selectedMap.has(uid)) state.selectedMap.set(uid, true);
+          });
+        }
+
+        renderEmployeeTable(rows);
+        updateTransferUI();
+        await loadHistory();
+      } catch (err) {
+        console.error(err);
+        showSetupError("Preview load failed. Please check console.");
+      }
+    }
+
+    function chunkArray(array, size = 450) {
+      const chunks = [];
+      for (let i = 0; i < array.length; i += size) chunks.push(array.slice(i, i + size));
+      return chunks;
+    }
+
+    async function submitTransfer() {
+      try {
+        if (!validateSetup()) return;
+        const rows = state.previewEmployees.filter(emp => state.selectedMap.get(getEmployeeUid(emp)) !== false);
+
+        if (!rows.length) {
+          showSetupError("Please select at least one employee.");
+          return;
+        }
+
+        const type = transferType.value;
+        const dept = getCurrentDepartment();
+        const transferDate = changeDate.value;
+        const site = normalizeText(siteReadonly.value);
+        const fieldInfo = getTransferFieldInfo(type);
+
+        let newValueDisplay = "";
+        let newValueRaw = "";
+
+        if (type === "DEPARTMENT") {
+          newValueRaw = normalizeText(newDepartment.value);
+          newValueDisplay = newValueRaw;
+        } else {
+          const meta = parseOptionValue(newAssignment.value);
+          newValueRaw = meta.uid;
+          newValueDisplay = `${meta.name} (${meta.uid})`;
+        }
+
+        const updates = rows.map(emp => {
+          const uid = getEmployeeUid(emp);
+          const { updateData, oldValue, newValue } = getTargetUpdateObject(emp);
+          const collectionName = emp.__collectionName;
+          const docRef = doc(db, collectionName, emp.__docId);
+
+          const historyPayload = {
+            changeDate: transferDate,
+            createdAt: new Date().toISOString(),
+            site,
+            department: dept,
+            transferType: type,
+            transferTypeLabel: type === "DEPARTMENT" ? "Employee → Department Change" :
+              type === "SUPERVISOR" ? "Employee → Supervisor Change" :
+              type === "AS" ? "Employee → AS Change" :
+              type === "SI" ? "Employee → SI Change" : type,
+            fieldName: fieldInfo.field,
+            employeeName: getEmployeeName(emp),
+            uid,
+            collectionName,
+            oldValue,
+            newValue: type === "DEPARTMENT" ? newValueRaw : newValue,
+            changedByName: state.hrName,
+            changedByUid: state.hrUid,
+            changedByEmail: HR_EMAIL,
+            oldDepartment: dept,
+            newDepartment: type === "DEPARTMENT" ? newValueRaw : dept,
+            scope: employeeScope.value,
+            selectedCount: rows.length
+          };
+
+          return { docRef, updateData, historyPayload };
+        });
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = "Updating...";
+
+        const batches = chunkArray(updates, 400);
+        let totalUpdated = 0;
+
+        for (const chunk of batches) {
+          const batch = writeBatch(db);
+          chunk.forEach(item => {
+            batch.set(item.docRef, item.updateData, { merge: true });
+          });
+          await batch.commit();
+
+          for (const item of chunk) {
+            await addDoc(collection(db, "EmployeeTransferHistory"), item.historyPayload);
+            totalUpdated += 1;
+          }
+        }
+
+        showSetupMessage(`Transfer completed successfully for ${totalUpdated} employee(s).`);
+        previewInfo.textContent = `Transfer submitted for ${totalUpdated} employee(s). History has been saved.`;
+        await loadPreview();
+        await loadHistory();
+      } catch (err) {
+        console.error("Transfer submit error:", err);
+        showSetupError("Transfer submit failed. Please check console for Firestore errors.");
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Submit Transfer";
+      }
+    }
+
+    function rebuildDepartmentAndManagers() {
+      populateStaticDepartmentOptions();
+      buildManagerOptions();
+      updateTransferUI();
+      setChipText();
+    }
+
+    function clearPreview() {
+      state.previewEmployees = [];
+      state.selectedMap.clear();
+      employeeTableBody.innerHTML = `<tr class="empty-row"><td colspan="7">Please select setup and click Load Preview.</td></tr>`;
+      selectedCount.textContent = "0";
+      previewInfo.textContent = "Preview will show the exact employees to be updated, along with the old and new values.";
+    }
+
+    function resetAll() {
+      departmentSelect.value = state.hrDepartments[0] || "";
+      newDepartment.value = "";
+      transferType.value = "";
+      currentAssignment.value = "";
+      newAssignment.value = "";
+      employeeScope.value = "ALL";
+      employeeSearch.value = "";
+      updateSelectionMode();
+      changeDate.value = new Date().toISOString().slice(0,10);
+      state.selectedMap.clear();
+      clearSetupAlerts();
+      rebuildDepartmentAndManagers();
+      updateTransferUI();
+      clearPreview();
+      historyTransferTypeSelect.value = "";
+      historyTableBody.innerHTML = `<tr class="empty-row"><td colspan="8">No history loaded yet.</td></tr>`;
+      historyInfo.textContent = "Choose a date and department, then load preview or submit a transfer to see the history log below.";
+    }
+
+    async function refreshNotifications() {
+      try {
+        const allEmployees = state.allEmployees.length ? state.allEmployees : await (async () => {
+          await loadEmployees();
+          return state.allEmployees;
+        })();
+
+        const today = new Date();
+        const soon = new Date();
+        soon.setDate(today.getDate() + 3);
+        const items = [];
+
+        allEmployees.forEach(d => {
+          if (!d.passes_end) return;
+          const end = new Date(d.passes_end);
+          if (end >= today && end <= soon) {
+            items.push({
+              name: getEmployeeName(d),
+              uid: getEmployeeUid(d),
+              pass: d.passes || "",
+              renew: d.passes_end || ""
+            });
+          }
+        });
+
+        badge.style.display = items.length ? "" : "none";
+        badge.innerText = String(items.length || 0);
+        box.innerHTML = items.length ? "" : "<p>No passes expiring in 3 days.</p>";
+        items.forEach(it => {
+          const div = document.createElement("div");
+          div.className = "notification-item";
+          div.innerHTML = `<p><strong>Name:</strong> ${escapeHTML(it.name)}</p><p><strong>User ID:</strong> ${escapeHTML(it.uid)}</p><p><strong>Pass Type:</strong> ${escapeHTML(it.pass)}</p><p><strong>Renew Date:</strong> ${escapeHTML(it.renew)}</p>`;
+          box.appendChild(div);
+        });
+      } catch (e) {
+        console.error("Notification load error:", e);
+      }
+    }
+
+    async function initializePage() {
+      changeDate.value = new Date().toISOString().slice(0,10);
+
+      await loadHRDetails();
+      await loadEmployees();
+
+      populateStaticDepartmentOptions();
+
+      if (!departmentSelect.value && state.hrDepartments.length) {
+        departmentSelect.value = state.hrDepartments[0];
+      }
+      if (!newDepartment.value && departmentSelect.value) {
+        newDepartment.value = departmentSelect.value;
+      }
+
+      rebuildDepartmentAndManagers();
+      clearPreview();
+      setChipText();
+      await refreshNotifications();
+      await loadHistory();
+    }
+
+    departmentSelect.addEventListener("change", async () => {
+      clearSetupAlerts();
+      buildManagerOptions();
+      if (transferType.value === "DEPARTMENT" && departmentSelect.value) {
+        newDepartment.value = "";
+      }
+      clearPreview();
+      setChipText();
+      await loadHistory();
+    });
+
+    newDepartment.addEventListener("change", () => {
+      clearSetupAlerts();
+      setChipText();
+    });
+
+    transferType.addEventListener("change", () => {
+      clearSetupAlerts();
+      updateTransferUI();
+      buildManagerOptions();
+      clearPreview();
+    });
+
+    currentAssignment.addEventListener("change", () => {
+      clearSetupAlerts();
+      buildManagerOptions();
+      clearPreview();
+    });
+
+    newAssignment.addEventListener("change", () => {
+      clearSetupAlerts();
+      setChipText();
+    });
+
+    employeeScope.addEventListener("change", () => {
+      updateSelectionMode();
+      if (employeeScope.value === "ALL") {
+        state.previewEmployees.forEach(emp => state.selectedMap.set(getEmployeeUid(emp), true));
+        updateSelectedCount();
+      }
+    });
+
+    employeeSearch.addEventListener("input", () => {
+      if (state.previewEmployees.length) loadPreview();
+    });
+
+    selectAllBox.addEventListener("change", () => {
+      state.previewEmployees.forEach(emp => state.selectedMap.set(getEmployeeUid(emp), selectAllBox.checked));
+      updateSelectedCount();
+      document.querySelectorAll(".row-checkbox").forEach(cb => cb.checked = selectAllBox.checked);
+    });
+
+    loadPreviewBtn.addEventListener("click", loadPreview);
+    submitBtn.addEventListener("click", submitTransfer);
+    resetBtn.addEventListener("click", resetAll);
+    refreshHistoryBtn.addEventListener("click", loadHistory);
+    historyTransferTypeSelect.addEventListener("change", async () => {
+      await loadHistory();
+    });
+    bell.addEventListener("click", () => { box.style.display = box.style.display === "none" ? "block" : "none"; });
+
+    window.logoutUser = function () {
+      localStorage.clear();
+      alert("Logged out successfully");
+      window.location.href = "/public/login.html";
+    };
+
+    document.addEventListener("DOMContentLoaded", async () => {
+      updateSelectionMode();
+      await initializePage();
+      setInterval(refreshNotifications, 5 * 60 * 1000);
+    });
+  </script>
+</body>
+</html>

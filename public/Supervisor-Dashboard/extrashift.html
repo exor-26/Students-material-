@@ -1,0 +1,1562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>SI Dashboard - Extra Shift</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="icon" type="image/x-icon" href="logo2.ico" />
+  <link rel="stylesheet" type="text/css" href="supLeave.css" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap-theme.min.css" />
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+
+  <style>
+     *, *::before, *::after {
+  cursor:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" viewBox="0 0 24 24"><path fill="%23FFF" stroke="%23FF2711" stroke-width="2" d="M5.5 3.21V20.8c0 .45.54.67.85.35l4.86-4.86a.5.5 0 0 1 .35-.15h6.87a.5.5 0 0 0 .35-.85L6.35 2.85a.5.5 0 0 0-.85.35Z"></path></svg>') 5 5, auto;
+}
+
+a, button, input[type="submit"], input[type="button"],
+label, select, .dropbtn, .sub-btn, .btn, .cn,
+.carousel-control, .hideMenuButton, .item a,
+input[type="text"], input[type="search"], textarea {
+  cursor:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="%23FFF" stroke="%23FF2711" stroke-width="2" stroke-linejoin="round" d="M10 11V8.99c0-.88.59-1.64 1.44-1.86h.05A1.99 1.99 0 0 1 14 9.05V12v-2c0-.88.6-1.65 1.46-1.87h.05A1.98 1.98 0 0 1 18 10.06V13v-1.94a2 2 0 0 1 1.51-1.94h0A2 2 0 0 1 22 11.06V14c0 .6-.08 1.27-.21 1.97a7.96 7.96 0 0 1-7.55 6.48 54.98 54.98 0 0 1-4.48 0 7.96 7.96 0 0 1-7.55-6.48C2.08 15.27 2 14.59 2 14v-1.49c0-1.11.9-2.01 2.01-2.01h0a2 2 0 0 1 2.01 2.03l-.01.97v-10c0-1.1.9-2 2-2h0a2 2 0 0 1 2 2V11Z"></path></svg>') 5 5, auto;
+}
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --topbar-height: 78px;
+      --sidebar-width: 280px;
+      --bg-dark: #081523;
+      --bg-mid: #0e2238;
+      --card-bg: rgba(12, 25, 45, 0.88);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --text-main: #ffffff;
+      --text-soft: #c9d9ee;
+      --text-muted: #8ea4c5;
+      --orange-1: #ff8a3c;
+      --orange-2: #ff5a1f;
+      --blue-1: #2d7dff;
+      --blue-2: #1657cc;
+      --shadow: 0 18px 40px rgba(0, 0, 0, 0.25);
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background:
+        linear-gradient(135deg, rgba(7, 16, 30, 0.95), rgba(14, 34, 56, 0.92)),
+        url("https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1600&q=80") center/cover no-repeat fixed;
+      color: var(--text-main);
+      overflow: hidden;
+    }
+
+    .app-shell {
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .topbar {
+      height: var(--topbar-height);
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(7, 16, 30, 0.88);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 2000;
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      min-width: 0;
+    }
+
+    .menu-toggle {
+      width: 46px;
+      height: 46px;
+      border: none;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
+      color: #fff;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: 0.25s ease;
+      flex-shrink: 0;
+    }
+
+    .menu-toggle:hover {
+      background: linear-gradient(135deg, rgba(255,122,47,0.18), rgba(31,119,255,0.16));
+      transform: translateY(-1px);
+    }
+
+    .brand-wrap {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-width: 0;
+    }
+
+    .brand-title {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 700;
+      color: #fff;
+      text-decoration: none !important;
+      line-height: 1.1;
+    }
+
+    .brand-subtitle {
+      margin: 2px 0 0;
+      color: var(--text-soft);
+      font-size: 13px;
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    #bellContainer {
+      position: relative;
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.07);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: 0.25s ease;
+    }
+
+    #bellContainer:hover {
+      background: rgba(255, 255, 255, 0.14);
+      transform: translateY(-1px);
+    }
+
+    #bellBadge {
+      position: absolute;
+      top: 3px;
+      right: 3px;
+      min-width: 18px;
+      height: 18px;
+      padding: 0 5px;
+      border-radius: 999px;
+      background: #ff4d4f;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .logout {
+      text-decoration: none !important;
+      color: #fff !important;
+      background: linear-gradient(135deg, var(--orange-1), var(--orange-2));
+      padding: 11px 18px;
+      border-radius: 12px;
+      font-weight: 700;
+      transition: 0.25s ease;
+      box-shadow: 0 10px 24px rgba(255, 90, 31, 0.24);
+      white-space: nowrap;
+    }
+
+    .logout:hover {
+      transform: translateY(-1px);
+      color: #fff !important;
+      text-decoration: none !important;
+    }
+
+    #notificationBox {
+      display: none;
+      position: fixed;
+      top: calc(var(--topbar-height) - 8px);
+      right: 85px;
+      width: 320px;
+      max-height: 330px;
+      overflow-y: auto;
+      background: rgba(8, 21, 39, 0.98);
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      padding: 14px;
+      box-shadow: 0 22px 46px rgba(0, 0, 0, 0.32);
+      z-index: 2200;
+    }
+
+    .notification-item {
+      padding: 12px 14px;
+      margin-bottom: 10px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .notification-item p {
+      margin: 0 0 6px;
+      color: var(--text-soft);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .notification-item p:last-child {
+      margin-bottom: 0;
+    }
+
+    .dashboard-layout {
+      width: 100%;
+      height: 100vh;
+    }
+
+    /* ===== ONLY NAVBAR / SIDEBAR CHANGED ===== */
+    nav.sidebar {
+      width: var(--sidebar-width);
+      min-width: var(--sidebar-width);
+      max-width: var(--sidebar-width);
+      position: fixed;
+      top: var(--topbar-height);
+      left: 0;
+      bottom: 0;
+      padding: 20px 16px 22px;
+      background: linear-gradient(180deg, rgba(6, 16, 30, 0.98), rgba(8, 22, 40, 0.96));
+      backdrop-filter: blur(16px);
+      border-right: 1px solid rgba(255,255,255,0.06);
+      overflow-y: auto;
+      overflow-x: hidden;
+      z-index: 1500;
+      box-shadow: 18px 0 45px rgba(0, 0, 0, 0.24);
+    }
+
+    nav.sidebar::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    nav.sidebar::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,0.14);
+      border-radius: 999px;
+    }
+
+    .sidebar-top-card {
+      position: relative;
+      padding: 20px 18px 18px;
+      border-radius: 24px;
+      background:
+        linear-gradient(135deg, rgba(255,122,47,0.16), rgba(31,119,255,0.14)),
+        rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow:
+        0 16px 32px rgba(0,0,0,0.20),
+        inset 0 1px 0 rgba(255,255,255,0.06);
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+
+    .sidebar-top-card::after {
+      content: "";
+      position: absolute;
+      right: -30px;
+      top: -30px;
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,255,255,0.16), transparent 70%);
+    }
+
+    .sidebar-mini-label {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.4px;
+      color: #ffd8c2;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: 5px 10px;
+      border-radius: 999px;
+      margin-bottom: 12px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .sidebar-main-title {
+      font-size: 19px;
+      font-weight: 800;
+      color: #ffffff;
+      margin: 0 0 6px;
+      line-height: 1.2;
+      position: relative;
+      z-index: 1;
+    }
+
+    .sidebar-main-subtitle {
+      font-size: 13px;
+      color: #d5e2f1;
+      line-height: 1.7;
+      margin: 0 0 14px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .sidebar-status-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      position: relative;
+      z-index: 1;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .sidebar-status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #dfffe9;
+      background: rgba(20,184,106,0.14);
+      border: 1px solid rgba(20,184,106,0.22);
+    }
+
+    .sidebar-status-badge::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #4df39b;
+      box-shadow: 0 0 10px rgba(77,243,155,0.7);
+    }
+
+    .sidebar-status-text {
+      font-size: 11px;
+      color: #c6d8ec;
+      text-align: right;
+      line-height: 1.4;
+    }
+
+    .sidebar-section-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #8ea4c5;
+      margin: 0 8px 16px;
+      font-weight: 700;
+    }
+
+    #side-bar {
+      list-style: none;
+      padding-left: 0;
+      margin-bottom: 0;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    #side-bar li {
+      width: 100%;
+      margin: 0;
+    }
+
+    #side-bar a,
+    #side-bar summary {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      width: 100%;
+      padding: 15px 15px;
+      border-radius: 20px;
+      text-decoration: none !important;
+      color: #edf4ff !important;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.055), rgba(255,255,255,0.025));
+      border: 1px solid rgba(255,255,255,0.06);
+      transition: all 0.28s ease;
+      position: relative;
+      overflow: hidden;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+    }
+
+    #side-bar a::before,
+    #side-bar summary::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, rgba(255,122,47,0.13), rgba(31,119,255,0.11));
+      opacity: 0;
+      transition: opacity 0.28s ease;
+    }
+
+    #side-bar a::after,
+    #side-bar summary::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 18%;
+      width: 4px;
+      height: 64%;
+      border-radius: 999px;
+      background: linear-gradient(180deg, #ff8a3c, #1f77ff);
+      opacity: 0;
+      transition: opacity 0.28s ease;
+    }
+
+    #side-bar a:hover,
+    #side-bar summary:hover {
+      transform: translateX(6px);
+      border-color: rgba(255,255,255,0.10);
+      box-shadow: 0 14px 28px rgba(0,0,0,0.20);
+    }
+
+    #side-bar a:hover::before,
+    #side-bar summary:hover::before,
+    #side-bar a:hover::after,
+    #side-bar summary:hover::after {
+      opacity: 1;
+    }
+
+    #side-bar a.active,
+    #side-bar summary.active {
+      background: linear-gradient(135deg, rgba(255,122,47,0.18), rgba(31,119,255,0.16));
+      border-color: rgba(255,255,255,0.12);
+      box-shadow: 0 16px 30px rgba(0,0,0,0.24);
+    }
+
+    #side-bar a.active::before,
+    #side-bar summary.active::before,
+    #side-bar a.active::after,
+    #side-bar summary.active::after {
+      opacity: 1;
+    }
+
+    .nav-icon {
+      width: 44px;
+      height: 44px;
+      min-width: 44px;
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, rgba(255,255,255,0.13), rgba(255,255,255,0.05));
+      border: 1px solid rgba(255,255,255,0.08);
+      color: #fff;
+      font-size: 17px;
+      position: relative;
+      z-index: 1;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+    }
+
+    .nav-text {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .nav-text strong {
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.2;
+    }
+
+    .nav-text span {
+      margin-top: 4px;
+      font-size: 11px;
+      line-height: 1.45;
+      color: #aabed8;
+    }
+
+    .nav-arrow {
+      margin-left: auto;
+      font-size: 16px;
+      color: #93b2d8;
+      position: relative;
+      z-index: 1;
+      transition: transform 0.25s ease;
+    }
+
+    #side-bar a:hover .nav-arrow,
+    #side-bar summary:hover .nav-arrow {
+      transform: translateX(4px);
+    }
+    /* ===== END NAVBAR / SIDEBAR CHANGED ===== */
+
+    main {
+      position: fixed;
+      top: var(--topbar-height);
+      left: var(--sidebar-width);
+      right: 0;
+      bottom: 0;
+      padding: 28px 30px;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    .hero-card {
+      background: linear-gradient(135deg, rgba(22, 61, 112, 0.88), rgba(12, 27, 53, 0.92));
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 24px;
+      padding: 30px 34px;
+      box-shadow: var(--shadow);
+      margin-bottom: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-card::after {
+      content: "";
+      position: absolute;
+      right: -80px;
+      top: -80px;
+      width: 220px;
+      height: 220px;
+      background: radial-gradient(circle, rgba(255, 122, 47, 0.18), transparent 70%);
+      border-radius: 50%;
+    }
+
+    .page-tag {
+      display: inline-block;
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      color: #ffb88f;
+      background: rgba(255, 122, 47, 0.16);
+      border: 1px solid rgba(255, 122, 47, 0.2);
+      margin-bottom: 14px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-card h1 {
+      margin: 0 0 10px;
+      font-size: 32px;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.15;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-card p {
+      margin: 0;
+      max-width: 900px;
+      font-size: 15px;
+      line-height: 1.8;
+      color: #d0def0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .panel-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+      margin-bottom: 24px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .section-header h2 {
+      margin: 0;
+      font-size: 26px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .section-badge {
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #9ec3ff;
+      background: rgba(31, 119, 255, 0.14);
+      border: 1px solid rgba(31, 119, 255, 0.22);
+      white-space: nowrap;
+    }
+
+    .details-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(260px, 1fr));
+      gap: 20px;
+      align-items: start;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+    }
+
+    .value-box,
+    .field input,
+    .field select {
+      width: 100%;
+      min-height: 48px;
+      border-radius: 14px !important;
+      border: 1px solid rgba(255, 255, 255, 0.08) !important;
+      background: rgba(255, 255, 255, 0.05) !important;
+      color: #fff !important;
+      padding: 12px 14px !important;
+      font-size: 14px;
+      outline: none;
+      box-shadow: none !important;
+      transition: 0.25s ease;
+    }
+
+    .field input:focus,
+    .field select:focus {
+      border-color: rgba(31, 119, 255, 0.55) !important;
+      box-shadow: 0 0 0 4px rgba(31, 119, 255, 0.12) !important;
+    }
+
+    .field input::placeholder {
+      color: #9fb4cf;
+    }
+
+    .field select option {
+      color: #000;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(220px, 1fr));
+      gap: 18px;
+      align-items: end;
+    }
+
+    .submit-wrap {
+      display: flex;
+      align-items: end;
+      height: 100%;
+    }
+
+    #allowSubmit {
+      width: 100%;
+      min-height: 48px;
+      border: none;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--orange-1), var(--orange-2));
+      color: #fff;
+      font-size: 15px;
+      font-weight: 700;
+      box-shadow: 0 10px 24px rgba(255, 90, 31, 0.24);
+      transition: 0.25s ease;
+    }
+
+    #allowSubmit:hover {
+      transform: translateY(-1px);
+      color: #fff;
+    }
+
+    .mini-note {
+      margin-top: 6px;
+      font-size: 12px;
+      color: #9fb4cf;
+      line-height: 1.5;
+    }
+
+
+    .search-grid {
+      grid-template-columns: minmax(260px, 1fr) 180px;
+      align-items: end;
+    }
+
+    .search-results {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(240px, 1fr));
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .result-card {
+      border-radius: 18px;
+      padding: 14px 16px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      transition: 0.25s ease;
+      cursor: pointer;
+    }
+
+    .result-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(31, 119, 255, 0.35);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .result-card h4 {
+      margin: 0 0 6px;
+      font-size: 16px;
+      color: #fff;
+    }
+
+    .result-card p {
+      margin: 0;
+      color: #c9d9ee;
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .result-card .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .result-chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 9px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #dceaff;
+      background: rgba(31, 119, 255, 0.16);
+      border: 1px solid rgba(31, 119, 255, 0.2);
+    }
+
+    .result-card small {
+      display: block;
+      margin-top: 8px;
+      color: #9fb4cf;
+      font-size: 11px;
+      word-break: break-all;
+    }
+
+   @media (max-width: 991px) {
+  html,
+  body {
+    width: 100%;
+    min-height: 100%;
+    height: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .app-shell {
+    width: 100%;
+    height: auto;
+    min-height: 100vh;
+    overflow: visible;
+  }
+
+  .dashboard-layout {
+    width: 100%;
+    height: auto;
+    min-height: 100vh;
+    padding-top: var(--topbar-height);
+  }
+
+  nav.sidebar {
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+
+    /* FIX: Command Center scroll ke saath upar jayega */
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    bottom: auto;
+
+    height: auto;
+    max-height: none;
+    overflow: visible;
+
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 0 0 24px 24px;
+    z-index: 100;
+    padding: 14px;
+  }
+
+  .sidebar-top-card {
+    margin-bottom: 18px;
+  }
+
+  .sidebar-section-title {
+    margin: 18px 8px 14px;
+  }
+
+  #side-bar {
+    display: none;
+    gap: 10px;
+  }
+
+  #side-bar.active {
+    display: flex;
+    flex-direction: column;
+    margin-top: 12px;
+  }
+
+  .sidebar-status-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .sidebar-status-text {
+    text-align: left;
+  }
+
+  main {
+    /* FIX: main normal page scroll mein rahega */
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    bottom: auto;
+
+    width: 100%;
+    padding: 18px;
+    overflow: visible;
+  }
+
+  .brand-subtitle {
+    display: none;
+  }
+
+  .details-grid,
+  .form-grid,
+  .search-grid,
+  .search-results {
+    grid-template-columns: 1fr;
+  }
+}
+
+    @media (max-width: 600px) {
+      .topbar {
+        padding: 0 14px;
+      }
+
+      .brand-title {
+        font-size: 21px;
+      }
+
+      .logout {
+        padding: 9px 14px;
+        font-size: 13px;
+      }
+
+      .hero-card,
+      .panel-card {
+        padding: 18px;
+        border-radius: 18px;
+      }
+
+      #notificationBox {
+        width: 280px;
+        right: 16px;
+      }
+
+      .hero-card h1 {
+        font-size: 26px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+        <div class="brand-wrap">
+          <a href="#" class="brand-title">SI Dashboard</a>
+          <p class="brand-subtitle">Extra Shift & Attendance Plus Management</p>
+        </div>
+      </div>
+
+      <div class="topbar-right">
+        <div id="bellContainer">
+          <span class="glyphicon glyphicon-bell" style="font-size:24px;"></span>
+          <span id="bellBadge" class="badge" style="display:none;">0</span>
+        </div>
+
+        <a href="#" class="logout" onclick="logoutUser()">Logout</a>
+      </div>
+    </header>
+
+    <div id="notificationBox"></div>
+
+    <div class="dashboard-layout">
+      <nav class="sidebar">
+        <div class="sidebar-top-card">
+          <div class="sidebar-mini-label">SI Panel</div>
+          <h3 class="sidebar-main-title">Command Center</h3>
+          <p class="sidebar-main-subtitle">
+            Access extra shift records, attendance controls, and important SI sections from one clean navigation area.
+          </p>
+
+          <div class="sidebar-status-row">
+            <span class="sidebar-status-badge">Shift Active</span>
+            <div class="sidebar-status-text">
+              Secure access<br />
+              Quick navigation
+            </div>
+          </div>
+        </div>
+
+        <div class="sidebar-section-title">Navigation</div>
+        <ul id="side-bar"></ul>
+      </nav>
+
+      <main>
+        <section class="hero-card">
+          <span class="page-tag">ATTENDANCE PLUS PANEL</span>
+          <h1>Extra Shift</h1>
+          <p>
+            Manage extra shift entries in a clean premium SI dashboard layout.
+            This panel helps SI users add shift records quickly with employee, supervisor, or AS details,
+            month selection, and day-wise submission under the same theme.
+          </p>
+        </section>
+
+        <section class="panel-card">
+          <div class="section-header">
+            <h2>SI Details</h2>
+            <span class="section-badge">Profile Overview</span>
+          </div>
+
+          <div class="details-grid">
+            <div class="field">
+              <label>SI Name</label>
+              <div class="value-box" id="siNameDisplay">Loading...</div>
+            </div>
+
+            <div class="field">
+              <label>SI Id</label>
+              <div class="value-box" id="siIdDisplay">Loading...</div>
+            </div>
+          </div>
+        </section>
+        <section class="panel-card">
+          <div class="section-header">
+            <h2>Search Records</h2>
+            <span class="section-badge">Site Locked Search</span>
+          </div>
+
+          <div class="form-grid search-grid">
+            <div class="field search-field">
+              <label for="searchEmployee">Employee / Supervisor / AS Name or ID</label>
+              <input type="text" id="searchEmployee" placeholder="Type name or ID" />
+              <div class="mini-note">Search results will show only records under your SI site.</div>
+            </div>
+
+            <div class="submit-wrap">
+              <button id="searchBtn" class="btn btn-primary">Search</button>
+            </div>
+          </div>
+
+          <div id="searchResults" class="search-results" aria-live="polite"></div>
+        </section>
+
+        <section class="panel-card">
+          <div class="section-header">
+            <h2>Extra Shift Entry</h2>
+            <span class="section-badge">Add Shift Data</span>
+          </div>
+
+          <div class="form-grid">
+            <div class="field">
+              <label for="allowUid">UID</label>
+              <input type="text" id="allowUid" maxlength="6" placeholder="Enter 6-char UID" />
+              <div class="mini-note">Enter employee UID to fetch details.</div>
+            </div>
+
+            <div class="field">
+              <label for="allowName">Name</label>
+              <input type="text" id="allowName" readonly placeholder="Auto-fetched" />
+              <div class="mini-note">Employee name will appear automatically.</div>
+            </div>
+
+            <div class="field">
+              <label for="job">Job</label>
+              <select id="job">
+                <option value="" disabled selected>Auto fetch</option>
+              </select>
+              <div class="mini-note">Job field will be loaded automatically.</div>
+            </div>
+
+            <div class="field">
+              <label for="allowMonth">Month</label>
+              <input type="month" id="allowMonth" />
+            </div>
+
+            <div class="field">
+              <label for="allowAmount">Day Count</label>
+              <select id="allowAmount">
+  <option value="1" selected>1</option>
+</select>
+            </div>
+
+            <div class="submit-wrap">
+              <button id="allowSubmit" class="btn btn-primary">Submit</button>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    function toggleMenu() {
+      const sidebar = document.getElementById("side-bar");
+      sidebar.classList.toggle("active");
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const currentPage = window.location.pathname.split("/").pop();
+      const navLinks = document.querySelectorAll("#side-bar a");
+
+      navLinks.forEach(link => {
+        const href = link.getAttribute("href");
+        if (href === currentPage) {
+          link.classList.add("active");
+        }
+      });
+    });
+  </script>
+
+
+  <script type="module" src="/public/control.js"></script>
+
+  <script type="module">
+    import {
+      getFirestore,
+      collection,
+      doc,
+      getDoc,
+      getDocs,
+      query,
+      where,
+      limit,
+      setDoc
+    } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+
+    import { app } from "/public/firebase-config.js";
+
+    const db = getFirestore(app);
+
+    const SITE_COLLECTION_CANDIDATES = ["Site-Incharge", "Site Incharge", "SiteIncharge", "SI"];
+    const ROLE_COLLECTIONS = [
+      { name: "Employee", label: "Employee" },
+      { name: "Supervisor", label: "Supervisor" },
+      { name: "AS", label: "AS" }
+    ];
+
+    const state = {
+      profile: null,
+      allowedSite: "",
+      searchResults: [],
+      selectedRecord: null
+    };
+
+    const bell = document.getElementById("bellContainer");
+    const badge = document.getElementById("bellBadge");
+    const box = document.getElementById("notificationBox");
+
+    const allowUidInp = document.getElementById("allowUid");
+    const allowNameInp = document.getElementById("allowName");
+    const jobSelect = document.getElementById("job");
+    const allowMonthInp = document.getElementById("allowMonth");
+    const allowAmountSel = document.getElementById("allowAmount");
+    const allowSubmitBtn = document.getElementById("allowSubmit");
+    const searchInput = document.getElementById("searchEmployee");
+    const searchBtn = document.getElementById("searchBtn");
+    const searchResultsBox = document.getElementById("searchResults");
+
+    const norm = (v) => String(v ?? "").trim().toLowerCase();
+    const displayOrDash = (v) => (v === undefined || v === null || String(v).trim() === "" ? "-" : String(v));
+
+    function showResults(message) {
+      searchResultsBox.innerHTML = `<div class="result-card" style="grid-column:1/-1; cursor:default;"><h4>${message}</h4><p>Use the search box above.</p></div>`;
+    }
+
+    function setJobOptions(value) {
+      jobSelect.innerHTML = "";
+
+      const appendOpt = (val, selected = false) => {
+        const opt = document.createElement("option");
+        opt.value = val;
+        opt.innerText = val;
+        opt.selected = selected;
+        jobSelect.appendChild(opt);
+      };
+
+      if (Array.isArray(value)) {
+        const cleaned = value.map(v => String(v).trim()).filter(Boolean);
+        if (!cleaned.length) {
+          appendOpt("", true);
+          return;
+        }
+        cleaned.forEach((item, idx) => appendOpt(item, idx === 0));
+        return;
+      }
+
+      const single = String(value ?? "").trim();
+      if (!single) {
+        appendOpt("", true);
+        return;
+      }
+      appendOpt(single, true);
+    }
+
+    function setFormFromRecord(record) {
+      state.selectedRecord = record;
+      allowUidInp.value = record.uid || "";
+      allowNameInp.value = record.fullName || "";
+      setJobOptions(record.jobValue || record.departmentSelect || record.jobs || record.role || "");
+    }
+
+    function getSiteValue(data) {
+      const keys = [
+        "site", "siteName", "siteSelect", "siteCode", "siteId",
+        "unit", "unitName", "project", "projectName",
+        "location", "locationName", "branch", "branchName",
+        "department", "departmentName", "workSite"
+      ];
+
+      for (const k of keys) {
+        if (data && data[k]) return String(data[k]).trim();
+      }
+      return "";
+    }
+
+    function recordMatchesSite(data) {
+      if (!state.allowedSite) return false;
+
+      const siteFields = [
+        "site", "siteName", "siteSelect", "siteCode", "siteId",
+        "unit", "unitName", "project", "projectName",
+        "location", "locationName", "branch", "branchName",
+        "department", "departmentName", "workSite"
+      ];
+
+      const allowed = norm(state.allowedSite);
+      return siteFields.some((key) => {
+        const val = norm(data?.[key]);
+        return val && (val === allowed || val.includes(allowed) || allowed.includes(val));
+      });
+    }
+
+    function recordMatchesSearch(data, term) {
+      const uid = String(data.uid ?? data.userId ?? data.employeeId ?? "").trim();
+      const names = [data.fullName, data.Name, data.name, data.employeeName].map(v => String(v ?? "").trim());
+      const search = norm(term);
+
+      if (!search) return true;
+      if (uid && norm(uid).includes(search)) return true;
+      return names.some(n => norm(n).includes(search));
+    }
+
+    function getJobValueForRecord(data, roleLabel) {
+      if (Array.isArray(data.jobs) && data.jobs.length) return data.jobs;
+      if (Array.isArray(data.job) && data.job.length) return data.job;
+      return data.departmentSelect || data.job || data.role || roleLabel || "";
+    }
+
+    function buildRecord(docSnap, collectionName, label) {
+      const data = docSnap.data();
+      const uid = String(data.uid ?? data.userId ?? data.employeeId ?? docSnap.id ?? "").trim();
+      const fullName = String(data.fullName ?? data.Name ?? data.name ?? data.employeeName ?? "").trim();
+      const jobValue = getJobValueForRecord(data, label);
+      const siteValue = getSiteValue(data);
+
+      return {
+        id: docSnap.id,
+        collectionName,
+        label,
+        uid,
+        fullName,
+        jobValue,
+        siteValue,
+        raw: data
+      };
+    }
+
+    async function loadProfileFromSiteCollections() {
+      const keyCandidates = [
+        localStorage.getItem("siEmail"),
+        localStorage.getItem("siUid"),
+        localStorage.getItem("siID"),
+        localStorage.getItem("siId"),
+        localStorage.getItem("siLogin"),
+        localStorage.getItem("siLoginEmail")
+      ].filter(Boolean);
+
+      for (const colName of SITE_COLLECTION_CANDIDATES) {
+        for (const id of keyCandidates) {
+          try {
+            const snap = await getDoc(doc(db, colName, id));
+            if (snap.exists()) {
+              const data = snap.data();
+              return { collectionName: colName, id, data };
+            }
+          } catch (e) {
+            // ignore and continue
+          }
+        }
+      }
+
+      return null;
+    }
+
+    function renderSearchResults(records, searchText) {
+      if (!records.length) {
+        searchResultsBox.innerHTML = `
+          <div class="result-card" style="grid-column:1/-1; cursor:default;">
+            <h4>No matching record found</h4>
+            <p>Nothing matched "${searchText}". Only records under your SI site are shown.</p>
+          </div>`;
+        return;
+      }
+
+      searchResultsBox.innerHTML = "";
+      records.forEach((record) => {
+        const div = document.createElement("div");
+        div.className = "result-card";
+        div.tabIndex = 0;
+
+        const jobText = Array.isArray(record.jobValue) ? record.jobValue.join(", ") : displayOrDash(record.jobValue);
+
+        div.innerHTML = `
+          <h4>${record.fullName || "Unnamed"}</h4>
+          <p><strong>ID:</strong> ${displayOrDash(record.uid)}<br/>
+             <strong>Role:</strong> ${record.label}<br/>
+             <strong>Site:</strong> ${displayOrDash(record.siteValue || state.allowedSite)}</p>
+          <div class="chip-row">
+            <span class="result-chip">${record.label}</span>
+            <span class="result-chip">${displayOrDash(record.uid)}</span>
+          </div>
+          <small>Job: ${jobText}</small>
+        `;
+
+        div.addEventListener("click", () => setFormFromRecord(record));
+        div.addEventListener("keydown", (ev) => {
+          if (ev.key === "Enter" || ev.key === " ") {
+            ev.preventDefault();
+            setFormFromRecord(record);
+          }
+        });
+
+        searchResultsBox.appendChild(div);
+      });
+    }
+
+    async function searchSiteRecords(searchText) {
+      const term = String(searchText ?? "").trim();
+      if (!term) {
+        showResults("Type a name or ID to search.");
+        return;
+      }
+
+      searchResultsBox.innerHTML = `
+        <div class="result-card" style="grid-column:1/-1; cursor:default;">
+          <h4>Searching...</h4>
+          <p>Please wait while site-restricted results are loaded.</p>
+        </div>`;
+
+      const allMatches = [];
+
+      for (const col of ROLE_COLLECTIONS) {
+        try {
+          const snap = await getDocs(collection(db, col.name));
+          snap.forEach((docSnap) => {
+            const record = buildRecord(docSnap, col.name, col.label);
+            if (!recordMatchesSite(record.raw)) return;
+            if (!recordMatchesSearch(record, term)) return;
+            allMatches.push(record);
+          });
+        } catch (e) {
+          console.error(`Search error in ${col.name}:`, e);
+        }
+      }
+
+      allMatches.sort((a, b) => {
+        const an = norm(a.fullName), bn = norm(b.fullName);
+        if (an === bn) return norm(a.uid).localeCompare(norm(b.uid));
+        return an.localeCompare(bn);
+      });
+
+      state.searchResults = allMatches;
+      renderSearchResults(allMatches, term);
+    }
+
+    async function refreshNotifications() {
+      try {
+        const snap = await getDocs(collection(db, "Employee"));
+        const today = new Date();
+        const soon = new Date();
+        soon.setDate(today.getDate() + 3);
+
+        const items = [];
+
+        snap.forEach(docSnap => {
+          const d = docSnap.data();
+          if (!d.passes_end) return;
+          const end = new Date(d.passes_end);
+          if (end >= today && end <= soon) {
+            items.push({
+              name: d.fullName,
+              uid: d.uid,
+              pass: d.passes,
+              renew: d.passes_end
+            });
+          }
+        });
+
+        if (items.length) {
+          badge.innerText = items.length;
+          badge.style.display = "";
+        } else {
+          badge.style.display = "none";
+        }
+
+        box.innerHTML = "";
+
+        if (!items.length) {
+          box.innerHTML = "<p>No passes expiring in 3 days.</p>";
+        } else {
+          for (const it of items) {
+            const div = document.createElement("div");
+            div.className = "notification-item";
+            div.innerHTML = `
+              <p><strong>Name:</strong> ${it.name}</p>
+              <p><strong>User ID:</strong> ${it.uid}</p>
+              <p><strong>Pass Type:</strong> ${it.pass}</p>
+              <p><strong>Renew Date:</strong> ${it.renew}</p>
+            `;
+            box.appendChild(div);
+          }
+        }
+      } catch (e) {
+        console.error("Notification load error:", e);
+      }
+    }
+
+    if (bell) {
+      bell.addEventListener("click", () => {
+        box.style.display = box.style.display === "none" ? "block" : "none";
+      });
+    }
+
+    document.addEventListener("DOMContentLoaded", async function () {
+      try {
+        const profile = await loadProfileFromSiteCollections();
+        if (profile) {
+          state.profile = profile.data;
+          state.allowedSite = getSiteValue(profile.data);
+
+          document.getElementById("siNameDisplay").innerText =
+            profile.data.Name || profile.data.fullName || profile.data.name || "Not Found";
+          document.getElementById("siIdDisplay").innerText =
+            profile.data.uid || profile.data.userId || profile.id || "Not Found";
+
+          const subtitle = document.querySelector(".brand-subtitle");
+          if (subtitle && state.allowedSite) {
+            subtitle.textContent = `Site Locked: ${state.allowedSite}`;
+          }
+        } else {
+          document.getElementById("siNameDisplay").innerText = "Not Found";
+          document.getElementById("siIdDisplay").innerText = "Not Found";
+          showResults("SI profile not found. Please check the login key and collection name.");
+        }
+      } catch (err) {
+        console.error("Error fetching SI details:", err);
+        document.getElementById("siNameDisplay").innerText = "Not Found";
+        document.getElementById("siIdDisplay").innerText = "Not Found";
+      }
+
+      await refreshNotifications();
+
+      const currentPage = window.location.pathname.split("/").pop();
+      const navLinks = document.querySelectorAll("#side-bar a");
+      navLinks.forEach(link => {
+        const href = link.getAttribute("href");
+        if (href === currentPage) link.classList.add("active");
+      });
+
+      showResults("Type a name or ID to search.");
+    });
+
+    allowUidInp.addEventListener("input", async (e) => {
+      const uidValue = e.target.value.trim();
+
+      if (uidValue.length !== 6) {
+        allowNameInp.value = "";
+        jobSelect.innerHTML = '<option value="" disabled selected>Auto fetch</option>';
+        state.selectedRecord = null;
+        return;
+      }
+
+      try {
+        const candidates = [];
+        for (const col of ROLE_COLLECTIONS) {
+          const empQuery = query(
+            collection(db, col.name),
+            where("uid", "==", uidValue),
+            limit(10)
+          );
+          const snap = await getDocs(empQuery);
+          snap.forEach(docSnap => {
+            const record = buildRecord(docSnap, col.name, col.label);
+            if (recordMatchesSite(record.raw)) candidates.push(record);
+          });
+        }
+
+        if (candidates.length) {
+          const record = candidates[0];
+          setFormFromRecord(record);
+        } else {
+          allowNameInp.value = "";
+          jobSelect.innerHTML = '<option value="" disabled selected>Auto fetch</option>';
+          state.selectedRecord = null;
+        }
+      } catch (err) {
+        console.error("Error fetching record:", err);
+        allowNameInp.value = "";
+        jobSelect.innerHTML = '<option value="" disabled selected>Auto fetch</option>';
+        state.selectedRecord = null;
+      }
+    });
+
+    searchBtn.addEventListener("click", async () => {
+      await searchSiteRecords(searchInput.value);
+    });
+
+    searchInput.addEventListener("keydown", async (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        await searchSiteRecords(searchInput.value);
+      }
+    });
+
+    allowSubmitBtn.addEventListener("click", async () => {
+      const uid = allowUidInp.value.trim();
+      const fullName = allowNameInp.value.trim();
+      const jobVal = jobSelect.value;
+      const monthVal = allowMonthInp.value;
+      const dayCount = parseInt(allowAmountSel.value, 10);
+
+      if (
+        uid.length !== 6 ||
+        !fullName ||
+        !jobVal ||
+        !monthVal ||
+        isNaN(dayCount) ||
+        dayCount !== 1
+      ) {
+        alert(
+          "Please ensure:\n" +
+          " • UID is exactly 6 digits\n" +
+          " • Name and Job are auto-fetched\n" +
+          " • A Month is chosen\n" +
+          " • Day count is 1."
+        );
+        return;
+      }
+
+      if (!state.allowedSite) {
+        alert("SI site is not loaded yet. Please login again.");
+        return;
+      }
+
+      const [yyyy, mm] = monthVal.split("-");
+      const YY = yyyy.slice(-2);
+
+      try {
+        const recordsRef = collection(db, "Attendance", uid, "Records");
+        const recordsSnap = await getDocs(recordsRef);
+
+        let maxExtraDay = 31;
+
+        recordsSnap.forEach((docSnap) => {
+          const recordId = docSnap.id;
+          const parts = recordId.split("-");
+
+          if (parts.length !== 3) return;
+
+          const day = parseInt(parts[0], 10);
+          const recordMonth = parts[1];
+          const recordYear = parts[2];
+
+          if (
+            !isNaN(day) &&
+            day >= 32 &&
+            recordMonth === mm &&
+            recordYear === YY
+          ) {
+            if (day > maxExtraDay) {
+              maxExtraDay = day;
+            }
+          }
+        });
+
+        const nextDayNumber = maxExtraDay + 1;
+        const dayString = nextDayNumber.toString().padStart(2, "0");
+        const docId = `${dayString}-${mm}-${YY}`;
+
+        const attRef = doc(db, "Attendance", uid, "Records", docId);
+
+        await setDoc(attRef, {
+          uid: uid,
+          Marking: "Present",
+          date: docId,
+          fullName: fullName,
+          departmentSelect: jobVal,
+          sourceRole: state.selectedRecord?.label || "SI",
+          sourceSite: state.allowedSite,
+          sourceCollection: state.selectedRecord?.collectionName || ""
+        });
+
+        alert(`✅ Extra shift record created: ${docId} for UID ${uid}.`);
+      } catch (err) {
+        console.error("Error creating Extra Shift Attendance record:", err);
+        alert("Failed to create extra shift record: " + err.message);
+      }
+    });
+  </script>
+</body>
+</html>

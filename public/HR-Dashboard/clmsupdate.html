@@ -1,0 +1,1777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>HR Dashboard - CLMS Attendance</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap-theme.min.css" />
+    
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root{
+      --topbar-height: 78px;
+      --sidebar-width: 286px;
+      --bg-0: #05111d;
+      --bg-1: #081523;
+      --bg-2: #0e2238;
+      --card: rgba(10, 24, 42, 0.88);
+      --card-strong: rgba(12, 28, 49, 0.96);
+      --border: rgba(255, 255, 255, 0.08);
+      --border-soft: rgba(255,255,255,0.05);
+      --text: #ffffff;
+      --muted: #a8bed8;
+      --soft: #d7e5f3;
+      --orange-1:#ff8a3c;
+      --orange-2:#ff5a1f;
+      --blue-1:#2d7dff;
+      --blue-2:#1657cc;
+      --green-1:#20c997;
+      --shadow: 0 18px 40px rgba(0,0,0,.26);
+      --shadow-soft: 0 12px 24px rgba(0,0,0,.18);
+      --radius-lg: 26px;
+      --radius-md: 18px;
+      --radius-sm: 14px;
+    }
+
+    html, body{
+      width: 100%;
+      min-height: 100%;
+      font-family: "Segoe UI", Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top right, rgba(48,105,194,.16), transparent 28%),
+        radial-gradient(circle at bottom left, rgba(255,122,47,.10), transparent 24%),
+        linear-gradient(135deg, rgba(6,17,31,.96), rgba(11,35,63,.94));
+      overflow: hidden;
+    }
+
+    body{ position: relative; }
+
+    a, button, input, select{ outline: none; }
+
+    ::selection{ background: rgba(45,125,255,.35); color: #fff; }
+
+    .topbar{
+      height: var(--topbar-height);
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(7,17,31,.92);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(255,255,255,.06);
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 2000;
+    }
+
+    .topbar-left, .topbar-right{
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+    }
+
+    .menu-toggle{
+      width: 46px;
+      height: 46px;
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(255,255,255,.09), rgba(255,255,255,.03));
+      color: #fff;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: .25s ease;
+      flex-shrink: 0;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.05);
+    }
+
+    .menu-toggle:hover,
+    .menu-toggle:focus{
+      transform: translateY(-1px);
+      background: linear-gradient(135deg, rgba(255,122,47,.16), rgba(31,119,255,.16));
+      border-color: rgba(255,255,255,.12);
+    }
+
+    .brand-wrap{ display:flex; flex-direction:column; justify-content:center; min-width: 0; }
+    .brand-title{
+      margin:0;
+      font-size:24px;
+      font-weight:800;
+      color:#fff;
+      text-decoration:none !important;
+      line-height:1.1;
+      letter-spacing: .2px;
+    }
+    .brand-subtitle{
+      margin:2px 0 0;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.3;
+    }
+
+    #bellContainer{
+      position:relative;
+      width:46px;
+      height:46px;
+      border-radius:14px;
+      background: rgba(255,255,255,.07);
+      border:1px solid rgba(255,255,255,.06);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      cursor:pointer;
+      transition:.25s ease;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.05);
+    }
+    #bellContainer:hover{
+      transform: translateY(-1px);
+      background: rgba(255,255,255,.12);
+    }
+    #bellBadge{
+      position:absolute;
+      top:3px;
+      right:3px;
+      min-width:18px;
+      height:18px;
+      padding:0 5px;
+      border-radius:999px;
+      background:#ff4d4f;
+      color:#fff;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:10px;
+      font-weight:700;
+      line-height:1;
+    }
+
+    .logout{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-height:44px;
+      padding:10px 18px;
+      border-radius:14px;
+      text-decoration:none !important;
+      color:#fff !important;
+      font-weight:800;
+      background: linear-gradient(135deg, var(--orange-1), var(--orange-2));
+      box-shadow: 0 12px 26px rgba(255,90,31,.22);
+      transition:.25s ease;
+      white-space: nowrap;
+    }
+    .logout:hover{ transform: translateY(-1px); }
+
+    #notificationBox{
+      display:none;
+      position:fixed;
+      top: calc(var(--topbar-height) - 8px);
+      right: 85px;
+      width: 340px;
+      max-height: 340px;
+      overflow-y: auto;
+      background: rgba(8,21,39,.98);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 14px;
+      box-shadow: 0 22px 46px rgba(0,0,0,.32);
+      z-index: 2200;
+    }
+    .notification-item{
+      padding: 12px 14px;
+      margin-bottom: 10px;
+      border-radius: 14px;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.06);
+    }
+    .notification-item p{
+      margin: 0 0 6px;
+      color: var(--soft);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+    .notification-item p:last-child{ margin-bottom:0; }
+
+    .dashboard-layout{
+      width:100%;
+      height:100vh;
+    }
+
+    .sidebar{
+      width: var(--sidebar-width);
+      min-width: var(--sidebar-width);
+      max-width: var(--sidebar-width);
+      position: fixed;
+      top: var(--topbar-height);
+      left: 0;
+      bottom: 0;
+      padding: 20px 16px 22px;
+      background: linear-gradient(180deg, rgba(6,16,30,.98), rgba(8,22,40,.96));
+      backdrop-filter: blur(16px);
+      border-right: 1px solid rgba(255,255,255,.06);
+      overflow-y: auto;
+      overflow-x: hidden;
+      z-index: 1500;
+      box-shadow: 18px 0 45px rgba(0,0,0,.24);
+    }
+    .sidebar::-webkit-scrollbar{ width: 6px; }
+    .sidebar::-webkit-scrollbar-thumb{ background: rgba(255,255,255,.14); border-radius: 999px; }
+
+    .sidebar-top-card{
+      position:relative;
+      padding: 20px 18px 18px;
+      border-radius: 24px;
+      background:
+        linear-gradient(135deg, rgba(255,122,47,.16), rgba(31,119,255,.14)),
+        rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.08);
+      box-shadow: 0 16px 32px rgba(0,0,0,.20), inset 0 1px 0 rgba(255,255,255,.06);
+      overflow:hidden;
+      margin-bottom: 24px;
+    }
+    .sidebar-top-card::after{
+      content:"";
+      position:absolute;
+      right:-30px;
+      top:-30px;
+      width:100px;
+      height:100px;
+      border-radius:50%;
+      background: radial-gradient(circle, rgba(255,255,255,.16), transparent 70%);
+    }
+    .sidebar-mini-label{
+      display:inline-block;
+      font-size:11px;
+      font-weight:800;
+      text-transform:uppercase;
+      letter-spacing:1.4px;
+      color:#ffd8c2;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.08);
+      padding: 5px 10px;
+      border-radius: 999px;
+      margin-bottom: 12px;
+      position: relative;
+      z-index: 1;
+    }
+    .sidebar-main-title{
+      font-size:19px;
+      font-weight:900;
+      color:#fff;
+      margin:0 0 6px;
+      line-height:1.2;
+      position:relative;
+      z-index:1;
+    }
+    .sidebar-main-subtitle{
+      font-size:13px;
+      color:#d5e2f1;
+      line-height:1.7;
+      margin:0 0 14px;
+      position:relative;
+      z-index:1;
+    }
+    .sidebar-status-row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      position:relative;
+      z-index:1;
+      padding-top:12px;
+      border-top:1px solid rgba(255,255,255,.08);
+    }
+    .sidebar-status-badge{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:11px;
+      font-weight:800;
+      color:#dfffe9;
+      background: rgba(20,184,106,.14);
+      border:1px solid rgba(20,184,106,.22);
+    }
+    .sidebar-status-badge::before{
+      content:"";
+      width:8px;
+      height:8px;
+      border-radius:50%;
+      background:#4df39b;
+      box-shadow:0 0 10px rgba(77,243,155,.7);
+    }
+    .sidebar-status-text{
+      font-size:11px;
+      color:#c6d8ec;
+      text-align:right;
+      line-height:1.4;
+    }
+    .sidebar-section-title{
+      font-size:11px;
+      text-transform:uppercase;
+      letter-spacing:1.5px;
+      color:#8ea4c5;
+      margin: 0 8px 16px;
+      font-weight:800;
+    }
+
+    #side-bar{
+      list-style:none;
+      padding-left:0;
+      margin-bottom:0;
+      width:100%;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+    #side-bar li{ width:100%; margin:0; }
+    #side-bar a, #side-bar summary{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      width:100%;
+      padding:15px 15px;
+      border-radius:20px;
+      text-decoration:none !important;
+      color:#edf4ff !important;
+      background: linear-gradient(135deg, rgba(255,255,255,.055), rgba(255,255,255,.025));
+      border:1px solid rgba(255,255,255,.06);
+      transition: all .28s ease;
+      position:relative;
+      overflow:hidden;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
+    }
+    #side-bar a::before, #side-bar summary::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background: linear-gradient(90deg, rgba(255,122,47,.13), rgba(31,119,255,.11));
+      opacity:0;
+      transition: opacity .28s ease;
+    }
+    #side-bar a::after, #side-bar summary::after{
+      content:"";
+      position:absolute;
+      left:0;
+      top:18%;
+      width:4px;
+      height:64%;
+      border-radius:999px;
+      background: linear-gradient(180deg, #ff8a3c, #1f77ff);
+      opacity:0;
+      transition: opacity .28s ease;
+    }
+    #side-bar a:hover, #side-bar summary:hover{
+      transform: translateX(6px);
+      border-color: rgba(255,255,255,.10);
+      box-shadow: 0 14px 28px rgba(0,0,0,.20);
+    }
+    #side-bar a:hover::before, #side-bar summary:hover::before,
+    #side-bar a:hover::after, #side-bar summary:hover::after{ opacity:1; }
+    #side-bar a.active, #side-bar summary.active{
+      background: linear-gradient(135deg, rgba(255,122,47,.18), rgba(31,119,255,.16));
+      border-color: rgba(255,255,255,.12);
+      box-shadow: 0 16px 30px rgba(0,0,0,.24);
+    }
+    #side-bar a.active::before, #side-bar summary.active::before,
+    #side-bar a.active::after, #side-bar summary.active::after{ opacity:1; }
+
+    .nav-icon{
+      width:44px;
+      height:44px;
+      min-width:44px;
+      border-radius:15px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background: linear-gradient(135deg, rgba(255,255,255,.13), rgba(255,255,255,.05));
+      border:1px solid rgba(255,255,255,.08);
+      color:#fff;
+      font-size:17px;
+      position:relative;
+      z-index:1;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.08);
+    }
+    .nav-text{
+      display:flex;
+      flex-direction:column;
+      min-width:0;
+      position:relative;
+      z-index:1;
+    }
+    .nav-text strong{
+      font-size:14px;
+      font-weight:800;
+      color:#fff;
+      line-height:1.2;
+    }
+    .nav-text span{
+      margin-top:4px;
+      font-size:11px;
+      line-height:1.45;
+      color:#aabed8;
+    }
+    .nav-arrow{
+      margin-left:auto;
+      font-size:16px;
+      color:#93b2d8;
+      position:relative;
+      z-index:1;
+      transition: transform .25s ease;
+    }
+    #side-bar a:hover .nav-arrow, #side-bar summary:hover .nav-arrow{ transform: translateX(4px); }
+
+    main{
+      position: fixed;
+      top: var(--topbar-height);
+      left: var(--sidebar-width);
+      right: 0;
+      bottom: 0;
+      padding: 28px 30px;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+    main::-webkit-scrollbar{ width: 10px; height: 10px; }
+    main::-webkit-scrollbar-thumb{ background: rgba(255,255,255,.12); border-radius: 999px; }
+
+    .hero-card,
+    .panel-card,
+    .table-card{
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      box-shadow: var(--shadow);
+      margin-bottom: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-card{
+      background: linear-gradient(135deg, rgba(22,61,112,.90), rgba(12,27,53,.94));
+      padding: 30px 34px;
+    }
+    .hero-card::after,
+    .hero-card::before{
+      content:"";
+      position:absolute;
+      border-radius:50%;
+      pointer-events:none;
+    }
+    .hero-card::after{
+      right:-80px;
+      top:-80px;
+      width:220px;
+      height:220px;
+      background: radial-gradient(circle, rgba(255,122,47,.18), transparent 70%);
+    }
+    .hero-card::before{
+      left:-60px;
+      bottom:-80px;
+      width:180px;
+      height:180px;
+      background: radial-gradient(circle, rgba(45,125,255,.16), transparent 70%);
+    }
+
+    .section-badge{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding: 8px 14px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:800;
+      color:#d6e9ff;
+      background: rgba(80,145,255,.14);
+      border:1px solid rgba(80,145,255,.22);
+      white-space: nowrap;
+    }
+    .hero-card h1{
+      margin: 12px 0 10px;
+      font-size: 34px;
+      font-weight: 900;
+      color:#fff;
+      line-height:1.15;
+      letter-spacing:.2px;
+    }
+    .hero-card p{
+      margin:0;
+      max-width: 980px;
+      font-size:15px;
+      line-height:1.8;
+      color:#d0def0;
+    }
+
+    .section-header,
+    .table-header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:18px;
+      flex-wrap:wrap;
+    }
+    .section-header h2,
+    .table-header h3{
+      margin:0;
+      font-weight:900;
+      color:#fff;
+    }
+    .section-header h2{ font-size:26px; }
+    .table-header h3{ font-size:24px; }
+
+    .details-grid{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap:16px;
+    }
+    .filter-grid{
+      display:grid;
+      grid-template-columns: repeat(4, minmax(0,1fr));
+      gap:16px;
+      align-items:end;
+    }
+
+    .field{ position: relative; }
+    .field label{
+      display:block;
+      margin-bottom:8px;
+      font-size:12px;
+      font-weight:800;
+      color: var(--muted);
+      letter-spacing:.4px;
+      text-transform: uppercase;
+    }
+    .value-box,
+    .field input,
+    .field select{
+      width:100%;
+      min-height:52px;
+      border-radius:16px !important;
+      border:1px solid rgba(255,255,255,.08) !important;
+      background: rgba(255,255,255,.055) !important;
+      color:#fff !important;
+      padding: 12px 14px !important;
+      font-size:14px;
+      outline:none;
+      box-shadow:none !important;
+      transition:.22s ease;
+    }
+    .field input:focus,
+    .field select:focus{
+      border-color: rgba(45,125,255,.62) !important;
+      box-shadow: 0 0 0 4px rgba(45,125,255,.12) !important;
+      background: rgba(255,255,255,.075) !important;
+    }
+    .field input::placeholder{ color:#9fb4cf; }
+    .field select option{ color:#000; }
+
+    .name-field{
+      position: relative;
+      z-index: 5;
+    }
+    .employee-name-wrap{
+      position: relative;
+    }
+    .employee-name-suggestions{
+      position: absolute;
+      top: calc(100% + 8px);
+      left: 0;
+      right: 0;
+      max-height: 280px;
+      overflow-y: auto;
+      padding: 8px;
+      border-radius: 16px;
+      background: rgba(8, 21, 39, 0.98);
+      border: 1px solid rgba(255, 255, 255, 0.10);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.32);
+      z-index: 2600;
+      backdrop-filter: blur(12px);
+    }
+    .employee-name-suggestions[hidden]{
+      display: none !important;
+    }
+    .employee-name-suggestions::-webkit-scrollbar{
+      width: 8px;
+    }
+    .employee-name-suggestions::-webkit-scrollbar-thumb{
+      background: rgba(255,255,255,.16);
+      border-radius: 999px;
+    }
+    .employee-name-suggestion-header{
+      padding: 2px 6px 10px;
+      color: #9fb4cf;
+      font-size: 11px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 1.3px;
+    }
+    .employee-name-suggestion-item{
+      padding: 11px 12px;
+      border-radius: 12px;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: .18s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .employee-name-suggestion-item:hover,
+    .employee-name-suggestion-item.active{
+      background: rgba(45, 125, 255, 0.14);
+      border-color: rgba(45, 125, 255, 0.22);
+      transform: translateY(-1px);
+    }
+    .employee-name-suggestion-item strong{
+      color: #fff;
+      font-size: 14px;
+      font-weight: 800;
+      line-height: 1.25;
+    }
+    .employee-name-suggestion-item span{
+      color: #9fb4cf;
+      font-size: 11px;
+      line-height: 1.35;
+    }
+    .employee-name-empty{
+      padding: 14px 12px;
+      color: #9fb4cf;
+      font-size: 13px;
+      text-align: center;
+      line-height: 1.45;
+    }
+
+    #attendanceSubmit,
+    #resetBtn{
+      min-height:52px;
+      width:100%;
+      border:none;
+      border-radius:16px !important;
+      color:#fff !important;
+      font-size:15px;
+      font-weight:900;
+      padding: 12px 22px !important;
+      transition:.22s ease;
+      white-space:nowrap;
+    }
+    #attendanceSubmit{
+      background: linear-gradient(135deg, var(--blue-1), var(--blue-2)) !important;
+      box-shadow: 0 12px 26px rgba(45,125,255,.22);
+    }
+    #resetBtn{
+      background: linear-gradient(135deg, #6c757d, #343a40) !important;
+      box-shadow: 0 10px 24px rgba(0,0,0,.22);
+    }
+    #attendanceSubmit:hover, #resetBtn:hover{
+      transform: translateY(-1px);
+      color:#fff !important;
+    }
+
+    .filter-summary{
+      margin-top: 18px;
+      padding: 16px;
+      border-radius: 18px;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.06);
+    }
+    .filter-summary-title{
+      font-size: 12px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 1.4px;
+      color: #9fb5d4;
+      margin-bottom: 10px;
+    }
+    .filter-chip-list{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+    }
+    .filter-chip{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding: 10px 12px;
+      border-radius:999px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.07);
+      color:#e6f1fb;
+      font-size: 12px;
+      font-weight:700;
+      line-height:1;
+    }
+    .filter-chip strong{ color:#fff; font-weight:900; }
+    .filter-tip{
+      margin-top:10px;
+      font-size:12px;
+      color:#a9bfd7;
+      line-height:1.55;
+    }
+
+    .table-card{
+      background: rgba(10,24,42,.84);
+      border-radius: 26px;
+    }
+    .table-wrap{
+      width:100%;
+      overflow:auto;
+      border-radius:18px;
+      background: rgba(18,36,61,.96);
+      border:1px solid rgba(255,255,255,.06);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.03);
+    }
+    .table-wrap table{
+      width:100%;
+      margin:0;
+      min-width: 1800px;
+      border-collapse:collapse;
+      background: rgba(255,255,255,.02);
+      border-radius:18px;
+      overflow:hidden;
+    }
+    .table-wrap thead tr{
+      background: linear-gradient(135deg, var(--blue-1), var(--blue-2));
+    }
+    .table-wrap th{
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      color:#fff4cc;
+      font-size:12px;
+      font-weight:900;
+      text-transform:uppercase;
+      letter-spacing:.5px;
+      text-align:center;
+      vertical-align:middle;
+      padding: 16px 12px !important;
+      border:none !important;
+      white-space:nowrap;
+      box-shadow: 0 2px 0 rgba(255,255,255,.06);
+    }
+    .table-wrap td{
+      padding: 14px 12px !important;
+      text-align:center;
+      vertical-align:middle;
+      color:#dce9f7;
+      border-top:1px solid rgba(255,255,255,.05) !important;
+      background: rgba(255,255,255,.02);
+      white-space:nowrap;
+    }
+    .table-wrap tbody tr:nth-child(even) td{ background: rgba(255,255,255,.025); }
+    .table-wrap tbody tr:hover td{ background: rgba(63,131,248,.08); }
+    .empty-row td{
+      color:#9fb4cf;
+      font-style:italic;
+      padding: 24px 14px !important;
+    }
+
+    .day-box{
+      width:34px;
+      height:34px;
+      border-radius:10px;
+      border:1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.06);
+      color:#cfe0f4;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      cursor:pointer;
+      font-size:16px;
+      font-weight:900;
+      transition:.22s ease;
+      user-select:none;
+    }
+    .day-box:hover{
+      transform: translateY(-1px);
+      border-color: rgba(32,201,151,.55);
+      box-shadow: 0 8px 18px rgba(0,0,0,.22);
+    }
+    .day-box.active{
+      background: linear-gradient(135deg, #20c997, #11936c);
+      color:#fff;
+      border-color: rgba(32,201,151,.75);
+      box-shadow: 0 8px 18px rgba(32,201,151,.22);
+    }
+    .day-box.disabled{
+      opacity:.25;
+      cursor:not-allowed;
+      pointer-events:none;
+    }
+
+    #floatingCalendar{
+      display:none;
+      position:fixed !important;
+      background:#fff !important;
+      color:#1a1a1a;
+      border:none !important;
+      padding:16px !important;
+      border-radius:16px !important;
+      box-shadow: 0 20px 40px rgba(0,0,0,.28) !important;
+      z-index:2000 !important;
+      max-width:560px;
+      width: calc(100% - 32px);
+    }
+    #floatingCalendarTitle{
+      margin:0 0 12px 0 !important;
+      font-size:16px !important;
+      font-weight:900;
+      color:#0b2340;
+    }
+    #floatingCalendarContent > div{
+      min-height:52px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      line-height:1.3;
+    }
+
+    @media (max-width: 1200px){
+      .details-grid{ grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .filter-grid{ grid-template-columns: repeat(2, minmax(0,1fr)); }
+    }
+
+    @media (max-width: 991px){
+      html, body{
+        width:100%;
+        min-height:100%;
+        height:auto;
+        overflow-y:auto;
+        overflow-x:hidden;
+      }
+      .dashboard-layout{
+        width:100%;
+        height:auto;
+        min-height:100vh;
+        padding-top: var(--topbar-height);
+      }
+      .sidebar{
+        width:100%;
+        min-width:100%;
+        max-width:100%;
+        position:relative;
+        top:auto; left:auto; right:auto; bottom:auto;
+        height:auto;
+        max-height:none;
+        overflow:visible;
+        border-right:none;
+        border-bottom:1px solid rgba(255,255,255,.05);
+        border-radius:0 0 24px 24px;
+        z-index:100;
+        padding:14px;
+      }
+      #side-bar{ display:none; gap:10px; }
+      #side-bar.active{ display:flex; flex-direction:column; margin-top:12px; }
+      .sidebar-status-row{ align-items:flex-start; flex-direction:column; }
+      .sidebar-status-text{ text-align:left; }
+      main{
+        position:relative;
+        top:auto; left:auto; right:auto; bottom:auto;
+        width:100%;
+        padding:18px;
+        overflow:visible;
+      }
+      .details-grid,
+      .filter-grid{ grid-template-columns: 1fr; }
+      .brand-subtitle{ display:none; }
+    }
+
+    @media (max-width: 600px){
+      .topbar{ padding:0 14px; }
+      .brand-title{ font-size:21px; }
+      .logout{ padding:9px 14px; font-size:13px; }
+      .hero-card, .panel-card, .table-card{ padding:18px; border-radius:18px; }
+      #notificationBox{ width: 280px; right: 16px; }
+      .hero-card h1{ font-size:26px; }
+      .filter-summary{ padding:14px; }
+      .filter-chip{ width: 100%; justify-content: space-between; }
+    }
+  </style>
+
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-left">
+      <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+      <div class="brand-wrap">
+        <a href="#" class="brand-title">HR Dashboard</a>
+        <p class="brand-subtitle">CLMS Attendance Overview</p>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div id="bellContainer">
+        <span class="glyphicon glyphicon-bell" style="font-size:24px;"></span>
+        <span id="bellBadge" class="badge" style="display:none;">0</span>
+      </div>
+      <a href="#" class="logout" onclick="logoutUser()">Logout</a>
+    </div>
+  </header>
+
+  <div id="notificationBox"></div>
+
+  <div class="dashboard-layout">
+    <nav class="sidebar">
+      <div class="sidebar-top-card">
+        <div class="sidebar-mini-label">HR Panel</div>
+        <h3 class="sidebar-main-title">Command Center</h3>
+        <p class="sidebar-main-subtitle">Access CLMS attendance, employee filters, and the main HR sections from one clean navigation area.</p>
+        <div class="sidebar-status-row">
+          <span class="sidebar-status-badge">CLMS Active</span>
+          <div style="font-size:11px;color:#c6d8ec;text-align:right;line-height:1.4">Secure access<br/>Quick navigation</div>
+        </div>
+      </div>
+      <div class="sidebar-section-title">Navigation</div>
+      <ul id="side-bar">
+        <li><a href="#">Joining</a></li>
+        <li><a href="#">Employee Status</a></li>
+        <li><a href="#">Employee list</a></li>
+        <li><a href="#">Employee Attendance</a></li>
+        <li><a href="#">Access</a></li>
+        <li><a href="#">Leave Approval</a></li>
+        <li><a href="#">Store Equipment</a></li>
+        <li><a href="#">Food Allowance</a></li>
+        <li><a href="#">Allowance</a></li>
+        <li><a href="#">CLMS Attendance</a></li>
+      </ul>
+    </nav>
+
+    <main>
+      <section class="hero-card">
+        <span class="section-badge">HR CLMS ATTENDANCE PANEL</span>
+        <h1>CLMS Attendance</h1>
+        <p>Select month and filters to load all employees across SI, AS, Supervisor, and Employee records. Role and department filtering now follow the actual Firestore collection mapping and department source fields.</p>
+      </section>
+
+      <section class="panel-card">
+        <div class="section-header">
+          <h2>HR Details</h2>
+          <span class="section-badge">Profile Information</span>
+        </div>
+        <div class="details-grid">
+          <div class="field"><label>HR Name</label><div class="value-box" id="hrNameDisplay">Loading...</div></div>
+          <div class="field"><label>HR ID</label><div class="value-box" id="hrIdDisplay">Loading...</div></div>
+          <div class="field"><label>Assigned Site</label><div class="value-box" id="hrSiteDisplay">Loading...</div></div>
+        </div>
+      </section>
+
+      <section class="panel-card">
+        <div class="section-header">
+          <h2>Filter CLMS Attendance</h2>
+          <span class="section-badge">Month / Site / Department / Job Role / Name / ID</span>
+        </div>
+        <div class="filter-grid">
+          <div class="field"><label>Month</label><input type="month" id="clmsMonth" /></div>
+          <div class="field"><label>Site</label><select id="siteFilterSelect"><option value="">All Sites</option></select></div>
+          <div class="field"><label>Department</label><select id="departmentFilterSelect"><option value="">All Departments</option></select></div>
+          <div class="field"><label>Job Role</label><select id="jobRoleFilterSelect"><option value="">All Job Roles</option></select></div>
+          <div class="field name-field">
+            <label>Employee Name</label>
+            <div class="employee-name-wrap">
+              <input type="text" id="employeeNameInput" placeholder="Search employee name..." autocomplete="off" aria-autocomplete="list" aria-expanded="false" aria-controls="employeeNameSuggestions" />
+              <div id="employeeNameSuggestions" class="employee-name-suggestions" hidden></div>
+            </div>
+          </div>
+          <div class="field"><label>Employee ID</label><select id="employeeIdSelect"><option value="">All Employee IDs</option></select></div>
+          <div class="field"><label>&nbsp;</label><button type="button" id="attendanceSubmit">Submit</button></div>
+          <div class="field"><label>&nbsp;</label><button type="button" id="resetBtn">Reset</button></div>
+        </div>
+        <div class="filter-summary" id="filterSummary">
+          <div class="filter-summary-title">Active filters</div>
+          <div class="filter-chip-list">
+            <span class="filter-chip" id="summaryMonth">Month: --</span>
+            <span class="filter-chip" id="summarySite">Site: All</span>
+            <span class="filter-chip" id="summaryDepartment">Department: All</span>
+            <span class="filter-chip" id="summaryRole">Job Role: All</span>
+            <span class="filter-chip" id="summaryName">Name: Optional</span>
+            <span class="filter-chip" id="summaryId">Employee ID: All</span>
+          </div>
+          <div class="filter-tip">Department + role selection now follows the actual Firestore collection mapping, so the result list stays aligned with the selected role.</div>
+        </div>
+      </section>
+
+      <section class="table-card">
+        <div class="section-header">
+          <h2>CLMS Attendance Table</h2>
+          <span class="section-badge">Tap Date Box To Save / Remove</span>
+        </div>
+        <div class="table-wrap">
+          <table id="clmsAttendanceTable">
+            <thead id="attendanceTableHead">
+              <tr><th>Employee ID</th><th>Employee Name</th><th>Site</th><th>Department</th><th>Job Role</th></tr>
+            </thead>
+            <tbody id="attendanceTableBody">
+              <tr class="empty-row"><td colspan="5">Please select month and click submit.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    function toggleMenu(){document.getElementById("side-bar").classList.toggle("active")}
+    document.addEventListener("DOMContentLoaded",()=>{
+      const currentPage=window.location.pathname.split("/").pop();
+      document.querySelectorAll("#side-bar a").forEach(link=>{
+        if(link.getAttribute("href")===currentPage) link.classList.add("active");
+      });
+    });
+  </script>
+
+  <script type="module" src="/public/control.js"></script>
+
+  <script type="module">
+    import { getFirestore, doc, getDoc, getDocs, setDoc, deleteDoc, collection, query, where } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+    import { app } from "/public/firebase-config.js";
+
+    const db = getFirestore(app);
+    const HR_EMAIL = localStorage.getItem("hrEmail") || "";
+    const EMPLOYEE_COLLECTIONS = ["AS", "Supervisor", "Site-Incharge", "Employee"];
+
+    const employeeCache = { all: null, hr: null };
+    let currentHrUid = "";
+    let currentHrName = "";
+    let currentHrSites = [];
+    let currentHrDepartments = [];
+    let currentEmployeeNameSuggestions = [];
+    let employeeNameSuggestionIndex = -1;
+
+    const bell = document.getElementById("bellContainer");
+    const badge = document.getElementById("bellBadge");
+    const box = document.getElementById("notificationBox");
+
+    const hrNameDisplay = document.getElementById("hrNameDisplay");
+    const hrIdDisplay = document.getElementById("hrIdDisplay");
+    const hrSiteDisplay = document.getElementById("hrSiteDisplay");
+    const clmsMonthInput = document.getElementById("clmsMonth");
+    const siteFilterSelect = document.getElementById("siteFilterSelect");
+    const departmentFilterSelect = document.getElementById("departmentFilterSelect");
+    const jobRoleFilterSelect = document.getElementById("jobRoleFilterSelect");
+    const employeeNameInput = document.getElementById("employeeNameInput");
+    const employeeIdSelect = document.getElementById("employeeIdSelect");
+    const employeeNameSuggestions = document.getElementById("employeeNameSuggestions");
+    const attendanceSubmitBtn = document.getElementById("attendanceSubmit");
+    const resetBtn = document.getElementById("resetBtn");
+    const tableHead = document.getElementById("attendanceTableHead");
+    const tableBody = document.getElementById("attendanceTableBody");
+
+    const isLikelyDepartmentLabel = (value = "") => {
+      const text = normalizeText(value);
+      if (!text) return false;
+      const lower = text.toLowerCase();
+      if (lower.includes("@") || lower.includes("||")) return false;
+      const deptKeywords = ["admin","attendance","civil","construction","dispatch","electrical","engineering","equipment","fabrication","gearbox","maintenance","mechanical","overhauling","painting","packing","plant","power","production","project","ptm","quality","stores","store","utility","workshop","welding","site"];
+      return deptKeywords.some(k => lower.includes(k)) || /[\d/&(),.-]/.test(text);
+    };
+
+    function normalizeText(val = "") { return String(val ?? "").replace(/\s+/g, " ").trim(); }
+    function normalizeComparableText(value = "") { return normalizeText(value).toLowerCase().replace(/[^a-z0-9]+/g, ""); }
+    function escapeHTML(value = "") { return String(value ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;"); }
+    function firstNonEmpty(...values){ for(const value of values){ if(value===null||value===undefined) continue; const text=String(value).trim(); if(text) return text; } return ""; }
+    function splitValues(value){ if(!value) return []; if(Array.isArray(value)) return value.flatMap(splitValues); if(typeof value === "object") return Object.values(value).flatMap(splitValues); return String(value).split(/[,|/\n]/).map(s=>normalizeText(s)).filter(Boolean); }
+    function uniqueBy(arr, keyFn){ const seen=new Set(); return (arr||[]).filter(item=>{ const key=keyFn(item); if(seen.has(key)) return false; seen.add(key); return true; }); }
+    function uniqueSorted(values=[]){ return uniqueBy((values||[]).map(v=>normalizeText(v)).filter(Boolean), v=>normalizeText(v).toLowerCase()).sort((a,b)=>a.localeCompare(b)); }
+    function looseTextMatches(a,b){ const x=normalizeComparableText(a), y=normalizeComparableText(b); return !!(x && y && (x===y || x.includes(y) || y.includes(x))); }
+    function getMonthParts(monthValue){ const [year, month] = monthValue.split("-").map(Number); return { year, month, totalDays: new Date(year, month, 0).getDate() }; }
+    function makeDateKey(monthValue, day){ const { year, month } = getMonthParts(monthValue); return `${String(day).padStart(2,"0")}-${String(month).padStart(2,"0")}-${year}`; }
+    function makeDocDateId(monthValue, day){ return `${monthValue}-${String(day).padStart(2,"0")}`; }
+
+    function getCollectionRole(collectionName = "") {
+      const normalized = normalizeText(collectionName).toLowerCase();
+      if (normalized === "si" || normalized.includes("site incharge") || normalized.includes("site-incharge")) return "SI";
+      if (normalized === "supervisor") return "Supervisor";
+      if (normalized === "as") return "AS";
+      if (normalized === "employee") return "Employee";
+      return "";
+    }
+
+    function normalizeRoleLabel(value = "") {
+      const raw = normalizeText(value).toLowerCase();
+      if (!raw) return "";
+      if (raw === "si" || raw.includes("site incharge") || raw.includes("site-incharge")) return "SI";
+      if (raw === "supervisor" || raw.includes("supervisor")) return "Supervisor";
+      if (raw === "as" || raw === "a.s" || raw.includes("assistant supervisor")) return "AS";
+      if (raw === "employee" || raw.includes("employee") || raw.includes("worker") || raw.includes("labour") || raw.includes("labor")) return "Employee";
+      return normalizeText(value);
+    }
+
+    function extractDepartmentLabelsFromHrJobs(jobsInput) {
+      const candidates = [];
+      const visit = (entry) => {
+        if (entry == null) return;
+        if (Array.isArray(entry)) { entry.forEach(visit); return; }
+        if (typeof entry === "string") {
+          const cleaned = normalizeText(entry).replace(/\(\d+\)\s*$/, "").trim();
+          if (cleaned && isLikelyDepartmentLabel(cleaned)) candidates.push(cleaned);
+          return;
+        }
+        if (typeof entry === "object") {
+          Object.keys(entry).forEach(key => {
+            const cleaned = normalizeText(key).replace(/\(\d+\)\s*$/, "").trim();
+            if (cleaned && isLikelyDepartmentLabel(cleaned)) candidates.push(cleaned);
+          });
+        }
+      };
+      visit(jobsInput);
+      return uniqueBy(candidates.filter(Boolean), v => normalizeText(v).toLowerCase());
+    }
+
+    function normalizeSitesFromHr(hrData) {
+      const raw = hrData.site ?? hrData.Site ?? hrData.sites ?? hrData.Sites ?? hrData.siteName ?? hrData.site_name ?? hrData.workSite ?? hrData.worksite ?? "";
+      const values = splitValues(raw);
+      return uniqueBy(values, v => normalizeText(v).toLowerCase()).sort((a,b)=>a.localeCompare(b));
+    }
+
+    function normalizeDepartmentsFromHr(hrData) {
+
+  // ONLY HR jobs array allowed
+  const jobsSource =
+    hrData.jobs ??
+    hrData.Jobs ??
+    [];
+
+  const jobDepartments = uniqueBy(
+    extractDepartmentLabelsFromHrJobs(jobsSource),
+    v => normalizeText(v).toLowerCase()
+  ).sort((a,b)=>a.localeCompare(b));
+
+  if (jobDepartments.length) {
+    return jobDepartments;
+  }
+
+  return [];
+}
+
+    function getEmployeeUid(emp) {
+      return normalizeText(firstNonEmpty(emp.uid, emp.UID, emp.userId, emp.userID, emp.empId, emp.employeeId, emp.siuid, emp.asid, emp.email, emp.Email, emp.officialEmail, emp.officialOTPEmail, emp.lastOtpEmail, emp.__docId));
+    }
+    function getEmployeeDisplayName(emp) {
+      return normalizeText(firstNonEmpty(emp.fullName, emp.FullName, emp.name, emp.Name, emp.employeeName, emp.EmployeeName, emp.e_name, emp.eName, emp.__docId, getEmployeeUid(emp)));
+    }
+    function getEmployeeSites(emp) {
+      const raw = emp.site ?? emp.Site ?? emp.sites ?? emp.Sites ?? emp.siteName ?? emp.site_name ?? emp.workSite ?? emp.worksite ?? emp.location ?? emp.Location ?? "";
+      return uniqueBy(splitValues(raw), v => normalizeText(v).toLowerCase());
+    }
+    function getEmployeePrimarySite(emp){ return getEmployeeSites(emp)[0] || ""; }
+
+    function collectDepartmentsFromValue(value, out) {
+      if (value == null) return;
+      if (Array.isArray(value)) { value.forEach(v => collectDepartmentsFromValue(v, out)); return; }
+      if (typeof value === "object") {
+        Object.entries(value).forEach(([k,v]) => {
+          const key = normalizeText(k).replace(/\(\d+\)\s*$/, "").trim();
+          if (key && isLikelyDepartmentLabel(key)) out.push(key);
+          collectDepartmentsFromValue(v, out);
+        });
+        return;
+      }
+      const text = normalizeText(value).replace(/\(\d+\)\s*$/, "").trim();
+      if (!text) return;
+      if (text.includes("||")) {
+        const parts = text.split("||").map(x => normalizeText(x)).filter(Boolean);
+        parts.slice(1).forEach(p => { const c = p.replace(/\(\d+\)\s*$/, "").trim(); if (c && isLikelyDepartmentLabel(c)) out.push(c); });
+        return;
+      }
+      if (isLikelyDepartmentLabel(text)) out.push(text);
+    }
+
+    function getEmployeeDepartments(emp) {
+      const collectionName = normalizeText(emp.__collectionName);
+      const result = [];
+
+      // Department source rules:
+      // Employee -> departmentSelect / department fields.
+      // AS / Supervisor / Site-Incharge -> jobs[] is the main department source.
+      if (collectionName === "Employee") {
+        collectDepartmentsFromValue(emp.departmentSelect, result);
+        collectDepartmentsFromValue(emp.department, result);
+        collectDepartmentsFromValue(emp.Department, result);
+        collectDepartmentsFromValue(emp.dept, result);
+        collectDepartmentsFromValue(emp.Dept, result);
+        collectDepartmentsFromValue(emp.departmentName, result);
+        collectDepartmentsFromValue(emp.departmentType, result);
+      } else {
+        collectDepartmentsFromValue(emp.jobs, result);
+        collectDepartmentsFromValue(emp.departmentSelect, result);
+        collectDepartmentsFromValue(emp.department, result);
+        collectDepartmentsFromValue(emp.Department, result);
+        collectDepartmentsFromValue(emp.dept, result);
+        collectDepartmentsFromValue(emp.Dept, result);
+        collectDepartmentsFromValue(emp.departmentName, result);
+        collectDepartmentsFromValue(emp.departmentType, result);
+      }
+
+      // final cleanup, keep only real department labels
+      return uniqueBy(result.filter(Boolean), v => normalizeText(v).toLowerCase()).sort((a,b)=>a.localeCompare(b));
+    }
+    function getEmployeePrimaryDepartment(emp){ return getEmployeeDepartments(emp)[0] || ""; }
+
+    function getEmployeeRole(emp) {
+      const collectionRole = getCollectionRole(emp.__collectionName);
+      if (collectionRole) return collectionRole;
+
+      const explicitRoleCandidates = [emp.jobRole, emp.jobrole, emp.role, emp.Role, emp.designation, emp.Designation, emp.position, emp.Position, emp.post, emp.Post];
+      for (const candidate of explicitRoleCandidates) {
+        const n = normalizeRoleLabel(candidate);
+        if (["SI","Supervisor","AS","Employee"].includes(n)) return n;
+      }
+      return "Employee";
+    }
+
+    function getEmployeeMeta(d = {}, collectionName = "") {
+      const uid = getEmployeeUid({ ...d, __docId: "" });
+      const fullName = getEmployeeDisplayName({ ...d, __docId: "" });
+      const site = getEmployeePrimarySite(d);
+      const department = getEmployeePrimaryDepartment({ ...d, __collectionName: collectionName });
+      const role = getCollectionRole(collectionName) || getEmployeeRole({ ...d, __collectionName: collectionName });
+
+      return {
+        uid: uid.toString().trim(),
+        fullName: fullName.toString().trim(),
+        site: site.toString().trim(),
+        department: department.toString().trim(),
+        jobRole: role,
+        status: normalizeText(d.Status || d.status || ""),
+        __collectionName: collectionName
+      };
+    }
+
+    async function fetchEmployeesFromCollections() {
+      const batches = await Promise.all(EMPLOYEE_COLLECTIONS.map(async (collectionName) => {
+        try {
+          const snap = await getDocs(collection(db, collectionName));
+          return snap.docs.map(docSnap => ({
+            ...getEmployeeMeta(docSnap.data(), collectionName),
+            ...docSnap.data(),
+            __collectionName: collectionName,
+            __docId: docSnap.id
+          }));
+        } catch (err) {
+          console.warn(`Failed to load collection ${collectionName}:`, err);
+          return [];
+        }
+      }));
+
+      const merged = batches.flat();
+
+      return uniqueBy(merged, emp => {
+        const uid = normalizeText(getEmployeeUid(emp)).toLowerCase();
+        if (uid) return `uid:${uid}`;
+        const email = normalizeText(emp.email || emp.Email || emp.officalEmail || emp.officialEmail || emp.officialOTPEmail || emp.lastOtpEmail || "").toLowerCase();
+        if (email) return `email:${email}`;
+        return `doc:${emp.__collectionName}:${emp.__docId}`;
+      });
+    }
+
+    function employeeSiteMatchesHrSite(emp) {
+      if (!currentHrSites.length) return true;
+      const empSites = getEmployeeSites(emp);
+      return empSites.some(site => currentHrSites.some(allowed => looseTextMatches(site, allowed)));
+    }
+    function matchesHrEmployee(emp) {
+      const empHrUid = normalizeText(emp.hrUid || emp.hrId || emp.hrID || emp.HrId || emp.HRId || emp.hr_uid || emp.hrUID || "").toLowerCase();
+      const empHrName = normalizeText(emp.hrName || emp.HRName || emp.hr || emp.HrName || emp.hrname || "").toLowerCase();
+      const targetUid = normalizeText(currentHrUid).toLowerCase();
+      const targetName = normalizeText(currentHrName).toLowerCase();
+      const explicit = (targetUid && empHrUid && empHrUid === targetUid) || (targetName && empHrName && empHrName === targetName);
+      return explicit || employeeSiteMatchesHrSite(emp);
+    }
+
+    async function loadAllEmployees() {
+      if (employeeCache.all) return employeeCache.all;
+      const all = await fetchEmployeesFromCollections();
+      employeeCache.all = all.filter(emp => getEmployeeUid(emp) && getEmployeeDisplayName(emp));
+      return employeeCache.all;
+    }
+    async function loadHrEmployees() {
+      const allEmployees = await loadAllEmployees();
+      const scoped = allEmployees.filter(emp => matchesHrEmployee(emp));
+      employeeCache.hr = scoped.length ? scoped : allEmployees;
+      return employeeCache.hr;
+    }
+    function getScopedEmployees(){ return employeeCache.hr || employeeCache.all || []; }
+
+    function populateSelect(selectEl, values, defaultLabel, selectedValue = "") {
+      const unique = uniqueSorted(values);
+      selectEl.innerHTML = `<option value="">${defaultLabel}</option>` + unique.map(v => `<option value="${escapeHTML(v)}">${escapeHTML(v)}</option>`).join("");
+      if (selectedValue && unique.some(v => v.toLowerCase() === normalizeText(selectedValue).toLowerCase())) selectEl.value = selectedValue;
+      else selectEl.value = "";
+    }
+    function populateSiteOptions(sites = []) {
+      const normalized = uniqueSorted(sites);
+      if (!normalized.length) {
+        siteFilterSelect.innerHTML = `<option value="">No Site Assigned</option>`;
+        siteFilterSelect.disabled = true;
+        return;
+      }
+      siteFilterSelect.disabled = normalized.length === 1;
+      populateSelect(siteFilterSelect, normalized, "All Sites", normalized[0]);
+    }
+    function getSelectedHrSite() { return normalizeText(siteFilterSelect.value) || currentHrSites[0] || ""; }
+    function getDepartmentsForSite(siteName = "") {
+      return currentHrDepartments.slice().sort((a, b) => a.localeCompare(b));
+    }
+    function refreshDepartmentOptionsForSelectedSite() {
+      const previous = normalizeText(departmentFilterSelect.value);
+      const departments = getDepartmentsForSite(getSelectedHrSite());
+      populateSelect(departmentFilterSelect, departments, "All Departments", previous);
+    }
+    function populateRoleOptions() {
+      jobRoleFilterSelect.innerHTML = `
+        <option value="">All Job Roles</option>
+        <option value="SI">SI</option>
+        <option value="Supervisor">Supervisor</option>
+        <option value="AS">AS</option>
+        <option value="Employee">Employee</option>
+      `;
+    }
+
+    function updateFilterSummary() {
+      const summaryMonth = document.getElementById("summaryMonth");
+      const summarySite = document.getElementById("summarySite");
+      const summaryDepartment = document.getElementById("summaryDepartment");
+      const summaryRole = document.getElementById("summaryRole");
+      const summaryName = document.getElementById("summaryName");
+      const summaryId = document.getElementById("summaryId");
+
+      const monthValue = normalizeText(clmsMonthInput.value);
+      let monthLabel = "Month: --";
+      if (monthValue && monthValue.includes("-")) {
+        const [year, month] = monthValue.split("-").map(Number);
+        const d = new Date(year, month - 1, 1);
+        monthLabel = `Month: ${d.toLocaleString("en-US", { month: "long", year: "numeric" })}`;
+      }
+
+      summaryMonth.textContent = monthLabel;
+      summarySite.textContent = `Site: ${normalizeText(siteFilterSelect.value) || "All"}`;
+      summaryDepartment.textContent = `Department: ${normalizeText(departmentFilterSelect.value) || "All"}`;
+      summaryRole.textContent = `Job Role: ${normalizeText(jobRoleFilterSelect.value) || "All"}`;
+      summaryName.textContent = `Name: ${normalizeText(employeeNameInput.value) || "Optional"}`;
+      summaryId.textContent = `Employee ID: ${normalizeText(employeeIdSelect.value) || "All"}`;
+    }
+
+    function filterEmployees(employees, filters) {
+      const site = normalizeText(filters.site);
+      const department = normalizeText(filters.department);
+      const jobRole = normalizeRoleLabel(filters.jobRole);
+      const name = normalizeText(filters.name);
+      const employeeId = normalizeText(filters.employeeId);
+      return employees.filter(emp => {
+        if (!getEmployeeUid(emp)) return false;
+        if (site && !looseTextMatches(getEmployeePrimarySite(emp), site)) return false;
+        if (department && !getEmployeeDepartments(emp).some(dept => looseTextMatches(dept, department))) return false;
+        if (jobRole && normalizeRoleLabel(getEmployeeRole(emp)) !== normalizeRoleLabel(jobRole)) return false;
+        if (name && !looseTextMatches(getEmployeeDisplayName(emp), name)) return false;
+        if (employeeId && !looseTextMatches(getEmployeeUid(emp), employeeId)) return false;
+        if (normalizeText(emp.status).toLowerCase() === "irregular") return false;
+        return true;
+      });
+    }
+
+    function clearNameAndId(){ employeeNameInput.value = ""; employeeIdSelect.innerHTML = `<option value="">All Employee IDs</option>`; }
+    function setEmptyMessage(message, colspan = 5){ tableBody.innerHTML = `<tr class="empty-row"><td colspan="${colspan}">${message}</td></tr>`; }
+    function renderTableHeader(totalDays) {
+      let headHTML = `<tr><th>Employee ID</th><th>Employee Name</th><th>Site</th><th>Department</th><th>Job Role</th>`;
+      for (let day = 1; day <= totalDays; day++) headHTML += `<th>${day}</th>`;
+      headHTML += `</tr>`;
+      tableHead.innerHTML = headHTML;
+    }
+    function resetTableOnly() {
+      tableHead.innerHTML = `<tr><th>Employee ID</th><th>Employee Name</th><th>Site</th><th>Department</th><th>Job Role</th></tr>`;
+      setEmptyMessage("Table reset successfully. Please select month and click submit.", 5);
+    }
+
+    async function getExistingCLMSMap(targetEmployees, monthValue) {
+      const attendanceMap = new Map();
+      await Promise.all(targetEmployees.map(async emp => {
+        const uid = getEmployeeUid(emp);
+        const recQ = query(collection(db, "CLMS Attendance", uid, "Records"), where("monthValue", "==", monthValue));
+        const snap = await getDocs(recQ);
+        const daySet = new Set();
+        snap.forEach(docSnap => { const d = docSnap.data(); if (d.day) daySet.add(Number(d.day)); });
+        attendanceMap.set(uid, daySet);
+      }));
+      return attendanceMap;
+    }
+
+    async function toggleCLMSAttendance(cell, emp, day, monthValue) {
+      const uid = getEmployeeUid(emp);
+      const isActive = cell.classList.contains("active");
+      const docDateId = makeDocDateId(monthValue, day);
+      const displayDate = makeDateKey(monthValue, day);
+      const recRef = doc(db, "CLMS Attendance", uid, "Records", docDateId);
+      cell.classList.add("disabled");
+      try {
+        if (isActive) {
+          await deleteDoc(recRef);
+          cell.classList.remove("active");
+          cell.innerHTML = "";
+          cell.title = "Absent / Not Marked";
+        } else {
+          await setDoc(recRef, {
+            attendanceType: "CLMS attendance",
+            collectionName: "CLMS Attendance",
+            uid,
+            employeeId: uid,
+            fullName: getEmployeeDisplayName(emp),
+            employeeName: getEmployeeDisplayName(emp),
+            site: getEmployeePrimarySite(emp),
+            departmentSelect: getEmployeePrimaryDepartment(emp),
+            department: getEmployeePrimaryDepartment(emp),
+            jobSelect: getEmployeeRole(emp),
+            jobRole: getEmployeeRole(emp),
+            hrUid: currentHrUid,
+            hrName: currentHrName,
+            monthValue,
+            day,
+            date: displayDate,
+            docDateId,
+            Marking: "Present",
+            createdAt: new Date().toISOString()
+          }, { merge: true });
+          cell.classList.add("active");
+          cell.innerHTML = "✓";
+          cell.title = "Present";
+        }
+      } catch (err) {
+        console.error("CLMS attendance update error:", err);
+        alert("CLMS attendance update failed. Console check karo.");
+      } finally {
+        cell.classList.remove("disabled");
+      }
+    }
+
+    function renderCLMSTable(targetEmployees, attendanceMap, monthValue, totalDays) {
+      renderTableHeader(totalDays);
+      tableBody.innerHTML = "";
+      if (!targetEmployees.length) { setEmptyMessage("No matching employees found.", totalDays + 5); return; }
+
+      targetEmployees.sort((a, b) => getEmployeeDisplayName(a).localeCompare(getEmployeeDisplayName(b))).forEach(emp => {
+        const uid = getEmployeeUid(emp);
+        const tr = document.createElement("tr");
+        const existingDays = attendanceMap.get(uid) || new Set();
+        let rowHTML = `
+          <td>${escapeHTML(uid)}</td>
+          <td>${escapeHTML(getEmployeeDisplayName(emp))}</td>
+          <td>${escapeHTML(getEmployeePrimarySite(emp) || "-")}</td>
+          <td>${escapeHTML(getEmployeePrimaryDepartment(emp) || "-")}</td>
+          <td>${escapeHTML(getEmployeeRole(emp) || "-")}</td>`;
+        for (let day = 1; day <= totalDays; day++) {
+          const active = existingDays.has(day);
+          rowHTML += `<td><span class="day-box ${active ? "active" : ""}" data-day="${day}" title="${active ? "Present" : "Absent / Not Marked"}">${active ? "✓" : ""}</span></td>`;
+        }
+        tr.innerHTML = rowHTML;
+        tableBody.appendChild(tr);
+        tr.querySelectorAll(".day-box").forEach(boxEl => boxEl.addEventListener("click", async () => {
+          const clickedDay = Number(boxEl.dataset.day);
+          await toggleCLMSAttendance(boxEl, emp, clickedDay, monthValue);
+        }));
+      });
+    }
+
+    function hideEmployeeNameSuggestions() {
+      employeeNameSuggestions.innerHTML = "";
+      employeeNameSuggestions.hidden = true;
+      employeeNameInput.setAttribute("aria-expanded", "false");
+      employeeNameSuggestionIndex = -1;
+    }
+
+    function highlightEmployeeNameSuggestion(index) {
+      const items = employeeNameSuggestions.querySelectorAll(".employee-name-suggestion-item");
+      if (!items.length) return;
+      items.forEach((item, idx) => item.classList.toggle("active", idx === index));
+      employeeNameSuggestionIndex = index;
+      const activeItem = items[index];
+      if (activeItem) activeItem.scrollIntoView({ block: "nearest" });
+    }
+
+    function renderEmployeeNameSuggestions() {
+      const query = normalizeText(employeeNameInput.value);
+      const baseNames = currentEmployeeNameSuggestions || [];
+      const matches = query
+        ? baseNames.filter(name => looseTextMatches(name, query))
+        : baseNames;
+
+      const limited = matches.slice(0, 12);
+      employeeNameSuggestionIndex = -1;
+
+      if (!limited.length) {
+        employeeNameSuggestions.innerHTML = `
+          <div class="employee-name-suggestion-header">Suggestions</div>
+          <div class="employee-name-empty">${query ? "No matching employee found." : "No employee names available."}</div>
+        `;
+        employeeNameSuggestions.hidden = false;
+        employeeNameInput.setAttribute("aria-expanded", "true");
+        return;
+      }
+
+      employeeNameSuggestions.innerHTML = `
+        <div class="employee-name-suggestion-header">Suggestions</div>
+        ${limited.map((name, idx) => `
+          <div class="employee-name-suggestion-item" data-name="${escapeHTML(name)}" data-index="${idx}">
+            <strong>${escapeHTML(name)}</strong>
+            <span>Tap to select</span>
+          </div>
+        `).join("")}
+      `;
+      employeeNameSuggestions.hidden = false;
+      employeeNameInput.setAttribute("aria-expanded", "true");
+    }
+
+    function showEmployeeNameSuggestions() {
+      if (!currentEmployeeNameSuggestions.length) {
+        hideEmployeeNameSuggestions();
+        return;
+      }
+      renderEmployeeNameSuggestions();
+    }
+
+    function chooseEmployeeName(name) {
+      employeeNameInput.value = name;
+      hideEmployeeNameSuggestions();
+      syncEmployeeIdDropdown();
+      updateFilterSummary();
+    }
+
+    async function refreshNameSuggestions() {
+      const employees = getScopedEmployees();
+      const filtered = filterEmployees(employees, {
+        site: siteFilterSelect.value, department: departmentFilterSelect.value, jobRole: jobRoleFilterSelect.value, name: "", employeeId: ""
+      });
+      currentEmployeeNameSuggestions = uniqueSorted(filtered.map(emp => getEmployeeDisplayName(emp)));
+      if (document.activeElement === employeeNameInput || normalizeText(employeeNameInput.value)) {
+        renderEmployeeNameSuggestions();
+      } else {
+        hideEmployeeNameSuggestions();
+      }
+    }
+
+    async function syncEmployeeIdDropdown() {
+      const employees = getScopedEmployees();
+      const typedName = normalizeText(employeeNameInput.value);
+      employeeIdSelect.innerHTML = `<option value="">All Employee IDs</option>`;
+      if (!typedName) return;
+      const filtered = filterEmployees(employees, {
+        site: siteFilterSelect.value, department: departmentFilterSelect.value, jobRole: jobRoleFilterSelect.value, name: typedName, employeeId: ""
+      });
+      const exactMatches = filtered.filter(emp => normalizeText(getEmployeeDisplayName(emp)) === typedName);
+      if (!exactMatches.length) return;
+      if (exactMatches.length === 1) {
+        const uid = getEmployeeUid(exactMatches[0]);
+        employeeIdSelect.innerHTML = `<option value="${escapeHTML(uid)}" selected>${escapeHTML(uid)}</option>`;
+        employeeIdSelect.value = uid;
+        return;
+      }
+      employeeIdSelect.innerHTML = `<option value="">Select Employee ID</option>` + exactMatches.map(emp => {
+        const uid = getEmployeeUid(emp); return `<option value="${escapeHTML(uid)}">${escapeHTML(uid)}</option>`;
+      }).join("");
+    }
+
+    function getFilteredEmployees() {
+      return filterEmployees(getScopedEmployees(), {
+        site: siteFilterSelect.value,
+        department: departmentFilterSelect.value,
+        jobRole: jobRoleFilterSelect.value,
+        name: employeeNameInput.value.trim(),
+        employeeId: employeeIdSelect.value.trim()
+      });
+    }
+
+    async function buildFilterOptions() {
+      const scoped = getScopedEmployees();
+      const siteDefault = siteFilterSelect.value || currentHrSites[0] || getEmployeePrimarySite(scoped[0] || {});
+      const sites = uniqueSorted(scoped.map(emp => getEmployeePrimarySite(emp)).filter(Boolean));
+      populateSelect(siteFilterSelect, sites.length ? sites : currentHrSites, "All Sites", siteDefault);
+      populateRoleOptions();
+      refreshDepartmentOptionsForSelectedSite();
+    }
+
+    async function refreshNotifications() {
+      try {
+        const allEmployees = await fetchEmployeesFromCollections();
+        const today = new Date(); const soon = new Date(); soon.setDate(today.getDate() + 3);
+        const items = [];
+        allEmployees.forEach(d => {
+          if (!d.passes_end) return;
+          const end = new Date(d.passes_end);
+          if (end >= today && end <= soon) items.push({ name: getEmployeeDisplayName(d), uid: getEmployeeUid(d), pass: d.passes || "", renew: d.passes_end || "" });
+        });
+        badge.style.display = items.length ? "" : "none";
+        badge.innerText = String(items.length || 0);
+        box.innerHTML = items.length ? "" : "<p>No passes expiring in 3 days.</p>";
+        items.forEach(it => {
+          const div = document.createElement("div");
+          div.className = "notification-item";
+          div.innerHTML = `<p><strong>Name:</strong> ${escapeHTML(it.name)}</p><p><strong>User ID:</strong> ${escapeHTML(it.uid)}</p><p><strong>Pass Type:</strong> ${escapeHTML(it.pass)}</p><p><strong>Renew Date:</strong> ${escapeHTML(it.renew)}</p>`;
+          box.appendChild(div);
+        });
+      } catch (e) { console.error("Notification load error:", e); }
+    }
+
+    async function loadHrDetails() {
+      if (!HR_EMAIL) { hrNameDisplay.innerText = "N/A"; hrIdDisplay.innerText = "N/A"; hrSiteDisplay.innerText = "N/A"; setEmptyMessage("HR login data not found."); return; }
+      try {
+        const collectionsToTry = ["HR", "Hr", "HumanResource", "Supervisor"];
+        let hrData = null;
+        for (const collectionName of collectionsToTry) {
+          const hrDocSnap = await getDoc(doc(db, collectionName, HR_EMAIL));
+          if (hrDocSnap.exists()) { hrData = hrDocSnap.data(); break; }
+        }
+        if (!hrData) { hrNameDisplay.innerText="N/A"; hrIdDisplay.innerText="N/A"; hrSiteDisplay.innerText="N/A"; setEmptyMessage("HR record not found."); return; }
+        currentHrUid = normalizeText(hrData.uid || hrData.hrUid || hrData.hrId || hrData.id || "");
+        currentHrName = normalizeText(hrData.Name || hrData.name || hrData.fullName || hrData.FullName || "");
+        currentHrSites = normalizeSitesFromHr(hrData);
+        currentHrDepartments = normalizeDepartmentsFromHr(hrData);
+        console.log(
+  "HR Departments Loaded:",
+  currentHrDepartments
+);
+        hrNameDisplay.innerText = currentHrName || "N/A";
+        hrIdDisplay.innerText = currentHrUid || "N/A";
+        hrSiteDisplay.innerText = currentHrSites.length ? currentHrSites.join(", ") : "N/A";
+        await loadHrEmployees();
+        await buildFilterOptions();
+        updateFilterSummary();
+        await refreshNameSuggestions();
+        await syncEmployeeIdDropdown();
+      } catch (err) {
+        console.error("Error fetching HR details:", err);
+        alert("Error fetching HR details.");
+      }
+    }
+
+    async function loadAndRender() {
+      const selectedMonth = clmsMonthInput.value;
+      const typedEmployeeName = employeeNameInput.value.trim();
+      const selectedEmployeeId = employeeIdSelect.value.trim();
+      if (!selectedMonth) { alert("Please select month."); return; }
+      attendanceSubmitBtn.disabled = true; attendanceSubmitBtn.innerText = "Loading...";
+      try {
+        const { totalDays } = getMonthParts(selectedMonth);
+        const employees = getScopedEmployees();
+        let targetEmployees = filterEmployees(employees, {
+          site: siteFilterSelect.value, department: departmentFilterSelect.value, jobRole: jobRoleFilterSelect.value, name: typedEmployeeName, employeeId: selectedEmployeeId
+        });
+        if (typedEmployeeName) {
+          const exactNameMatches = filterEmployees(employees, {
+            site: siteFilterSelect.value, department: departmentFilterSelect.value, jobRole: jobRoleFilterSelect.value, name: typedEmployeeName, employeeId: ""
+          });
+          if (!exactNameMatches.length) { renderTableHeader(totalDays); setEmptyMessage("No data found for this employee under the selected filters.", totalDays + 5); return; }
+          if (exactNameMatches.length > 1 && !selectedEmployeeId) { renderTableHeader(totalDays); setEmptyMessage("Same name multiple employees found. Please select Employee ID from dropdown.", totalDays + 5); return; }
+          targetEmployees = exactNameMatches;
+        }
+        if (!targetEmployees.length) { renderTableHeader(totalDays); setEmptyMessage("No matching employees found for selected filters.", totalDays + 5); return; }
+        const attendanceMap = await getExistingCLMSMap(targetEmployees, selectedMonth);
+        renderCLMSTable(targetEmployees, attendanceMap, selectedMonth, totalDays);
+      } catch (err) {
+        console.error("HR CLMS attendance load error:", err);
+        alert("HR CLMS Attendance system mein error aa raha hai. Console check karo.");
+      } finally {
+        attendanceSubmitBtn.disabled = false;
+        attendanceSubmitBtn.innerText = "Submit";
+      }
+    }
+
+    bell.addEventListener("click", () => { box.style.display = box.style.display === "none" ? "block" : "none"; });
+    siteFilterSelect.addEventListener("change", async () => { departmentFilterSelect.value = ""; clearNameAndId(); refreshDepartmentOptionsForSelectedSite(); updateFilterSummary(); await refreshNameSuggestions(); resetTableOnly(); });
+    departmentFilterSelect.addEventListener("change", async () => { clearNameAndId(); updateFilterSummary(); await refreshNameSuggestions(); resetTableOnly(); });
+    jobRoleFilterSelect.addEventListener("change", async () => { clearNameAndId(); updateFilterSummary(); await refreshNameSuggestions(); resetTableOnly(); });
+
+    employeeNameInput.addEventListener("focus", () => {
+      showEmployeeNameSuggestions();
+      updateFilterSummary();
+    });
+    employeeNameInput.addEventListener("click", () => {
+      showEmployeeNameSuggestions();
+    });
+    employeeNameInput.addEventListener("input", async () => {
+      await syncEmployeeIdDropdown();
+      renderEmployeeNameSuggestions();
+      updateFilterSummary();
+    });
+    employeeNameInput.addEventListener("blur", async () => {
+      setTimeout(() => hideEmployeeNameSuggestions(), 120);
+      await syncEmployeeIdDropdown();
+      updateFilterSummary();
+    });
+    employeeNameInput.addEventListener("keydown", (e) => {
+      const items = employeeNameSuggestions.querySelectorAll(".employee-name-suggestion-item");
+      if (!items.length || employeeNameSuggestions.hidden) {
+        if (e.key === "Escape") hideEmployeeNameSuggestions();
+        return;
+      }
+
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        employeeNameSuggestionIndex = Math.min(employeeNameSuggestionIndex + 1, items.length - 1);
+        highlightEmployeeNameSuggestion(employeeNameSuggestionIndex);
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        employeeNameSuggestionIndex = Math.max(employeeNameSuggestionIndex - 1, 0);
+        highlightEmployeeNameSuggestion(employeeNameSuggestionIndex);
+      } else if (e.key === "Enter") {
+        if (employeeNameSuggestionIndex >= 0 && items[employeeNameSuggestionIndex]) {
+          e.preventDefault();
+          const chosen = items[employeeNameSuggestionIndex].dataset.name || "";
+          if (chosen) chooseEmployeeName(chosen);
+        }
+      } else if (e.key === "Escape") {
+        hideEmployeeNameSuggestions();
+      }
+    });
+
+    employeeNameSuggestions.addEventListener("mousedown", (e) => {
+      const item = e.target.closest(".employee-name-suggestion-item");
+      if (!item) return;
+      e.preventDefault();
+      const name = item.dataset.name || "";
+      if (name) chooseEmployeeName(name);
+    });
+
+    document.addEventListener("click", (e) => {
+      const wrap = document.querySelector(".employee-name-wrap");
+      if (!wrap) return;
+      if (!wrap.contains(e.target)) hideEmployeeNameSuggestions();
+    });
+
+    resetBtn.addEventListener("click", async () => {
+      siteFilterSelect.value = currentHrSites[0] || "";
+      departmentFilterSelect.value = "";
+      jobRoleFilterSelect.value = "";
+      employeeNameInput.value = "";
+      employeeIdSelect.innerHTML = `<option value="">All Employee IDs</option>`;
+      hideEmployeeNameSuggestions();
+      await refreshDepartmentOptionsForSelectedSite();
+      updateFilterSummary();
+      await refreshNameSuggestions();
+      resetTableOnly();
+    });
+    attendanceSubmitBtn.addEventListener("click", loadAndRender);
+
+    const now = new Date();
+    clmsMonthInput.value = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+    updateFilterSummary();
+
+    document.addEventListener("DOMContentLoaded", async () => {
+      await loadHrDetails();
+      await refreshNotifications();
+      resetTableOnly();
+      await syncEmployeeIdDropdown();
+      await refreshNameSuggestions();
+      updateFilterSummary();
+      hideEmployeeNameSuggestions();
+    });
+
+    window.logoutUser = function () {
+      localStorage.clear();
+      alert("Logged out successfully");
+      window.location.href = "/public/login.html";
+    };
+  </script>
+</body>
+</html>

@@ -1,0 +1,2131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vendor Registration - Admin Dashboard</title>
+    <link rel="icon" type="image/x-icon" href="logo2.ico" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap-theme.min.css" />
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+            cursor: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" viewBox="0 0 24 24"><path fill="%23FFF" stroke="%23FF2711" stroke-width="2" d="M5.5 3.21V20.8c0 .45.54.67.85.35l4.86-4.86a.5.5 0 0 1 .35-.15h6.87a.5.5 0 0 0 .35-.85L6.35 2.85a.5.5 0 0 0-.85.35Z"></path></svg>') 5 5, auto;
+        }
+
+        a, button, input, select, textarea, label, .dropbtn, .btn, .menu-toggle {
+            cursor: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="%23FFF" stroke="%23FF2711" stroke-width="2" stroke-linejoin="round" d="M10 11V8.99c0-.88.59-1.64 1.44-1.86h.05A1.99 1.99 0 0 1 14 9.05V12v-2c0-.88.6-1.65 1.46-1.87h.05A1.98 1.98 0 0 1 18 10.06V13v-1.94a2 2 0 0 1 1.51-1.94h0A2 2 0 0 1 22 11.06V14c0 .6-.08 1.27-.21 1.97a7.96 7.96 0 0 1-7.55 6.48 54.98 54.98 0 0 1-4.48 0 7.96 7.96 0 0 1-7.55-6.48C2.08 15.27 2 14.59 2 14v-1.49c0-1.11.9-2.01 2.01-2.01h0a2 2 0 0 1 2.01 2.03l-.01.97v-10c0-1.1.9-2 2-2h0a2 2 0 0 1 2 2V11Z"></path></svg>') 5 5, auto;
+        }
+
+        html, body {
+            width: 100%;
+            min-height: 100%;
+            margin: 0;
+            overflow: hidden;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background:
+                linear-gradient(135deg, rgba(7, 16, 30, 0.95), rgba(14, 34, 56, 0.92)),
+                url("https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1600&q=80") center/cover no-repeat fixed;
+            color: #fff;
+        }
+
+        :root {
+            --topbar-height: 78px;
+            --sidebar-width: 280px;
+            --card-bg: rgba(12, 25, 45, 0.88);
+            --card-border: rgba(255,255,255,0.08);
+            --text-soft: #b8c9df;
+            --accent: #ff7a2f;
+            --accent-2: #1f77ff;
+            --success: #14b86a;
+            --danger: #ef4d4d;
+            --warning: #ffc048;
+            --shadow: 0 18px 40px rgba(0,0,0,0.25);
+            --radius: 22px;
+        }
+
+        .app-shell {
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .topbar {
+            height: var(--topbar-height);
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(7, 16, 30, 0.88);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 2000;
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            min-width: 0;
+        }
+
+        .menu-toggle {
+            width: 46px;
+            height: 46px;
+            border: none;
+            border-radius: 14px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
+            color: #fff;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.25s ease;
+            flex-shrink: 0;
+            box-shadow: 0 10px 22px rgba(0,0,0,0.16);
+        }
+
+        .menu-toggle:hover {
+            transform: translateY(-1px);
+            background: linear-gradient(135deg, rgba(255,122,47,0.18), rgba(31,119,255,0.16));
+        }
+
+        .brand-title {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 700;
+            color: #fff;
+            text-decoration: none !important;
+        }
+
+        .brand-subtitle {
+            margin: 2px 0 0;
+            color: var(--text-soft);
+            font-size: 13px;
+        }
+
+        .logout {
+            text-decoration: none !important;
+            color: #fff !important;
+            background: linear-gradient(135deg, #ff8a3c, #ff5a1f);
+            padding: 11px 18px;
+            border-radius: 12px;
+            font-weight: 700;
+            transition: 0.25s ease;
+            box-shadow: 0 10px 24px rgba(255, 90, 31, 0.24);
+            white-space: nowrap;
+        }
+
+        .logout:hover {
+            transform: translateY(-1px);
+        }
+
+        .dashboard-layout {
+            display: block;
+            width: 100%;
+            height: 100vh;
+        }
+
+        nav.sidebar {
+            width: var(--sidebar-width);
+            min-width: var(--sidebar-width);
+            max-width: var(--sidebar-width);
+            position: fixed;
+            top: var(--topbar-height);
+            left: 0;
+            bottom: 0;
+            padding: 20px 16px 22px;
+            background: linear-gradient(180deg, rgba(6, 16, 30, 0.98), rgba(8, 22, 40, 0.96));
+            backdrop-filter: blur(16px);
+            border-right: 1px solid rgba(255,255,255,0.06);
+            overflow-y: auto;
+            overflow-x: hidden;
+            z-index: 1500;
+            box-shadow: 18px 0 45px rgba(0, 0, 0, 0.24);
+            margin-top: 12px;
+        }
+
+        nav.sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        nav.sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.14);
+            border-radius: 999px;
+        }
+
+        .sidebar-top-card {
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    padding: 20px 18px 18px;
+    border-radius: 24px;
+    background:
+        linear-gradient(135deg, rgba(255,122,47,0.16), rgba(31,119,255,0.14)),
+        rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    overflow: hidden;
+}
+
+        .sidebar-top-card::after {
+            content: "";
+            position: absolute;
+            right: -30px;
+            top: -30px;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,255,255,0.16), transparent 70%);
+        }
+
+        .sidebar-mini-label {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.4px;
+            color: #ffd8c2;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.08);
+            padding: 5px 10px;
+            border-radius: 999px;
+            margin-bottom: 12px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .sidebar-main-title {
+            font-size: 19px;
+            font-weight: 800;
+            color: #ffffff;
+            margin: 0 0 6px;
+            line-height: 1.2;
+            position: relative;
+            z-index: 1;
+        }
+
+        .sidebar-main-subtitle {
+            font-size: 13px;
+            color: #d5e2f1;
+            line-height: 1.7;
+            margin: 0 0 14px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .sidebar-status-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            position: relative;
+            z-index: 1;
+            padding-top: 12px;
+            border-top: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .sidebar-status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 700;
+            color: #dfffe9;
+            background: rgba(20,184,106,0.14);
+            border: 1px solid rgba(20,184,106,0.22);
+        }
+
+        .sidebar-status-badge::before {
+            content: "";
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #4df39b;
+            box-shadow: 0 0 10px rgba(77,243,155,0.7);
+        }
+
+        .sidebar-status-text {
+            font-size: 11px;
+            color: #c6d8ec;
+            text-align: right;
+            line-height: 1.4;
+        }
+
+        .sidebar-section-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #8ea4c5;
+            margin: 24px 8px 16px;
+            font-weight: 700;
+        }
+
+        #side-bar {
+            list-style: none;
+            padding-left: 0;
+            margin: 0;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        #side-bar li {
+            margin-bottom: 0;
+            width: 100%;
+        }
+
+        #side-bar a {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            width: 100%;
+            padding: 15px 15px;
+            border-radius: 20px;
+            text-decoration: none !important;
+            color: #edf4ff !important;
+            background: linear-gradient(135deg, rgba(255,255,255,0.055), rgba(255,255,255,0.025));
+            border: 1px solid rgba(255,255,255,0.06);
+            transition: all 0.28s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+            word-break: break-word;
+        }
+
+        #side-bar a::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, rgba(255,122,47,0.13), rgba(31,119,255,0.11));
+            opacity: 0;
+            transition: opacity 0.28s ease;
+        }
+
+        #side-bar a::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 18%;
+            width: 4px;
+            height: 64%;
+            border-radius: 999px;
+            background: linear-gradient(180deg, #ff8a3c, #1f77ff);
+            opacity: 0;
+            transition: opacity 0.28s ease;
+        }
+
+        #side-bar a:hover {
+            transform: translateX(6px);
+            border-color: rgba(255,255,255,0.10);
+            box-shadow: 0 14px 28px rgba(0,0,0,0.20);
+        }
+
+        #side-bar a:hover::before, #side-bar a:hover::after, #side-bar a.active::before, #side-bar a.active::after {
+            opacity: 1;
+        }
+
+        #side-bar a.active {
+            background: linear-gradient(135deg, rgba(255,122,47,0.18), rgba(31,119,255,0.16));
+            border-color: rgba(255,255,255,0.12);
+            box-shadow: 0 16px 30px rgba(0,0,0,0.24);
+        }
+
+        .nav-icon {
+            width: 44px;
+            height: 44px;
+            min-width: 44px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, rgba(255,255,255,0.13), rgba(255,255,255,0.05));
+            border: 1px solid rgba(255,255,255,0.08);
+            color: #fff;
+            font-size: 17px;
+            position: relative;
+            z-index: 1;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+        }
+
+        .nav-text {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        .nav-text strong {
+            font-size: 14px;
+            font-weight: 700;
+            color: #fff;
+            line-height: 1.2;
+        }
+
+        .nav-text span {
+            margin-top: 4px;
+            font-size: 11px;
+            line-height: 1.45;
+            color: #aabed8;
+        }
+
+        .nav-arrow {
+            margin-left: auto;
+            font-size: 16px;
+            color: #93b2d8;
+            position: relative;
+            z-index: 1;
+            transition: transform 0.25s ease;
+        }
+
+        #side-bar a:hover .nav-arrow {
+            transform: translateX(4px);
+        }
+
+        main {
+            position: fixed;
+            top: var(--topbar-height);
+            left: var(--sidebar-width);
+            right: 0;
+            bottom: 0;
+            min-width: 0;
+            padding: 28px 30px;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .welcome-strip {
+            margin-bottom: 24px;
+            padding: 14px 18px;
+            border-radius: 16px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.06);
+            color: #dce8ff;
+            font-size: 14px;
+            font-weight: 600;
+            line-height: 1.7;
+        }
+
+        .hero-card {
+            background: linear-gradient(135deg, rgba(22, 61, 112, 0.88), rgba(12, 27, 53, 0.92));
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 24px;
+            padding: 30px 34px;
+            box-shadow: var(--shadow);
+            margin-bottom: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-card::after {
+            content: "";
+            position: absolute;
+            right: -80px;
+            top: -80px;
+            width: 220px;
+            height: 220px;
+            background: radial-gradient(circle, rgba(255,122,47,0.18), transparent 70%);
+            border-radius: 50%;
+        }
+
+        .page-tag {
+            display: inline-block;
+            padding: 7px 12px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.8px;
+            color: #ffb88f;
+            background: rgba(255, 122, 47, 0.16);
+            border: 1px solid rgba(255, 122, 47, 0.2);
+            margin-bottom: 14px;
+        }
+
+        .hero-card h1 {
+            margin: 0 0 10px;
+            font-size: 32px;
+            font-weight: 800;
+            color: #fff;
+            line-height: 1.15;
+        }
+
+        .hero-card p {
+            margin: 0;
+            max-width: 950px;
+            font-size: 15px;
+            line-height: 1.8;
+            color: #d0def0;
+        }
+
+        .panel-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 22px;
+            padding: 24px;
+            box-shadow: var(--shadow);
+            width: 100%;
+            min-width: 0;
+            margin-bottom: 24px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .section-header h2,
+        .section-header h3 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 800;
+            color: #fff;
+        }
+
+        .section-badge {
+            padding: 6px 12px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #9ec3ff;
+            background: rgba(31, 119, 255, 0.14);
+            border: 1px solid rgba(31, 119, 255, 0.22);
+            white-space: nowrap;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(12, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .field-group {
+            grid-column: span 6;
+            min-width: 0;
+        }
+
+        .field-group.span-4 { grid-column: span 4; }
+        .field-group.span-3 { grid-column: span 3; }
+        .field-group.span-2 { grid-column: span 2; }
+        .field-group.span-12 { grid-column: span 12; }
+
+        .field-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #9db4d0;
+            letter-spacing: 0.35px;
+            text-transform: uppercase;
+        }
+
+        .modern-input,
+        .modern-select,
+        .modern-textarea {
+            width: 100%;
+            min-height: 48px;
+            border-radius: 14px;
+            border: 1px solid rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.05);
+            color: #fff;
+            padding: 12px 14px;
+            font-size: 14px;
+            outline: none;
+            transition: 0.25s ease;
+        }
+
+        .modern-textarea {
+            min-height: 110px;
+            resize: vertical;
+        }
+
+        .modern-input:focus,
+        .modern-select:focus,
+        .modern-textarea:focus {
+            border-color: rgba(31, 119, 255, 0.55);
+            box-shadow: 0 0 0 4px rgba(31, 119, 255, 0.12);
+        }
+
+        .modern-select option {
+            color: #000;
+        }
+
+        .input-hint {
+            margin-top: 8px;
+            color: #9db4d0;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .readonly-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            min-height: 48px;
+            padding: 0 14px;
+            border-radius: 14px;
+            border: 1px dashed rgba(255,255,255,0.14);
+            background: rgba(255,255,255,0.04);
+            color: #d7e6fb;
+            width: 100%;
+        }
+
+        .readonly-pill code {
+            color: #ffddbf;
+            background: transparent;
+            padding: 0;
+        }
+
+        .radio-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .radio-card {
+            position: relative;
+            flex: 1 1 220px;
+            min-width: 0;
+        }
+
+        .radio-card input {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .radio-card label {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin: 0;
+            padding: 14px 16px;
+            border-radius: 16px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
+            color: #eaf2ff;
+            font-weight: 700;
+            text-transform: none;
+            letter-spacing: 0;
+            cursor: pointer;
+            transition: 0.25s ease;
+        }
+
+        .radio-card label span {
+            font-size: 13px;
+            color: #bfcfe5;
+            font-weight: 600;
+        }
+
+        .radio-card input:checked + label {
+            border-color: rgba(31,119,255,0.45);
+            box-shadow: 0 0 0 4px rgba(31,119,255,0.1);
+            background: linear-gradient(135deg, rgba(255,122,47,0.12), rgba(31,119,255,0.12));
+        }
+
+        .upload-box {
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 16px;
+            background: rgba(255,255,255,0.04);
+            padding: 14px;
+            height: 100%;
+        }
+
+        .upload-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+
+        .upload-box input[type="file"] {
+            width: 100%;
+            color: #dbe8fb;
+            font-size: 13px;
+        }
+
+        .existing-file {
+            margin-top: 10px;
+            font-size: 12px;
+            line-height: 1.55;
+            color: #a9c1e2;
+            word-break: break-word;
+        }
+
+        .existing-file a {
+            color: #9ec3ff;
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .action-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+
+        .btn-primary.custom-btn,
+        .btn-secondary.custom-btn-ghost {
+            border: none;
+            border-radius: 14px;
+            padding: 12px 22px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            min-height: 48px;
+            transition: 0.25s ease;
+        }
+
+        .btn-primary.custom-btn {
+            color: #fff;
+            background: linear-gradient(135deg, #2d7dff, #1657cc);
+            box-shadow: 0 12px 26px rgba(45, 125, 255, 0.25);
+        }
+
+        .btn-secondary.custom-btn-ghost {
+            color: #fff;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .btn-primary.custom-btn:hover,
+        .btn-secondary.custom-btn-ghost:hover {
+            transform: translateY(-1px);
+        }
+
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            border-radius: 16px;
+        }
+
+        .table-container table {
+            width: 100%;
+            min-width: 1150px;
+            border-collapse: collapse;
+            overflow: hidden;
+            border-radius: 16px;
+        }
+
+        .table-container thead tr {
+            background: linear-gradient(135deg, #183b6f, #102849);
+        }
+
+        .table-container thead th {
+            padding: 16px 14px;
+            color: #fff;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            border: none;
+            text-align: left;
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+
+        .table-container tbody tr {
+            background: rgba(255,255,255,0.03);
+            transition: 0.2s ease;
+        }
+
+        .table-container tbody tr:nth-child(even) {
+            background: rgba(255,255,255,0.05);
+        }
+
+        .table-container tbody tr:hover {
+            background: rgba(31, 119, 255, 0.10);
+        }
+
+        .table-container tbody td {
+            padding: 14px 14px;
+            color: #eaf2ff;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            vertical-align: top;
+        }
+
+        .uid-pill,
+        .status-chip,
+        .type-chip {
+            display: inline-block;
+            padding: 7px 12px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .uid-pill {
+            background: rgba(255,255,255,0.08);
+            color: #e6f0ff;
+        }
+
+        .status-chip {
+            background: rgba(255, 192, 72, 0.16);
+            color: #ffd77f;
+            border: 1px solid rgba(255, 192, 72, 0.22);
+        }
+
+        .type-chip {
+            background: rgba(31, 119, 255, 0.16);
+            color: #a7cbff;
+            border: 1px solid rgba(31,119,255,0.20);
+        }
+
+        .docs-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .doc-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.08);
+            color: #fff;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 700;
+            max-width: 100%;
+        }
+
+        .doc-chip:hover {
+            text-decoration: none;
+            color: #fff;
+        }
+
+        .action-wrap {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn-edit {
+            border: none;
+            border-radius: 10px;
+            padding: 9px 14px;
+            color: #fff;
+            font-weight: 700;
+            background: linear-gradient(135deg, #1dc06d, #109b56);
+            transition: 0.25s ease;
+            white-space: nowrap;
+        }
+
+        .btn-edit:hover {
+            transform: translateY(-1px);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 28px !important;
+            color: #a8bdd8 !important;
+            font-style: italic;
+        }
+
+        .message {
+            margin-bottom: 16px;
+            padding: 12px 14px;
+            border-radius: 14px;
+            font-size: 13px;
+            line-height: 1.6;
+            display: none;
+        }
+
+        .message.success {
+            display: block;
+            background: rgba(20,184,106,0.14);
+            border: 1px solid rgba(20,184,106,0.24);
+            color: #d8ffea;
+        }
+
+        .message.error {
+            display: block;
+            background: rgba(239,77,77,0.12);
+            border: 1px solid rgba(239,77,77,0.24);
+            color: #ffd2d2;
+        }
+
+        .search-row {
+            display: grid;
+            grid-template-columns: 1.2fr auto;
+            gap: 14px;
+            align-items: end;
+            margin-bottom: 18px;
+        }
+
+        .help-text {
+            font-size: 12px;
+            color: #9db4d0;
+            margin-top: 6px;
+        }
+
+        .hide {
+            display: none !important;
+        }
+
+        @media (max-width: 1200px) {
+            .field-group,
+            .field-group.span-4,
+            .field-group.span-3,
+            .field-group.span-2 {
+                grid-column: span 6;
+            }
+
+            .search-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 900px) {
+            html, body {
+                overflow-y: auto;
+                overflow-x: hidden;
+            }
+
+
+            .app-shell {
+                height: auto;
+                min-height: 100vh;
+                overflow: visible;
+            }
+
+            nav.sidebar {
+                width: 100%;
+                min-width: 100%;
+                max-width: 100%;
+                position: relative;
+                top: auto;
+                left: auto;
+                right: auto;
+                bottom: auto;
+                height: auto;
+                max-height: none;
+                overflow: visible;
+                border-right: none;
+                border-bottom: 1px solid rgba(255,255,255,0.05);
+                border-radius: 0 0 24px 24px;
+                z-index: 100;
+                padding: 14px;
+            }
+
+            .sidebar-top-card {
+    width: 100%;
+    max-width: 100%;
+    margin-top: 18px;
+    margin-bottom: 0;
+}
+
+            .sidebar-status-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .sidebar-status-text {
+                text-align: left;
+            }
+
+            .sidebar-main-title {
+                font-size: 18px;
+                word-break: break-word;
+            }
+
+            .sidebar-main-subtitle {
+                font-size: 13px;
+                word-break: break-word;
+            }
+
+            #side-bar {
+                display: none;
+                gap: 10px;
+            }
+
+            #side-bar.active {
+                display: flex;
+            }
+
+            main {
+                position: relative;
+                top: auto;
+                left: auto;
+                right: auto;
+                bottom: auto;
+                width: 100%;
+                padding: 18px;
+                overflow: visible;
+            }
+
+            .hero-card h1 {
+                font-size: 24px;
+            }
+
+            .field-group,
+            .field-group.span-4,
+            .field-group.span-3,
+            .field-group.span-2 {
+                grid-column: span 12;
+            }
+
+            .radio-card {
+                flex: 1 1 100%;
+            }
+
+            .brand-subtitle {
+                display: none;
+            }
+
+            .topbar{
+        position: sticky;
+        top: 0;
+    }
+
+    .dashboard-layout{
+        padding-top: 8px;
+    }
+
+    nav.sidebar{
+        margin-top: 10px;
+    }
+
+    .sidebar-top-card{
+        margin-top: 10px;
+    }
+        }
+
+        @media (max-width: 600px) {
+
+            .topbar {
+                padding: 0 14px;
+            }
+
+            .hero-card,
+            .panel-card {
+                padding: 18px;
+                border-radius: 18px;
+            }
+
+            .logout {
+                padding: 9px 14px;
+                font-size: 13px;
+            }
+
+            .btn-primary.custom-btn,
+            .btn-secondary.custom-btn-ghost {
+                width: 100%;
+            }
+
+            .action-row,
+            .action-wrap {
+                flex-direction: column;
+            }
+
+            .btn-edit {
+                width: 100%;
+            }
+        }
+        
+
+        @keyframes successPop {
+            from { transform: scale(0.78); opacity: 0; }
+            to   { transform: scale(1);    opacity: 1; }
+        }
+
+        .success-modal-overlay{
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.65);
+    backdrop-filter: blur(6px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 99999;
+}
+
+.success-modal-overlay.show{
+    display: flex;
+}
+
+.success-modal-box{
+    width: min(92%, 460px);
+    background: #13243d;
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 24px;
+    padding: 32px;
+    text-align: center;
+    animation: successPop .25s ease;
+    box-shadow: 0 25px 60px rgba(0,0,0,.45);
+}
+
+        .success-modal-icon {
+            width: 68px;
+            height: 68px;
+            border-radius: 50%;
+            background: rgba(20,184,106,0.14);
+            border: 2px solid rgba(20,184,106,0.38);
+            color: #4df39b;
+            font-size: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            box-shadow: 0 0 28px rgba(20,184,106,0.22);
+        }
+
+        .success-modal-box strong {
+            display: block;
+            font-size: 20px;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+
+        .success-modal-box p {
+            margin: 0 0 26px;
+            font-size: 14px;
+            line-height: 1.75;
+            color: #c8ddf2;
+        }
+
+        .success-modal-btn {
+            border: none;
+            border-radius: 14px;
+            padding: 13px 40px;
+            font-size: 15px;
+            font-weight: 700;
+            color: #fff;
+            background: linear-gradient(135deg, #1dc06d, #109b56);
+            cursor: pointer;
+            transition: 0.25s ease;
+            box-shadow: 0 10px 26px rgba(20,184,106,0.30);
+        }
+
+        .success-modal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 32px rgba(20,184,106,0.38);
+        }
+
+    
+        .btn-dots-wrap {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .btn-dots {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-left: 2px;
+        }
+
+        .btn-dots span {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.9);
+            display: inline-block;
+            animation: btnDotBlink 1.2s ease-in-out infinite both;
+        }
+
+        .btn-dots span:nth-child(1) { animation-delay: 0s; }
+        .btn-dots span:nth-child(2) { animation-delay: 0.22s; }
+        .btn-dots span:nth-child(3) { animation-delay: 0.44s; }
+        .btn-dots span:nth-child(4) { animation-delay: 0.66s; }
+
+        @keyframes btnDotBlink {
+            0%, 80%, 100% { opacity: 0.15; transform: scale(0.7); }
+            40%            { opacity: 1;    transform: scale(1.15); }
+        }
+</style>
+</head>
+<body>
+<div class="app-shell">
+        
+
+        <!-- Success popup modal -->
+        <div id="successModal" class="success-modal-overlay" aria-hidden="true" role="dialog" aria-modal="true">
+            <div class="success-modal-box">
+                <div class="success-modal-icon">✓</div>
+                <strong id="successModalTitle">Vendor Registration Successful</strong>
+                <p id="successModalMessage"></p>
+                <button type="button" id="successModalOk" class="success-modal-btn">OK</button>
+            </div>
+        </div>
+
+    <header class="topbar">
+        <div class="topbar-left">
+            <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+            <div>
+                <a href="/public/AdminHome.html" class="brand-title">Admin Dashboard</a>
+                <p class="brand-subtitle">Vendor Registration & History Panel</p>
+            </div>
+        </div>
+        <div class="topbar-right">
+            <a href="#" class="logout" onclick="logoutUser()">Logout</a>
+        </div>
+    </header>
+
+    <div class="dashboard-layout">
+        <nav class="sidebar">
+            <div class="sidebar-top-card">
+                <div class="sidebar-mini-label">Admin Panel</div>
+                <h3 class="sidebar-main-title">Vendor Control Center</h3>
+                <p class="sidebar-main-subtitle">
+                    Register vendors, check duplicate GST before saving, edit allowed fields, and review the complete vendor history from one place.
+                </p>
+                <div class="sidebar-status-row">
+                    <span class="sidebar-status-badge">Vendor Module Active</span>
+                    <div class="sidebar-status-text">
+                        Secure access<br />
+                        Fast navigation
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-section-title">Navigation</div>
+            <ul id="side-bar">
+                <li>
+                    <a href="/public/AdminHome.html">
+                        <span class="nav-icon">⌂</span>
+                        <span class="nav-text">
+                            <strong>Dashboard</strong>
+                            <span>Back to home panel</span>
+                        </span>
+                        <span class="nav-arrow">›</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="javascript:void(0)" class="active">
+                        <span class="nav-icon">🧾</span>
+                        <span class="nav-text">
+                            <strong>New Vendor Registration</strong>
+                            <span>Create and update vendor master</span>
+                        </span>
+                        <span class="nav-arrow">›</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <main>
+            <section class="hero-card">
+                <span class="page-tag">VENDOR MASTER</span>
+                <h1>New Vendor Registration</h1>
+                <p>
+                    Create a vendor profile with GST, PAN, bank details, MSME status, and documents.
+                    If GST or PAN is not available, type N/A or n/a and it will be accepted and saved as N/A. Same GST number will not be allowed twice.
+                </p>
+            </section>
+
+            <section class="panel-card">
+                <div class="section-header">
+                    <h2>Vendor Registration Form</h2>
+                    <span class="section-badge">Auto Vendor Code</span>
+                </div>
+
+                <div id="formMessage" class="message"></div>
+
+                <form id="vendorForm" autocomplete="off">
+                    <div class="form-grid">
+                        <div class="field-group span-3">
+                            <label>Vendor Code (Auto)</label>
+                            <div class="readonly-pill"><code id="vendorCodePreview">-</code></div>
+                            <div class="input-hint">Generated automatically on new registration.</div>
+                        </div>
+
+                        <div class="field-group span-9">
+                            <label>Company Name *</label>
+                            <input type="text" id="companyName" class="modern-input" placeholder="Enter company name" required />
+                        </div>
+
+                        <div class="field-group span-3">
+                            <label>Vendor Type *</label>
+                            <select id="vendorType" class="modern-select" required>
+                                <option value="">Select vendor type</option>
+                                <option>Manufacturer</option>
+                                <option>Contractor</option>
+                                <option>Service Provider</option>
+                                <option>Supplier</option>
+                                <option>Transporter</option>
+                            </select>
+                        </div>
+
+                        <div class="field-group span-4">
+                            <label>GST No. *</label>
+                            <input type="text" id="gstNo" class="modern-input" placeholder="Enter GST number or N/A" required />
+                        </div>
+
+                        <div class="field-group span-4">
+                            <label>PAN No. *</label>
+                            <input type="text" id="panNo" class="modern-input" placeholder="Enter PAN number or N/A" required />
+                        </div>
+
+                        <div class="field-group span-4">
+                            <label>Vendor Status *</label>
+                            <select id="vendorStatus" class="modern-select" required>
+                                <option value="">Select status</option>
+                                <option>Active</option>
+                                <option>Inactive</option>
+                                <option>Blacklisted</option>
+                            </select>
+                        </div>
+
+                        <div class="field-group span-6">
+                            <label>Contact Person *</label>
+                            <input type="text" id="contactPerson" class="modern-input" placeholder="Enter contact person name" required />
+                        </div>
+
+                        <div class="field-group span-3">
+                            <label>Mobile No. *</label>
+                            <input type="tel" id="mobileNo" class="modern-input" placeholder="Enter mobile number" required />
+                        </div>
+
+                        <div class="field-group span-3">
+                            <label>Email *</label>
+                            <input type="email" id="email" class="modern-input" placeholder="Enter email address" required />
+                        </div>
+
+                        <div class="field-group span-6">
+                            <label>Address *</label>
+                            <textarea id="address" class="modern-textarea" placeholder="Enter full address" required></textarea>
+                        </div>
+
+                        <div class="field-group span-3">
+                            <label>State *</label>
+                            <input type="text" id="state" class="modern-input" placeholder="Enter state" required />
+                        </div>
+
+                        <div class="field-group span-3">
+                            <label>Country</label>
+                            <input type="text" id="country" class="modern-input" value="India" />
+                        </div>
+
+                        <div class="field-group span-6">
+                            <label>Bank Name *</label>
+                            <input type="text" id="bankName" class="modern-input" placeholder="Enter bank name" required />
+                        </div>
+
+                        <div class="field-group span-6">
+                            <label>Account Holder Name *</label>
+                            <input type="text" id="accountHolderName" class="modern-input" placeholder="Enter account holder name" required />
+                        </div>
+
+                        <div class="field-group span-4">
+                            <label>Account Number *</label>
+                            <input type="text" id="accountNumber" class="modern-input" placeholder="Enter account number" required />
+                        </div>
+
+                        <div class="field-group span-4">
+                            <label>IFSC Code *</label>
+                            <input type="text" id="ifscCode" class="modern-input" placeholder="Enter IFSC code" required />
+                        </div>
+
+                        <div class="field-group span-4">
+                            <label>Branch Name *</label>
+                            <input type="text" id="branchName" class="modern-input" placeholder="Enter branch name" required />
+                        </div>
+
+                        <div class="field-group span-12">
+                            <label>MSME Registered? *</label>
+                            <div class="radio-row">
+                                <div class="radio-card">
+                                    <input type="radio" name="msmeRegistered" id="msmeYes" value="Yes" />
+                                    <label for="msmeYes">Yes <span>Udyam number required</span></label>
+                                </div>
+                                <div class="radio-card">
+                                    <input type="radio" name="msmeRegistered" id="msmeNo" value="No" checked />
+                                    <label for="msmeNo">No <span>No Udyam details needed</span></label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="field-group span-6" id="udyamWrap" style="display:none;">
+                            <label>Udyam Registration No. *</label>
+                            <input type="text" id="udyamNo" class="modern-input" placeholder="Enter Udyam registration number" />
+                        </div>
+
+                        <div class="field-group span-12">
+                            <label>Documents *</label>
+                            <div class="form-grid" style="gap:12px;">
+                                <div class="field-group span-3">
+                                    <div class="upload-box">
+                                        <div class="upload-title">GST Certificate</div>
+                                        <input type="file" id="gstCertificate" accept=".pdf,image/*" />
+                                        <div class="existing-file" id="gstCertificateMeta"></div>
+                                    </div>
+                                </div>
+                                <div class="field-group span-3">
+                                    <div class="upload-box">
+                                        <div class="upload-title">PAN Copy</div>
+                                        <input type="file" id="panCopy" accept=".pdf,image/*" />
+                                        <div class="existing-file" id="panCopyMeta"></div>
+                                    </div>
+                                </div>
+                                <div class="field-group span-3">
+                                    <div class="upload-box">
+                                        <div class="upload-title">Cancelled Cheque</div>
+                                        <input type="file" id="cancelledCheque" accept=".pdf,image/*" />
+                                        <div class="existing-file" id="cancelledChequeMeta"></div>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                        </div>
+
+                        <div class="field-group span-12">
+                            <label>Remarks</label>
+                            <textarea id="remarks" class="modern-textarea" placeholder="Enter remarks if any"></textarea>
+                        </div>
+
+                        <div class="field-group span-12">
+                            <div class="action-row">
+                                <button type="submit" id="submitBtn" class="btn btn-primary custom-btn">Submit</button>
+                                <button type="button" id="cancelEditBtn" class="btn btn-secondary custom-btn-ghost hide">Cancel Edit</button>
+                            </div>
+                            <div class="help-text">
+                                Fields with * are required. GST and PAN can also be saved as N/A or n/a if the company does not have them. GST number is checked before save. Edit mode locks Company Name, Vendor Code, GST No., Udyam number, and documents.
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </section>
+
+            <section class="panel-card">
+                <div class="section-header">
+                    <h3>Vendor History</h3>
+                    <span class="section-badge">Saved Records</span>
+                </div>
+
+                <div class="search-row">
+                    <div class="field-group span-12" style="margin-bottom:0;">
+                        <label>Vendor Name Filter</label>
+                        <input type="search" id="vendorSearch" class="modern-input" list="vendorNameSuggestions" placeholder="Type vendor/company name to filter history" />
+                        <datalist id="vendorNameSuggestions"></datalist>
+                        <div class="input-hint">Type a vendor name to filter the history table instantly.</div>
+                    </div>
+                    <button type="button" id="refreshBtn" class="btn btn-primary custom-btn">Refresh</button>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Vendor Code</th>
+                                <th>Company Name</th>
+                                <th>GST No.</th>
+                                <th>Type</th>
+                                <th>Contact</th>
+                                <th>Mobile</th>
+                                <th>Status</th>
+                                <th>State</th>
+                                <th>Documents</th>
+                                <th>Updated On</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyBody">
+                            <tr>
+                                <td colspan="11" class="empty-state">No vendor records found.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+<script type="module" src="/public/control.js"></script>
+    
+<script type="module">
+        import { app } from "/public/firebase-config.js";
+        import {
+            getFirestore,
+            collection,
+            doc,
+            setDoc,
+            getDocs,
+            query,
+            where,
+            serverTimestamp,
+            updateDoc
+        } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+        import {
+            getStorage,
+            ref,
+            uploadBytes,
+            getDownloadURL
+        } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-storage.js";
+
+        const db = getFirestore(app);
+        const storage = getStorage(app);
+        const vendorCollectionName = "VendorRegistration";
+        const vendorCollection = collection(db, vendorCollectionName);
+
+        const state = {
+            records: [],
+            editingId: null,
+            editingRecord: null,
+            vendorCode: "",
+            isSubmitting: false
+        };
+
+        const el = {
+            form: document.getElementById("vendorForm"),
+            message: document.getElementById("formMessage"),
+            vendorCodePreview: document.getElementById("vendorCodePreview"),
+            companyName: document.getElementById("companyName"),
+            gstNo: document.getElementById("gstNo"),
+            panNo: document.getElementById("panNo"),
+            address: document.getElementById("address"),
+            contactPerson: document.getElementById("contactPerson"),
+            mobileNo: document.getElementById("mobileNo"),
+            email: document.getElementById("email"),
+            vendorType: document.getElementById("vendorType"),
+            vendorStatus: document.getElementById("vendorStatus"),
+            state: document.getElementById("state"),
+            country: document.getElementById("country"),
+            bankName: document.getElementById("bankName"),
+            accountHolderName: document.getElementById("accountHolderName"),
+            accountNumber: document.getElementById("accountNumber"),
+            ifscCode: document.getElementById("ifscCode"),
+            branchName: document.getElementById("branchName"),
+            udyamWrap: document.getElementById("udyamWrap"),
+            udyamNo: document.getElementById("udyamNo"),
+            msmeYes: document.getElementById("msmeYes"),
+            msmeNo: document.getElementById("msmeNo"),
+            gstCertificate: document.getElementById("gstCertificate"),
+            panCopy: document.getElementById("panCopy"),
+            cancelledCheque: document.getElementById("cancelledCheque"),
+            gstCertificateMeta: document.getElementById("gstCertificateMeta"),
+            panCopyMeta: document.getElementById("panCopyMeta"),
+            cancelledChequeMeta: document.getElementById("cancelledChequeMeta"),
+            remarks: document.getElementById("remarks"),
+            submitBtn: document.getElementById("submitBtn"),
+            cancelEditBtn: document.getElementById("cancelEditBtn"),
+            vendorSearch: document.getElementById("vendorSearch"),
+            vendorNameSuggestions: document.getElementById("vendorNameSuggestions"),
+            historyBody: document.getElementById("historyBody"),
+            refreshBtn: document.getElementById("refreshBtn")
+        };
+
+        function toggleMenu() {
+            const sidebar = document.getElementById("side-bar");
+            sidebar.classList.toggle("active");
+        }
+
+        window.toggleMenu = toggleMenu;
+        window.logoutUser = function logoutUser() {
+            try {
+                localStorage.removeItem("adminEmail");
+            } catch (error) {
+                console.error(error);
+            }
+            window.location.href = "/public/index.html";
+        };
+
+        function escapeHtml(value) {
+            return String(value ?? "").replace(/[&<>"']/g, (ch) => ({
+                "&": "&amp;",
+                "<": "&lt;",
+                ">": "&gt;",
+                '"': "&quot;",
+                "'": "&#39;"
+            })[ch]);
+        }
+
+        function showMessage(type, text) {
+            el.message.className = `message ${type}`;
+            el.message.textContent = text;
+            el.message.style.display = "block";
+        }
+
+        function clearMessage() {
+            el.message.className = "message";
+            el.message.textContent = "";
+            el.message.style.display = "none";
+        }
+
+        function setSubmitState(isSaving, label = "Submitting") {
+            state.isSubmitting = isSaving;
+
+            
+
+            if (isSaving) {
+                if (!el.submitBtn.dataset.originalHtml) {
+                    el.submitBtn.dataset.originalHtml = el.submitBtn.innerHTML;
+                }
+                el.submitBtn.disabled = true;
+                el.submitBtn.classList.add("is-busy");
+                el.submitBtn.innerHTML = `
+                    <span class="btn-dots-wrap">
+                        <span>${escapeHtml(label)}</span>
+                        <span class="btn-dots">
+                            <span></span><span></span><span></span><span></span>
+                        </span>
+                    </span>
+                `;
+                return;
+            }
+
+            el.submitBtn.disabled = false;
+            el.submitBtn.classList.remove("is-busy");
+            if (el.submitBtn.dataset.originalHtml) {
+                el.submitBtn.innerHTML = el.submitBtn.dataset.originalHtml;
+                delete el.submitBtn.dataset.originalHtml;
+            }
+        }
+
+        function showSuccessPopup(message, title = "Vendor Registration Successful") {
+            return new Promise((resolve) => {
+                const modal = document.getElementById("successModal");
+                const titleEl = document.getElementById("successModalTitle");
+                const msgEl = document.getElementById("successModalMessage");
+                const okBtn = document.getElementById("successModalOk");
+
+                if (titleEl) titleEl.textContent = title;
+                msgEl.textContent = message;
+                modal.classList.add("show");
+                modal.removeAttribute("aria-hidden");
+
+                function close() {
+                    modal.classList.remove("show");
+                    modal.setAttribute("aria-hidden", "true");
+                    okBtn.removeEventListener("click", close);
+                    resolve();
+                }
+
+                okBtn.addEventListener("click", close);
+            });
+        }
+
+        async function generateVendorCode() {
+            const year = new Date().getFullYear();
+            const randomNo = Math.floor(10000 + Math.random() * 90000);
+            const code = `KIEPL-VEN-${year}-${randomNo}`;
+            const snap = await getDocs(query(vendorCollection, where("vendorCode", "==", code)));
+            if (!snap.empty) {
+                return generateVendorCode();
+            }
+            return code;
+        }
+
+        function formatDateTime(value) {
+            if (!value) return "-";
+            const date = typeof value.toDate === "function" ? value.toDate() : new Date(value);
+            if (Number.isNaN(date.getTime())) return "-";
+            return date.toLocaleString("en-IN", {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit"
+            });
+        }
+
+        function selectedMsmeValue() {
+            return document.querySelector('input[name="msmeRegistered"]:checked')?.value || "No";
+        }
+
+        function setMsmeSection() {
+            const isYes = selectedMsmeValue() === "Yes";
+            el.udyamWrap.style.display = isYes ? "block" : "none";
+            el.udyamNo.required = isYes && !state.editingId;
+            if (!isYes) el.udyamNo.value = "";
+        }
+
+        function setReadOnlyForEdit(isEdit) {
+            el.companyName.disabled = isEdit;
+            el.gstNo.disabled = isEdit;
+            el.udyamNo.disabled = isEdit;
+            el.gstCertificate.disabled = isEdit;
+            el.panCopy.disabled = isEdit;
+            el.cancelledCheque.disabled = isEdit;
+        }
+
+       function resetFiles() {
+    el.gstCertificate.value = "";
+    el.panCopy.value = "";
+    el.cancelledCheque.value = "";
+    clearExistingMeta();
+}
+
+        function updateVendorCodePreview(code) {
+            el.vendorCodePreview.textContent = code || "-";
+        }
+        async function resetForm(fullReset = true) {
+            state.editingId = null;
+            state.editingRecord = null;
+            state.vendorCode = await generateVendorCode();
+            updateVendorCodePreview(state.vendorCode);
+
+            el.form.reset();
+            el.country.value = "India";
+            el.gstNo.value = "";
+            el.panNo.value = "";
+            el.gstNo.disabled = false;
+            el.panNo.disabled = false;
+            el.companyName.disabled = false;
+            el.udyamNo.disabled = false;
+            el.gstCertificate.disabled = false;
+            el.panCopy.disabled = false;
+            el.cancelledCheque.disabled = false;
+            el.msmeYes.checked = false;
+            el.msmeNo.checked = true;
+            setMsmeSection();
+            setReadOnlyForEdit(false);
+            resetFiles();
+
+            el.submitBtn.textContent = "Submit";
+            setSubmitState(false);
+            el.submitBtn.innerHTML = "Submit";
+            el.cancelEditBtn.classList.add("hide");
+
+            if (fullReset) {
+                clearMessage();
+            }
+        }
+
+        function normalizeGST(gst) {
+            return String(gst || "").trim().toUpperCase().replace(/\s+/g, "");
+        }
+
+        function normalizePAN(pan) {
+            return String(pan || "").trim().toUpperCase().replace(/\s+/g, "");
+        }
+
+        function normalizeTaxField(value) {
+            const cleaned = String(value || "").trim().toUpperCase().replace(/\s+/g, "");
+            if (!cleaned) return "";
+            if (cleaned === "N/A") return "N/A";
+            return cleaned;
+        }
+
+        async function uploadSingleFile(file, vendorCode, label) {
+            if (!file) return null;
+            const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+            const path = `VendorRegistration/${vendorCode}/${label}_${Date.now()}_${safeName}`;
+            const storageRef = ref(storage, path);
+            await uploadBytes(storageRef, file);
+            const url = await getDownloadURL(storageRef);
+            return {
+                name: file.name,
+                url,
+                path,
+                size: file.size,
+                type: file.type
+            };
+        }
+
+        function makeFallbackFileMeta(file, error) {
+            if (!file) return null;
+            return {
+                name: file.name,
+                url: null,
+                path: null,
+                size: file.size,
+                type: file.type,
+                uploadFailed: true,
+                error: error?.message || String(error || "Upload failed")
+            };
+        }
+
+        async function safeUpload(file, vendorCode, label) {
+            if (!file) return null;
+            try {
+                return await uploadSingleFile(file, vendorCode, label);
+            } catch (error) {
+                console.error(`Upload failed for ${label}:`, error);
+                return makeFallbackFileMeta(file, error);
+            }
+        }
+
+        async function checkDuplicateGST(gst, currentId = null) {
+            const gstKey = normalizeGST(gst);
+            const snap = await getDocs(query(vendorCollection, where("gstNoNormalized", "==", gstKey)));
+            const duplicate = snap.docs.find((d) => d.id !== currentId);
+            return duplicate ? duplicate.data() : null;
+        }
+
+        function requiredValue(value, label) {
+            if (!String(value || "").trim()) {
+                throw new Error(`${label} is required.`);
+            }
+            return String(value).trim();
+        }
+
+        function getFileInputMap() {
+    return {
+        gstCertificate: el.gstCertificate.files[0] || null,
+        panCopy: el.panCopy.files[0] || null,
+        cancelledCheque: el.cancelledCheque.files[0] || null
+    };
+}
+
+        function getExistingFiles(record) {
+            return {
+                gstCertificate: record.gstCertificate || null,
+                panCopy: record.panCopy || null,
+                cancelledCheque: record.cancelledCheque || null,
+            };
+        }
+        function buildRecordPayload(existingFiles = {}) {
+            const msme = selectedMsmeValue();
+            const companyName = requiredValue(el.companyName.value, "Company Name");
+            const gstNoInput = normalizeTaxField(el.gstNo.value);
+            const panNoInput = normalizeTaxField(el.panNo.value);
+
+            if (!gstNoInput) {
+                throw new Error("GST No. is required.");
+            }
+
+            if (!panNoInput) {
+                throw new Error("PAN No. is required.");
+            }
+
+            const payload = {
+                vendorCode: state.vendorCode,
+                companyName,
+                gstNo: gstNoInput,
+                gstNoNormalized: gstNoInput === "N/A" ? "" : normalizeGST(gstNoInput),
+                panNo: panNoInput,
+                address: requiredValue(el.address.value, "Address"),
+                contactPerson: requiredValue(el.contactPerson.value, "Contact Person"),
+                mobileNo: requiredValue(el.mobileNo.value, "Mobile No."),
+                email: requiredValue(el.email.value, "Email"),
+                vendorType: requiredValue(el.vendorType.value, "Vendor Type"),
+                vendorStatus: requiredValue(el.vendorStatus.value, "Vendor Status"),
+                state: requiredValue(el.state.value, "State"),
+                country: requiredValue(el.country.value, "Country"),
+                bankName: requiredValue(el.bankName.value, "Bank Name"),
+                accountHolderName: requiredValue(el.accountHolderName.value, "Account Holder Name"),
+                accountNumber: requiredValue(el.accountNumber.value, "Account Number"),
+                ifscCode: requiredValue(el.ifscCode.value, "IFSC Code"),
+                branchName: requiredValue(el.branchName.value, "Branch Name"),
+                msmeRegistered: msme,
+                udyamNo: msme === "Yes" ? requiredValue(el.udyamNo.value, "Udyam Registration No.") : "",
+                remarks: el.remarks.value.trim(),
+                gstCertificate: existingFiles.gstCertificate || null,
+                panCopy: existingFiles.panCopy || null,
+                cancelledCheque: existingFiles.cancelledCheque || null,
+                updatedAt: serverTimestamp()
+            };
+
+            if (!payload.country) payload.country = "India";
+            return payload;
+        }
+
+        async function saveNewVendor(payload) {
+            payload.createdAt = serverTimestamp();
+            await setDoc(doc(db, vendorCollectionName, payload.vendorCode), payload);
+        }
+
+        async function updateVendor(payload) {
+            const docRef = doc(db, vendorCollectionName, state.editingId);
+            await updateDoc(docRef, payload);
+        }
+
+        function makeDocList(record) {
+            const items = [
+                { label: "GST", file: record.gstCertificate },
+                { label: "PAN", file: record.panCopy },
+                { label: "Cheque", file: record.cancelledCheque },
+            ].filter((item) => item.file);
+
+            if (!items.length) return "<span style='color:#a8bdd8;'>-</span>";
+
+            return `<div class="docs-list">${items.map(({ label, file }) => {
+                if (file.url) {
+                    return `<a class="doc-chip" href="${escapeHtml(file.url)}" target="_blank" rel="noopener">${escapeHtml(label)}: ${escapeHtml(file.name || "Open")}</a>`;
+                }
+                return `<span class="doc-chip" style="opacity:.85;">${escapeHtml(label)}: ${escapeHtml(file.name || "Upload failed")}</span>`;
+            }).join("")}</div>`;
+        }
+
+        function renderSuggestions(records) {
+            const names = [...new Set(records.map((r) => r.companyName).filter(Boolean))].sort((a, b) => a.localeCompare(b));
+            el.vendorNameSuggestions.innerHTML = names.slice(0, 100).map((name) => `<option value="${escapeHtml(name)}"></option>`).join("");
+        }
+
+        function matchesSearch(record, searchValue) {
+            const q = String(searchValue || "").trim().toLowerCase();
+            if (!q) return true;
+            return [
+                record.companyName,
+                record.vendorCode,
+                record.gstNo,
+                record.contactPerson,
+                record.mobileNo,
+                record.vendorType,
+                record.vendorStatus,
+                record.state
+            ].some((v) => String(v || "").toLowerCase().includes(q));
+        }
+
+        function renderHistory() {
+            const searchValue = el.vendorSearch.value.trim();
+            const filtered = state.records.filter((record) => matchesSearch(record, searchValue));
+
+            renderSuggestions(state.records);
+
+            if (!filtered.length) {
+                el.historyBody.innerHTML = `<tr><td colspan="11" class="empty-state">No vendor records found.</td></tr>`;
+                return;
+            }
+
+            el.historyBody.innerHTML = filtered.map((record) => `
+                <tr>
+                    <td><span class="uid-pill">${escapeHtml(record.vendorCode || "-")}</span></td>
+                    <td>${escapeHtml(record.companyName || "-")}</td>
+                    <td>${escapeHtml(record.gstNo || "-")}</td>
+                    <td><span class="type-chip">${escapeHtml(record.vendorType || "-")}</span></td>
+                    <td>${escapeHtml(record.contactPerson || "-")}</td>
+                    <td>${escapeHtml(record.mobileNo || "-")}</td>
+                    <td><span class="status-chip">${escapeHtml(record.vendorStatus || "-")}</span></td>
+                    <td>${escapeHtml(record.state || "-")}</td>
+                    <td>${makeDocList(record)}</td>
+                    <td>${escapeHtml(formatDateTime(record.updatedAt || record.createdAt))}</td>
+                    <td>
+                        <div class="action-wrap">
+                            <button type="button" class="btn-edit" data-edit-id="${escapeHtml(record.id)}">Edit</button>
+                        </div>
+                    </td>
+                </tr>
+            `).join("");
+
+            document.querySelectorAll("[data-edit-id]").forEach((btn) => {
+                btn.addEventListener("click", () => {
+                    const record = state.records.find((r) => r.id === btn.dataset.editId);
+                    if (record) {
+                        startEdit(record);
+                    }
+                });
+            });
+        }
+
+        function fillForm(record) {
+            el.companyName.value = record.companyName || "";
+            el.gstNo.value = record.gstNo || "";
+            el.panNo.value = record.panNo || "";
+            el.address.value = record.address || "";
+            el.contactPerson.value = record.contactPerson || "";
+            el.mobileNo.value = record.mobileNo || "";
+            el.email.value = record.email || "";
+            el.vendorType.value = record.vendorType || "";
+            el.vendorStatus.value = record.vendorStatus || "";
+            el.state.value = record.state || "";
+            el.country.value = record.country || "India";
+            el.bankName.value = record.bankName || "";
+            el.accountHolderName.value = record.accountHolderName || "";
+            el.accountNumber.value = record.accountNumber || "";
+            el.ifscCode.value = record.ifscCode || "";
+            el.branchName.value = record.branchName || "";
+            el.remarks.value = record.remarks || "";
+            el.msmeYes.checked = (record.msmeRegistered || "No") === "Yes";
+            el.msmeNo.checked = !el.msmeYes.checked;
+            setMsmeSection();
+            el.udyamNo.value = record.udyamNo || "";
+            updateVendorCodePreview(record.vendorCode || state.vendorCode);
+            setExistingMeta(record);
+        }
+
+        function startEdit(record) {
+            state.editingId = record.id;
+            state.editingRecord = record;
+            state.vendorCode = record.vendorCode || record.id;
+            fillForm(record);
+            setReadOnlyForEdit(true);
+            el.submitBtn.textContent = "Save Changes";
+            el.cancelEditBtn.classList.remove("hide");
+            showMessage("success", `Editing ${record.companyName}. Locked fields cannot be changed.`);
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+
+        async function loadHistory() {
+            const snap = await getDocs(vendorCollection);
+            const records = snap.docs.map((d) => ({
+                id: d.id,
+                ...d.data()
+            }));
+
+            records.sort((a, b) => {
+                const ad = a.updatedAt?.toDate ? a.updatedAt.toDate().getTime() : (a.createdAt?.toDate ? a.createdAt.toDate().getTime() : 0);
+                const bd = b.updatedAt?.toDate ? b.updatedAt.toDate().getTime() : (b.createdAt?.toDate ? b.createdAt.toDate().getTime() : 0);
+                return bd - ad;
+            });
+
+            state.records = records;
+            renderSuggestions(records);
+            renderHistory();
+        }
+
+        el.gstNo.addEventListener("input", () => {
+            el.gstNo.value = el.gstNo.value.toUpperCase();
+        });
+        el.panNo.addEventListener("input", () => {
+            el.panNo.value = el.panNo.value.toUpperCase();
+        });
+        el.msmeYes.addEventListener("change", setMsmeSection);
+        el.msmeNo.addEventListener("change", setMsmeSection);
+
+        el.vendorSearch.addEventListener("input", renderHistory);
+
+        el.refreshBtn.addEventListener("click", async () => {
+            await loadHistory();
+            showMessage("success", "Vendor history refreshed.");
+        });
+
+        el.cancelEditBtn.addEventListener("click", async () => {
+            await resetForm();
+            showMessage("success", "Edit cancelled. Ready for a new vendor registration.");
+        });
+
+        el.form.addEventListener("submit", async (event) => {
+            event.preventDefault();
+            if (state.isSubmitting) return;
+
+            let successMessage = "";
+            let popupTitle = "Vendor Registration Successful";
+
+            try {
+                clearMessage();
+                setSubmitState(true, "Submitting");
+
+                const companyName = String(el.companyName.value || "").trim();
+                const gstNo = normalizeTaxField(el.gstNo.value);
+                const panNo = normalizeTaxField(el.panNo.value);
+                const mobileNo = el.mobileNo.value.trim();
+                const ifscCode = el.ifscCode.value.trim().toUpperCase();
+
+                if (!companyName) throw new Error("Company Name is required.");
+                if (!gstNo) throw new Error("GST No. is required.");
+                if (!panNo) throw new Error("PAN No. is required.");
+
+                if (!el.address.value.trim()) throw new Error("Address is required.");
+                if (!el.contactPerson.value.trim()) throw new Error("Contact Person is required.");
+                if (!mobileNo) throw new Error("Mobile No. is required.");
+                if (!el.email.value.trim()) throw new Error("Email is required.");
+                if (!el.vendorType.value.trim()) throw new Error("Vendor Type is required.");
+                if (!el.vendorStatus.value.trim()) throw new Error("Vendor Status is required.");
+                if (!el.state.value.trim()) throw new Error("State is required.");
+                if (!el.country.value.trim()) throw new Error("Country is required.");
+                if (!el.bankName.value.trim()) throw new Error("Bank Name is required.");
+                if (!el.accountHolderName.value.trim()) throw new Error("Account Holder Name is required.");
+                if (!el.accountNumber.value.trim()) throw new Error("Account Number is required.");
+                if (!ifscCode) throw new Error("IFSC Code is required.");
+                if (!el.branchName.value.trim()) throw new Error("Branch Name is required.");
+
+                if (!/^[6-9]\d{9}$/.test(mobileNo)) {
+                    throw new Error("Enter valid 10 digit mobile number.");
+                }
+
+                const msme = selectedMsmeValue();
+                if (msme === "Yes" && !el.udyamNo.value.trim()) {
+                    throw new Error("Udyam Registration No. is required when MSME is Yes.");
+                }
+
+                const isNew = !state.editingId;
+                const gstNormalized = gstNo === "N/A" ? "" : normalizeGST(gstNo);
+
+                if (gstNo !== "N/A") {
+                    setSubmitState(true, "Checking duplicate GST");
+                    const gstCheck = await checkDuplicateGST(gstNormalized || gstNo, state.editingId);
+                    if (gstCheck) {
+                        throw new Error("Same GST number already exists. New vendor registration is blocked.");
+                    }
+                }
+
+                const basePayload = buildRecordPayload();
+
+                if (isNew) {
+                    const vendorCode = state.vendorCode || await generateVendorCode();
+                    state.vendorCode = vendorCode;
+                    basePayload.vendorCode = vendorCode;
+                    updateVendorCodePreview(vendorCode);
+
+                    const files = getFileInputMap();
+                    if (!files.gstCertificate || !files.panCopy || !files.cancelledCheque) {
+                        throw new Error("Please upload GST Certificate, PAN Copy, and Cancelled Cheque.");
+                    }
+
+                    setSubmitState(true, "Uploading documents");
+                    const [gstDoc, panDoc, chequeDoc] = await Promise.all([
+                        safeUpload(files.gstCertificate, vendorCode, "gst_certificate"),
+                        safeUpload(files.panCopy, vendorCode, "pan_copy"),
+                        safeUpload(files.cancelledCheque, vendorCode, "cancelled_cheque"),
+                    ]);
+
+                    basePayload.gstCertificate = gstDoc;
+                    basePayload.panCopy = panDoc;
+                    basePayload.cancelledCheque = chequeDoc;
+
+                    setSubmitState(true, "Saving vendor record");
+                    await saveNewVendor(basePayload);
+                    successMessage = "Vendor registration successful.";
+                } else {
+                    const existing = state.editingRecord || {};
+                    const updatePayload = {
+                        ...basePayload,
+                        gstCertificate: existing.gstCertificate || null,
+                        panCopy: existing.panCopy || null,
+                        cancelledCheque: existing.cancelledCheque || null,
+                    };
+
+                    setSubmitState(true, "Saving vendor record");
+                    await updateVendor(updatePayload);
+                    successMessage = "Vendor details updated successfully.";
+                }
+
+            } catch (error) {
+                console.error(error);
+                setSubmitState(false);
+                showMessage("error", error?.message || "Something went wrong.");
+                return;
+            }
+
+            setSubmitState(false);
+
+            try {
+                await loadHistory();
+            } catch (error) {
+                console.error("Error reloading vendor history:", error);
+            }
+
+            try {
+                await resetForm(false);
+            } catch (error) {
+                console.error("Error resetting vendor form:", error);
+            }
+
+            await showSuccessPopup(successMessage, popupTitle);
+        });
+        document.addEventListener("DOMContentLoaded", async () => {
+
+            await resetForm(false);
+            setMsmeSection();
+            await loadHistory();
+        });
+</script>
+
+</body>
+</html>

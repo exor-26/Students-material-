@@ -1,0 +1,1575 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <title>HR Dashboard - Leave Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="icon" type="image/x-icon" href="logo2.ico" />
+  <link rel="stylesheet" type="text/css" href="hrleave.css" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap-theme.min.css" />
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+
+  <style>
+     *, *::before, *::after {
+  cursor:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" viewBox="0 0 24 24"><path fill="%23FFF" stroke="%23FF2711" stroke-width="2" d="M5.5 3.21V20.8c0 .45.54.67.85.35l4.86-4.86a.5.5 0 0 1 .35-.15h6.87a.5.5 0 0 0 .35-.85L6.35 2.85a.5.5 0 0 0-.85.35Z"></path></svg>') 5 5, auto;
+}
+
+a, button, input[type="submit"], input[type="button"],
+label, select, .dropbtn, .sub-btn, .btn, .cn,
+.carousel-control, .hideMenuButton, .item a,
+input[type="text"], input[type="search"], textarea {
+  cursor:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="%23FFF" stroke="%23FF2711" stroke-width="2" stroke-linejoin="round" d="M10 11V8.99c0-.88.59-1.64 1.44-1.86h.05A1.99 1.99 0 0 1 14 9.05V12v-2c0-.88.6-1.65 1.46-1.87h.05A1.98 1.98 0 0 1 18 10.06V13v-1.94a2 2 0 0 1 1.51-1.94h0A2 2 0 0 1 22 11.06V14c0 .6-.08 1.27-.21 1.97a7.96 7.96 0 0 1-7.55 6.48 54.98 54.98 0 0 1-4.48 0 7.96 7.96 0 0 1-7.55-6.48C2.08 15.27 2 14.59 2 14v-1.49c0-1.11.9-2.01 2.01-2.01h0a2 2 0 0 1 2.01 2.03l-.01.97v-10c0-1.1.9-2 2-2h0a2 2 0 0 1 2 2V11Z"></path></svg>') 5 5, auto;
+}
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --topbar-height: 78px;
+      --sidebar-width: 280px;
+      --bg-dark: #081523;
+      --bg-mid: #0e2238;
+      --card-bg: rgba(12, 25, 45, 0.85);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --text-main: #ffffff;
+      --text-soft: #b8c9df;
+      --text-muted: #8ea4c5;
+      --accent: #ff7a2f;
+      --accent-2: #1f77ff;
+      --success: #14b86a;
+      --danger: #ef4d4d;
+      --warning: #ffc048;
+      --shadow: 0 18px 40px rgba(0, 0, 0, 0.25);
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      background:
+        linear-gradient(135deg, rgba(7, 16, 30, 0.95), rgba(14, 34, 56, 0.92)),
+        url("https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1600&q=80") center/cover no-repeat fixed;
+      color: var(--text-main);
+    }
+
+    .app-shell {
+      height: 100vh;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    .topbar {
+      height: var(--topbar-height);
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(7, 16, 30, 0.88);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 2000;
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      min-width: 0;
+    }
+
+    .menu-toggle {
+      width: 46px;
+      height: 46px;
+      border: none;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
+      color: #fff;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: 0.25s ease;
+      flex-shrink: 0;
+    }
+
+    .menu-toggle:hover {
+      background: linear-gradient(135deg, rgba(255,122,47,0.18), rgba(31,119,255,0.16));
+      transform: translateY(-1px);
+    }
+
+    .brand-wrap {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-width: 0;
+    }
+
+    .brand-title {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 700;
+      color: #fff;
+      text-decoration: none !important;
+      line-height: 1.1;
+    }
+
+    .brand-subtitle {
+      margin: 2px 0 0;
+      color: var(--text-soft);
+      font-size: 13px;
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    #bellContainer {
+      position: relative;
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.07);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: 0.25s ease;
+      color: #fff;
+    }
+
+    #bellContainer:hover {
+      background: rgba(255, 255, 255, 0.14);
+      transform: translateY(-1px);
+    }
+
+    #bellBadge {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      background: #ff4d4f;
+      color: #fff;
+      font-size: 10px;
+      min-width: 18px;
+      height: 18px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 5px;
+    }
+
+    .logout {
+      text-decoration: none !important;
+      color: #fff !important;
+      background: linear-gradient(135deg, #ff8a3c, #ff5a1f);
+      padding: 11px 18px;
+      border-radius: 12px;
+      font-weight: 700;
+      transition: 0.25s ease;
+      box-shadow: 0 10px 24px rgba(255, 90, 31, 0.24);
+      white-space: nowrap;
+    }
+
+    .logout:hover {
+      transform: translateY(-1px);
+      text-decoration: none !important;
+      color: #fff !important;
+    }
+
+    #notificationBox {
+      display: none;
+      position: fixed;
+      top: 70px;
+      right: 85px;
+      width: 320px;
+      max-height: 320px;
+      overflow-y: auto;
+      background: rgba(10, 22, 40, 0.98);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 18px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      padding: 14px;
+      z-index: 2500;
+    }
+
+    .notification-item {
+      padding: 12px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      margin-bottom: 10px;
+    }
+
+    .notification-item p {
+      margin: 0 0 6px;
+      color: #dce8ff;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .notification-item p:last-child {
+      margin-bottom: 0;
+    }
+
+    .dashboard-layout {
+      display: block;
+      width: 100%;
+      height: 100vh;
+    }
+
+    /* ===== ONLY NAVBAR / SIDEBAR CHANGED ===== */
+    nav.sidebar {
+      width: var(--sidebar-width);
+      min-width: var(--sidebar-width);
+      max-width: var(--sidebar-width);
+      position: fixed;
+      top: var(--topbar-height);
+      left: 0;
+      bottom: 0;
+      padding: 20px 16px 22px;
+      background: linear-gradient(180deg, rgba(6, 16, 30, 0.98), rgba(8, 22, 40, 0.96));
+      backdrop-filter: blur(16px);
+      border-right: 1px solid rgba(255,255,255,0.06);
+      overflow-y: auto;
+      overflow-x: hidden;
+      z-index: 1500;
+      box-shadow: 18px 0 45px rgba(0, 0, 0, 0.24);
+    }
+
+    nav.sidebar::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    nav.sidebar::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,0.14);
+      border-radius: 999px;
+    }
+
+    .sidebar-top-card {
+      position: relative;
+      padding: 20px 18px 18px;
+      border-radius: 24px;
+      background:
+        linear-gradient(135deg, rgba(255,122,47,0.16), rgba(31,119,255,0.14)),
+        rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow:
+        0 16px 32px rgba(0,0,0,0.20),
+        inset 0 1px 0 rgba(255,255,255,0.06);
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+
+    .sidebar-top-card::after {
+      content: "";
+      position: absolute;
+      right: -30px;
+      top: -30px;
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,255,255,0.16), transparent 70%);
+    }
+
+    .sidebar-mini-label {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.4px;
+      color: #ffd8c2;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: 5px 10px;
+      border-radius: 999px;
+      margin-bottom: 12px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .sidebar-main-title {
+      font-size: 19px;
+      font-weight: 800;
+      color: #ffffff;
+      margin: 0 0 6px;
+      line-height: 1.2;
+      position: relative;
+      z-index: 1;
+    }
+
+    .sidebar-main-subtitle {
+      font-size: 13px;
+      color: #d5e2f1;
+      line-height: 1.7;
+      margin: 0 0 14px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .sidebar-status-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      position: relative;
+      z-index: 1;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .sidebar-status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #dfffe9;
+      background: rgba(20,184,106,0.14);
+      border: 1px solid rgba(20,184,106,0.22);
+    }
+
+    .sidebar-status-badge::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #4df39b;
+      box-shadow: 0 0 10px rgba(77,243,155,0.7);
+    }
+
+    .sidebar-status-text {
+      font-size: 11px;
+      color: #c6d8ec;
+      text-align: right;
+      line-height: 1.4;
+    }
+
+    .sidebar-section-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #8ea4c5;
+      margin: 0 8px 16px;
+      font-weight: 700;
+    }
+
+    #side-bar {
+      list-style: none;
+      padding-left: 0;
+      margin-bottom: 0;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    #side-bar li {
+      width: 100%;
+      margin: 0;
+    }
+
+    #side-bar a,
+    #side-bar summary {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      width: 100%;
+      padding: 15px 15px;
+      border-radius: 20px;
+      text-decoration: none !important;
+      color: #edf4ff !important;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.055), rgba(255,255,255,0.025));
+      border: 1px solid rgba(255,255,255,0.06);
+      transition: all 0.28s ease;
+      position: relative;
+      overflow: hidden;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+    }
+
+    #side-bar a::before,
+    #side-bar summary::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, rgba(255,122,47,0.13), rgba(31,119,255,0.11));
+      opacity: 0;
+      transition: opacity 0.28s ease;
+    }
+
+    #side-bar a::after,
+    #side-bar summary::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 18%;
+      width: 4px;
+      height: 64%;
+      border-radius: 999px;
+      background: linear-gradient(180deg, #ff8a3c, #1f77ff);
+      opacity: 0;
+      transition: opacity 0.28s ease;
+    }
+
+    #side-bar a:hover,
+    #side-bar summary:hover {
+      transform: translateX(6px);
+      border-color: rgba(255,255,255,0.10);
+      box-shadow: 0 14px 28px rgba(0,0,0,0.20);
+    }
+
+    #side-bar a:hover::before,
+    #side-bar summary:hover::before,
+    #side-bar a:hover::after,
+    #side-bar summary:hover::after {
+      opacity: 1;
+    }
+
+    #side-bar a.active,
+    #side-bar summary.active {
+      background: linear-gradient(135deg, rgba(255,122,47,0.18), rgba(31,119,255,0.16));
+      border-color: rgba(255,255,255,0.12);
+      box-shadow: 0 16px 30px rgba(0,0,0,0.24);
+    }
+
+    #side-bar a.active::before,
+    #side-bar summary.active::before,
+    #side-bar a.active::after,
+    #side-bar summary.active::after {
+      opacity: 1;
+    }
+
+    .nav-icon {
+      width: 44px;
+      height: 44px;
+      min-width: 44px;
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, rgba(255,255,255,0.13), rgba(255,255,255,0.05));
+      border: 1px solid rgba(255,255,255,0.08);
+      color: #fff;
+      font-size: 17px;
+      position: relative;
+      z-index: 1;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+    }
+
+    .nav-text {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .nav-text strong {
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.2;
+    }
+
+    .nav-text span {
+      margin-top: 4px;
+      font-size: 11px;
+      line-height: 1.45;
+      color: #aabed8;
+    }
+
+    .nav-arrow {
+      margin-left: auto;
+      font-size: 16px;
+      color: #93b2d8;
+      position: relative;
+      z-index: 1;
+      transition: transform 0.25s ease;
+    }
+
+    #side-bar a:hover .nav-arrow,
+    #side-bar summary:hover .nav-arrow {
+      transform: translateX(4px);
+    }
+    /* ===== END NAVBAR / SIDEBAR CHANGED ===== */
+
+    main {
+      position: fixed;
+      top: var(--topbar-height);
+      left: var(--sidebar-width);
+      right: 0;
+      bottom: 0;
+      min-width: 0;
+      padding: 28px 30px;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    .hero-card {
+      background: linear-gradient(135deg, rgba(22, 61, 112, 0.88), rgba(12, 27, 53, 0.92));
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 24px;
+      padding: 30px 34px;
+      box-shadow: var(--shadow);
+      margin-bottom: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-card::after {
+      content: "";
+      position: absolute;
+      right: -80px;
+      top: -80px;
+      width: 220px;
+      height: 220px;
+      background: radial-gradient(circle, rgba(255, 122, 47, 0.18), transparent 70%);
+      border-radius: 50%;
+    }
+
+    .page-tag {
+      display: inline-block;
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      color: #ffb88f;
+      background: rgba(255, 122, 47, 0.16);
+      border: 1px solid rgba(255, 122, 47, 0.2);
+      margin-bottom: 14px;
+    }
+
+    .hero-card h1 {
+      margin: 0 0 10px;
+      font-size: 32px;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.15;
+    }
+
+    .hero-card p {
+      margin: 0;
+      max-width: 860px;
+      font-size: 15px;
+      line-height: 1.8;
+      color: #d0def0;
+    }
+
+    .panel-card {
+      background: var(--card-bg);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+      margin-bottom: 24px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .section-header h2,
+    .section-header h3 {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .section-badge {
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #9ec3ff;
+      background: rgba(31, 119, 255, 0.14);
+      border: 1px solid rgba(31, 119, 255, 0.22);
+      white-space: nowrap;
+    }
+
+    .details-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(220px, 1fr));
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #9db4d0;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+    }
+
+    .value-box{
+    width:100%;
+
+    height:52px !important;
+    min-height:52px !important;
+
+    border-radius:16px !important;
+
+    border:1px solid rgba(255,255,255,0.10) !important;
+
+    background:rgba(255,255,255,0.06) !important;
+
+    color:#fff !important;
+
+    padding:0 18px !important;
+
+    font-size:15px !important;
+    font-weight:500;
+
+    display:flex;
+    align-items:center;
+
+    box-sizing:border-box;
+
+    transition:0.25s ease;
+}
+
+
+/* INPUT + DROPDOWN */
+.field input,
+.field select{
+
+    width:100%;
+
+    height:52px !important;
+    min-height:52px !important;
+
+    border-radius:16px !important;
+
+    border:1px solid rgba(255,255,255,0.10) !important;
+
+    background:rgba(255,255,255,0.06) !important;
+
+    color:#fff !important;
+
+    padding:0 16px !important;
+
+    font-size:15px !important;
+    font-weight:500;
+
+    outline:none;
+
+    box-shadow:none !important;
+
+    transition:all 0.25s ease;
+
+    box-sizing:border-box;
+
+    -webkit-appearance:none;
+    appearance:none;
+}
+
+
+/* DROPDOWN UI */
+.field select{
+
+    padding-right:42px !important;
+
+    background-image:
+        linear-gradient(45deg, transparent 50%, #9fb4cf 50%),
+        linear-gradient(135deg, #9fb4cf 50%, transparent 50%);
+
+    background-position:
+        calc(100% - 20px) calc(50% - 3px),
+        calc(100% - 14px) calc(50% - 3px);
+
+    background-size:6px 6px;
+
+    background-repeat:no-repeat;
+
+    cursor:pointer;
+}
+
+
+/* OPTION COLOR */
+.field select option{
+    color:#000 !important;
+    background:#fff !important;
+}
+
+
+/* FOCUS EFFECT */
+.field input:focus,
+.field select:focus{
+
+    border-color:rgba(31,119,255,0.65) !important;
+
+    box-shadow:
+        0 0 0 4px rgba(31,119,255,0.10) !important;
+
+    background:rgba(255,255,255,0.08) !important;
+}
+
+
+/* PLACEHOLDER */
+.field input::placeholder{
+    color:#9fb4cf !important;
+}
+
+
+/* iPad Safari Fix */
+@supports (-webkit-touch-callout: none){
+
+    .field select,
+    .field input{
+
+        height:52px !important;
+
+        line-height:normal !important;
+
+        padding-top:0 !important;
+        padding-bottom:0 !important;
+
+        -webkit-appearance:none;
+        appearance:none;
+    }
+}
+
+    .field input:focus,
+    .field select:focus {
+      border-color: rgba(31, 119, 255, 0.55) !important;
+      box-shadow: 0 0 0 4px rgba(31, 119, 255, 0.12) !important;
+    }
+
+    .field input::placeholder {
+      color: #9fb4cf;
+    }
+
+    .field select option {
+      color: #000;
+    }
+
+    .leave-table-card {
+      background: rgba(10, 24, 42, 0.82);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 26px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      border-radius: 16px;
+      padding-bottom: 6px;
+    }
+
+    .table-wrap table {
+    width:100%;
+    min-width:1150px;
+}
+
+@media (max-width:768px){
+
+    .table-wrap table{
+        min-width:700px;
+    }
+
+}
+
+    .table-wrap thead tr {
+      background: linear-gradient(135deg, #183b6f, #102849);
+    }
+
+    .table-wrap thead th {
+      padding: 16px 14px !important;
+      color: #fff4cc;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border: none !important;
+      text-align: center;
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+
+    .table-wrap tbody tr {
+      background: rgba(255, 255, 255, 0.03);
+      transition: 0.2s ease;
+    }
+
+    .table-wrap tbody tr:nth-child(even) {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .table-wrap tbody tr:hover {
+      background: rgba(31, 119, 255, 0.10);
+    }
+
+    .table-wrap tbody td {
+      padding: 15px 14px !important;
+      color: #eaf2ff;
+      border-top: 1px solid rgba(255, 255, 255, 0.05) !important;
+      vertical-align: middle;
+      text-align: center;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-width: 108px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+      text-align: center;
+      letter-spacing: 0.3px;
+      line-height: 1;
+      box-shadow: 0 10px 22px rgba(0, 0, 0, 0.16);
+      position: relative;
+      white-space: nowrap;
+    }
+
+    .status-pill::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: currentColor;
+      opacity: 0.95;
+      flex: 0 0 auto;
+    }
+
+    .status-pending {
+      background: rgba(255, 192, 72, 0.16);
+      color: #ffd77f;
+      border: 1px solid rgba(255, 192, 72, 0.22);
+    }
+
+    .status-approved {
+      background: rgba(20, 184, 106, 0.16);
+      color: #90efbd;
+      border: 1px solid rgba(20, 184, 106, 0.22);
+    }
+
+    .status-rejected {
+      background: rgba(239, 77, 77, 0.16);
+      color: #ffb3b3;
+      border: 1px solid rgba(239, 77, 77, 0.22);
+    }
+
+    .uid-pill {
+      display: inline-block;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: rgba(31, 119, 255, 0.14);
+      color: #a8cbff;
+      border: 1px solid rgba(31, 119, 255, 0.22);
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .reason-cell {
+      max-width: 260px;
+      text-align: left !important;
+      line-height: 1.6;
+      color: #dbe7f8;
+    }
+
+    .action-group {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn-approve {
+      border: none;
+      border-radius: 10px;
+      padding: 8px 14px;
+      background: linear-gradient(135deg, #1dcf78, #119b57);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .btn-reject {
+      border: none;
+      border-radius: 10px;
+      padding: 8px 14px;
+      background: linear-gradient(135deg, #ff6666, #d93c3c);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .btn-approve:disabled,
+    .btn-reject:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 28px !important;
+      color: #a8bdd8 !important;
+      font-style: italic;
+    }
+
+    @media (max-width: 991px) {
+  html,
+  body {
+    width: 100%;
+    min-height: 100%;
+    height: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .app-shell {
+    width: 100%;
+    height: auto;
+    min-height: 100vh;
+    overflow: visible;
+  }
+
+  .dashboard-layout {
+    width: 100%;
+    height: auto;
+    min-height: 100vh;
+    padding-top: var(--topbar-height);
+  }
+
+  nav.sidebar {
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+
+    /* FIX: Command Center scroll ke saath upar jayega */
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    bottom: auto;
+
+    height: auto;
+    max-height: none;
+    overflow: visible;
+
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 0 0 24px 24px;
+    z-index: 100;
+    padding: 14px;
+  }
+
+  .sidebar-top-card {
+    margin-bottom: 18px;
+  }
+
+  .sidebar-section-title {
+    margin: 18px 8px 14px;
+  }
+
+  #side-bar {
+    display: none;
+    gap: 10px;
+  }
+
+  #side-bar.active {
+    display: flex;
+    flex-direction: column;
+    margin-top: 12px;
+  }
+
+  .sidebar-status-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .sidebar-status-text {
+    text-align: left;
+  }
+
+  main {
+    /* FIX: main normal page scroll mein rahega */
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    bottom: auto;
+
+    width: 100%;
+    padding: 18px;
+    overflow: visible;
+  }
+
+  .hero-card h1 {
+    font-size: 24px;
+  }
+
+  .details-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .brand-subtitle {
+    display: none;
+  }
+}
+    @media (max-width: 600px) {
+      .topbar {
+        padding: 0 14px;
+      }
+
+      .logout {
+        padding: 9px 14px;
+        font-size: 13px;
+      }
+
+      .hero-card,
+      .panel-card,
+      .leave-table-card {
+        padding: 18px;
+        border-radius: 18px;
+      }
+
+      #notificationBox {
+        width: 280px;
+        right: 16px;
+      }
+    }
+
+    /* HR Leave Table Mobile Fix */
+
+#leaveRequestsTable{
+    background:#102849 !important;
+}
+
+#leaveRequestsTable tbody,
+#leaveRequestsTable tr,
+#leaveRequestsTable td{
+    background:#102849 !important;
+    color:#ffffff !important;
+}
+
+#leaveRequestsTable tbody tr:nth-child(odd),
+#leaveRequestsTable tbody tr:nth-child(even){
+    background:#102849 !important;
+}
+
+#leaveRequestsTable td{
+    border-color:rgba(255,255,255,0.08) !important;
+}
+
+#leaveRequestsTable .reason-cell,
+#leaveRequestsTable .status-badge,
+#leaveRequestsTable .uid-pill{
+    color:#ffffff !important;
+}
+
+/* ==========================
+   MOBILE TABLE FIX
+========================== */
+
+@media (max-width:768px){
+
+    /* Table width */
+    .table-wrap table{
+        min-width:900px !important;
+    }
+
+    /* Period Column */
+    #leaveRequestsTable td:nth-child(4),
+    #leaveRequestsTable th:nth-child(4){
+
+        min-width:140px;
+        white-space:normal !important;
+        line-height:1.5;
+        word-break:break-word;
+    }
+
+    /* Reason Column */
+    #leaveRequestsTable td:nth-child(5){
+        min-width:180px;
+    }
+
+    /* Actions Column */
+    #leaveRequestsTable td:last-child,
+    #leaveRequestsTable th:last-child{
+        min-width:150px;
+    }
+
+    /* Buttons Align */
+    .action-group{
+
+        display:flex !important;
+        flex-direction:column !important;
+
+        align-items:center;
+        justify-content:center;
+
+        gap:8px;
+        width:100%;
+    }
+
+    .btn-approve,
+    .btn-reject{
+
+        width:110px;
+        text-align:center;
+
+        font-size:12px;
+        padding:8px 10px;
+
+        white-space:nowrap;
+    }
+
+}
+  </style>
+</head>
+
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="topbar-left">
+        <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+        <div class="brand-wrap">
+          <a href="#" class="brand-title">HR Dashboard</a>
+          <p class="brand-subtitle">Leave Approval & Request Management Panel</p>
+        </div>
+      </div>
+
+      <div class="topbar-right">
+        <div id="bellContainer">
+          <span class="glyphicon glyphicon-bell" style="font-size:24px;"></span>
+          <span id="bellBadge" class="badge" style="display:none;">0</span>
+        </div>
+        <a href="#" class="logout" onclick="logoutUser()">Logout</a>
+      </div>
+    </header>
+
+    <div id="notificationBox"></div>
+
+    <div class="dashboard-layout">
+      <nav class="sidebar">
+        <div class="sidebar-top-card">
+          <div class="sidebar-mini-label">HR Panel</div>
+          <h3 class="sidebar-main-title">Command Center</h3>
+          <p class="sidebar-main-subtitle">
+            Access leave approvals, request tracking, and important HR sections from one clean navigation area.
+          </p>
+
+          <div class="sidebar-status-row">
+            <span class="sidebar-status-badge">Leave Active</span>
+            <div class="sidebar-status-text">
+              Secure access<br />
+              Quick navigation
+            </div>
+          </div>
+        </div>
+
+        <div class="sidebar-section-title">Navigation</div>
+        <ul id="side-bar"></ul>
+      </nav>
+
+      <main>
+        <section class="hero-card">
+          <span class="page-tag">LEAVE REQUEST PANEL</span>
+          <h1>Leave Application</h1>
+          <p>
+            Review incoming leave requests, verify employee details, and approve or reject
+            requests from the HR leave management dashboard.
+          </p>
+        </section>
+
+        <section class="panel-card">
+          <div class="section-header">
+            <h2>HR Details</h2>
+            <span class="section-badge">Profile & Job Control</span>
+          </div>
+
+          <div class="details-grid">
+            <div class="field">
+              <label>HR Name</label>
+              <div class="value-box" id="hrNameDisplay">Loading...</div>
+            </div>
+
+            <div class="field">
+              <label>HR ID</label>
+              <div class="value-box" id="hrIdDisplay">Loading...</div>
+            </div>
+
+            <div class="field">
+              <label>Joining Year</label>
+              <div class="value-box" id="joiningYearDisplay">Loading...</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="leave-table-card">
+          <div class="section-header">
+            <h3>Leave Requests</h3>
+            <span class="section-badge">Approval Table</span>
+          </div>
+
+          <div class="table-wrap">
+            <table id="leaveRequestsTable" class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>UID (Role)</th>
+                  <th>Name</th>
+                  <th>Contact</th>
+                  <th>Period</th>
+                  <th>Reason</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td colspan="7" class="empty-state">No leave requests loaded yet.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    function toggleMenu() {
+      const sidebar = document.getElementById("side-bar");
+      sidebar.classList.toggle("active");
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const currentPage = window.location.pathname.split("/").pop();
+      const navLinks = document.querySelectorAll("#side-bar a");
+
+      navLinks.forEach(link => {
+        const href = link.getAttribute("href");
+        if (href === currentPage) {
+          link.classList.add("active");
+        }
+      });
+    });
+  </script>
+
+  <script type="module" src="/public/control.js"></script>
+</body>
+
+</html>
+<!-- Firebase Firestore Integration Script -->
+<script type="module">
+    import {
+        getFirestore,
+        doc,
+        getDoc,
+        setDoc,
+        updateDoc,
+        collection,
+        getDocs,
+        query,
+        orderBy,
+        limit,
+        where,
+        collectionGroup
+    } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+    import { app } from "/public/firebase-config.js";
+    const db = getFirestore(app);
+    let currentHrUid = "";
+
+    // ─────────────────────────────────────────────────────────────────────────────
+    // Notification Bell: badge + popup
+    // ─────────────────────────────────────────────────────────────────────────────
+    const bell = document.getElementById("bellContainer");
+    const badge = document.getElementById("bellBadge");
+    const box = document.getElementById("notificationBox");
+
+    async function refreshNotifications() {
+        try {
+            const snap = await getDocs(collection(db, "Employee"));
+            const today = new Date();
+            const soon = new Date();
+            soon.setDate(today.getDate() + 3);
+
+            const items = [];
+            snap.forEach(docSnap => {
+                const d = docSnap.data();
+                if (!d.passes_end) return;
+                const end = new Date(d.passes_end);
+                if (end >= today && end <= soon) {
+                    items.push({
+                        name: d.fullName,
+                        uid: d.uid,
+                        pass: d.passes,
+                        renew: d.passes_end
+                    });
+                }
+            });
+
+            // badge
+            if (items.length) {
+                badge.innerText = items.length;
+                badge.style.display = "";
+            } else {
+                badge.style.display = "none";
+            }
+
+            // populate popup
+            box.innerHTML = "";
+            if (!items.length) {
+                box.innerHTML = "<p>No passes expiring in 3 days.</p>";
+            } else {
+                for (const it of items) {
+                    const div = document.createElement("div");
+                    div.className = "notification-item";
+                    div.innerHTML = `
+            <p><strong>Name:</strong> ${it.name}</p>
+            <p><strong>User ID:</strong> ${it.uid}</p>
+            <p><strong>Pass Type:</strong> ${it.pass}</p>
+            <p><strong>Renew Date:</strong> ${it.renew}</p>
+          `;
+                    box.appendChild(div);
+                }
+            }
+        } catch (e) {
+            console.error("Notification load error:", e);
+        }
+    }
+
+    bell.addEventListener("click", () => {
+        box.style.display = box.style.display === "none" ? "block" : "none";
+    });
+
+    document.addEventListener("DOMContentLoaded", refreshNotifications);
+
+    // ────────────────────────────────────────────────
+    // HR Details Fetching
+    // ────────────────────────────────────────────────
+    const hrEmail = localStorage.getItem("hrEmail");
+    if (!hrEmail) {
+        console.error("No HR email found in localStorage.");
+    } else {
+        const hrDocRef = doc(db, "HR", hrEmail);
+        getDoc(hrDocRef)
+            .then(docSnap => {
+                if (!docSnap.exists()) {
+                    console.error("No HR document found for email:", hrEmail);
+                    return;
+                }
+                const hrData = docSnap.data();
+                console.log("Fetched hrData:", hrData);
+
+                // 1) Fill basic details
+                currentHrUid = hrData.uid;
+                document.getElementById("hrNameDisplay").innerText = hrData.Name;
+                document.getElementById("hrIdDisplay").innerText = hrData.uid;
+                document.getElementById("joiningYearDisplay").innerText = hrData.joiningDate || "N/A";
+
+                loadLeaveRequests(currentHrUid);
+
+            })
+            .catch(err => console.error("Error fetching Supervisor details:", err));
+    }
+    // Format YYYY‑MM‑DD → DD‑MM‑YY
+        function fmtDisplay(iso) {
+            const d = new Date(iso);
+            const dd = String(d.getDate()).padStart(2, "0");
+            const mm = String(d.getMonth() + 1).padStart(2, "0");
+            const yy = String(d.getFullYear()).slice(-2);
+            return `${dd}-${mm}-${yy}`;
+        }
+
+        function getStatusMeta(rawStatus) {
+            const value = String(rawStatus ?? "").trim().toLowerCase();
+            if (!value || value === "-" || value === "pending" || value === "na" || value === "n/a") {
+                return { text: "Pending", cls: "status-pending" };
+            }
+            if (value === "approved" || value === "approve") {
+                return { text: "Approved", cls: "status-approved" };
+            }
+            if (value === "rejected" || value === "reject" || value === "declined" || value === "decline") {
+                return { text: "Rejected", cls: "status-rejected" };
+            }
+            return { text: String(rawStatus).trim() || "Pending", cls: "status-pending" };
+        }
+
+        async function loadLeaveRequests(currentHrUid) {
+            console.log("▶️ loadLeaveRequests() start");
+            const tbody = document.querySelector("#leaveRequestsTable tbody");
+            if (!tbody) {
+              console.error("⚠️ No <tbody> found under #leaveRequestsTable");
+              return;
+            }
+            tbody.innerHTML = "";
+            console.log("Cleared existing rows");
+          
+            try {
+              // 1️⃣ Query all Leave/*/Supervisor subcollections, ordered by startDate desc
+              const q = query(
+                collectionGroup(db, "Supervisor"),
+                orderBy("startDate", "desc")
+              );
+              console.log("✨ Running query:", q);
+              const snap = await getDocs(q);
+              console.log(`📊 QuerySnapshot returned ${snap.size} docs`);
+          
+              // 2️⃣ Iterate over each leave doc
+              for (const docSnap of snap.docs) {
+                const data = docSnap.data();
+
+                // Only show requests whose hruid matches the logged-in HR
+                if (data.hruid !== currentHrUid) {
+                  continue;
+                }
+
+                const supUid = docSnap.ref.parent.parent.id;
+                console.log("–– docSnap.ref.path:", docSnap.ref.path);
+                console.log("    supUid:", supUid, "data:", data);
+          
+                // only 55 = Supervisor and 66 = AS
+                const roleLabel = supUid.startsWith("55")
+                  ? "Supervisor"
+                  : supUid.startsWith("66")
+                    ? "AS"
+                    : null;
+
+                if (!roleLabel) {
+                  console.log("    ❌ skipping non‑Supervisor/AS UID:", supUid);
+                  continue;
+                }
+                console.log("    ✅ includes record for role:", roleLabel);
+
+                // fetch contact
+                const supDocRef = doc(db, "Supervisor", supUid);
+                console.log("    fetching contact from:", supDocRef.path);
+                const supDoc = await getDoc(supDocRef);
+                const supInfo = supDoc.exists() ? supDoc.data() : {};
+                console.log("    supInfo:", supInfo);
+
+                // build row
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                  <td>${supUid} (${roleLabel})</td>
+                  <td>${data.Name}</td>
+                  <td>${supInfo.telephone || "<no tel>"}</td>
+                  <td>
+    ${fmtDisplay(data.startDate)}
+    <br>
+    ↓
+    <br>
+    ${fmtDisplay(data.endDate)}
+</td>
+                  <td class="reason-cell">
+                    <span class="reason-preview">${data.reason}</span>
+                    <a href="#" class="read-more">Read more</a>
+                  </td>
+                  <td>
+                    <span class="status-pill ${getStatusMeta(data.Status).cls}">${getStatusMeta(data.Status).text}</span>
+                  </td>
+                  <td>
+    <div class="action-group">
+        <button class="btn btn-success btn-approve">
+            Approve
+        </button>
+
+        <button class="btn btn-danger btn-reject">
+            Reject
+        </button>
+    </div>
+</td>
+                `;
+                tbody.appendChild(tr);
+                console.log("    ➕ Appended row for", supUid);
+          
+                // grab buttons & badge
+                const approveBtn = tr.querySelector(".btn-approve");
+                const rejectBtn  = tr.querySelector(".btn-reject");
+                const badgeEl    = tr.querySelector(".status-pill");
+                const leaveDocRef = docSnap.ref; // Firestore DocumentReference
+          
+                // if already actioned, disable both
+                if (data.Action === "Done") {
+                  approveBtn.disabled = true;
+                  rejectBtn.disabled = true;
+                  console.log("    🔒 Buttons frozen (Action=Done)");
+                } else {
+                  // Approve handler
+                  approveBtn.addEventListener("click", async () => {
+                    try {
+                      await updateDoc(leaveDocRef, {
+                        Status: "Approved",
+                        Action: "Done"
+                      });
+                      const approvedMeta = getStatusMeta("Approved");
+                      badgeEl.innerText = approvedMeta.text;
+                      badgeEl.className = `status-pill ${approvedMeta.cls}`;
+                      approveBtn.disabled = true;
+                      rejectBtn.disabled = true;
+                      console.log("    ✅ Approved & Action marked Done");
+                    } catch (err) {
+                      console.error("Error approving leave:", err);
+                      alert("Failed to approve");
+                    }
+                  });
+                  // Reject handler
+                  rejectBtn.addEventListener("click", async () => {
+                    try {
+                      await updateDoc(leaveDocRef, {
+                        Status: "Rejected",
+                        Action: "Done"
+                      });
+                      const rejectedMeta = getStatusMeta("Rejected");
+                      badgeEl.innerText = rejectedMeta.text;
+                      badgeEl.className = `status-pill ${rejectedMeta.cls}`;
+                      approveBtn.disabled = true;
+                      rejectBtn.disabled = true;
+                      console.log("    ❌ Rejected & Action marked Done");
+                    } catch (err) {
+                      console.error("Error rejecting leave:", err);
+                      alert("Failed to reject");
+                    }
+                  });
+                }
+              }
+          
+              console.log("▶️ loadLeaveRequests() done");
+            } catch (err) {
+              console.error("❌ loadLeaveRequests() error:", err);
+            }
+          }
+          
+          // Kick it off after HR data is loaded
+</script>
+
+</html>

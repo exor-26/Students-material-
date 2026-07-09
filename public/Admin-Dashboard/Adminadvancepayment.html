@@ -1,0 +1,1326 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <title>Admin Dashboard - Payment Management</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/x-icon" href="logo2.ico" />
+  <link rel="stylesheet" type="text/css" href="Hradvancepayment.css" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap-theme.min.css" />
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+
+  <style>
+    *, *::before, *::after {
+      cursor:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" viewBox="0 0 24 24"><path fill="%23FFF" stroke="%23FF2711" stroke-width="2" d="M5.5 3.21V20.8c0 .45.54.67.85.35l4.86-4.86a.5.5 0 0 1 .35-.15h6.87a.5.5 0 0 0 .35-.85L6.35 2.85a.5.5 0 0 0-.85.35Z"></path></svg>') 5 5, auto;
+    }
+
+    a, button, input[type="submit"], input[type="button"],
+    label, select, .dropbtn, .sub-btn, .btn, .cn,
+    .carousel-control, .hideMenuButton, .item a,
+    input[type="text"], input[type="search"], textarea {
+      cursor:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="%23FFF" stroke="%23FF2711" stroke-width="2" stroke-linejoin="round" d="M10 11V8.99c0-.88.59-1.64 1.44-1.86h.05A1.99 1.99 0 0 1 14 9.05V12v-2c0-.88.6-1.65 1.46-1.87h.05A1.98 1.98 0 0 1 18 10.06V13v-1.94a2 2 0 0 1 1.51-1.94h0A2 2 0 0 1 22 11.06V14c0 .6-.08 1.27-.21 1.97a7.96 7.96 0 0 1-7.55 6.48 54.98 54.98 0 0 1-4.48 0 7.96 7.96 0 0 1-7.55-6.48C2.08 15.27 2 14.59 2 14v-1.49c0-1.11.9-2.01 2.01-2.01h0a2 2 0 0 1 2.01 2.03l-.01.97v-10c0-1.1.9-2 2-2h0a2 2 0 0 1 2 2V11Z"></path></svg>') 5 5, auto;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --topbar-height: 78px;
+      --sidebar-width: 280px;
+      --bg-dark: #081523;
+      --bg-mid: #0e2238;
+      --card-bg: rgba(12, 25, 45, 0.85);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --text-main: #ffffff;
+      --text-soft: #b8c9df;
+      --accent: #ff7a2f;
+      --accent-2: #1f77ff;
+      --success: #14b86a;
+      --danger: #ef4d4d;
+      --warning: #ffc048;
+      --shadow: 0 18px 40px rgba(0, 0, 0, 0.25);
+      --radius: 22px;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      background:
+        linear-gradient(135deg, rgba(7, 16, 30, 0.95), rgba(14, 34, 56, 0.92)),
+        url("https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1600&q=80") center/cover no-repeat fixed;
+      color: var(--text-main);
+    }
+
+    .app-shell {
+      height: 100vh;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    .topbar {
+      height: var(--topbar-height);
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(7, 16, 30, 0.88);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 2000;
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      min-width: 0;
+    }
+
+    .menu-toggle {
+      width: 46px;
+      height: 46px;
+      border: none;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
+      color: #fff;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: 0.25s ease;
+      flex-shrink: 0;
+      box-shadow: 0 10px 22px rgba(0,0,0,0.16);
+    }
+
+    .menu-toggle:hover {
+      transform: translateY(-1px);
+      background: linear-gradient(135deg, rgba(255,122,47,0.18), rgba(31,119,255,0.16));
+    }
+
+    .brand-title {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 700;
+      color: #fff;
+      text-decoration: none !important;
+    }
+
+    .brand-subtitle {
+      margin: 2px 0 0;
+      color: var(--text-soft);
+      font-size: 13px;
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-shrink: 0;
+    }
+
+    .logout {
+      text-decoration: none !important;
+      color: #fff !important;
+      background: linear-gradient(135deg, #ff8a3c, #ff5a1f);
+      padding: 11px 18px;
+      border-radius: 12px;
+      font-weight: 700;
+      transition: 0.25s ease;
+      box-shadow: 0 10px 24px rgba(255, 90, 31, 0.24);
+      white-space: nowrap;
+    }
+
+    .logout:hover {
+      transform: translateY(-1px);
+      text-decoration: none !important;
+      color: #fff !important;
+    }
+
+    .dashboard-layout {
+      display: block;
+      width: 100%;
+      height: 100vh;
+    }
+
+    /* ===== NAVBAR / SIDEBAR UPDATED ===== */
+    nav.sidebar {
+      width: var(--sidebar-width);
+      min-width: var(--sidebar-width);
+      max-width: var(--sidebar-width);
+      position: fixed;
+      top: var(--topbar-height);
+      left: 0;
+      bottom: 0;
+      padding: 20px 16px 22px;
+      background:
+        linear-gradient(180deg, rgba(6, 16, 30, 0.98), rgba(8, 22, 40, 0.96));
+      backdrop-filter: blur(16px);
+      border-right: 1px solid rgba(255,255,255,0.06);
+      overflow-y: auto;
+      overflow-x: hidden;
+      z-index: 1500;
+      box-shadow: 18px 0 45px rgba(0, 0, 0, 0.24);
+    }
+
+    nav.sidebar::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    nav.sidebar::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,0.14);
+      border-radius: 999px;
+    }
+
+    .sidebar-top-card {
+      position: relative;
+      padding: 20px 18px 18px;
+      border-radius: 24px;
+      background:
+        linear-gradient(135deg, rgba(255,122,47,0.16), rgba(31,119,255,0.14)),
+        rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow:
+        0 16px 32px rgba(0,0,0,0.20),
+        inset 0 1px 0 rgba(255,255,255,0.06);
+      overflow: hidden;
+    }
+
+    .sidebar-top-card::after {
+      content: "";
+      position: absolute;
+      right: -30px;
+      top: -30px;
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,255,255,0.16), transparent 70%);
+    }
+
+    .sidebar-mini-label {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.4px;
+      color: #ffd8c2;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: 5px 10px;
+      border-radius: 999px;
+      margin-bottom: 12px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .sidebar-main-title {
+      font-size: 19px;
+      font-weight: 800;
+      color: #ffffff;
+      margin: 0 0 6px;
+      line-height: 1.2;
+      position: relative;
+      z-index: 1;
+    }
+
+    .sidebar-main-subtitle {
+      font-size: 13px;
+      color: #d5e2f1;
+      line-height: 1.7;
+      margin: 0 0 14px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .sidebar-status-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      position: relative;
+      z-index: 1;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .sidebar-status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #dfffe9;
+      background: rgba(20,184,106,0.14);
+      border: 1px solid rgba(20,184,106,0.22);
+    }
+
+    .sidebar-status-badge::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #4df39b;
+      box-shadow: 0 0 10px rgba(77,243,155,0.7);
+    }
+
+    .sidebar-status-text {
+      font-size: 11px;
+      color: #c6d8ec;
+      text-align: right;
+      line-height: 1.4;
+    }
+
+    .sidebar-section-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #8ea4c5;
+      margin: 24px 8px 16px;
+      font-weight: 700;
+    }
+
+    #side-bar {
+      list-style: none;
+      padding-left: 0;
+      margin: 0;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    #side-bar li {
+      margin-bottom: 0;
+      width: 100%;
+    }
+
+    #side-bar a,
+    #side-bar summary {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      width: 100%;
+      padding: 15px 15px;
+      border-radius: 20px;
+      text-decoration: none !important;
+      color: #edf4ff !important;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.055), rgba(255,255,255,0.025));
+      border: 1px solid rgba(255,255,255,0.06);
+      transition: all 0.28s ease;
+      position: relative;
+      overflow: hidden;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+      word-break: break-word;
+    }
+
+    #side-bar a::before,
+    #side-bar summary::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, rgba(255,122,47,0.13), rgba(31,119,255,0.11));
+      opacity: 0;
+      transition: opacity 0.28s ease;
+    }
+
+    #side-bar a::after,
+    #side-bar summary::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 18%;
+      width: 4px;
+      height: 64%;
+      border-radius: 999px;
+      background: linear-gradient(180deg, #ff8a3c, #1f77ff);
+      opacity: 0;
+      transition: opacity 0.28s ease;
+    }
+
+    #side-bar a:hover,
+    #side-bar summary:hover {
+      transform: translateX(6px);
+      border-color: rgba(255,255,255,0.10);
+      box-shadow: 0 14px 28px rgba(0,0,0,0.20);
+    }
+
+    #side-bar a:hover::before,
+    #side-bar summary:hover::before,
+    #side-bar a:hover::after,
+    #side-bar summary:hover::after {
+      opacity: 1;
+    }
+
+    #side-bar a.active,
+    #side-bar summary.active {
+      background: linear-gradient(135deg, rgba(255,122,47,0.18), rgba(31,119,255,0.16));
+      border-color: rgba(255,255,255,0.12);
+      box-shadow: 0 16px 30px rgba(0,0,0,0.24);
+    }
+
+    #side-bar a.active::before,
+    #side-bar summary.active::before,
+    #side-bar a.active::after,
+    #side-bar summary.active::after {
+      opacity: 1;
+    }
+
+    .nav-icon {
+      width: 44px;
+      height: 44px;
+      min-width: 44px;
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, rgba(255,255,255,0.13), rgba(255,255,255,0.05));
+      border: 1px solid rgba(255,255,255,0.08);
+      color: #fff;
+      font-size: 17px;
+      position: relative;
+      z-index: 1;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+    }
+
+    .nav-text {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .nav-text strong {
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.2;
+    }
+
+    .nav-text span {
+      margin-top: 4px;
+      font-size: 11px;
+      line-height: 1.45;
+      color: #aabed8;
+    }
+
+    .nav-arrow {
+      margin-left: auto;
+      font-size: 16px;
+      color: #93b2d8;
+      position: relative;
+      z-index: 1;
+      transition: transform 0.25s ease;
+    }
+
+    #side-bar a:hover .nav-arrow,
+    #side-bar summary:hover .nav-arrow {
+      transform: translateX(4px);
+    }
+    /* ===== END NAVBAR / SIDEBAR UPDATED ===== */
+
+    main {
+      position: fixed;
+      top: var(--topbar-height);
+      left: var(--sidebar-width);
+      right: 0;
+      bottom: 0;
+      min-width: 0;
+      padding: 28px 30px;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    .hero-card {
+      background: linear-gradient(135deg, rgba(22, 61, 112, 0.88), rgba(12, 27, 53, 0.92));
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 24px;
+      padding: 30px 34px;
+      box-shadow: var(--shadow);
+      margin-bottom: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-card::after {
+      content: "";
+      position: absolute;
+      right: -80px;
+      top: -80px;
+      width: 220px;
+      height: 220px;
+      background: radial-gradient(circle, rgba(255,122,47,0.18), transparent 70%);
+      border-radius: 50%;
+    }
+
+    .page-tag {
+      display: inline-block;
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      color: #ffb88f;
+      background: rgba(255, 122, 47, 0.16);
+      border: 1px solid rgba(255, 122, 47, 0.2);
+      margin-bottom: 14px;
+    }
+
+    .hero-card h1 {
+      margin: 0 0 10px;
+      font-size: 32px;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.15;
+    }
+
+    .hero-card p {
+      margin: 0;
+      max-width: 850px;
+      font-size: 15px;
+      line-height: 1.8;
+      color: #d0def0;
+    }
+
+    .panel-card {
+      background: var(--card-bg);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 22px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+      width: 100%;
+      min-width: 0;
+      margin-bottom: 24px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .section-header h2 {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .section-badge {
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #9ec3ff;
+      background: rgba(31, 119, 255, 0.14);
+      border: 1px solid rgba(31, 119, 255, 0.22);
+      white-space: nowrap;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(220px, 1fr));
+      gap: 18px;
+    }
+
+    .info-item label,
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #9db4d0;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+    }
+
+    .info-value{
+  width: 100%;
+
+  height: 52px !important;
+  min-height: 52px !important;
+
+  border-radius: 16px !important;
+
+  border: 1px solid rgba(255,255,255,0.10) !important;
+
+  background: rgba(255,255,255,0.06) !important;
+
+  color: #fff !important;
+
+  padding: 0 18px !important;
+
+  font-size: 15px !important;
+  font-weight: 500;
+
+  display: flex;
+  align-items: center;
+
+  box-sizing: border-box;
+
+  transition: 0.25s ease;
+}
+
+
+/* INPUT + DROPDOWN */
+.form-control{
+
+  width: 100%;
+
+  height: 52px !important;
+  min-height: 52px !important;
+
+  border-radius: 16px !important;
+
+  border: 1px solid rgba(255,255,255,0.10) !important;
+
+  background: rgba(255,255,255,0.06) !important;
+
+  color: #fff !important;
+
+  padding: 0 16px !important;
+
+  font-size: 15px !important;
+  font-weight: 500;
+
+  outline: none;
+
+  box-shadow: none !important;
+
+  transition: all 0.25s ease;
+
+  box-sizing: border-box;
+
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+
+/* DROPDOWN FIX */
+select.form-control{
+
+  padding-right: 42px !important;
+
+  background-image:
+    linear-gradient(45deg, transparent 50%, #9fb4cf 50%),
+    linear-gradient(135deg, #9fb4cf 50%, transparent 50%);
+
+  background-position:
+    calc(100% - 20px) calc(50% - 3px),
+    calc(100% - 14px) calc(50% - 3px);
+
+  background-size: 6px 6px;
+  background-repeat: no-repeat;
+
+  cursor: pointer;
+}
+
+
+/* OPTION COLOR */
+select.form-control option{
+  color:#000 !important;
+  background:#fff !important;
+}
+
+
+/* FOCUS EFFECT */
+.form-control:focus{
+
+  border-color: rgba(31,119,255,0.65) !important;
+
+  box-shadow:
+    0 0 0 4px rgba(31,119,255,0.10) !important;
+
+  background: rgba(255,255,255,0.08) !important;
+}
+
+
+/* PLACEHOLDER */
+.form-control::placeholder{
+  color:#9fb4cf !important;
+}
+
+
+/* iPad Safari Fix */
+@supports (-webkit-touch-callout: none){
+
+  select.form-control,
+  input[type="date"].form-control{
+
+    height:52px !important;
+
+    line-height:normal !important;
+
+    padding-top:0 !important;
+    padding-bottom:0 !important;
+
+    -webkit-appearance:none;
+    appearance:none;
+  }
+}
+
+
+/* DATE ALIGN FIX */
+input[type="date"]::-webkit-date-and-time-value{
+  text-align:left;
+}
+
+    .form-control:focus {
+      border-color: rgba(31, 119, 255, 0.55) !important;
+      box-shadow: 0 0 0 4px rgba(31, 119, 255, 0.12) !important;
+    }
+
+    .form-control::placeholder {
+      color: #9fb4cf;
+    }
+
+    select.form-control option {
+      color: #000;
+    }
+
+    .form-row-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(220px, 1fr));
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 12px;
+    }
+
+    .btn-primary.custom-btn {
+      border: none;
+      border-radius: 14px;
+      padding: 12px 24px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      cursor: pointer;
+      background: linear-gradient(135deg, #2d7dff, #1657cc);
+      box-shadow: 0 12px 26px rgba(45, 125, 255, 0.25);
+      transition: 0.25s ease;
+      min-height: 48px;
+    }
+
+    .btn-primary.custom-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .table-box {
+      width: 100%;
+      overflow-x: auto;
+      border-radius: 16px;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 8px;
+    }
+
+    .table-box table {
+      width: 100%;
+      min-width: 1000px;
+      border-collapse: collapse;
+      overflow: hidden;
+      border-radius: 16px;
+    }
+
+    .table-box thead tr {
+      background: linear-gradient(135deg, #183b6f, #102849);
+    }
+
+    .table-box thead th {
+      padding: 16px 14px;
+      color: #fff;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      border: none;
+      text-align: left;
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+
+    .table-box tbody tr {
+      background: rgba(255,255,255,0.03);
+      transition: 0.2s ease;
+    }
+
+    .table-box tbody tr:nth-child(even) {
+      background: rgba(255,255,255,0.05);
+    }
+
+    .table-box tbody tr:hover {
+      background: rgba(31, 119, 255, 0.10);
+    }
+
+    .table-box tbody td {
+      padding: 15px 14px;
+      color: #eaf2ff;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+
+    .uid-pill {
+      display: inline-block;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      color: #e6f0ff;
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .status-success {
+      display: inline-block;
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      background: rgba(20, 184, 106, 0.16);
+      color: #90efbd;
+      border: 1px solid rgba(20, 184, 106, 0.22);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 28px !important;
+      color: #a8bdd8 !important;
+      font-style: italic;
+    }
+
+    @media (max-width: 1200px) {
+      .form-row-grid {
+        grid-template-columns: repeat(2, minmax(220px, 1fr));
+      }
+    }
+
+    @media (max-width: 900px) {
+    html,
+    body {
+        width: 100%;
+        min-height: 100%;
+        height: auto;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .app-shell {
+        height: auto;
+        min-height: 100vh;
+        overflow: visible;
+    }
+
+    .dashboard-layout {
+        height: auto;
+        min-height: 100vh;
+        padding-top: var(--topbar-height);
+    }
+
+    nav.sidebar {
+        width: 100%;
+        min-width: 100%;
+        max-width: 100%;
+
+        /* IMPORTANT FIX */
+        position: relative;
+        top: auto;
+        left: auto;
+        right: auto;
+        bottom: auto;
+
+        height: auto;
+        max-height: none;
+        overflow: visible;
+
+        border-right: none;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+        border-radius: 0 0 24px 24px;
+        z-index: 100;
+        padding: 14px;
+    }
+
+    .sidebar-top-card {
+        margin-bottom: 0;
+    }
+
+    .sidebar-section-title {
+        margin: 18px 6px 14px;
+    }
+
+    #side-bar {
+        display: none;
+        gap: 10px;
+    }
+
+    #side-bar.active {
+        display: flex;
+    }
+
+    .sidebar-status-row {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .sidebar-status-text {
+        text-align: left;
+    }
+
+    main {
+        /* IMPORTANT FIX */
+        position: relative;
+        top: auto;
+        left: auto;
+        right: auto;
+        bottom: auto;
+
+        width: 100%;
+        padding: 18px;
+        overflow: visible;
+    }
+
+    .hero-card h1 {
+        font-size: 24px;
+    }
+
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .brand-subtitle {
+        display: none;
+    }
+}
+
+    @media (max-width: 600px) {
+      .topbar {
+        padding: 0 14px;
+      }
+
+      .topbar-right {
+        gap: 10px;
+      }
+
+      .logout {
+        padding: 9px 14px;
+        font-size: 13px;
+      }
+
+      .hero-card,
+      .panel-card {
+        padding: 18px;
+        border-radius: 18px;
+      }
+
+      .btn-primary.custom-btn {
+        width: 100%;
+      }
+
+      .form-actions {
+        justify-content: stretch;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="topbar-left">
+        <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+        <div>
+          <a href="#" class="brand-title">Admin Dashboard</a>
+          <p class="brand-subtitle">Advance Payment & Recovery Management Panel</p>
+        </div>
+      </div>
+
+      <div class="topbar-right">
+        <a href="#" class="logout" onclick="logoutUser()">Logout</a>
+      </div>
+    </header>
+
+    <div class="dashboard-layout">
+      <nav class="sidebar">
+        <div class="sidebar-top-card">
+          <div class="sidebar-mini-label">Admin Panel</div>
+          <h3 class="sidebar-main-title">Command Center</h3>
+          <p class="sidebar-main-subtitle">
+            Access advance payment entries, recovery flow, and important admin payment sections from one clean navigation area.
+          </p>
+
+          <div class="sidebar-status-row">
+            <span class="sidebar-status-badge">Payment Active</span>
+            <div class="sidebar-status-text">
+              Secure access<br />
+              Quick navigation
+            </div>
+          </div>
+        </div>
+
+        <div class="sidebar-section-title">Navigation</div>
+        <ul id="side-bar"></ul>
+      </nav>
+
+      <main>
+        <section class="hero-card">
+          <span class="page-tag">ADVANCE PAYMENT PANEL</span>
+          <h1>Advance Payment</h1>
+          <p>
+            Record, monitor, and review employee advance payments with clear transfer
+            type, deduction plan, payment date, and payment history in one admin panel.
+          </p>
+        </section>
+
+        <section class="panel-card">
+          <div class="section-header">
+            <h2>Admin Details</h2>
+            <span class="section-badge">Profile</span>
+          </div>
+
+          <div class="info-grid">
+            <div class="info-item">
+              <label>Admin Name</label>
+              <div class="info-value" id="hrNameDisplay">Loading...</div>
+            </div>
+
+            <div class="info-item">
+              <label>Admin ID</label>
+              <div class="info-value" id="hrIdDisplay">Loading...</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel-card">
+          <div class="section-header">
+            <h2>Advance Payment Entry</h2>
+            <span class="section-badge">Entry Form</span>
+          </div>
+
+          <form id="advancePaymentForm">
+            <div class="form-row-grid">
+              <div class="form-group">
+                <label for="advUserId">User ID</label>
+                <input type="text" id="advUserId" class="form-control" placeholder="Enter UID" required autofocus>
+              </div>
+
+              <div class="form-group">
+                <label for="advUserType">User Type</label>
+                <select id="advUserType" class="form-control" required>
+                  <option value="" disabled selected>Select User Type</option>
+                  <option value="Employee">Employee</option>
+                  <option value="Supervisor">Supervisor</option>
+                  <option value="AS">AS</option>
+                  <option value="Site-Incharge">Site-Incharge</option>
+                  <option value="HR">HR</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="advUserName">User Name</label>
+                <input type="text" id="advUserName" class="form-control" placeholder="Enter full name" required>
+              </div>
+
+              <div class="form-group">
+                <label for="advAmount">Advance Amount</label>
+                <input type="number" id="advAmount" class="form-control" placeholder="e.g. 1000" min="0" required>
+              </div>
+
+              <div class="form-group">
+                <label for="advTransferType">Transfer Type</label>
+                <select id="advTransferType" class="form-control" required>
+                  <option value="" disabled selected>Select Transfer Type</option>
+                  <option value="Account Transfer">Account Transfer</option>
+                  <option value="Cash Payment">Cash Payment</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="advDeductionPlan">Deduction Plan</label>
+                <select id="advDeductionPlan" class="form-control" required>
+                  <option value="" disabled selected>Select Deduction Plan</option>
+                  <option value="1m-100%">1 Month – 100%</option>
+                  <option value="2m-50-50">2 Months – 50% / 50%</option>
+                  <option value="2m-40-60">2 Months – 40% / 60%</option>
+                  <option value="3m-50-25-25">3 Months – 50% / 25% / 25%</option>
+                  <option value="4m-50-25-15-10">4 Months – 50% / 25% / 15% / 10%</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="advPaymentDate">Payment Date</label>
+                <input type="date" id="advPaymentDate" class="form-control" required>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary custom-btn">Submit Advance</button>
+            </div>
+          </form>
+        </section>
+
+        <section class="panel-card">
+          <div class="section-header">
+            <h2>Advance Payment Records</h2>
+            <span class="section-badge">History</span>
+          </div>
+
+          <div class="table-box">
+            <table id="advanceTable">
+              <thead>
+                <tr>
+                  <th>User ID</th>
+                  <th>User Type</th>
+                  <th>Name</th>
+                  <th>Amount</th>
+                  <th>Transfer Type</th>
+                  <th>Deduction Plan</th>
+                  <th>Payment Date</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td colspan="8" class="empty-state">No advance payment records loaded yet.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    function toggleMenu() {
+      const sidebar = document.getElementById("side-bar");
+      sidebar.classList.toggle("active");
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const currentPage = window.location.pathname.split("/").pop();
+      const navLinks = document.querySelectorAll("#side-bar a");
+
+      navLinks.forEach(link => {
+        const href = link.getAttribute("href");
+        if (href === currentPage) {
+          link.classList.add("active");
+        }
+      });
+    });
+  </script>
+
+  <script type="module" src="/public/control.js"></script>
+</body>
+</html>
+
+  <script type="module">
+    import {
+      getFirestore,
+      doc,
+      collection,
+      collectionGroup,
+      orderBy,
+      query,
+      where,
+      getDocs,
+      getDoc,
+      setDoc
+    } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+    import { app } from "/public/firebase-config.js";
+    const db = getFirestore(app);
+
+    const adminEmail = localStorage.getItem("adminEmail");
+    if (adminEmail) {
+      const adminDocRef = doc(db, "Admin", adminEmail);
+      getDoc(adminDocRef)
+        .then(docSnap => {
+          if (docSnap.exists()) {
+            const adminData = docSnap.data();
+            document.getElementById("hrNameDisplay").innerText = adminData.Name;
+            document.getElementById("hrIdDisplay").innerText = adminData.uid;
+          }
+        })
+        .catch(console.error);
+    } else {
+      console.error("No Admin email found in localStorage.");
+    }
+
+    const firstSix = s => s.trim().slice(0, 6);
+    const monthKey = iso => iso.slice(0, 7);
+
+    const uidInput = document.getElementById("advUserId");
+    const typeSelect = document.getElementById("advUserType");
+    const nameInput = document.getElementById("advUserName");
+    const amountInput = document.getElementById("advAmount");
+    const transferSelect = document.getElementById("advTransferType");
+    const planSelect = document.getElementById("advDeductionPlan");
+    const dateInput = document.getElementById("advPaymentDate");
+    const form = document.getElementById("advancePaymentForm");
+    const tableBody = document.querySelector("#advanceTable tbody");
+
+    async function loadHistory(uid) {
+      tableBody.innerHTML = "";
+      const recRef = collection(db, "AdPayment", uid, "Records");
+      const snap = await getDocs(recRef);
+
+      if (snap.empty) {
+        tableBody.innerHTML = `<tr><td colspan="8" class="empty-state">No advance payment history found for this user.</td></tr>`;
+        return;
+      }
+
+      snap.forEach(d => {
+        const rec = d.data();
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td><span class="uid-pill">${uid}</span></td>
+          <td>${rec.userType}</td>
+          <td>${rec.userName}</td>
+          <td>${rec.amounts}</td>
+          <td>${rec.transferType}</td>
+          <td>${rec.deductionPlan}</td>
+          <td>${rec.paymentDate}</td>
+          <td><span class="status-success">Successful</span></td>
+        `;
+        tableBody.appendChild(tr);
+      });
+    }
+
+    async function handleUidChange() {
+      const val = firstSix(uidInput.value);
+      if (val.length !== 6) return;
+
+      let col;
+      if (val.startsWith("55")) col = "Supervisor";
+      else if (val.startsWith("66")) col = "AS";
+      else if (val.startsWith("30")) col = "Site-Incharge";
+      else if (val.startsWith("20")) col = "HR";
+      else col = "Employee";
+
+      const q = query(collection(db, col), where("uid", "==", val));
+      const snap = await getDocs(q);
+      if (snap.empty) {
+        alert("No user found with UID “" + val + "”");
+        return;
+      }
+
+      const data = snap.docs[0].data();
+
+      typeSelect.value = col;
+      nameInput.value = data.Name || data.fullName || "";
+
+      typeSelect.disabled = true;
+      nameInput.disabled = true;
+      await loadHistory(val);
+    }
+
+    uidInput.addEventListener("input", handleUidChange);
+
+    document.addEventListener("DOMContentLoaded", async () => {
+      tableBody.innerHTML = "";
+      const q = query(collectionGroup(db, "Records"), orderBy("amounts", "desc"));
+      const snap = await getDocs(q);
+
+      if (snap.empty) {
+        tableBody.innerHTML = `<tr><td colspan="8" class="empty-state">No advance payment records found.</td></tr>`;
+        return;
+      }
+
+      for (const d of snap.docs) {
+        const rec = d.data();
+        const uid = d.ref.parent.parent.id;
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td><span class="uid-pill">${uid}</span></td>
+          <td>${rec.userType}</td>
+          <td>${rec.userName}</td>
+          <td>${rec.amounts}</td>
+          <td>${rec.transferType}</td>
+          <td>${rec.deductionPlan}</td>
+          <td>${rec.paymentDate}</td>
+          <td><span class="status-success">Successful</span></td>
+        `;
+        tableBody.appendChild(tr);
+      }
+    });
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const raw = uidInput.value.trim();
+      const val = raw.slice(0, 6);
+      if (val.length === 6) {
+        loadHistory(val);
+      }
+    });
+
+    form.addEventListener("submit", async e => {
+      e.preventDefault();
+      const uid = firstSix(uidInput.value);
+      const userName = nameInput.value.trim();
+      const userType = typeSelect.value;
+      const amounts = amountInput.value.trim();
+      const transfer = transferSelect.value;
+      const plan = planSelect.value;
+      const payDate = dateInput.value;
+
+      if (![uid, userName, userType, amounts, transfer, plan, payDate].every(v => v)) {
+        return alert("Please fill in every field.");
+      }
+
+      const recRef = collection(db, "AdPayment", uid, "Records");
+      const snap = await getDocs(recRef);
+      if (snap.docs.find(d => monthKey(d.id) === monthKey(payDate))) {
+        return alert("An advance already exists for this user in " + monthKey(payDate));
+      }
+
+      await setDoc(doc(recRef, payDate), {
+        uid,
+        userType,
+        userName,
+        amounts,
+        transferType: transfer,
+        deductionPlan: plan,
+        paymentDate: payDate
+      });
+
+      alert("Advance recorded");
+      form.reset();
+
+      typeSelect.disabled = false;
+      nameInput.disabled = false;
+
+      loadHistory(uid);
+    });
+
+    document.addEventListener("DOMContentLoaded", () => {
+      if (firstSix(uidInput.value).length === 6) {
+        handleUidChange();
+        typeSelect.disabled = true;
+        nameInput.disabled = true;
+      }
+    });
+  </script>
+</body>
+
+</html>

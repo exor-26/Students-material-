@@ -1,0 +1,1313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Admin Dashboard - Employee Joining Approval</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap-theme.min.css" />
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --topbar-height: 78px;
+      --sidebar-width: 280px;
+      --bg-dark: #081523;
+      --card-bg: rgba(12, 25, 45, 0.88);
+      --text-main: #ffffff;
+      --text-soft: #b8c9df;
+      --accent: #ff7a2f;
+      --blue: #1f77ff;
+      --green: #20c997;
+      --red: #ff4d4f;
+      --yellow: #ffc107;
+      --shadow: 0 18px 40px rgba(0, 0, 0, 0.25);
+    }
+
+    html,
+    body {
+      width: 100%;
+      min-height: 100%;
+      background:
+        linear-gradient(135deg, rgba(7, 16, 30, 0.96), rgba(14, 34, 56, 0.93)),
+        url("https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1600&q=80") center/cover no-repeat fixed;
+      color: var(--text-main);
+      font-family: "Segoe UI", Arial, sans-serif;
+    }
+
+    body {
+      overflow-x: hidden;
+    }
+
+    .topbar {
+      height: var(--topbar-height);
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(7, 16, 30, 0.9);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 2000;
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .menu-toggle {
+      width: 46px;
+      height: 46px;
+      border: none;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
+      color: #fff;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .brand-title {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 800;
+      color: #fff;
+      text-decoration: none !important;
+      line-height: 1.1;
+    }
+
+    .brand-subtitle {
+      margin: 3px 0 0;
+      color: var(--text-soft);
+      font-size: 13px;
+    }
+
+    .logout {
+      text-decoration: none !important;
+      color: #fff !important;
+      background: linear-gradient(135deg, #ff8a3c, #ff5a1f);
+      padding: 11px 18px;
+      border-radius: 12px;
+      font-weight: 700;
+      box-shadow: 0 10px 24px rgba(255, 90, 31, 0.24);
+      white-space: nowrap;
+    }
+
+    .dashboard-layout {
+      display: flex;
+      padding-top: var(--topbar-height);
+      min-height: 100vh;
+    }
+
+    nav.sidebar {
+      width: var(--sidebar-width);
+      min-width: var(--sidebar-width);
+      padding: 20px 16px 22px;
+      background: linear-gradient(180deg, rgba(6, 16, 30, 0.98), rgba(8, 22, 40, 0.96));
+      border-right: 1px solid rgba(255,255,255,0.06);
+      position: fixed;
+      top: var(--topbar-height);
+      left: 0;
+      bottom: 0;
+      overflow-y: auto;
+      z-index: 1500;
+      box-shadow: 18px 0 45px rgba(0,0,0,0.24);
+    }
+
+    .sidebar-top-card {
+      position: relative;
+      padding: 20px 18px 18px;
+      border-radius: 24px;
+      background:
+        linear-gradient(135deg, rgba(255,122,47,0.16), rgba(31,119,255,0.14)),
+        rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: 0 16px 32px rgba(0,0,0,0.20);
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+
+    .sidebar-mini-label {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.4px;
+      color: #ffd8c2;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: 5px 10px;
+      border-radius: 999px;
+      margin-bottom: 12px;
+    }
+
+    .sidebar-main-title {
+      font-size: 19px;
+      font-weight: 800;
+      color: #ffffff;
+      margin: 0 0 6px;
+      line-height: 1.2;
+    }
+
+    .sidebar-main-subtitle {
+      font-size: 13px;
+      color: #d5e2f1;
+      line-height: 1.7;
+      margin: 0;
+    }
+
+    .sidebar-section-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #8ea4c5;
+      margin: 0 8px 16px;
+      font-weight: 700;
+    }
+
+    #side-bar {
+      list-style: none;
+      padding-left: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    #side-bar a {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      width: 100%;
+      padding: 15px;
+      border-radius: 20px;
+      text-decoration: none !important;
+      color: #edf4ff !important;
+      background: linear-gradient(135deg, rgba(255,255,255,0.055), rgba(255,255,255,0.025));
+      border: 1px solid rgba(255,255,255,0.06);
+      transition: all 0.28s ease;
+    }
+
+    #side-bar a.active,
+    #side-bar a:hover {
+      background: linear-gradient(135deg, rgba(255,122,47,0.18), rgba(31,119,255,0.16));
+      transform: translateX(6px);
+    }
+
+    .nav-icon {
+      width: 44px;
+      height: 44px;
+      min-width: 44px;
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, rgba(255,255,255,0.13), rgba(255,255,255,0.05));
+      border: 1px solid rgba(255,255,255,0.08);
+      color: #fff;
+      font-size: 17px;
+    }
+
+    .nav-text {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .nav-text strong {
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.2;
+    }
+
+    .nav-text span {
+      margin-top: 4px;
+      font-size: 11px;
+      line-height: 1.45;
+      color: #aabed8;
+    }
+
+    main {
+      margin-left: var(--sidebar-width);
+      width: calc(100% - var(--sidebar-width));
+      padding: 28px 30px;
+    }
+
+    .hero-card {
+      background: linear-gradient(135deg, rgba(22, 61, 112, 0.88), rgba(12, 27, 53, 0.92));
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 24px;
+      padding: 30px 34px;
+      box-shadow: var(--shadow);
+      margin-bottom: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-card::after {
+      content: "";
+      position: absolute;
+      right: -80px;
+      top: -80px;
+      width: 220px;
+      height: 220px;
+      background: radial-gradient(circle, rgba(255, 122, 47, 0.18), transparent 70%);
+      border-radius: 50%;
+    }
+
+    .page-tag {
+      display: inline-block;
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      color: #ffb88f;
+      background: rgba(255, 122, 47, 0.16);
+      border: 1px solid rgba(255, 122, 47, 0.2);
+      margin-bottom: 14px;
+    }
+
+    .hero-card h1 {
+      margin: 0 0 10px;
+      font-size: 32px;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.15;
+    }
+
+    .hero-card p {
+      margin: 0;
+      max-width: 900px;
+      font-size: 15px;
+      line-height: 1.8;
+      color: #d0def0;
+    }
+
+    .panel-card {
+      background: var(--card-bg);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+      margin-bottom: 24px;
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 12px;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    .toolbar-left {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .search-input,
+    .filter-select {
+      min-height: 44px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.06);
+      color: #fff;
+      padding: 10px 14px;
+      outline: none;
+      min-width: 220px;
+    }
+
+    .filter-select option {
+      color: #000;
+    }
+
+    .btn-soft {
+      border: none;
+      border-radius: 14px;
+      padding: 11px 18px;
+      color: #fff;
+      font-weight: 700;
+      background: linear-gradient(135deg, #2d7dff, #1657cc);
+      box-shadow: 0 12px 26px rgba(45, 125, 255, 0.22);
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(170px, 1fr));
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .summary-box {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 18px;
+      padding: 16px;
+    }
+
+    .summary-box span {
+      display: block;
+      color: #aabed8;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+      margin-bottom: 6px;
+    }
+
+    .summary-box strong {
+      color: #fff;
+      font-size: 26px;
+      font-weight: 800;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 1100px;
+      background: rgba(255,255,255,0.03);
+    }
+
+    thead th {
+      background: linear-gradient(135deg, rgba(28, 117, 188, 0.95), rgba(18, 92, 155, 0.95));
+      color: #fff3c6;
+      padding: 14px 12px;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      white-space: nowrap;
+    }
+
+    tbody td {
+      padding: 13px 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      color: #dce8ff;
+      font-size: 13px;
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+
+    tbody tr:hover {
+      background: rgba(255,255,255,0.04);
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+    }
+
+    .status-pending {
+      background: rgba(255,193,7,0.14);
+      color: #ffe69c;
+      border: 1px solid rgba(255,193,7,0.25);
+    }
+
+    .status-approved,
+    .status-success {
+      background: rgba(32,201,151,0.14);
+      color: #bfffea;
+      border: 1px solid rgba(32,201,151,0.25);
+    }
+
+    .status-rejected {
+      background: rgba(255,77,79,0.14);
+      color: #ffc7c8;
+      border: 1px solid rgba(255,77,79,0.25);
+    }
+
+    .action-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .action-btn {
+      border: none;
+      border-radius: 10px;
+      padding: 8px 11px;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .view-btn {
+      background: linear-gradient(135deg, #6c8cff, #3155d4);
+    }
+
+    .approve-btn {
+      background: linear-gradient(135deg, #20c997, #0c8d68);
+    }
+
+    .reject-btn {
+      background: linear-gradient(135deg, #ff4d4f, #c92729);
+    }
+
+    .disabled-btn {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .modal-backdrop-custom {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.72);
+      z-index: 3000;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+    }
+
+    .modal-card-custom {
+      width: min(920px, 96vw);
+      max-height: 88vh;
+      overflow-y: auto;
+      border-radius: 24px;
+      background: linear-gradient(135deg, rgba(11, 28, 52, 0.98), rgba(15, 36, 65, 0.98));
+      border: 1px solid rgba(255,255,255,0.09);
+      box-shadow: 0 30px 70px rgba(0,0,0,0.45);
+      padding: 24px;
+    }
+
+    .modal-head-custom {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 14px;
+      margin-bottom: 18px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding-bottom: 14px;
+    }
+
+    .modal-head-custom h2 {
+      margin: 0;
+      color: #fff;
+      font-size: 24px;
+      font-weight: 800;
+    }
+
+    .close-modal-btn {
+      border: none;
+      background: rgba(255,255,255,0.08);
+      color: #fff;
+      border-radius: 12px;
+      width: 40px;
+      height: 40px;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .details-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(220px, 1fr));
+      gap: 12px;
+    }
+
+    .detail-item {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 14px;
+      padding: 12px;
+      min-height: 70px;
+    }
+
+    .detail-item span {
+      display: block;
+      color: #aabed8;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+
+    .detail-item strong {
+      display: block;
+      color: #fff;
+      font-size: 14px;
+      word-break: break-word;
+      white-space: normal;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 34px;
+      color: #b8c9df;
+      background: rgba(255,255,255,0.03);
+      border-radius: 18px;
+      border: 1px dashed rgba(255,255,255,0.12);
+    }
+
+    @media (max-width: 991px) {
+      .dashboard-layout {
+        display: block;
+      }
+
+      nav.sidebar {
+        position: relative;
+        width: 100%;
+        min-width: 100%;
+        top: auto;
+        bottom: auto;
+        border-right: none;
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+      }
+
+      #side-bar {
+        display: none;
+      }
+
+      #side-bar.active {
+        display: flex;
+      }
+
+      main {
+        margin-left: 0;
+        width: 100%;
+        padding: 18px;
+      }
+
+      .summary-grid {
+        grid-template-columns: repeat(2, minmax(150px, 1fr));
+      }
+    }
+
+    @media (max-width: 700px) {
+      .topbar {
+        padding: 0 14px;
+      }
+
+      .brand-subtitle {
+        display: none;
+      }
+
+      .hero-card,
+      .panel-card {
+        padding: 18px;
+        border-radius: 18px;
+      }
+
+      .summary-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .toolbar,
+      .toolbar-left {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .search-input,
+      .filter-select,
+      .btn-soft {
+        width: 100%;
+        min-width: 100%;
+      }
+
+      .details-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="topbar">
+    <div class="topbar-left">
+      <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+      <div>
+        <a href="#" class="brand-title">Admin Dashboard</a>
+        <p class="brand-subtitle">Employee Joining Approval Panel</p>
+      </div>
+    </div>
+
+    <a href="#" class="logout" onclick="logoutUser()">Logout</a>
+  </header>
+
+  <div class="dashboard-layout">
+    <nav class="sidebar">
+      <div class="sidebar-top-card">
+        <div class="sidebar-mini-label">Admin Panel</div>
+        <h3 class="sidebar-main-title">Approval Center</h3>
+        <p class="sidebar-main-subtitle">
+          Review HR submitted joining requests and approve only verified employee records.
+        </p>
+      </div>
+
+      <div class="sidebar-section-title">Navigation</div>
+      <ul id="side-bar">
+        <li>
+          <a href="#" class="active">
+            <span class="nav-icon">✓</span>
+            <span class="nav-text">
+              <strong>Joining Approval</strong>
+              <span>Approve HR employee joining</span>
+            </span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <main>
+      <section class="hero-card">
+        <span class="page-tag">ADMIN APPROVAL</span>
+        <h1>Employee Joining Approval</h1>
+        <p>
+          HR submitted joining records will appear here first. Employee data will be saved into the final Employee collection only after Admin approval.
+        </p>
+      </section>
+
+      <section class="panel-card">
+        <div class="summary-grid">
+          <div class="summary-box">
+            <span>Total Requests</span>
+            <strong id="totalCount">0</strong>
+          </div>
+          <div class="summary-box">
+            <span>Pending</span>
+            <strong id="pendingCount">0</strong>
+          </div>
+          <div class="summary-box">
+            <span>Approved</span>
+            <strong id="approvedCount">0</strong>
+          </div>
+          <div class="summary-box">
+            <span>Rejected</span>
+            <strong id="rejectedCount">0</strong>
+          </div>
+        </div>
+
+        <div class="toolbar">
+          <div class="toolbar-left">
+            <input type="text" id="searchInput" class="search-input" placeholder="Search by name, UID, joining code, site..." />
+            <select id="statusFilter" class="filter-select">
+              <option value="All">All Status</option>
+              <option value="Pending">Pending</option>
+              <option value="Success">Approved / Success</option>
+              <option value="Rejected">Rejected</option>
+            </select>
+          </div>
+          <button type="button" class="btn-soft" id="refreshBtn">Refresh</button>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Joining Code</th>
+                <th>UID</th>
+                <th>Employee Name</th>
+                <th>Site</th>
+                <th>Department</th>
+                <th>HR</th>
+                <th>Submitted Date</th>
+                <th>Approval Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="approvalTableBody">
+              <tr>
+                <td colspan="9" style="text-align:center;">Loading...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="modal-backdrop-custom" id="detailsModal">
+    <div class="modal-card-custom">
+      <div class="modal-head-custom">
+        <div>
+          <h2>Joining Request Details</h2>
+          <p style="color:#b8c9df; margin:6px 0 0;">Complete HR submitted employee details</p>
+        </div>
+        <button class="close-modal-btn" onclick="closeDetailsModal()">×</button>
+      </div>
+
+      <div class="details-grid" id="detailsGrid"></div>
+    </div>
+  </div>
+
+  <script>
+    function toggleMenu() {
+      const sidebar = document.getElementById("side-bar");
+      sidebar.classList.toggle("active");
+    }
+  </script>
+
+  <script type="module" src="/public/control.js"></script>
+
+  <script type="module">
+  import {
+    getFirestore,
+    collection,
+    getDocs,
+    getDoc,
+    doc,
+    setDoc,
+    updateDoc,
+    serverTimestamp,
+    query,
+    orderBy
+  } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+
+  import { app } from "/public/firebase-config.js";
+
+  const db = getFirestore(app);
+
+  const tableBody = document.getElementById("approvalTableBody");
+  const searchInput = document.getElementById("searchInput");
+  const statusFilter = document.getElementById("statusFilter");
+  const refreshBtn = document.getElementById("refreshBtn");
+
+  const totalCountEl = document.getElementById("totalCount");
+  const pendingCountEl = document.getElementById("pendingCount");
+  const approvedCountEl = document.getElementById("approvedCount");
+  const rejectedCountEl = document.getElementById("rejectedCount");
+
+  const detailsModal = document.getElementById("detailsModal");
+  const detailsGrid = document.getElementById("detailsGrid");
+
+  let joiningRequests = [];
+
+  const FUNCTION_URL =
+    "https://createemployeeauth-q2jkd4n22q-uc.a.run.app";
+
+  function safeText(value) {
+    return value === undefined || value === null || value === "" ? "-" : String(value);
+  }
+
+  function formatDate(value) {
+    try {
+      if (!value) return "-";
+
+      if (value.toDate) {
+        return value.toDate().toLocaleString("en-IN");
+      }
+
+      const date = new Date(value);
+      if (isNaN(date.getTime())) return safeText(value);
+
+      return date.toLocaleString("en-IN");
+    } catch (e) {
+      return "-";
+    }
+  }
+
+  function getStatus(data) {
+    const approvalStatus = String(data.approvalStatus || "");
+    const status = String(data.status || "");
+    const finalStatuses = ["success", "approved", "rejected"];
+
+    if (finalStatuses.includes(normalizeText(approvalStatus))) return approvalStatus;
+    if (finalStatuses.includes(normalizeText(status))) return status;
+
+    return approvalStatus || status || "Pending";
+  }
+
+  function statusClass(status) {
+    const s = String(status || "").toLowerCase();
+
+    if (s === "success" || s === "approved") return "status-pill status-success";
+    if (s === "rejected") return "status-pill status-rejected";
+
+    return "status-pill status-pending";
+  }
+
+  function normalizeText(value) {
+    return String(value || "").toLowerCase().trim();
+  }
+
+  function setRequestProcessing(id, isProcessing) {
+    const item = getRequestById(id);
+    if (!item) return;
+
+    item.isProcessing = isProcessing;
+    renderTable();
+  }
+
+  function markRequestFinished(id, updates) {
+    const item = getRequestById(id);
+    if (!item) return;
+
+    item.isProcessing = false;
+    item.data = {
+      ...item.data,
+      ...updates
+    };
+    renderCounts();
+    renderTable();
+  }
+
+  function renderCounts() {
+    let pending = 0;
+    let approved = 0;
+    let rejected = 0;
+
+    joiningRequests.forEach(item => {
+      const s = normalizeText(getStatus(item.data));
+
+      if (s === "success" || s === "approved") approved++;
+      else if (s === "rejected") rejected++;
+      else pending++;
+    });
+
+    totalCountEl.textContent = joiningRequests.length;
+    pendingCountEl.textContent = pending;
+    approvedCountEl.textContent = approved;
+    rejectedCountEl.textContent = rejected;
+  }
+
+  function renderTable() {
+    const search = normalizeText(searchInput.value);
+    const filter = statusFilter.value;
+
+    const filtered = joiningRequests.filter(item => {
+      const d = item.data;
+      const status = getStatus(d);
+
+      const haystack = [
+        d.joiningCode,
+        d.uid,
+        d.fullName,
+        d.Site,
+        d.departmentSelect,
+        d.hrSelect,
+        d.hrId,
+        d.officialEmail,
+        d.defaultEmail,
+        d.telephone
+      ].map(normalizeText).join(" ");
+
+      const matchSearch = !search || haystack.includes(search);
+
+      let matchStatus = true;
+      if (filter !== "All") {
+        if (filter === "Success") {
+          matchStatus = ["success", "approved"].includes(normalizeText(status));
+        } else {
+          matchStatus = normalizeText(status) === normalizeText(filter);
+        }
+      }
+
+      return matchSearch && matchStatus;
+    });
+
+    if (!filtered.length) {
+      tableBody.innerHTML = `
+        <tr>
+          <td colspan="9">
+            <div class="empty-state">No joining approval requests found.</div>
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    tableBody.innerHTML = "";
+
+    filtered.forEach(item => {
+      const d = item.data;
+      const status = getStatus(d);
+      const isPending = normalizeText(status) === "pending";
+      const disableActions = !isPending || item.isProcessing;
+
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${safeText(d.joiningCode || item.id)}</td>
+        <td>${safeText(d.uid)}</td>
+        <td>${safeText(d.fullName)}</td>
+        <td>${safeText(d.Site)}</td>
+        <td>${safeText(d.departmentSelect)}</td>
+        <td>${safeText(d.hrSelect)}<br><small style="color:#9fb4cf;">${safeText(d.hrId)}</small></td>
+        <td>${formatDate(d.submittedAt || d.createdAt || d.joiningDateTime)}</td>
+        <td><span class="${statusClass(status)}">${safeText(status)}</span></td>
+        <td>
+          <div class="action-row">
+            <button class="action-btn view-btn" data-action="view" data-id="${item.id}">View</button>
+            <button class="action-btn approve-btn ${disableActions ? "disabled-btn" : ""}" data-action="approve" data-id="${item.id}" ${disableActions ? "disabled" : ""}>Approve</button>
+            <button class="action-btn reject-btn ${disableActions ? "disabled-btn" : ""}" data-action="reject" data-id="${item.id}" ${disableActions ? "disabled" : ""}>Reject</button>
+          </div>
+        </td>
+      `;
+
+      tableBody.appendChild(tr);
+    });
+  }
+
+  async function loadJoiningRequests() {
+    try {
+      tableBody.innerHTML = `
+        <tr>
+          <td colspan="9" style="text-align:center;">Loading...</td>
+        </tr>
+      `;
+
+      joiningRequests = [];
+
+      let snap;
+      try {
+        snap = await getDocs(query(collection(db, "PendingEmployeeJoining"), orderBy("submittedAt", "desc")));
+      } catch (e) {
+        snap = await getDocs(collection(db, "PendingEmployeeJoining"));
+      }
+
+      snap.forEach(docSnap => {
+        joiningRequests.push({
+          id: docSnap.id,
+          data: docSnap.data() || {}
+        });
+      });
+
+      renderCounts();
+      renderTable();
+    } catch (error) {
+      console.error("Approval requests load error:", error);
+      tableBody.innerHTML = `
+        <tr>
+          <td colspan="9" style="text-align:center;color:#ffc7c8;">
+            Error loading approval requests: ${error.message}
+          </td>
+        </tr>
+      `;
+    }
+  }
+
+  function getRequestById(id) {
+    return joiningRequests.find(item => item.id === id);
+  }
+
+  function openDetails(item) {
+    const d = item.data || {};
+
+    const fields = [
+      ["Joining Code", d.joiningCode || item.id],
+      ["Approval Status", getStatus(d)],
+      ["UID", d.uid],
+      ["Full Name", d.fullName],
+      ["Official Email", d.officialEmail || d.defaultEmail],
+      ["Contact Email", d.contactEmail || d.emailInput],
+      ["Phone", d.telephone],
+      ["Industry / Site", d.Site],
+      ["Department", d.departmentSelect],
+      ["Job", d.jobSelect],
+      ["Role", d.role],
+      ["Card Type", d.CardType],
+      ["Working Type", d.workingType],
+      ["Gender", d.gender],
+      ["DOB", d.dob],
+      ["Nationality", d.nationality],
+      ["Religion", d.religion],
+      ["Marital", d.marital],
+      ["Blood Group", d.blood],
+      ["ISMW", d.ismw],
+      ["Gross Amount", d.gross_amount],
+      ["Permanent Address", d.p_address],
+      ["Current Address", d.address],
+      ["HR", `${safeText(d.hrSelect)} (${safeText(d.hrId)})`],
+      ["Supervisor", `${safeText(d.supervisorSelect)} (${safeText(d.supervisorId)})`],
+      ["A.S.", `${safeText(d.asSelect)} (${safeText(d.asId)})`],
+      ["Site In-charge", `${safeText(d.siteInchargeSelect)} (${safeText(d.siteInchargeId)})`],
+      ["ESI/WC", d.esi_wc],
+      ["UAN", d.uan],
+      ["PF", d.pf],
+      ["Bank", d.bank],
+      ["Account No", d.ac_no],
+      ["Account Holder", d.holder_name],
+      ["Branch", d.bank_branch],
+      ["IFSC", d.ifsc],
+      ["Pass", d.passes],
+      ["Pass Start", d.passes_start],
+      ["Pass End", d.passes_end],
+      ["Submitted By", `${safeText(d.submittedByName)} (${safeText(d.submittedById)})`],
+      ["Submitted At", formatDate(d.submittedAt || d.createdAt || d.joiningDateTime)],
+      ["Approved By", d.approvedByName || d.approvedBy || "-"],
+      ["Approved At", formatDate(d.approvedAt)],
+      ["Rejected By", d.rejectedByName || d.rejectedBy || "-"],
+      ["Rejected At", formatDate(d.rejectedAt)],
+      ["Reject Reason", d.rejectReason || "-"]
+    ];
+
+    detailsGrid.innerHTML = "";
+
+    fields.forEach(([label, value]) => {
+      const div = document.createElement("div");
+      div.className = "detail-item";
+      div.innerHTML = `
+        <span>${label}</span>
+        <strong>${safeText(value)}</strong>
+      `;
+      detailsGrid.appendChild(div);
+    });
+
+    detailsModal.style.display = "flex";
+  }
+
+  window.closeDetailsModal = function () {
+    detailsModal.style.display = "none";
+  };
+
+  async function createEmployeeAuthUser(email, password) {
+    console.log("[Employee Auth] Calling createEmployeeAuth", {
+      url: FUNCTION_URL,
+      email
+    });
+
+    let response;
+    try {
+      response = await fetch(FUNCTION_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          email,
+          password
+        })
+      });
+    } catch (error) {
+      console.error("[Employee Auth] Fetch failed before response", {
+        url: FUNCTION_URL,
+        email,
+        error
+      });
+      throw new Error("Employee Auth Cloud Function is not reachable. Deploy createEmployeeAuth, then approve again.");
+    }
+
+    const text = await response.text();
+
+    let result = {};
+    try {
+      result = JSON.parse(text);
+    } catch (e) {
+      console.log("Non JSON response:", text);
+    }
+
+    console.log("[Employee Auth] createEmployeeAuth response", {
+      status: response.status,
+      ok: response.ok,
+      result,
+      rawText: text
+    });
+
+    if (!response.ok || result.success !== true) {
+      throw new Error(result.error || result.message || "Employee Auth account creation failed");
+    }
+
+    return result;
+  }
+
+  async function approveRequest(id) {
+    const item = getRequestById(id);
+    if (!item) {
+      alert("Request not found.");
+      return;
+    }
+
+    const d = item.data || {};
+    const officialEmail = d.officialEmail || d.defaultEmail;
+
+    if (item.isProcessing) return;
+
+    if (normalizeText(getStatus(item.data)) !== "pending") {
+      alert("This joining request is already processed.");
+      return;
+    }
+
+    if (!officialEmail) {
+      alert("Official email not found. Cannot approve.");
+      return;
+    }
+
+    const tempPass = d.tempPassword;
+    if (!tempPass) {
+      alert("Temp password missing. This record was submitted before the update. Rejoin or contact HR.");
+      return;
+    }
+
+    const confirmApprove = confirm(
+      `Approve joining request?\n\nName: ${safeText(d.fullName)}\nUID: ${safeText(d.uid)}\nJoining Code: ${safeText(d.joiningCode || id)}`
+    );
+
+    if (!confirmApprove) return;
+
+    setRequestProcessing(id, true);
+
+    try {
+      const employeeRef = doc(db, "Employee", officialEmail);
+      const employeeSnap = await getDoc(employeeRef);
+
+      const finalData = { ...d };
+
+      finalData.approvalStatus = "Success";
+      finalData.status = "Approved";
+      finalData.approvedAt = serverTimestamp();
+      finalData.approvedBy = "Admin";
+      finalData.approvedByName = "Admin";
+      finalData.finalSavedAt = serverTimestamp();
+      finalData.accountActivated = false;
+      delete finalData.tempPassword;
+
+      delete finalData.rejectReason;
+      delete finalData.rejectedAt;
+      delete finalData.rejectedBy;
+      delete finalData.rejectedByName;
+
+      await createEmployeeAuthUser(officialEmail, tempPass);
+
+      if (!employeeSnap.exists()) {
+        await setDoc(employeeRef, finalData);
+      }
+
+      await updateDoc(doc(db, "PendingEmployeeJoining", id), {
+        approvalStatus: "Success",
+        status: "Approved",
+        approvedAt: serverTimestamp(),
+        approvedBy: "Admin",
+        approvedByName: "Admin",
+        finalEmployeeDocId: officialEmail
+      });
+
+      markRequestFinished(id, {
+        approvalStatus: "Success",
+        status: "Approved",
+        approvedBy: "Admin",
+        approvedByName: "Admin",
+        finalEmployeeDocId: officialEmail
+      });
+
+      alert(
+        `Employee Approved Successfully.\n\nOfficial Email: ${officialEmail}\nEmployee must set password on first login.`
+      );
+
+      await loadJoiningRequests();
+    } catch (error) {
+      setRequestProcessing(id, false);
+      console.error("Approve error:", error);
+      alert("Approve failed: " + error.message);
+    }
+  }
+
+  async function rejectRequest(id) {
+    const item = getRequestById(id);
+    if (!item) {
+      alert("Request not found.");
+      return;
+    }
+
+    const d = item.data || {};
+
+    if (item.isProcessing) return;
+
+    if (normalizeText(getStatus(item.data)) !== "pending") {
+      alert("This joining request is already processed.");
+      return;
+    }
+
+    const reason = prompt(
+      `Reject joining request?\n\nName: ${safeText(d.fullName)}\nUID: ${safeText(d.uid)}\n\nEnter reject reason:`
+    );
+
+    if (reason === null) return;
+
+    setRequestProcessing(id, true);
+
+    try {
+      await updateDoc(doc(db, "PendingEmployeeJoining", id), {
+        approvalStatus: "Rejected",
+        status: "Rejected",
+        rejectedAt: serverTimestamp(),
+        rejectedBy: "Admin",
+        rejectedByName: "Admin",
+        rejectReason: reason.trim() || "Rejected by Admin"
+      });
+
+      markRequestFinished(id, {
+        approvalStatus: "Rejected",
+        status: "Rejected",
+        rejectedBy: "Admin",
+        rejectedByName: "Admin",
+        rejectReason: reason.trim() || "Rejected by Admin"
+      });
+
+      alert("Joining request rejected successfully.");
+      await loadJoiningRequests();
+    } catch (error) {
+      setRequestProcessing(id, false);
+      console.error("Reject error:", error);
+      alert("Reject failed: " + error.message);
+    }
+  }
+
+  tableBody.addEventListener("click", async function (e) {
+    const btn = e.target.closest("button[data-action]");
+    if (!btn) return;
+    if (btn.disabled || btn.classList.contains("disabled-btn")) return;
+
+    const action = btn.dataset.action;
+    const id = btn.dataset.id;
+    const item = getRequestById(id);
+
+    if (!item) {
+      alert("Request not found.");
+      return;
+    }
+
+    if (action === "view") {
+      openDetails(item);
+    }
+
+    if (action === "approve") {
+      await approveRequest(id);
+    }
+
+    if (action === "reject") {
+      await rejectRequest(id);
+    }
+  });
+
+  searchInput.addEventListener("input", renderTable);
+  statusFilter.addEventListener("change", renderTable);
+  refreshBtn.addEventListener("click", loadJoiningRequests);
+
+  detailsModal.addEventListener("click", function (e) {
+    if (e.target === detailsModal) {
+      closeDetailsModal();
+    }
+  });
+
+  loadJoiningRequests();
+</script>
+</body>
+</html>

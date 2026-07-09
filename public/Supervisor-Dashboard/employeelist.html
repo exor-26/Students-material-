@@ -1,0 +1,1442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Supervisor Dashboard - Employee List</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/x-icon" href="logo2.ico" />
+  <link rel="stylesheet" type="text/css" href="employeelist.css" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap-theme.min.css" />
+
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --topbar-height: 78px;
+      --sidebar-width: 280px;
+      --bg-dark: #081523;
+      --bg-mid: #0e2238;
+      --card-bg: rgba(12, 25, 45, 0.88);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --text-main: #ffffff;
+      --text-soft: #c9d9ee;
+      --text-muted: #8ea4c5;
+      --orange-1: #ff8a3c;
+      --orange-2: #ff5a1f;
+      --blue-1: #2d7dff;
+      --blue-2: #1657cc;
+      --danger: #ef4d4d;
+      --shadow: 0 18px 40px rgba(0, 0, 0, 0.25);
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background:
+        linear-gradient(135deg, rgba(7, 16, 30, 0.95), rgba(14, 34, 56, 0.92)),
+        url("https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1600&q=80") center/cover no-repeat fixed;
+      color: var(--text-main);
+      overflow: hidden;
+    }
+
+    .app-shell {
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .topbar {
+      height: var(--topbar-height);
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(7, 16, 30, 0.88);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 2000;
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      min-width: 0;
+    }
+
+    .menu-toggle {
+      width: 46px;
+      height: 46px;
+      border: none;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
+      color: #fff;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: 0.25s ease;
+      flex-shrink: 0;
+    }
+
+    .menu-toggle:hover {
+      background: linear-gradient(135deg, rgba(255,122,47,0.18), rgba(31,119,255,0.16));
+      transform: translateY(-1px);
+    }
+
+    .brand-wrap {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-width: 0;
+    }
+
+    .brand-title {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 700;
+      color: #fff;
+      text-decoration: none !important;
+      line-height: 1.1;
+    }
+
+    .brand-subtitle {
+      margin: 2px 0 0;
+      color: var(--text-soft);
+      font-size: 13px;
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-shrink: 0;
+    }
+
+    .logout {
+      text-decoration: none !important;
+      color: #fff !important;
+      background: linear-gradient(135deg, var(--orange-1), var(--orange-2));
+      padding: 11px 18px;
+      border-radius: 12px;
+      font-weight: 700;
+      transition: 0.25s ease;
+      box-shadow: 0 10px 24px rgba(255, 90, 31, 0.24);
+      white-space: nowrap;
+    }
+
+    .logout:hover {
+      transform: translateY(-1px);
+      color: #fff !important;
+      text-decoration: none !important;
+    }
+
+    .dashboard-layout {
+      width: 100%;
+      height: 100vh;
+    }
+
+    /* ===== ONLY NAVBAR / SIDEBAR CHANGED ===== */
+    nav.sidebar {
+      width: var(--sidebar-width);
+      min-width: var(--sidebar-width);
+      max-width: var(--sidebar-width);
+      position: fixed;
+      top: var(--topbar-height);
+      left: 0;
+      bottom: 0;
+      padding: 20px 16px 22px;
+      background: linear-gradient(180deg, rgba(6, 16, 30, 0.98), rgba(8, 22, 40, 0.96));
+      backdrop-filter: blur(16px);
+      border-right: 1px solid rgba(255,255,255,0.06);
+      overflow-y: auto;
+      overflow-x: hidden;
+      z-index: 1500;
+      box-shadow: 18px 0 45px rgba(0, 0, 0, 0.24);
+    }
+
+    nav.sidebar::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    nav.sidebar::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,0.14);
+      border-radius: 999px;
+    }
+
+    .sidebar-top-card {
+      position: relative;
+      padding: 20px 18px 18px;
+      border-radius: 24px;
+      background:
+        linear-gradient(135deg, rgba(255,122,47,0.16), rgba(31,119,255,0.14)),
+        rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow:
+        0 16px 32px rgba(0,0,0,0.20),
+        inset 0 1px 0 rgba(255,255,255,0.06);
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+
+    .sidebar-top-card::after {
+      content: "";
+      position: absolute;
+      right: -30px;
+      top: -30px;
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,255,255,0.16), transparent 70%);
+    }
+
+    .sidebar-mini-label {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.4px;
+      color: #ffd8c2;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: 5px 10px;
+      border-radius: 999px;
+      margin-bottom: 12px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .sidebar-main-title {
+      font-size: 19px;
+      font-weight: 800;
+      color: #ffffff;
+      margin: 0 0 6px;
+      line-height: 1.2;
+      position: relative;
+      z-index: 1;
+    }
+
+    .sidebar-main-subtitle {
+      font-size: 13px;
+      color: #d5e2f1;
+      line-height: 1.7;
+      margin: 0 0 14px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .sidebar-status-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      position: relative;
+      z-index: 1;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .sidebar-status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #dfffe9;
+      background: rgba(20,184,106,0.14);
+      border: 1px solid rgba(20,184,106,0.22);
+    }
+
+    .sidebar-status-badge::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #4df39b;
+      box-shadow: 0 0 10px rgba(77,243,155,0.7);
+    }
+
+    .sidebar-status-text {
+      font-size: 11px;
+      color: #c6d8ec;
+      text-align: right;
+      line-height: 1.4;
+    }
+
+    .sidebar-section-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #8ea4c5;
+      margin: 0 8px 16px;
+      font-weight: 700;
+    }
+
+    #side-bar {
+      list-style: none;
+      padding-left: 0;
+      margin-bottom: 0;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    #side-bar li {
+      width: 100%;
+      margin: 0;
+    }
+
+    #side-bar a,
+    #side-bar summary {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      width: 100%;
+      padding: 15px 15px;
+      border-radius: 20px;
+      text-decoration: none !important;
+      color: #edf4ff !important;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.055), rgba(255,255,255,0.025));
+      border: 1px solid rgba(255,255,255,0.06);
+      transition: all 0.28s ease;
+      position: relative;
+      overflow: hidden;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+    }
+
+    #side-bar a::before,
+    #side-bar summary::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, rgba(255,122,47,0.13), rgba(31,119,255,0.11));
+      opacity: 0;
+      transition: opacity 0.28s ease;
+    }
+
+    #side-bar a::after,
+    #side-bar summary::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 18%;
+      width: 4px;
+      height: 64%;
+      border-radius: 999px;
+      background: linear-gradient(180deg, #ff8a3c, #1f77ff);
+      opacity: 0;
+      transition: opacity 0.28s ease;
+    }
+
+    #side-bar a:hover,
+    #side-bar summary:hover {
+      transform: translateX(6px);
+      border-color: rgba(255,255,255,0.10);
+      box-shadow: 0 14px 28px rgba(0,0,0,0.20);
+    }
+
+    #side-bar a:hover::before,
+    #side-bar summary:hover::before,
+    #side-bar a:hover::after,
+    #side-bar summary:hover::after {
+      opacity: 1;
+    }
+
+    #side-bar a.active,
+    #side-bar summary.active {
+      background: linear-gradient(135deg, rgba(255,122,47,0.18), rgba(31,119,255,0.16));
+      border-color: rgba(255,255,255,0.12);
+      box-shadow: 0 16px 30px rgba(0,0,0,0.24);
+    }
+
+    #side-bar a.active::before,
+    #side-bar summary.active::before,
+    #side-bar a.active::after,
+    #side-bar summary.active::after {
+      opacity: 1;
+    }
+
+    .nav-icon {
+      width: 44px;
+      height: 44px;
+      min-width: 44px;
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, rgba(255,255,255,0.13), rgba(255,255,255,0.05));
+      border: 1px solid rgba(255,255,255,0.08);
+      color: #fff;
+      font-size: 17px;
+      position: relative;
+      z-index: 1;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+    }
+
+    .nav-text {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .nav-text strong {
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.2;
+    }
+
+    .nav-text span {
+      margin-top: 4px;
+      font-size: 11px;
+      line-height: 1.45;
+      color: #aabed8;
+    }
+
+    .nav-arrow {
+      margin-left: auto;
+      font-size: 16px;
+      color: #93b2d8;
+      position: relative;
+      z-index: 1;
+      transition: transform 0.25s ease;
+    }
+
+    #side-bar a:hover .nav-arrow,
+    #side-bar summary:hover .nav-arrow {
+      transform: translateX(4px);
+    }
+    /* ===== END NAVBAR / SIDEBAR CHANGED ===== */
+
+    main {
+      position: fixed;
+      top: var(--topbar-height);
+      left: var(--sidebar-width);
+      right: 0;
+      bottom: 0;
+      padding: 28px 30px;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    .hero-card {
+      background: linear-gradient(135deg, rgba(22, 61, 112, 0.88), rgba(12, 27, 53, 0.92));
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 24px;
+      padding: 30px 34px;
+      box-shadow: var(--shadow);
+      margin-bottom: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-card::after {
+      content: "";
+      position: absolute;
+      right: -80px;
+      top: -80px;
+      width: 220px;
+      height: 220px;
+      background: radial-gradient(circle, rgba(255, 122, 47, 0.18), transparent 70%);
+      border-radius: 50%;
+    }
+
+    .page-tag {
+      display: inline-block;
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      color: #ffb88f;
+      background: rgba(255, 122, 47, 0.16);
+      border: 1px solid rgba(255, 122, 47, 0.2);
+      margin-bottom: 14px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-card h1 {
+      margin: 0 0 10px;
+      font-size: 32px;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.15;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-card p {
+      margin: 0;
+      max-width: 900px;
+      font-size: 15px;
+      line-height: 1.8;
+      color: #d0def0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .panel-card,
+    .table-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+      margin-bottom: 24px;
+    }
+
+    .section-header,
+    .table-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .section-header h2,
+    .table-header h3 {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .section-badge {
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #9ec3ff;
+      background: rgba(31, 119, 255, 0.14);
+      border: 1px solid rgba(31, 119, 255, 0.22);
+      white-space: nowrap;
+    }
+
+    .details-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(220px, 1fr));
+      gap: 18px;
+    }
+
+    .filter-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(220px, 1fr));
+      gap: 18px;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+    }
+
+    .value-box,
+    .field input,
+    .field select {
+      width: 100%;
+      min-height: 48px;
+      border-radius: 14px !important;
+      border: 1px solid rgba(255, 255, 255, 0.08) !important;
+      background: rgba(255, 255, 255, 0.05) !important;
+      color: #fff !important;
+      padding: 12px 14px !important;
+      font-size: 14px;
+      outline: none;
+      box-shadow: none !important;
+      transition: 0.25s ease;
+    }
+
+    .value-box {
+      display: flex;
+      align-items: center;
+      white-space: normal;
+      line-height: 1.5;
+      word-break: break-word;
+    }
+
+    .field input:focus,
+    .field select:focus {
+      border-color: rgba(31, 119, 255, 0.55) !important;
+      box-shadow: 0 0 0 4px rgba(31, 119, 255, 0.12) !important;
+    }
+
+    .field input::placeholder {
+      color: #9fb4cf;
+    }
+
+    .field select option {
+      color: #000;
+    }
+
+    .btn-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 18px;
+      flex-wrap: wrap;
+    }
+
+    .action-btn {
+      border: none;
+      padding: 12px 22px;
+      border-radius: 14px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      transition: 0.25s ease;
+    }
+
+    .action-btn.primary {
+      background: linear-gradient(135deg, #2d7dff, #1657cc);
+      box-shadow: 0 12px 24px rgba(31, 119, 255, 0.25);
+    }
+
+    .action-btn.secondary {
+      background: linear-gradient(135deg, #ff8a3c, #ff5a1f);
+      box-shadow: 0 12px 24px rgba(255, 90, 31, 0.24);
+    }
+
+    .action-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .error-box {
+      display: none;
+      margin-top: 16px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: rgba(239, 77, 77, 0.12);
+      border: 1px solid rgba(239, 77, 77, 0.25);
+      color: #ffd3d3;
+      font-weight: 600;
+    }
+
+    .helper-text {
+      margin-top: 8px;
+      color: #a9bdd8;
+      font-size: 12px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      border-radius: 18px;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .table-wrap table {
+      width: 100%;
+      min-width: 900px;
+      margin: 0;
+      border-collapse: collapse;
+      overflow: hidden;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .table-wrap thead tr {
+      background: linear-gradient(135deg, #183b6f, #102849);
+    }
+
+    .table-wrap th {
+      color: #fff4cc;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      text-align: center;
+      vertical-align: middle;
+      padding: 16px 14px !important;
+      border: none !important;
+      white-space: nowrap;
+    }
+
+    .table-wrap td {
+      padding: 16px 14px !important;
+      text-align: center;
+      vertical-align: middle;
+      color: #dce9f7;
+      border-top: 1px solid rgba(255, 255, 255, 0.05) !important;
+      background: rgba(255, 255, 255, 0.02);
+      white-space: nowrap;
+    }
+
+    .table-wrap tbody tr:hover td {
+      background: rgba(63, 131, 248, 0.08);
+    }
+
+    .uid-pill {
+      display: inline-block;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: rgba(31, 119, 255, 0.14);
+      color: #cfe2ff;
+      border: 1px solid rgba(31, 119, 255, 0.22);
+      font-size: 12px;
+      font-weight: 700;
+      min-width: 72px;
+    }
+
+    .empty-state {
+      padding: 24px 14px !important;
+      text-align: center;
+      color: #9fb5ca !important;
+      font-style: italic;
+      font-size: 13px;
+      background: rgba(255, 255, 255, 0.02) !important;
+    }
+
+    @media (max-width: 1100px) {
+      .details-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      .filter-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 991px) {
+  html,
+  body {
+    width: 100%;
+    min-height: 100%;
+    height: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .app-shell {
+    width: 100%;
+    height: auto;
+    min-height: 100vh;
+    overflow: visible;
+  }
+
+  .dashboard-layout {
+    width: 100%;
+    height: auto;
+    min-height: 100vh;
+    padding-top: var(--topbar-height);
+  }
+
+  nav.sidebar {
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+
+    /* FIX: Command Center scroll ke saath upar jayega */
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    bottom: auto;
+
+    height: auto;
+    max-height: none;
+    overflow: visible;
+
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 0 0 24px 24px;
+    z-index: 100;
+    padding: 14px;
+  }
+
+  .sidebar-top-card {
+    margin-bottom: 18px;
+  }
+
+  .sidebar-section-title {
+    margin: 18px 8px 14px;
+  }
+
+  #side-bar {
+    display: none;
+    gap: 10px;
+  }
+
+  #side-bar.active {
+    display: flex;
+    flex-direction: column;
+    margin-top: 12px;
+  }
+
+  .sidebar-status-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .sidebar-status-text {
+    text-align: left;
+  }
+
+  main {
+    /* FIX: main normal page scroll mein rahega */
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    bottom: auto;
+
+    width: 100%;
+    padding: 18px;
+    overflow: visible;
+  }
+
+  .details-grid,
+  .filter-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .brand-subtitle {
+    display: none;
+  }
+}
+
+    @media (max-width: 600px) {
+      .topbar {
+        padding: 0 14px;
+      }
+
+      .brand-title {
+        font-size: 21px;
+      }
+
+      .logout {
+        padding: 9px 14px;
+        font-size: 13px;
+      }
+
+      .hero-card,
+      .panel-card,
+      .table-card {
+        padding: 18px;
+        border-radius: 18px;
+      }
+
+      .table-wrap table {
+        min-width: 700px;
+      }
+
+      .hero-card h1 {
+        font-size: 26px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+        <div class="brand-wrap">
+          <a href="#" class="brand-title">Supervisor Dashboard</a>
+          <p class="brand-subtitle">Employee List & Team Record Overview</p>
+        </div>
+      </div>
+
+      <div class="topbar-right">
+       <a href="#" class="logout" onclick="logoutUser()">Logout</a>
+      </div>
+    </header>
+
+    <div class="dashboard-layout">
+      <nav class="sidebar">
+        <div class="sidebar-top-card">
+          <div class="sidebar-mini-label">Supervisor Panel</div>
+          <h3 class="sidebar-main-title">Command Center</h3>
+          <p class="sidebar-main-subtitle">
+            Access employee directory, team records, and important supervisor sections from one clean navigation area.
+          </p>
+
+          <div class="sidebar-status-row">
+            <span class="sidebar-status-badge">Directory Active</span>
+            <div class="sidebar-status-text">
+              Secure access<br />
+              Quick navigation
+            </div>
+          </div>
+        </div>
+
+        <div class="sidebar-section-title">Navigation</div>
+        <ul id="side-bar"></ul>
+      </nav>
+
+      <main>
+        <section class="hero-card">
+          <span class="page-tag">TEAM DIRECTORY PANEL</span>
+          <h1>Employee List</h1>
+          <p>
+            View all employees under the logged-in supervisor by exact site and department match, then filter by employee name or employee ID.
+          </p>
+        </section>
+
+        <section class="panel-card">
+          <div class="section-header">
+            <h2>Supervisor Details</h2>
+            <span class="section-badge">Profile</span>
+          </div>
+
+          <div class="details-grid">
+            <div class="field">
+              <label>Supervisor Name</label>
+              <div class="value-box" id="supNameDisplay">Loading...</div>
+            </div>
+
+            <div class="field">
+              <label>Supervisor ID</label>
+              <div class="value-box" id="supIdDisplay">Loading...</div>
+            </div>
+
+            <div class="field">
+              <label>Site</label>
+              <div class="value-box" id="supSiteDisplay">Loading...</div>
+            </div>
+
+            <div class="field">
+              <label>Department</label>
+              <div class="value-box" id="supDepartmentDisplay">Loading...</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel-card">
+          <div class="section-header">
+            <h2>Filter Employee List</h2>
+            <span class="section-badge">Search Panel</span>
+          </div>
+
+          <div class="filter-grid">
+            <div class="field">
+              <label>Employee Name</label>
+              <input type="text" id="employeeNameFilter" placeholder="Enter employee name" />
+              <div class="helper-text">Same name ke multiple employee milne par niche ID dropdown khulega.</div>
+            </div>
+
+            <div class="field">
+              <label>Employee ID</label>
+              <input type="text" id="employeeIdFilter" placeholder="Enter employee ID" />
+            </div>
+          </div>
+
+          <div class="filter-grid" style="margin-top: 14px;">
+            <div class="field hidden" id="matchedIdWrapper">
+              <label>Select Employee ID</label>
+              <select id="matchedIdSelect">
+                <option value="">Select Employee ID</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="btn-row">
+            <button class="action-btn primary" id="submitBtn">Submit</button>
+            <button class="action-btn secondary" id="resetBtn">Reset</button>
+          </div>
+
+          <div class="error-box" id="errorBox"></div>
+        </section>
+
+        <section class="table-card">
+          <div class="table-header">
+            <h3>Employee Directory</h3>
+            <span class="section-badge" id="masterListBadge">Master List = 0</span>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Employee ID</th>
+                  <th>Email ID</th>
+                  <th>Employee Name</th>
+                  <th>Contact Number</th>
+                  <th>Department</th>
+                  <th>Site</th>
+                </tr>
+              </thead>
+              <tbody id="employeeTableBody">
+                <tr>
+                  <td colspan="6" class="empty-state">Loading employee records...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    function toggleMenu() {
+      const sidebar = document.getElementById("side-bar");
+      sidebar.classList.toggle("active");
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const currentPage = window.location.pathname.split("/").pop();
+      const navLinks = document.querySelectorAll("#side-bar a");
+
+      navLinks.forEach(link => {
+        const href = link.getAttribute("href");
+        if (href === currentPage) {
+          link.classList.add("active");
+        }
+      });
+    });
+  </script>
+
+  <script type="module" src="/public/control.js"></script>
+</body>
+</html>
+
+  <script type="module">
+    import {
+      getFirestore,
+      doc,
+      getDoc,
+      collection,
+      getDocs
+    } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+    import { app } from "/public/firebase-config.js";
+
+    const db = getFirestore(app);
+
+    const supNameDisplay = document.getElementById("supNameDisplay");
+    const supIdDisplay = document.getElementById("supIdDisplay");
+    const supSiteDisplay = document.getElementById("supSiteDisplay");
+    const supDepartmentDisplay = document.getElementById("supDepartmentDisplay");
+
+    const employeeNameFilter = document.getElementById("employeeNameFilter");
+    const employeeIdFilter = document.getElementById("employeeIdFilter");
+    const matchedIdWrapper = document.getElementById("matchedIdWrapper");
+    const matchedIdSelect = document.getElementById("matchedIdSelect");
+
+    const submitBtn = document.getElementById("submitBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const errorBox = document.getElementById("errorBox");
+    const employeeTableBody = document.getElementById("employeeTableBody");
+    const masterListBadge = document.getElementById("masterListBadge");
+
+    let supervisorProfile = null;
+    let supervisorEmployees = [];
+    let defaultSupervisorEmployees = [];
+
+    function getValue(value) {
+      return (value || "").toString().trim();
+    }
+
+    function getLower(value) {
+      return getValue(value).toLowerCase();
+    }
+
+    function setText(el, value) {
+      if (el) el.textContent = value || "-";
+    }
+
+    function setMasterCount(count) {
+      masterListBadge.textContent = `Master List = ${count}`;
+    }
+
+    function showError(message) {
+      errorBox.style.display = "block";
+      errorBox.textContent = message;
+    }
+
+    function hideError() {
+      errorBox.style.display = "none";
+      errorBox.textContent = "";
+    }
+
+    function showEmpty(message) {
+      employeeTableBody.innerHTML = `
+        <tr>
+          <td colspan="6" class="empty-state">${message}</td>
+        </tr>
+      `;
+      setMasterCount(0);
+    }
+
+    function renderTable(records) {
+      if (!records.length) {
+        showEmpty("No employee records found.");
+        return;
+      }
+
+      employeeTableBody.innerHTML = "";
+      setMasterCount(records.length);
+
+      records.forEach(emp => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td><span class="uid-pill">${emp.uid || "-"}</span></td>
+          <td>${emp.email || "-"}</td>
+          <td>${emp.fullName || "-"}</td>
+          <td>${emp.telephone || "-"}</td>
+          <td>${emp.department || "-"}</td>
+          <td>${emp.site || "-"}</td>
+        `;
+        employeeTableBody.appendChild(tr);
+      });
+    }
+
+    function resetMatchedIdDropdown() {
+      matchedIdWrapper.classList.add("hidden");
+      matchedIdSelect.innerHTML = `<option value="">Select Employee ID</option>`;
+    }
+
+    function buildMatchedIdDropdownByName() {
+      const nameValue = getLower(employeeNameFilter.value);
+
+      resetMatchedIdDropdown();
+
+      if (!nameValue) return;
+
+      const matchedByName = defaultSupervisorEmployees.filter(
+        emp => getLower(emp.fullName) === nameValue
+      );
+
+      if (matchedByName.length > 1) {
+        matchedIdWrapper.classList.remove("hidden");
+        matchedIdSelect.innerHTML = `<option value="">Select Employee ID</option>`;
+        matchedByName.forEach(emp => {
+          matchedIdSelect.innerHTML += `<option value="${emp.uid}">${emp.uid} - ${emp.fullName}</option>`;
+        });
+      } else if (matchedByName.length === 1) {
+        employeeIdFilter.value = matchedByName[0].uid || "";
+      }
+    }
+
+    function extractDepartment(data) {
+      return getValue(
+        data.departmentSelect ||
+        data.Department ||
+        data.department ||
+        data.jobCode ||
+        data.job ||
+        data.departmentName
+      );
+    }
+
+    function extractSite(data) {
+      return getValue(
+        data.Site ||
+        data.site ||
+        data.siteName ||
+        data.siteSelect ||
+        data.industry ||
+        data.industrySelect ||
+        data.projectSite
+      );
+    }
+
+    function extractEmployeeName(data) {
+      return getValue(
+        data.fullName ||
+        data.Name ||
+        data.name ||
+        data.employeeName
+      );
+    }
+
+    function extractEmployeeId(data) {
+      return getValue(
+        data.uid ||
+        data.employeeId ||
+        data.empId ||
+        data.id
+      );
+    }
+
+    function extractPhone(data) {
+      return getValue(
+        data.telephone ||
+        data.contactNumber ||
+        data.mobile ||
+        data.phone ||
+        data.contact
+      );
+    }
+
+
+    function getKieplAccessScope() {
+      try {
+        return JSON.parse(localStorage.getItem("kieplAccessScope") || "{}") || {};
+      } catch {
+        return {};
+      }
+    }
+
+    function isSupervisorAccessTransferred() {
+      const scope = getKieplAccessScope();
+      return !!scope.onLeave;
+    }
+
+    function getSupervisorEmailFromLocalStorage() {
+      return (
+        localStorage.getItem("supEmail") ||
+        localStorage.getItem("supervisorEmail") ||
+        ""
+      );
+    }
+
+    async function getSupervisorDocument(supEmail) {
+      try {
+        const ref = doc(db, "Supervisor", supEmail);
+        const snap = await getDoc(ref);
+        if (snap.exists()) return snap.data();
+      } catch (err) {
+        console.warn("Error loading supervisor:", err);
+      }
+      return null;
+    }
+
+    function getSupervisorSite(supData) {
+      return getValue(
+        supData.Site ||
+        supData.site ||
+        supData.siteName ||
+        supData.siteSelect ||
+        supData.industry ||
+        supData.industrySelect ||
+        supData.projectSite
+      );
+    }
+
+    function getSupervisorDepartment(supData) {
+      const jobs = Array.isArray(supData.jobs) ? supData.jobs : [];
+      if (jobs.length && typeof jobs[0] === "string") return getValue(jobs[0]);
+
+      return getValue(
+        supData.departmentSelect ||
+        supData.Department ||
+        supData.department ||
+        supData.jobSelect ||
+        supData.job ||
+        supData.departmentName
+      );
+    }
+
+    function employeeBelongsToCurrentSupervisor(emp) {
+      if (isSupervisorAccessTransferred()) return false;
+
+      const employeeRaw = emp.raw || {};
+
+      const empSupId = getLower(
+        employeeRaw.supId ||
+        employeeRaw.supervisorId ||
+        employeeRaw.supervisorUID ||
+        employeeRaw.supervisorUid ||
+        employeeRaw.SupervisorId
+      );
+
+      const empSupName = getLower(
+        employeeRaw.supName ||
+        employeeRaw.supervisorName ||
+        employeeRaw.SupervisorName
+      );
+
+      const currentSupId = getLower(supervisorProfile.uid);
+      const currentSupName = getLower(supervisorProfile.name);
+      const currentSite = getLower(supervisorProfile.site);
+      const currentDepartment = getLower(supervisorProfile.department);
+
+      if (empSupId) return empSupId === currentSupId;
+      if (empSupName) return empSupName === currentSupName;
+
+      return getLower(emp.site) === currentSite &&
+             getLower(emp.department) === currentDepartment;
+    }
+
+    async function loadSupervisorProfile() {
+      const supEmail = getSupervisorEmailFromLocalStorage();
+
+      if (!supEmail) {
+        setText(supNameDisplay, "Not Found");
+        setText(supIdDisplay, "Not Found");
+        setText(supSiteDisplay, "Not Found");
+        setText(supDepartmentDisplay, "Not Found");
+        showEmpty("Supervisor email not found in localStorage.");
+        return false;
+      }
+
+      const supData = await getSupervisorDocument(supEmail);
+
+      if (!supData) {
+        setText(supNameDisplay, "Not Found");
+        setText(supIdDisplay, "Not Found");
+        setText(supSiteDisplay, "Not Found");
+        setText(supDepartmentDisplay, "Not Found");
+        showEmpty("Supervisor profile not found.");
+        return false;
+      }
+
+      supervisorProfile = {
+        name: getValue(supData.Name || supData.fullName || supData.name),
+        uid: getValue(supData.uid || supData.employeeId || supData.empId),
+        site: getSupervisorSite(supData),
+        department: getSupervisorDepartment(supData),
+        raw: supData
+      };
+
+      setText(supNameDisplay, supervisorProfile.name);
+      setText(supIdDisplay, supervisorProfile.uid);
+      setText(supSiteDisplay, supervisorProfile.site);
+      setText(supDepartmentDisplay, supervisorProfile.department);
+
+      return true;
+    }
+
+    async function loadEmployeesFast() {
+      try {
+        if (isSupervisorAccessTransferred()) {
+          showEmpty("Access is transferred to AS during approved leave period.");
+          supervisorEmployees = [];
+          defaultSupervisorEmployees = [];
+          return;
+        }
+
+        showEmpty("Loading employee records...");
+
+        const employeeSnap = await getDocs(collection(db, "Employee"));
+        const tempEmployees = [];
+
+        employeeSnap.forEach(docSnap => {
+          const data = docSnap.data();
+
+          const emp = {
+            uid: extractEmployeeId(data),
+            email: docSnap.id || "",
+            fullName: extractEmployeeName(data),
+            telephone: extractPhone(data),
+            department: extractDepartment(data),
+            site: extractSite(data),
+            raw: data
+          };
+
+          if (employeeBelongsToCurrentSupervisor(emp)) {
+            tempEmployees.push(emp);
+          }
+        });
+
+        supervisorEmployees = [...tempEmployees];
+        defaultSupervisorEmployees = [...tempEmployees];
+
+        if (!defaultSupervisorEmployees.length) {
+          showEmpty("No employees found under this supervisor.");
+          return;
+        }
+
+        renderTable(defaultSupervisorEmployees);
+      } catch (error) {
+        console.error("Employee loading error:", error);
+        showEmpty("Error loading employee records.");
+      }
+    }
+
+    function applyFilters() {
+      hideError();
+
+      if (isSupervisorAccessTransferred()) {
+        showEmpty("Access is transferred to AS during approved leave period.");
+        return;
+      }
+
+      const employeeName = getLower(employeeNameFilter.value);
+      const employeeId = getLower(employeeIdFilter.value) || getLower(matchedIdSelect.value);
+
+      if (!employeeName && !employeeId) {
+        renderTable(defaultSupervisorEmployees);
+        return;
+      }
+
+      let filteredRecords = [...defaultSupervisorEmployees];
+
+      if (employeeName) {
+        filteredRecords = filteredRecords.filter(emp => getLower(emp.fullName) === employeeName);
+      }
+
+      if (employeeId) {
+        filteredRecords = filteredRecords.filter(emp => getLower(emp.uid) === employeeId);
+      }
+
+      if (employeeId && filteredRecords.length === 0) {
+        showError("Entered Employee ID does not exist in your supervisor employee list.");
+        showEmpty("No employee found for this Employee ID.");
+        return;
+      }
+
+      if (employeeName && filteredRecords.length === 0) {
+        showError("Entered Employee Name does not exist in your supervisor employee list.");
+        showEmpty("No employee found for this Employee Name.");
+        return;
+      }
+
+      if (filteredRecords.length === 0) {
+        showError("No employee records found for selected filter.");
+        showEmpty("No employee records found for selected filter.");
+        return;
+      }
+
+      renderTable(filteredRecords);
+    }
+
+    function resetFilters() {
+      hideError();
+      employeeNameFilter.value = "";
+      employeeIdFilter.value = "";
+      resetMatchedIdDropdown();
+      renderTable(defaultSupervisorEmployees);
+    }
+
+    employeeNameFilter.addEventListener("input", () => {
+      employeeIdFilter.value = "";
+      buildMatchedIdDropdownByName();
+    });
+
+    matchedIdSelect.addEventListener("change", () => {
+      employeeIdFilter.value = matchedIdSelect.value || "";
+    });
+
+    submitBtn.addEventListener("click", applyFilters);
+    resetBtn.addEventListener("click", resetFilters);
+
+    window.addEventListener("DOMContentLoaded", async () => {
+      const loaded = await loadSupervisorProfile();
+      if (!loaded) return;
+      await loadEmployeesFast();
+    });
+  </script>
+</body>
+</html>

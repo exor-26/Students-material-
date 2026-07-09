@@ -1,0 +1,1722 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <title>Admin Dashboard - Attendance</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/x-icon" href="logo2.ico" />
+  <link rel="stylesheet" type="text/css" href="Hremployeeattendence.css" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap-theme.min.css" />
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+
+  <style>
+    *, *::before, *::after {
+      cursor:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" viewBox="0 0 24 24"><path fill="%23FFF" stroke="%23FF2711" stroke-width="2" d="M5.5 3.21V20.8c0 .45.54.67.85.35l4.86-4.86a.5.5 0 0 1 .35-.15h6.87a.5.5 0 0 0 .35-.85L6.35 2.85a.5.5 0 0 0-.85.35Z"></path></svg>') 5 5, auto;
+    }
+
+    a, button, input[type="submit"], input[type="button"],
+    label, select, .dropbtn, .sub-btn, .btn, .cn,
+    .carousel-control, .hideMenuButton, .item a,
+    input[type="text"], input[type="search"], textarea {
+      cursor:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="%23FFF" stroke="%23FF2711" stroke-width="2" stroke-linejoin="round" d="M10 11V8.99c0-.88.59-1.64 1.44-1.86h.05A1.99 1.99 0 0 1 14 9.05V12v-2c0-.88.6-1.65 1.46-1.87h.05A1.98 1.98 0 0 1 18 10.06V13v-1.94a2 2 0 0 1 1.51-1.94h0A2 2 0 0 1 22 11.06V14c0 .6-.08 1.27-.21 1.97a7.96 7.96 0 0 1-7.55 6.48 54.98 54.98 0 0 1-4.48 0 7.96 7.96 0 0 1-7.55-6.48C2.08 15.27 2 14.59 2 14v-1.49c0-1.11.9-2.01 2.01-2.01h0a2 2 0 0 1 2.01 2.03l-.01.97v-10c0-1.1.9-2 2-2h0a2 2 0 0 1 2 2V11Z"></path></svg>') 5 5, auto;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --topbar-height: 78px;
+      --sidebar-width: 280px;
+      --card-bg: rgba(12, 25, 45, 0.85);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --text-main: #ffffff;
+      --text-soft: #b8c9df;
+      --shadow: 0 18px 40px rgba(0, 0, 0, 0.25);
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      background:
+        linear-gradient(135deg, rgba(7, 16, 30, 0.95), rgba(14, 34, 56, 0.92)),
+        url("https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1600&q=80") center/cover no-repeat fixed;
+      color: var(--text-main);
+    }
+
+    .app-shell {
+      height: 100vh;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    .topbar {
+      height: var(--topbar-height);
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(7, 16, 30, 0.88);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 2000;
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      min-width: 0;
+    }
+
+    .menu-toggle {
+      width: 46px;
+      height: 46px;
+      border: none;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
+      color: #fff;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: 0.25s ease;
+      flex-shrink: 0;
+    }
+
+    .menu-toggle:hover {
+      background: linear-gradient(135deg, rgba(255,122,47,0.18), rgba(31,119,255,0.16));
+      transform: translateY(-1px);
+    }
+
+    .brand-title {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 700;
+      color: #fff;
+      text-decoration: none !important;
+    }
+
+    .brand-subtitle {
+      margin: 2px 0 0;
+      color: var(--text-soft);
+      font-size: 13px;
+    }
+
+    .logout {
+      text-decoration: none !important;
+      color: #fff !important;
+      background: linear-gradient(135deg, #ff8a3c, #ff5a1f);
+      padding: 11px 18px;
+      border-radius: 12px;
+      font-weight: 700;
+      transition: 0.25s ease;
+      box-shadow: 0 10px 24px rgba(255, 90, 31, 0.24);
+      white-space: nowrap;
+    }
+
+    .logout:hover {
+      transform: translateY(-1px);
+      text-decoration: none !important;
+      color: #fff !important;
+    }
+
+    /* ===== ONLY NAVBAR / SIDEBAR CHANGED ===== */
+    nav.sidebar {
+      width: var(--sidebar-width);
+      min-width: var(--sidebar-width);
+      max-width: var(--sidebar-width);
+      position: fixed;
+      top: var(--topbar-height);
+      left: 0;
+      bottom: 0;
+      padding: 20px 16px 22px;
+      background: linear-gradient(180deg, rgba(6, 16, 30, 0.98), rgba(8, 22, 40, 0.96));
+      backdrop-filter: blur(16px);
+      border-right: 1px solid rgba(255,255,255,0.06);
+      overflow-y: auto;
+      overflow-x: hidden;
+      z-index: 1500;
+      box-shadow: 18px 0 45px rgba(0, 0, 0, 0.24);
+    }
+
+    nav.sidebar::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    nav.sidebar::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,0.14);
+      border-radius: 999px;
+    }
+
+    .sidebar-top-card {
+      position: relative;
+      padding: 20px 18px 18px;
+      border-radius: 24px;
+      background:
+        linear-gradient(135deg, rgba(255,122,47,0.16), rgba(31,119,255,0.14)),
+        rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow:
+        0 16px 32px rgba(0,0,0,0.20),
+        inset 0 1px 0 rgba(255,255,255,0.06);
+      overflow: hidden;
+    }
+
+    .sidebar-top-card::after {
+      content: "";
+      position: absolute;
+      right: -30px;
+      top: -30px;
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,255,255,0.16), transparent 70%);
+    }
+
+    .sidebar-mini-label {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.4px;
+      color: #ffd8c2;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: 5px 10px;
+      border-radius: 999px;
+      margin-bottom: 12px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .sidebar-main-title {
+      font-size: 19px;
+      font-weight: 800;
+      color: #ffffff;
+      margin: 0 0 6px;
+      line-height: 1.2;
+      position: relative;
+      z-index: 1;
+    }
+
+    .sidebar-main-subtitle {
+      font-size: 13px;
+      color: #d5e2f1;
+      line-height: 1.7;
+      margin: 0 0 14px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .sidebar-status-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      position: relative;
+      z-index: 1;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .sidebar-status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #dfffe9;
+      background: rgba(20,184,106,0.14);
+      border: 1px solid rgba(20,184,106,0.22);
+    }
+
+    .sidebar-status-badge::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #4df39b;
+      box-shadow: 0 0 10px rgba(77,243,155,0.7);
+    }
+
+    .sidebar-status-text {
+      font-size: 11px;
+      color: #c6d8ec;
+      text-align: right;
+      line-height: 1.4;
+    }
+
+    .sidebar-section-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #8ea4c5;
+      margin: 24px 8px 16px;
+      font-weight: 700;
+    }
+
+    #side-bar {
+      list-style: none;
+      padding-left: 0;
+      margin: 0;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    #side-bar li {
+      margin-bottom: 0;
+      width: 100%;
+    }
+
+    #side-bar a,
+    #side-bar summary {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      width: 100%;
+      padding: 15px 15px;
+      border-radius: 20px;
+      text-decoration: none !important;
+      color: #edf4ff !important;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.055), rgba(255,255,255,0.025));
+      border: 1px solid rgba(255,255,255,0.06);
+      transition: all 0.28s ease;
+      position: relative;
+      overflow: hidden;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+    }
+
+    #side-bar a::before,
+    #side-bar summary::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, rgba(255,122,47,0.13), rgba(31,119,255,0.11));
+      opacity: 0;
+      transition: opacity 0.28s ease;
+    }
+
+    #side-bar a::after,
+    #side-bar summary::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 18%;
+      width: 4px;
+      height: 64%;
+      border-radius: 999px;
+      background: linear-gradient(180deg, #ff8a3c, #1f77ff);
+      opacity: 0;
+      transition: opacity 0.28s ease;
+    }
+
+    #side-bar a:hover,
+    #side-bar summary:hover {
+      transform: translateX(6px);
+      border-color: rgba(255,255,255,0.10);
+      box-shadow: 0 14px 28px rgba(0,0,0,0.20);
+    }
+
+    #side-bar a:hover::before,
+    #side-bar summary:hover::before,
+    #side-bar a:hover::after,
+    #side-bar summary:hover::after {
+      opacity: 1;
+    }
+
+    #side-bar a.active,
+    #side-bar summary.active {
+      background: linear-gradient(135deg, rgba(255,122,47,0.18), rgba(31,119,255,0.16));
+      border-color: rgba(255,255,255,0.12);
+      box-shadow: 0 16px 30px rgba(0,0,0,0.24);
+    }
+
+    #side-bar a.active::before,
+    #side-bar summary.active::before,
+    #side-bar a.active::after,
+    #side-bar summary.active::after {
+      opacity: 1;
+    }
+
+    .nav-icon {
+      width: 44px;
+      height: 44px;
+      min-width: 44px;
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, rgba(255,255,255,0.13), rgba(255,255,255,0.05));
+      border: 1px solid rgba(255,255,255,0.08);
+      color: #fff;
+      font-size: 17px;
+      position: relative;
+      z-index: 1;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+    }
+
+    .nav-text {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .nav-text strong {
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.2;
+    }
+
+    .nav-text span {
+      margin-top: 4px;
+      font-size: 11px;
+      line-height: 1.45;
+      color: #aabed8;
+    }
+
+    .nav-arrow {
+      margin-left: auto;
+      font-size: 16px;
+      color: #93b2d8;
+      position: relative;
+      z-index: 1;
+      transition: transform 0.25s ease;
+    }
+
+    #side-bar a:hover .nav-arrow,
+    #side-bar summary:hover .nav-arrow {
+      transform: translateX(4px);
+    }
+    /* ===== END NAVBAR / SIDEBAR CHANGED ===== */
+
+    main {
+      position: fixed;
+      top: var(--topbar-height);
+      left: var(--sidebar-width);
+      right: 0;
+      bottom: 0;
+      padding: 28px 30px;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    .hero-card {
+      background: linear-gradient(135deg, rgba(22, 61, 112, 0.88), rgba(12, 27, 53, 0.92));
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 24px;
+      padding: 30px 34px;
+      box-shadow: var(--shadow);
+      margin-bottom: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-card::after {
+      content: "";
+      position: absolute;
+      right: -80px;
+      top: -80px;
+      width: 220px;
+      height: 220px;
+      background: radial-gradient(circle, rgba(255,122,47,0.18), transparent 70%);
+      border-radius: 50%;
+    }
+
+    .page-tag {
+      display: inline-block;
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      color: #ffb88f;
+      background: rgba(255, 122, 47, 0.16);
+      border: 1px solid rgba(255, 122, 47, 0.2);
+      margin-bottom: 14px;
+    }
+
+    .hero-card h1 {
+      margin: 0 0 10px;
+      font-size: 32px;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.15;
+    }
+
+    .hero-card p {
+      margin: 0;
+      max-width: 850px;
+      font-size: 15px;
+      line-height: 1.8;
+      color: #d0def0;
+    }
+
+    .panel-card {
+      background: var(--card-bg);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 22px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+      width: 100%;
+      margin-bottom: 24px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .section-header h2,
+    .section-header h3 {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .section-badge {
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #9ec3ff;
+      background: rgba(31, 119, 255, 0.14);
+      border: 1px solid rgba(31, 119, 255, 0.22);
+      white-space: nowrap;
+    }
+
+    .details-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(220px, 1fr));
+      gap: 18px;
+      margin-bottom: 0;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #9db4d0;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+    }
+
+    .value-box,
+    .field input,
+    .field select {
+      width: 100%;
+      min-height: 48px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.05);
+      color: #fff;
+      padding: 12px 14px;
+      font-size: 14px;
+      outline: none;
+      box-shadow: none;
+      transition: 0.25s ease;
+    }
+
+    .field input:focus,
+    .field select:focus {
+      border-color: rgba(31, 119, 255, 0.55);
+      box-shadow: 0 0 0 4px rgba(31, 119, 255, 0.12);
+    }
+
+    .field input::placeholder {
+      color: #9fb4cf;
+    }
+
+    .field select option {
+      color: #000;
+    }
+
+    .helper-text {
+      margin-top: 6px;
+      font-size: 12px;
+      color: #9fb4cf;
+    }
+
+    .btn-primary.custom-btn {
+      border: none;
+      border-radius: 14px;
+      padding: 12px 24px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      background: linear-gradient(135deg, #2d7dff, #1657cc);
+      box-shadow: 0 12px 26px rgba(45, 125, 255, 0.25);
+      transition: 0.25s ease;
+      min-height: 48px;
+      width: 100%;
+    }
+
+    .btn-primary.custom-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn-primary.custom-btn:disabled {
+      opacity: 0.72;
+    }
+
+    .btn-reset {
+      min-height: 48px;
+      border-radius: 14px;
+      padding: 12px 24px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #ffffff, #dfe8f5);
+      color: #123;
+      border: none;
+      min-width: 140px;
+      transition: 0.25s ease;
+    }
+
+    .btn-reset:hover {
+      transform: translateY(-1px);
+    }
+
+    .table-box {
+      width: 100%;
+      overflow-x: auto;
+      border-radius: 16px;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 8px;
+    }
+
+    .table-box table {
+      width: 100%;
+      min-width: 900px;
+      border-collapse: collapse;
+      overflow: hidden;
+      border-radius: 16px;
+    }
+
+    .table-box thead tr {
+      background: linear-gradient(135deg, #183b6f, #102849);
+    }
+
+    .table-box thead th {
+      padding: 16px 14px;
+      color: #fff;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      border: none;
+      text-align: center;
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+
+    .table-box tbody tr {
+      background: rgba(255,255,255,0.03);
+      transition: 0.2s ease;
+    }
+
+    .table-box tbody tr:nth-child(even) {
+      background: rgba(255,255,255,0.05);
+    }
+
+    .table-box tbody tr:hover {
+      background: rgba(31, 119, 255, 0.10);
+    }
+
+    .table-box tbody td {
+      padding: 15px 14px;
+      color: #eaf2ff;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      vertical-align: middle;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .count-chip {
+      display: inline-block;
+      min-width: 64px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .count-chip.absent {
+      background: rgba(239, 77, 77, 0.16);
+      color: #ffb4b4;
+      border: 1px solid rgba(239, 77, 77, 0.22);
+    }
+
+    .count-chip.present {
+      background: rgba(20, 184, 106, 0.16);
+      color: #90efbd;
+      border: 1px solid rgba(20, 184, 106, 0.22);
+    }
+
+    .count-chip.total {
+      background: rgba(31, 119, 255, 0.14);
+      color: #a8cbff;
+      border: 1px solid rgba(31, 119, 255, 0.22);
+    }
+
+    .uid-pill {
+      display: inline-block;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      color: #e6f0ff;
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .calendar-btn {
+      border: none;
+      border-radius: 10px;
+      padding: 9px 14px;
+      color: #fff;
+      font-weight: 700;
+      background: linear-gradient(135deg, #1dc06d, #109b56);
+      transition: 0.25s ease;
+      white-space: nowrap;
+    }
+
+    .calendar-btn:hover {
+      transform: translateY(-1px);
+      opacity: 0.96;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 28px !important;
+      color: #a8bdd8 !important;
+      font-style: italic;
+    }
+
+    .loading-state {
+      text-align: center;
+      padding: 28px !important;
+      color: #d2e0f3 !important;
+      font-weight: 700;
+    }
+
+    #floatingCalendar {
+      display: none;
+      position: fixed;
+      inset: 50% auto auto 50%;
+      transform: translate(-50%, -50%);
+      width: min(92vw, 780px);
+      max-height: 82vh;
+      overflow-y: auto;
+      background: rgba(10, 22, 40, 0.98);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 20px;
+      padding: 18px;
+      box-shadow: 0 30px 60px rgba(0,0,0,0.35);
+      z-index: 4000;
+    }
+
+    #floatingCalendarTitle {
+      margin: 0 0 14px 0;
+      font-size: 18px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    #floatingCalendarContent {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+    }
+
+    .calendar-cell {
+      min-height: 64px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.04);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      font-size: 12px;
+      line-height: 1.4;
+      color: #dce8ff;
+      padding: 8px;
+      white-space: pre-line;
+    }
+
+    .calendar-cell.present {
+      background: rgba(20, 184, 106, 0.16);
+      border-color: rgba(20, 184, 106, 0.22);
+      color: #90efbd;
+    }
+
+    .calendar-cell.absent {
+      background: rgba(239, 77, 77, 0.16);
+      border-color: rgba(239, 77, 77, 0.22);
+      color: #ffb4b4;
+    }
+
+    .calendar-cell.empty {
+      background: rgba(255,255,255,0.04);
+      color: #b7c7da;
+    }
+
+    @media (max-width: 1200px) {
+      .details-grid {
+        grid-template-columns: repeat(2, minmax(220px, 1fr));
+      }
+    }
+
+    @media (max-width: 900px) {
+  html,
+  body {
+    width: 100%;
+    min-height: 100%;
+    height: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .app-shell {
+    height: auto;
+    min-height: 100vh;
+    overflow: visible;
+  }
+
+  .dashboard-layout {
+    height: auto;
+    min-height: 100vh;
+    padding-top: var(--topbar-height);
+  }
+
+  nav.sidebar {
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+
+    /* FIX: Command Center scroll ke saath upar jayega */
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    bottom: auto;
+
+    height: auto;
+    max-height: none;
+    overflow: visible;
+
+    border-right: none;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    border-radius: 0 0 24px 24px;
+    z-index: 100;
+    padding: 14px;
+  }
+
+  .sidebar-section-title {
+    margin: 18px 6px 14px;
+  }
+
+  #side-bar {
+    display: none;
+    gap: 10px;
+  }
+
+  #side-bar.active {
+    display: flex;
+  }
+
+  .sidebar-status-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .sidebar-status-text {
+    text-align: left;
+  }
+
+  main {
+    /* FIX: main normal page scroll mein rahega */
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    bottom: auto;
+
+    width: 100%;
+    padding: 18px;
+    overflow: visible;
+  }
+
+  .details-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .brand-subtitle {
+    display: none;
+  }
+
+  #floatingCalendarContent {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+    @media (max-width: 600px) {
+      .topbar {
+        padding: 0 14px;
+      }
+
+      .logout {
+        padding: 9px 14px;
+        font-size: 13px;
+      }
+
+      .hero-card,
+      .panel-card {
+        padding: 18px;
+        border-radius: 18px;
+      }
+
+      #floatingCalendarContent {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="topbar-left">
+        <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+        <div>
+          <a href="#" class="brand-title">Admin Dashboard</a>
+          <p class="brand-subtitle">Attendance Monitoring & Review Panel</p>
+        </div>
+      </div>
+
+      <div class="topbar-right">
+        <a href="#" class="logout" onclick="logoutUser()">Logout</a>
+      </div>
+    </header>
+
+    <div class="dashboard-layout">
+      <nav class="sidebar">
+        <div class="sidebar-top-card">
+          <div class="sidebar-mini-label">Admin Panel</div>
+          <h3 class="sidebar-main-title">Command Center</h3>
+          <p class="sidebar-main-subtitle">
+            Access attendance monitoring, employee review, and important admin attendance sections from one clean navigation area.
+          </p>
+
+          <div class="sidebar-status-row">
+            <span class="sidebar-status-badge">Attendance Active</span>
+            <div class="sidebar-status-text">
+              Secure access<br />
+              Quick navigation
+            </div>
+          </div>
+        </div>
+
+        <div class="sidebar-section-title">Navigation</div>
+        <ul id="side-bar"></ul>
+      </nav>
+
+      <main>
+        <section class="hero-card">
+          <span class="page-tag">ATTENDANCE CONTROL PANEL</span>
+          <h1>Attendance</h1>
+          <p>
+            Site, department, job role, employee name aur employee id ke hisaab se attendance monitor karo aur monthly calendar view dekho.
+          </p>
+        </section>
+
+        <section class="panel-card">
+          <div class="section-header">
+            <h2>Admin Details</h2>
+            <span class="section-badge">Profile</span>
+          </div>
+
+          <div class="details-grid">
+            <div class="field">
+              <label>Admin Name</label>
+              <div class="value-box" id="adminNameDisplay">Loading...</div>
+            </div>
+
+            <div class="field">
+              <label>Admin ID</label>
+              <div class="value-box" id="adminIdDisplay">Loading...</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel-card">
+          <div class="section-header">
+            <h2>Attendance Filters</h2>
+            <span class="section-badge">Search & Filter</span>
+          </div>
+
+          <div class="details-grid">
+            <div class="field">
+              <label>Date</label>
+              <input type="date" id="adminDate" />
+            </div>
+
+            <div class="field">
+              <label>Site</label>
+              <select id="siteSelect">
+                <option value="">Select Site</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>Department</label>
+              <select id="departmentSelect" disabled>
+                <option value="">Select Site First</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>Job Role Type</label>
+              <select id="jobRoleSelect">
+                <option value="">All Role Types</option>
+                <option value="employee">Employee / Worker</option>
+                <option value="supervisor">Supervisor</option>
+                <option value="as">Asst. Supervisor</option>
+                <option value="si">Site Incharge</option>
+                <option value="hr">HR</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>Employee Name</label>
+              <input
+                type="text"
+                id="employeeNameInput"
+                placeholder="Optional employee name"
+                autocomplete="off"
+                autocorrect="off"
+                autocapitalize="off"
+                spellcheck="false"
+                list="no-list"
+              />
+              <div class="helper-text">Exact naam milte hi ID, Site, Department aur Job Role auto fill ho jayega.</div>
+            </div>
+
+            <div class="field">
+              <label>Employee ID</label>
+              <input type="text" id="employeeIdInput" placeholder="Optional employee ID" autocomplete="off" />
+            </div>
+
+            <div class="field" id="duplicateIdField" style="display:none;">
+              <label>Select Employee ID</label>
+              <select id="duplicateIdSelect">
+                <option value="">Select Employee ID</option>
+              </select>
+              <div class="helper-text">Same name ke multiple records mile hain. ID choose karo.</div>
+            </div>
+
+            <div class="field" style="grid-column: 1 / -1;">
+              <div style="display:flex; gap:12px; flex-wrap:wrap;">
+                <button type="button" id="attendanceSubmit" class="btn btn-primary custom-btn" style="flex:1;">Submit</button>
+                <button type="button" id="resetFiltersBtn" class="btn-reset">Reset</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel-card">
+          <div class="section-header">
+            <h3>Attendance Summary</h3>
+            <span class="section-badge">Monthly View</span>
+          </div>
+
+          <div class="table-box">
+            <table>
+              <thead>
+                <tr>
+                  <th>No. of Absent</th>
+                  <th>No. of Present</th>
+                  <th>Total Days</th>
+                  <th>UID</th>
+                  <th>Name</th>
+                  <th>Calendar</th>
+                </tr>
+              </thead>
+              <tbody id="attendanceTableBody">
+                <tr>
+                  <td colspan="6" class="empty-state">Submit karke records dekho.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <div id="floatingCalendar">
+          <h4 id="floatingCalendarTitle"></h4>
+          <div id="floatingCalendarContent"></div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    function toggleMenu() {
+      const sidebar = document.getElementById("side-bar");
+      sidebar.classList.toggle("active");
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const currentPage = window.location.pathname.split("/").pop();
+      const navLinks = document.querySelectorAll("#side-bar a");
+
+      navLinks.forEach(link => {
+        const href = link.getAttribute("href");
+        if (href === currentPage) {
+          link.classList.add("active");
+        }
+      });
+    });
+  </script>
+
+  <script type="module" src="/public/control.js"></script>
+</body>
+</html>
+
+  <script type="module">
+  import {
+    getFirestore,
+    doc,
+    getDoc,
+    getDocs,
+    collection,
+    setDoc
+  } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+  import { app } from "/public/firebase-config.js";
+
+  const db = getFirestore(app);
+
+  const adminNameDisplay = document.getElementById("adminNameDisplay");
+  const adminIdDisplay = document.getElementById("adminIdDisplay");
+
+  const adminDateInput = document.getElementById("adminDate");
+  const siteSelect = document.getElementById("siteSelect");
+  const departmentSelect = document.getElementById("departmentSelect");
+  const jobRoleSelect = document.getElementById("jobRoleSelect");
+  const employeeNameInput = document.getElementById("employeeNameInput");
+  const employeeIdInput = document.getElementById("employeeIdInput");
+  const duplicateIdField = document.getElementById("duplicateIdField");
+  const duplicateIdSelect = document.getElementById("duplicateIdSelect");
+  const attendanceSubmitBtn = document.getElementById("attendanceSubmit");
+  const resetFiltersBtn = document.getElementById("resetFiltersBtn");
+  const tableBody = document.getElementById("attendanceTableBody");
+
+  let allPeopleCache = [];
+  let duplicateMatches = [];
+  let isProgrammaticFill = false;
+  let lockedByNameSelection = false;
+
+  const today = new Date();
+  const todayStr = today.toISOString().slice(0, 10);
+  adminDateInput.value = todayStr;
+  adminDateInput.max = todayStr;
+
+  const past242 = new Date(today);
+  past242.setDate(past242.getDate() - 242);
+  adminDateInput.min = past242.toISOString().slice(0, 10);
+
+  employeeNameInput.setAttribute("autocomplete", "off");
+  employeeNameInput.setAttribute("autocorrect", "off");
+  employeeNameInput.setAttribute("autocapitalize", "off");
+  employeeNameInput.setAttribute("spellcheck", "false");
+
+  function setSubmitLoading(isLoading, text = "Submit") {
+    attendanceSubmitBtn.disabled = isLoading;
+    attendanceSubmitBtn.textContent = isLoading ? text : "Submit";
+  }
+
+  function showTableMessage(message, className = "empty-state") {
+    tableBody.innerHTML = `<tr><td colspan="6" class="${className}">${message}</td></tr>`;
+  }
+
+  function formatDate(d) {
+    const D = new Date(d);
+    const dd = ("0" + D.getDate()).slice(-2);
+    const mm = ("0" + (D.getMonth() + 1)).slice(-2);
+    const yy = D.getFullYear().toString().slice(-2);
+    return `${dd}-${mm}-${yy}`;
+  }
+
+  function normalizeText(value = "") {
+    return String(value || "").trim().toLowerCase();
+  }
+
+  function safeValue(...values) {
+    for (const value of values) {
+      if (value !== undefined && value !== null && String(value).trim() !== "") {
+        return String(value).trim();
+      }
+    }
+    return "";
+  }
+
+  function mapPerson(data, roleType) {
+    return {
+      uid: safeValue(data.uid, data.employeeId, data.id),
+      fullName: safeValue(data.fullName, data.Name, data.name),
+      department: safeValue(
+        data.departmentSelect,
+        data.department,
+        data.jobDepartment,
+        data.job,
+        Array.isArray(data.jobs) ? data.jobs[0] : ""
+      ),
+      site: safeValue(
+        data.siteSelect,
+        data.site,
+        data.Site,
+        data.industrySelect,
+        data.location,
+        data.siteName,
+        data.industry
+      ),
+      roleType,
+      raw: data
+    };
+  }
+
+  function resetDuplicateDropdown() {
+    duplicateMatches = [];
+    duplicateIdField.style.display = "none";
+    duplicateIdSelect.innerHTML = `<option value="">Select Employee ID</option>`;
+  }
+
+  function setSiteDropdown(selectedValue = "") {
+    const siteSet = new Set();
+
+    allPeopleCache.forEach((person) => {
+      if (person.site) siteSet.add(person.site);
+    });
+
+    const sites = Array.from(siteSet).sort((a, b) => a.localeCompare(b));
+    siteSelect.innerHTML = `<option value="">Select Site</option>`;
+
+    sites.forEach((site) => {
+      const option = document.createElement("option");
+      option.value = site;
+      option.textContent = site;
+      siteSelect.appendChild(option);
+    });
+
+    if (selectedValue && sites.includes(selectedValue)) {
+      siteSelect.value = selectedValue;
+    }
+  }
+
+  function setDepartmentDropdownForSite(selectedSite, selectedDepartment = "") {
+    if (!selectedSite) {
+      departmentSelect.innerHTML = `<option value="">Select Site First</option>`;
+      departmentSelect.disabled = true;
+      return;
+    }
+
+    const deptSet = new Set();
+
+    allPeopleCache.forEach((person) => {
+      if (normalizeText(person.site) !== normalizeText(selectedSite)) return;
+      if (person.department) deptSet.add(person.department);
+    });
+
+    const departments = Array.from(deptSet).sort((a, b) => a.localeCompare(b));
+    departmentSelect.innerHTML = `<option value="">All Departments</option>`;
+
+    departments.forEach((dept) => {
+      const option = document.createElement("option");
+      option.value = dept;
+      option.textContent = dept;
+      departmentSelect.appendChild(option);
+    });
+
+    departmentSelect.disabled = false;
+
+    if (selectedDepartment && departments.includes(selectedDepartment)) {
+      departmentSelect.value = selectedDepartment;
+    }
+  }
+
+  function setRoleDropdown(roleValue = "") {
+    jobRoleSelect.value = roleValue || "";
+  }
+
+  function lockFilters(lock = true) {
+    lockedByNameSelection = lock;
+    siteSelect.disabled = lock;
+    departmentSelect.disabled = lock;
+    jobRoleSelect.disabled = lock;
+  }
+
+  function resetAllFilters() {
+    lockedByNameSelection = false;
+    isProgrammaticFill = true;
+
+    employeeNameInput.value = "";
+    employeeIdInput.value = "";
+
+    siteSelect.disabled = false;
+    jobRoleSelect.disabled = false;
+
+    setSiteDropdown();
+    setDepartmentDropdownForSite("");
+    setRoleDropdown("");
+    resetDuplicateDropdown();
+
+    isProgrammaticFill = false;
+  }
+
+  async function loadAdminDetails() {
+    const adminEmail = localStorage.getItem("adminEmail");
+
+    if (!adminEmail) {
+      alert("Admin email not found in localStorage.");
+      return;
+    }
+
+    try {
+      const adminSnap = await getDoc(doc(db, "Admin", adminEmail));
+
+      if (!adminSnap.exists()) {
+        alert("Admin document not found.");
+        return;
+      }
+
+      const adminData = adminSnap.data();
+      adminNameDisplay.innerText = safeValue(adminData.Name, "N/A");
+      adminIdDisplay.innerText = safeValue(adminData.uid, "N/A");
+    } catch (err) {
+      console.error("Error fetching admin details:", err);
+      alert("Error fetching admin details.");
+    }
+  }
+
+  async function loadAllPeople() {
+    const collectionsToRead = [
+      { name: "Employee", role: "employee" },
+      { name: "Supervisor", role: "supervisor" },
+      { name: "AS", role: "as" },
+      { name: "Site-Incharge", role: "si" },
+      { name: "HR", role: "hr" }
+    ];
+
+    const merged = new Map();
+
+    for (const item of collectionsToRead) {
+      try {
+        const snap = await getDocs(collection(db, item.name));
+
+        snap.forEach((docSnap) => {
+          const person = mapPerson(docSnap.data(), item.role);
+          if (person.uid && person.fullName) {
+            merged.set(`${item.role}-${person.uid}`, person);
+          }
+        });
+      } catch (err) {
+        console.warn(`Unable to read collection ${item.name}:`, err);
+      }
+    }
+
+    allPeopleCache = Array.from(merged.values());
+    setSiteDropdown();
+    setDepartmentDropdownForSite("");
+  }
+
+  function autofillFieldsFromPerson(person) {
+    if (!person) return;
+
+    isProgrammaticFill = true;
+
+    employeeNameInput.value = person.fullName || "";
+    employeeIdInput.value = person.uid || "";
+
+    setSiteDropdown(person.site || "");
+    setDepartmentDropdownForSite(person.site || "", person.department || "");
+    setRoleDropdown(person.roleType || "");
+
+    lockFilters(true);
+
+    isProgrammaticFill = false;
+  }
+
+  function getPoolForNameSearch() {
+    return [...allPeopleCache];
+  }
+
+  function getPeopleByNameFromPool(pool, enteredName) {
+    const exactMatches = pool.filter(
+      (person) => normalizeText(person.fullName) === enteredName
+    );
+    if (exactMatches.length) return exactMatches;
+
+    return pool.filter((person) =>
+      normalizeText(person.fullName).includes(enteredName)
+    );
+  }
+
+  function getFinalFilteredPeople() {
+    const selectedSite = siteSelect.value.trim();
+    const selectedDepartment = departmentSelect.disabled && !lockedByNameSelection
+      ? ""
+      : departmentSelect.value.trim();
+    const selectedRole = jobRoleSelect.value.trim();
+    const enteredName = normalizeText(employeeNameInput.value);
+    const enteredId = normalizeText(employeeIdInput.value);
+
+    let filtered = [...allPeopleCache];
+
+    if (selectedSite) {
+      filtered = filtered.filter(
+        (person) => normalizeText(person.site) === normalizeText(selectedSite)
+      );
+    }
+
+    if (selectedDepartment) {
+      filtered = filtered.filter(
+        (person) => normalizeText(person.department) === normalizeText(selectedDepartment)
+      );
+    }
+
+    if (selectedRole) {
+      filtered = filtered.filter((person) => person.roleType === selectedRole);
+    }
+
+    if (enteredName) {
+      filtered = filtered.filter(
+        (person) => normalizeText(person.fullName) === enteredName
+      );
+    }
+
+    if (enteredId) {
+      filtered = filtered.filter(
+        (person) => normalizeText(person.uid) === enteredId
+      );
+    }
+
+    return filtered;
+  }
+
+  async function ensureAttendanceRecordsForDate(people, formattedDate) {
+    await Promise.all(
+      people.map(async (person) => {
+        try {
+          const recRef = doc(db, "Attendance", person.uid, "Records", formattedDate);
+          const existing = await getDoc(recRef);
+
+          if (!existing.exists()) {
+            await setDoc(recRef, {
+              uid: person.uid,
+              fullName: person.fullName,
+              departmentSelect: person.department || "",
+              siteSelect: person.site || "",
+              date: formattedDate,
+              Marking: "Absent",
+              Request: ""
+            });
+          }
+        } catch (err) {
+          console.warn(`Could not ensure record for ${person.uid}:`, err);
+        }
+      })
+    );
+  }
+
+  async function fetchMonthlyAttendanceMap(people, monthSuffix) {
+    const result = new Map();
+
+    await Promise.all(
+      people.map(async (person) => {
+        try {
+          const recSnap = await getDocs(collection(db, "Attendance", person.uid, "Records"));
+          const monthly = [];
+
+          recSnap.forEach((docSnap) => {
+            const data = docSnap.data();
+            if (!data.date) return;
+            if (data.date.slice(3) !== monthSuffix) return;
+
+            monthly.push({
+              ...data,
+              _refPath: docSnap.ref.path
+            });
+          });
+
+          result.set(person.uid, monthly);
+        } catch (err) {
+          console.warn(`Attendance fetch failed for ${person.uid}:`, err);
+          result.set(person.uid, []);
+        }
+      })
+    );
+
+    return result;
+  }
+
+  function renderAttendanceRows(people, recordsMap, selectedFormattedDate, monthSuffix) {
+    tableBody.innerHTML = "";
+    let renderedCount = 0;
+
+    people.forEach((person) => {
+      const monthlyRecords = recordsMap.get(person.uid) || [];
+
+      let present = 0;
+      let absent = 0;
+      let selectedDayRecord = null;
+
+      monthlyRecords.forEach((rec) => {
+        if (rec.Marking === "Present") present++;
+        else absent++;
+
+        if (rec.date === selectedFormattedDate) {
+          selectedDayRecord = rec;
+        }
+      });
+
+      if (!selectedDayRecord) return;
+
+      renderedCount++;
+      const total = present + absent;
+
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td><span class="count-chip absent">${absent}</span></td>
+        <td><span class="count-chip present">${present}</span></td>
+        <td><span class="count-chip total">${total}</span></td>
+        <td><span class="uid-pill">${person.uid}</span></td>
+        <td>${person.fullName}</td>
+        <td><button class="calendar-btn view-calendar" data-uid="${person.uid}">View</button></td>
+      `;
+
+      tableBody.appendChild(tr);
+
+      const viewBtn = tr.querySelector(".view-calendar");
+      viewBtn.addEventListener("click", () => {
+        openCalendar(viewBtn, person.fullName, monthlyRecords, monthSuffix);
+      });
+    });
+
+    if (!renderedCount) {
+      showTableMessage("Selected filters ke liye uss date par koi record nahi mila.");
+    }
+  }
+
+  function openCalendar(btn, fullName, records, monthSuf) {
+    const cal = document.getElementById("floatingCalendar");
+    const title = document.getElementById("floatingCalendarTitle");
+    const content = document.getElementById("floatingCalendarContent");
+
+    title.textContent = `Attendance: ${fullName} (${monthSuf})`;
+    content.innerHTML = "";
+
+    const [mm, yy] = monthSuf.split("-");
+    const daysInMonth = new Date(`20${yy}`, Number(mm), 0).getDate();
+
+    const recordMap = {};
+
+    records.forEach((rec) => {
+      const [day] = rec.date.split("-");
+      recordMap[day] = rec.Marking;
+    });
+
+    for (let d = 1; d <= daysInMonth; d++) {
+      const dayKey = String(d).padStart(2, "0");
+      const mark = recordMap[dayKey] || "-";
+      const cell = document.createElement("div");
+      cell.className = `calendar-cell ${mark === "Present" ? "present" : mark === "Absent" ? "absent" : "empty"}`;
+      cell.textContent = `${d}\n${mark}`;
+      content.appendChild(cell);
+    }
+
+    cal.style.display = "block";
+
+    function handleOutsideClick(event) {
+      if (!cal.contains(event.target) && event.target !== btn) {
+        cal.style.display = "none";
+        document.removeEventListener("click", handleOutsideClick);
+      }
+    }
+
+    setTimeout(() => {
+      document.addEventListener("click", handleOutsideClick);
+    }, 0);
+  }
+
+  siteSelect.addEventListener("change", () => {
+    if (isProgrammaticFill || lockedByNameSelection) return;
+
+    const selectedSite = siteSelect.value.trim();
+    setDepartmentDropdownForSite(selectedSite);
+    resetDuplicateDropdown();
+  });
+
+  employeeNameInput.addEventListener("input", () => {
+    if (isProgrammaticFill) return;
+
+    employeeIdInput.value = "";
+    resetDuplicateDropdown();
+
+    const enteredName = normalizeText(employeeNameInput.value);
+
+    if (!enteredName) {
+      lockFilters(false);
+      return;
+    }
+
+    // typing ke time autofill nahi hoga
+    lockFilters(false);
+  });
+
+  employeeNameInput.addEventListener("blur", () => {
+    if (isProgrammaticFill) return;
+
+    const enteredName = normalizeText(employeeNameInput.value);
+    if (!enteredName) return;
+
+    const pool = getPoolForNameSearch();
+    const exactMatches = pool.filter(
+      (person) => normalizeText(person.fullName) === enteredName
+    );
+
+    if (exactMatches.length === 1) {
+      autofillFieldsFromPerson(exactMatches[0]);
+      resetDuplicateDropdown();
+    }
+  });
+
+  employeeNameInput.addEventListener("keydown", (e) => {
+    if (e.key === "Backspace" || e.key === "Delete") {
+      if (!isProgrammaticFill) {
+        lockFilters(false);
+      }
+    }
+  });
+
+  employeeIdInput.addEventListener("input", () => {
+    if (isProgrammaticFill) return;
+
+    const enteredId = normalizeText(employeeIdInput.value);
+
+    if (!enteredId) {
+      lockFilters(false);
+      return;
+    }
+
+    const person = allPeopleCache.find(
+      (item) => normalizeText(item.uid) === enteredId
+    );
+
+    if (person) {
+      autofillFieldsFromPerson(person);
+      resetDuplicateDropdown();
+    }
+  });
+
+  duplicateIdSelect.addEventListener("change", () => {
+    const selectedId = duplicateIdSelect.value.trim();
+    if (!selectedId) return;
+
+    const person = duplicateMatches.find((item) => item.uid === selectedId);
+    if (person) {
+      autofillFieldsFromPerson(person);
+      resetDuplicateDropdown();
+    }
+  });
+
+  resetFiltersBtn.addEventListener("click", () => {
+    resetAllFilters();
+    showTableMessage("Filters reset ho gaye. Ab normal site-wise submit logic chalega.");
+  });
+
+  attendanceSubmitBtn.addEventListener("click", async () => {
+    const selectedDate = adminDateInput.value;
+    const selectedSite = siteSelect.value.trim();
+
+    if (!selectedDate) {
+      alert("Please select date.");
+      return;
+    }
+
+    if (!selectedSite) {
+      alert("Please select site.");
+      return;
+    }
+
+    try {
+      setSubmitLoading(true, "Submitting...");
+      showTableMessage("Attendance records load ho rahe hain...", "loading-state");
+
+      const formattedDate = formatDate(selectedDate);
+      const monthSuffix = formattedDate.slice(3);
+
+      const filteredPeople = getFinalFilteredPeople();
+
+      if (!filteredPeople.length) {
+        setSubmitLoading(false);
+        showTableMessage("Selected filters ke hisaab se koi person nahi mila.");
+        return;
+      }
+
+      await ensureAttendanceRecordsForDate(filteredPeople, formattedDate);
+
+      const recordsMap = await fetchMonthlyAttendanceMap(filteredPeople, monthSuffix);
+      renderAttendanceRows(filteredPeople, recordsMap, formattedDate, monthSuffix);
+
+      setSubmitLoading(false);
+    } catch (err) {
+      console.error("Admin attendance fetch error:", err);
+      setSubmitLoading(false);
+      alert("Something went wrong while fetching attendance.");
+      showTableMessage("Data load karte time error aa gaya.");
+    }
+  });
+
+  async function initPage() {
+    showTableMessage("Data load ho raha hai...", "loading-state");
+    await loadAdminDetails();
+    await loadAllPeople();
+
+    if (!allPeopleCache.length) {
+      showTableMessage("Records master data nahi mila.");
+    } else {
+      showTableMessage("Submit karke records dekho.");
+    }
+  }
+
+  initPage();
+</script>
+</body>
+
+</html>

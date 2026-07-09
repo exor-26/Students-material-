@@ -1,0 +1,1361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>SI Dashboard - CLMS Attendance</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" />
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root{
+      --topbar-height:78px;
+      --sidebar-width:280px;
+      --bg-dark:#081523;
+      --card-bg:rgba(12,25,45,0.88);
+      --card-border:rgba(255,255,255,0.08);
+      --text-main:#ffffff;
+      --text-soft:#c9d9ee;
+      --text-muted:#8ea4c5;
+      --orange-1:#ff8a3c;
+      --orange-2:#ff5a1f;
+      --blue-1:#2d7dff;
+      --blue-2:#1657cc;
+      --green-1:#20c997;
+      --shadow:0 18px 40px rgba(0,0,0,0.25);
+    }
+
+    html, body{
+      width:100%;
+      min-height:100%;
+       overflow-x:hidden;
+       overflow-y:auto;
+      font-family:"Segoe UI",Arial,sans-serif;
+      background:
+        linear-gradient(135deg, rgba(7,16,30,0.95), rgba(14,34,56,0.92)),
+        url("https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1600&q=80")
+        center/cover no-repeat fixed;
+      color:#fff;
+       -webkit-overflow-scrolling:touch;
+    }
+
+    .app-shell{
+  width:100%;
+  min-height:100vh;
+}
+
+    .topbar{
+      height:var(--topbar-height);
+      padding:0 24px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      background:rgba(7,16,30,0.88);
+      backdrop-filter:blur(12px);
+      border-bottom:1px solid rgba(255,255,255,0.06);
+      position:fixed;
+      top:0; left:0; right:0;
+      z-index:2000;
+    }
+
+    .topbar-left{
+      display:flex;
+      align-items:center;
+      gap:16px;
+      min-width:0;
+    }
+
+    .menu-toggle{
+      width:46px;
+      height:46px;
+      border:none;
+      border-radius:14px;
+      background:linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
+      color:#fff;
+      font-size:20px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      cursor:pointer;
+      flex-shrink:0;
+    }
+
+    .brand-wrap{
+      display:flex;
+      flex-direction:column;
+      min-width:0;
+    }
+
+    .brand-title{
+      margin:0;
+      font-size:24px;
+      font-weight:700;
+      color:#fff;
+      text-decoration:none !important;
+      line-height:1.1;
+    }
+
+    .brand-subtitle{
+      margin:2px 0 0;
+      color:var(--text-soft);
+      font-size:13px;
+    }
+
+    .logout{
+      text-decoration:none !important;
+      color:#fff !important;
+      background:linear-gradient(135deg, var(--orange-1), var(--orange-2));
+      padding:11px 18px;
+      border-radius:12px;
+      font-weight:700;
+      box-shadow:0 10px 24px rgba(255,90,31,0.24);
+      white-space:nowrap;
+    }
+
+    nav.sidebar{
+      width:var(--sidebar-width);
+      min-width:var(--sidebar-width);
+      max-width:var(--sidebar-width);
+      position:fixed;
+      top:var(--topbar-height);
+      left:0;
+      bottom:0;
+      padding:20px 16px 22px;
+      background:linear-gradient(180deg, rgba(6,16,30,0.98), rgba(8,22,40,0.96));
+      backdrop-filter:blur(16px);
+      border-right:1px solid rgba(255,255,255,0.06);
+      overflow-y:auto;
+      overflow-x:hidden;
+      z-index:1500;
+      box-shadow:18px 0 45px rgba(0,0,0,0.24);
+    }
+
+    nav.sidebar::-webkit-scrollbar{ width:6px; }
+    nav.sidebar::-webkit-scrollbar-thumb{
+      background:rgba(255,255,255,0.14);
+      border-radius:999px;
+    }
+
+    .sidebar-top-card{
+      position:relative;
+      padding:20px 18px 18px;
+      border-radius:24px;
+      background:
+        linear-gradient(135deg, rgba(255,122,47,0.16), rgba(31,119,255,0.14)),
+        rgba(255,255,255,0.04);
+      border:1px solid rgba(255,255,255,0.08);
+      overflow:hidden;
+      margin-bottom:24px;
+    }
+
+    .sidebar-mini-label{
+      display:inline-block;
+      font-size:11px;
+      font-weight:700;
+      text-transform:uppercase;
+      letter-spacing:1.4px;
+      color:#ffd8c2;
+      background:rgba(255,255,255,0.08);
+      border:1px solid rgba(255,255,255,0.08);
+      padding:5px 10px;
+      border-radius:999px;
+      margin-bottom:12px;
+    }
+
+    .sidebar-main-title{
+      font-size:19px;
+      font-weight:800;
+      color:#ffffff;
+      margin:0 0 6px;
+    }
+
+    .sidebar-main-subtitle{
+      font-size:13px;
+      color:#d5e2f1;
+      line-height:1.7;
+      margin:0 0 14px;
+    }
+
+    .sidebar-status-row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding-top:12px;
+      border-top:1px solid rgba(255,255,255,0.08);
+    }
+
+    .sidebar-status-badge{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:11px;
+      font-weight:700;
+      color:#dfffe9;
+      background:rgba(20,184,106,0.14);
+      border:1px solid rgba(20,184,106,0.22);
+    }
+
+    .sidebar-status-text{
+      font-size:11px;
+      color:#c6d8ec;
+      text-align:right;
+      line-height:1.4;
+    }
+
+    .sidebar-section-title{
+      font-size:11px;
+      text-transform:uppercase;
+      letter-spacing:1.5px;
+      color:#8ea4c5;
+      margin:0 8px 16px;
+      font-weight:700;
+    }
+
+    #side-bar{
+      list-style:none;
+      padding-left:0;
+      margin-bottom:0;
+      width:100%;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+
+    #side-bar li{ width:100%; }
+
+    #side-bar a{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      width:100%;
+      padding:15px 15px;
+      border-radius:20px;
+      text-decoration:none !important;
+      color:#edf4ff !important;
+      background:linear-gradient(135deg, rgba(255,255,255,0.055), rgba(255,255,255,0.025));
+      border:1px solid rgba(255,255,255,0.06);
+      transition:all 0.28s ease;
+      position:relative;
+      overflow:hidden;
+    }
+
+    #side-bar a:hover{ transform:translateX(6px); }
+
+    #side-bar a.active{
+      background:linear-gradient(135deg, rgba(255,122,47,0.18), rgba(31,119,255,0.16));
+    }
+
+    .nav-icon{
+      width:44px;
+      height:44px;
+      min-width:44px;
+      border-radius:15px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:linear-gradient(135deg, rgba(255,255,255,0.13), rgba(255,255,255,0.05));
+      border:1px solid rgba(255,255,255,0.08);
+      font-size:17px;
+    }
+
+    .nav-text{ display:flex; flex-direction:column; }
+    .nav-text strong{ font-size:14px; font-weight:700; color:#fff; }
+    .nav-text span{
+      margin-top:4px;
+      font-size:11px;
+      line-height:1.45;
+      color:#aabed8;
+    }
+    .nav-arrow{ margin-left:auto; font-size:16px; color:#93b2d8; }
+
+    main{
+  margin-left:var(--sidebar-width);
+  margin-top:var(--topbar-height);
+  min-height:calc(100vh - var(--topbar-height));
+  overflow:visible;
+  padding:28px;
+}
+
+    .hero-card,
+    .panel-card,
+    .table-card{
+      background:rgba(12,25,45,0.88);
+      border-radius:24px;
+      padding:24px;
+      margin-bottom:24px;
+      border:1px solid rgba(255,255,255,0.08);
+      box-shadow:var(--shadow);
+    }
+
+    .page-tag{
+      display:inline-block;
+      padding:7px 12px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:700;
+      color:#ffb88f;
+      background:rgba(255,122,47,0.16);
+      margin-bottom:14px;
+    }
+
+    .hero-card h1{ font-size:32px; margin-bottom:10px; }
+
+    .details-grid{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:18px;
+    }
+
+    .filter-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr 1fr auto auto;
+      gap:16px;
+      align-items:end;
+    }
+
+    .field label{
+      display:block;
+      margin-bottom:8px;
+      font-size:12px;
+      font-weight:700;
+      color:#8ea4c5;
+    }
+
+    .value-box,
+    .field input,
+    .field select{
+      width:100%;
+      min-height:48px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,0.08);
+      background:rgba(255,255,255,0.05);
+      color:#fff;
+      padding:12px 14px;
+      outline:none;
+    }
+
+    .value-box{
+      display:flex;
+      align-items:center;
+    }
+
+    .field select option{ color:#000; }
+
+    #attendanceSubmit,
+    #resetBtn{
+      min-height:48px;
+      border:none;
+      border-radius:14px;
+      color:#fff;
+      font-size:15px;
+      font-weight:700;
+      padding:12px 22px;
+    }
+
+    #attendanceSubmit{
+      background:linear-gradient(135deg, var(--orange-1), var(--orange-2));
+    }
+
+    #resetBtn{
+      background:linear-gradient(135deg, #6c757d, #343a40);
+    }
+
+    .table-wrap{ overflow-x:auto; }
+
+    table{
+      width:100%;
+      min-width:1500px;
+      border-collapse:collapse;
+    }
+
+    thead tr{
+      background:linear-gradient(135deg, #183b6f, #102849);
+    }
+
+    th{
+      color:#fff;
+      padding:14px;
+      text-align:center;
+      white-space:nowrap;
+    }
+
+    td{
+      padding:12px;
+      text-align:center;
+      color:#dce9f7;
+      border-top:1px solid rgba(255,255,255,0.05);
+      white-space:nowrap;
+    }
+
+    .day-box{
+      width:34px;
+      height:34px;
+      border-radius:10px;
+      background:rgba(255,255,255,0.06);
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      cursor:pointer;
+      font-weight:800;
+      user-select:none;
+    }
+
+    .day-box.active{
+      background:linear-gradient(135deg, #20c997, #11936c);
+      color:#fff;
+    }
+
+
+    .name-field-wrap{
+      position:relative;
+    }
+
+    .name-suggestions{
+      display:none;
+      position:absolute;
+      top: calc(100% + 6px);
+      left:0;
+      right:0;
+      max-height: 260px;
+      overflow-y:auto;
+      background: rgba(11, 19, 32, 0.98);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      box-shadow: 0 18px 36px rgba(0,0,0,0.34);
+      z-index: 1200;
+      padding: 6px;
+      backdrop-filter: blur(12px);
+    }
+
+    .name-suggestions.show{
+      display:block;
+    }
+
+    .name-suggestion-item{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      width:100%;
+      padding: 11px 12px;
+      border-radius: 12px;
+      cursor:pointer;
+      color:#e6f1fb;
+      font-size: 13px;
+      line-height:1.35;
+      transition: 0.2s ease;
+      border:1px solid transparent;
+      background: transparent;
+    }
+
+    .name-suggestion-item:hover,
+    .name-suggestion-item.active{
+      background: rgba(45,125,255,0.14);
+      border-color: rgba(45,125,255,0.22);
+      color:#fff;
+    }
+
+    .name-suggestion-item small{
+      color:#9db4cf;
+      font-size: 11px;
+      white-space: nowrap;
+      flex-shrink:0;
+    }
+
+    @media (max-width: 991px){
+      .name-suggestions{
+        max-height: 220px;
+      }
+    }
+
+    @media(max-width:991px){
+      html, body{ overflow:auto; }
+      nav.sidebar{
+        width:100%;
+        min-width:100%;
+        max-width:100%;
+        position:relative;
+        top:auto; left:auto; right:auto; bottom:auto;
+        height:auto;
+        border-right:none;
+        border-bottom:1px solid rgba(255,255,255,0.05);
+        border-radius:0 0 24px 24px;
+        padding:14px;
+      }
+      main{
+        position:relative;
+        left:auto;
+        top:auto;
+        width:100%;
+        padding:18px;
+      }
+      .details-grid,
+      .filter-grid{ grid-template-columns:1fr; }
+      #side-bar{ display:none; }
+      #side-bar.active{
+        display:flex;
+        margin-top:12px;
+      }
+    }
+
+    /* ===========================
+   TABLET RESPONSIVE
+=========================== */
+
+@media (max-width:1200px){
+
+  .details-grid{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .filter-grid{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .hero-card h1{
+    font-size:28px;
+  }
+}
+
+
+/* ===========================
+   MOBILE RESPONSIVE
+=========================== */
+
+@media (max-width:991px){
+
+  :root{
+    --topbar-height:72px;
+  }
+
+  .topbar{
+    padding:0 12px;
+  }
+
+  .brand-title{
+    font-size:20px;
+  }
+
+  .brand-subtitle{
+    font-size:12px;
+  }
+
+  nav.sidebar{
+    width:100%;
+    max-width:100%;
+    min-width:100%;
+    position:relative;
+    top:auto;
+    left:auto;
+    bottom:auto;
+    height:auto;
+    border-right:none;
+  }
+
+  main{
+    margin-left:0;
+    margin-top:0;
+    padding:14px;
+  }
+
+  .hero-card,
+  .panel-card,
+  .table-card{
+    padding:16px;
+    border-radius:18px;
+  }
+
+  .hero-card h1{
+    font-size:24px;
+  }
+
+  .details-grid{
+    grid-template-columns:1fr;
+  }
+
+  .filter-grid{
+    grid-template-columns:1fr;
+  }
+
+  .field input,
+  .field select,
+  .value-box{
+    min-height:52px;
+  }
+
+  #attendanceSubmit,
+  #resetBtn{
+    width:100%;
+  }
+
+  .table-wrap{
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+  }
+
+  table{
+    min-width:900px;
+  }
+
+  .day-box{
+    width:32px;
+    height:32px;
+    font-size:12px;
+  }
+}
+
+
+/* ===========================
+   SMALL PHONE
+=========================== */
+
+@media (max-width:600px){
+
+  .brand-title{
+    font-size:18px;
+  }
+
+  .logout{
+    padding:10px 14px;
+    font-size:13px;
+  }
+
+  .menu-toggle{
+    width:40px;
+    height:40px;
+  }
+
+  .hero-card h1{
+    font-size:22px;
+  }
+
+  .hero-card p{
+    font-size:14px;
+    line-height:1.6;
+  }
+
+  .sidebar-main-title{
+    font-size:16px;
+  }
+
+  .sidebar-main-subtitle{
+    font-size:12px;
+  }
+}
+  </style>
+</head>
+
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+        <div class="brand-wrap">
+          <a href="#" class="brand-title">SI Dashboard</a>
+          <p class="brand-subtitle">CLMS Attendance Overview</p>
+        </div>
+      </div>
+
+      <a href="#" class="logout" onclick="logoutUser()">Logout</a>
+    </header>
+
+    <nav class="sidebar">
+      <div class="sidebar-top-card">
+        <div class="sidebar-mini-label">SI Panel</div>
+        <h3 class="sidebar-main-title">Command Center</h3>
+        <p class="sidebar-main-subtitle">
+          Access Supervisor CLMS attendance from one clean navigation area.
+        </p>
+
+        <div class="sidebar-status-row">
+          <span class="sidebar-status-badge">CLMS Active</span>
+          <div class="sidebar-status-text">
+            Secure access<br />
+            Quick navigation
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-section-title">Navigation</div>
+
+      <ul id="side-bar">
+        <li>
+          <a href="sihome.html">
+            <div class="nav-icon">🏠</div>
+            <div class="nav-text">
+              <strong>Dashboard</strong>
+              <span>SI main dashboard overview</span>
+            </div>
+            <div class="nav-arrow">›</div>
+          </a>
+        </li>
+
+        <li>
+          <a href="siClmsAttendance.html" class="active">
+            <div class="nav-icon">📋</div>
+            <div class="nav-text">
+              <strong>CLMS Attendance</strong>
+              <span>Supervisor attendance</span>
+            </div>
+            <div class="nav-arrow">›</div>
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <main>
+      <section class="hero-card">
+        <span class="page-tag">CLMS ATTENDANCE PANEL</span>
+        <h1>CLMS Attendance</h1>
+        <p>
+          Site-Incharge can manage Supervisor CLMS attendance. Data is saved under the same
+          CLMS Attendance collection, while SI name, SI ID, and SI site are preserved in every record.
+        </p>
+      </section>
+
+      <section class="panel-card">
+        <div class="details-grid">
+          <div class="field">
+            <label>SI Name</label>
+            <div class="value-box" id="siNameDisplay">Loading...</div>
+          </div>
+
+          <div class="field">
+            <label>SI ID</label>
+            <div class="value-box" id="siIdDisplay">Loading...</div>
+          </div>
+
+          <div class="field">
+            <label>Site</label>
+            <div class="value-box" id="siSiteDisplay">Loading...</div>
+          </div>
+
+          <div class="field">
+            <label>Role Type</label>
+            <div class="value-box" style="justify-content:center; font-weight:700;">Supervisor & AS Only</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel-card">
+        <div class="filter-grid">
+          <div class="field">
+            <label>Month</label>
+            <input type="month" id="clmsMonth" />
+          </div>
+
+          <div class="field name-field-wrap">
+            <label>Name</label>
+            <input type="text" id="employeeNameInput" placeholder="Optional" autocomplete="off" />
+            <div id="nameSuggestions" class="name-suggestions" aria-label="Employee name suggestions"></div>
+          </div>
+
+          <div class="field">
+            <label>ID</label>
+            <select id="employeeIdSelect">
+              <option value="">All IDs</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label>&nbsp;</label>
+            <button type="button" id="attendanceSubmit">Submit</button>
+          </div>
+
+          <div class="field">
+            <label>&nbsp;</label>
+            <button type="button" id="resetBtn">Reset</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="table-card">
+        <div class="table-wrap">
+          <table>
+            <thead id="attendanceTableHead">
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+              </tr>
+            </thead>
+            <tbody id="attendanceTableBody">
+              <tr>
+                <td colspan="2">Please select month and click submit.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    function toggleMenu(){
+      const sidebar = document.getElementById("side-bar");
+      sidebar.classList.toggle("active");
+    }
+
+    function logoutUser(){
+      localStorage.removeItem("siEmail");
+      window.location.href = "index.html";
+    }
+  </script>
+
+  <script type="module" src="/public/control.js"></script>
+
+  <script type="module">
+  import {
+    getFirestore,
+    doc,
+    getDoc,
+    setDoc,
+    deleteDoc,
+    collection,
+    getDocs,
+    query,
+    where
+  } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+
+  import { app } from "/public/firebase-config.js";
+
+  const db = getFirestore(app);
+
+  const siEmail = localStorage.getItem("siEmail");
+
+  const siNameDisplay = document.getElementById("siNameDisplay");
+  const siIdDisplay = document.getElementById("siIdDisplay");
+  const siSiteDisplay = document.getElementById("siSiteDisplay");
+
+  const clmsMonthInput = document.getElementById("clmsMonth");
+  const employeeNameInput = document.getElementById("employeeNameInput");
+  const employeeIdSelect = document.getElementById("employeeIdSelect");
+  const nameSuggestionsBox = document.getElementById("nameSuggestions");
+  const attendanceSubmitBtn = document.getElementById("attendanceSubmit");
+  const resetBtn = document.getElementById("resetBtn");
+  const tableHead = document.getElementById("attendanceTableHead");
+  const tableBody = document.getElementById("attendanceTableBody");
+
+  let CURRENT_SITE = "";
+  let CURRENT_SI_UID = "";
+  let CURRENT_SI_NAME = "";
+  let loadedPeople = [];
+
+  const employeeCacheBySI = new Map();
+  const employeeNameIndexBySI = new Map();
+
+  const now = new Date();
+  clmsMonthInput.value = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+
+  function normalizeText(val = "") {
+    return val.toString().trim().toLowerCase();
+  }
+
+  function escapeHTML(value = "") {
+    return value
+      .toString()
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
+  function getMonthParts(monthValue) {
+    const [year, month] = monthValue.split("-").map(Number);
+    const totalDays = new Date(year, month, 0).getDate();
+    return { year, month, totalDays };
+  }
+
+  function makeDocDateId(monthValue, day) {
+    const dd = String(day).padStart(2, "0");
+    return `${monthValue}-${dd}`;
+  }
+
+  function setEmptyMessage(message, colspan = 2) {
+    tableBody.innerHTML = `<tr><td colspan="${colspan}">${message}</td></tr>`;
+  }
+
+  function renderTableHeader(totalDays) {
+    let html = `
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+    `;
+    for (let i = 1; i <= totalDays; i++) {
+      html += `<th>${i}</th>`;
+    }
+    html += `</tr>`;
+    tableHead.innerHTML = html;
+  }
+
+  async function loadSI() {
+    if (!siEmail) {
+      alert("SI email not found in localStorage");
+      return;
+    }
+
+    try {
+      const ref = doc(db, "Site-Incharge", siEmail);
+      const snap = await getDoc(ref);
+
+      if (!snap.exists()) {
+        alert("SI Not Found");
+        return;
+      }
+
+      const data = snap.data();
+
+      CURRENT_SI_NAME = (data.Name || data.fullName || data.name || "").toString().trim();
+      CURRENT_SI_UID = (data.uid || data.uidNo || data.userId || data.id || "").toString().trim();
+      CURRENT_SITE = (data.site || data.Site || data.siteName || data.SiteName || "").toString().trim();
+
+      siNameDisplay.innerText = CURRENT_SI_NAME || "-";
+      siIdDisplay.innerText = CURRENT_SI_UID || "-";
+      siSiteDisplay.innerText = CURRENT_SITE || "-";
+    } catch (err) {
+      console.error("SI Load Error:", err);
+      alert("Failed to load SI profile");
+    }
+  }
+
+  async function fetchPeopleByField(collectionName, fieldName, fieldValue, roleType) {
+    const q = query(
+      collection(db, collectionName),
+      where(fieldName, "==", fieldValue)
+    );
+
+    const snap = await getDocs(q);
+    const arr = [];
+
+    snap.forEach(docSnap => {
+      const d = docSnap.data();
+      const uid = (d.uid || d.userId || d.id || "").toString().trim();
+      const fullName = (d.fullName || d.Name || d.name || "").toString().trim();
+
+      if (!uid || !fullName) return;
+
+      arr.push({
+        uid,
+        fullName,
+        role: roleType,
+        sourceCollection: collectionName,
+        siuid: (d.siuid || d.siUid || "").toString().trim(),
+        departmentSelect: (d.departmentSelect || d.department || "").toString().trim(),
+        jobSelect: (d.jobSelect || d.job || "").toString().trim(),
+        status: (d.Status || d.status || "").toString().trim()
+      });
+    });
+
+    return arr;
+  }
+
+  async function loadPeople() {
+    if (!CURRENT_SI_UID) {
+      return [];
+    }
+
+    const cacheKey = CURRENT_SI_UID;
+    if (employeeCacheBySI.has(cacheKey)) {
+      return employeeCacheBySI.get(cacheKey);
+    }
+
+    const searchFields = ["siuid", "siUid", "siteInchargeUid", "siteInchargeID"];
+    const targets = [
+      { collectionName: "Supervisor", roleType: "Supervisor" },
+      { collectionName: "AS", roleType: "AS" }
+    ];
+
+    const seen = new Map();
+
+    for (const target of targets) {
+      let collected = [];
+
+      for (const field of searchFields) {
+        try {
+          const result = await fetchPeopleByField(
+            target.collectionName,
+            field,
+            CURRENT_SI_UID,
+            target.roleType
+          );
+
+          if (result.length) {
+            collected = result;
+            break;
+          }
+        } catch (err) {
+          console.warn(`Load people from ${target.collectionName} via ${field} failed`, err);
+        }
+      }
+
+      collected.forEach(emp => {
+        const key = `${emp.role}:${emp.uid}`;
+        if (!seen.has(key)) {
+          seen.set(key, emp);
+        }
+      });
+    }
+
+    const people = [...seen.values()];
+
+    employeeCacheBySI.set(cacheKey, people);
+
+    const nameMap = new Map();
+    people.forEach(emp => {
+      const key = normalizeText(emp.fullName);
+      if (!key) return;
+      if (!nameMap.has(key)) nameMap.set(key, []);
+      nameMap.get(key).push(emp);
+    });
+    employeeNameIndexBySI.set(cacheKey, nameMap);
+
+    return people;
+  }
+
+  let cachedNameSuggestions = [];
+  let activeSuggestionIndex = -1;
+  let suggestionHideTimer = null;
+
+  function hideNameSuggestions() {
+    if (suggestionHideTimer) {
+      clearTimeout(suggestionHideTimer);
+      suggestionHideTimer = null;
+    }
+    nameSuggestionsBox.classList.remove("show");
+    nameSuggestionsBox.innerHTML = "";
+    activeSuggestionIndex = -1;
+  }
+
+  function renderNameSuggestions(query = "") {
+    const typed = normalizeText(query).toLowerCase();
+    const source = cachedNameSuggestions.length ? cachedNameSuggestions : [];
+
+    const filtered = typed
+      ? source.filter(name => normalizeText(name).toLowerCase().includes(typed))
+      : source;
+
+    const limited = filtered.slice(0, 12);
+
+    if (!limited.length) {
+      hideNameSuggestions();
+      return;
+    }
+
+    nameSuggestionsBox.innerHTML = limited.map((name, index) => `
+      <div class="name-suggestion-item ${index === activeSuggestionIndex ? "active" : ""}" data-name="${escapeHTML(name)}">
+        <span>${escapeHTML(name)}</span>
+        <small>Click to select</small>
+      </div>
+    `).join("");
+
+    nameSuggestionsBox.classList.add("show");
+  }
+
+  async function buildNameSuggestions() {
+    const people = await loadPeople();
+
+    cachedNameSuggestions = [...new Set(
+      people
+        .map(p => p.fullName)
+        .filter(Boolean)
+        .sort((a, b) => a.localeCompare(b))
+    )];
+
+    renderNameSuggestions(employeeNameInput.value);
+  }
+
+  async function syncEmployeeIdDropdown() {
+    const typedName = employeeNameInput.value.trim();
+    employeeIdSelect.innerHTML = `<option value="">All IDs</option>`;
+
+    if (!typedName) return;
+
+    const nameMap = employeeNameIndexBySI.get(CURRENT_SI_UID) || new Map();
+    const matches = nameMap.get(normalizeText(typedName)) || [];
+
+    if (!matches.length) return;
+
+    if (matches.length === 1) {
+      employeeIdSelect.innerHTML = `<option value="${escapeHTML(matches[0].uid)}" selected>${escapeHTML(matches[0].uid)}</option>`;
+      return;
+    }
+
+    employeeIdSelect.innerHTML = `
+      <option value="">Select ID</option>
+      ${matches.map(emp => `<option value="${escapeHTML(emp.uid)}">${escapeHTML(emp.uid)}</option>`).join("")}
+    `;
+  }
+
+  async function getAttendanceMap(people, monthValue) {
+    const map = new Map();
+
+    await Promise.all(people.map(async person => {
+      try {
+        const q = query(
+          collection(db, "CLMS Attendance", person.uid, "Records"),
+          where("monthValue", "==", monthValue)
+        );
+
+        const snap = await getDocs(q);
+        const set = new Set();
+
+        snap.forEach(docSnap => {
+          const d = docSnap.data();
+          if (d.day) {
+            set.add(Number(d.day));
+          }
+        });
+
+        map.set(person.uid, set);
+      } catch (err) {
+        console.error("Attendance Fetch Error:", err);
+        map.set(person.uid, new Set());
+      }
+    }));
+
+    return map;
+  }
+
+  async function toggleAttendance(cell, person, day, monthValue) {
+    try {
+      const active = cell.classList.contains("active");
+      const docDateId = makeDocDateId(monthValue, day);
+
+      const ref = doc(
+        db,
+        "CLMS Attendance",
+        person.uid,
+        "Records",
+        docDateId
+      );
+
+      if (active) {
+        await deleteDoc(ref);
+        cell.classList.remove("active");
+        cell.innerHTML = "";
+        return;
+      }
+
+      await setDoc(ref, {
+        attendanceType: "CLMS Attendance",
+        collectionName: "CLMS Attendance",
+        uid: person.uid,
+        employeeId: person.uid,
+        employeeName: person.fullName,
+        fullName: person.fullName,
+        roleType: person.role || "",
+        departmentSelect: person.departmentSelect || "",
+        jobSelect: person.jobSelect || "",
+        site: CURRENT_SITE,
+        siuid: CURRENT_SI_UID,
+        siUid: CURRENT_SI_UID,
+        siName: CURRENT_SI_NAME,
+        monthValue,
+        day,
+        docDateId,
+        Marking: "Present",
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      }, { merge: true });
+
+      cell.classList.add("active");
+      cell.innerHTML = "✓";
+    } catch (err) {
+      console.error("Toggle Attendance Error:", err);
+      alert("Attendance Update Failed");
+    }
+  }
+
+  function renderTable(people, attendanceMap, monthValue, totalDays) {
+    renderTableHeader(totalDays);
+    tableBody.innerHTML = "";
+
+    if (!people.length) {
+      tableBody.innerHTML = `
+        <tr>
+          <td colspan="${totalDays + 2}">No Supervisor / AS Found Under This SI</td>
+        </tr>
+      `;
+      return;
+    }
+
+    people.forEach(person => {
+      const tr = document.createElement("tr");
+      let html = `
+        <td>${escapeHTML(person.uid)}</td>
+        <td>${escapeHTML(person.fullName)}</td>
+      `;
+
+      const set = attendanceMap.get(person.uid) || new Set();
+
+      for (let day = 1; day <= totalDays; day++) {
+        const active = set.has(day);
+        html += `
+          <td>
+            <span class="day-box ${active ? "active" : ""}" data-day="${day}">
+              ${active ? "✓" : ""}
+            </span>
+          </td>
+        `;
+      }
+
+      tr.innerHTML = html;
+      tableBody.appendChild(tr);
+
+      tr.querySelectorAll(".day-box").forEach(box => {
+        box.addEventListener("click", async () => {
+          await toggleAttendance(
+            box,
+            person,
+            Number(box.dataset.day),
+            monthValue
+          );
+        });
+      });
+    });
+  }
+
+  attendanceSubmitBtn.addEventListener("click", async () => {
+    const monthValue = clmsMonthInput.value;
+
+    if (!monthValue) {
+      alert("Select month");
+      return;
+    }
+
+    if (!CURRENT_SI_UID) {
+      alert("SI profile not loaded");
+      return;
+    }
+
+    attendanceSubmitBtn.disabled = true;
+    attendanceSubmitBtn.innerText = "Loading...";
+
+    try {
+      const people = await loadPeople();
+
+      const filtered = people.filter(p => {
+        const name = employeeNameInput.value.trim().toLowerCase();
+        const id = employeeIdSelect.value.trim();
+
+        if (name && !p.fullName.toLowerCase().includes(name)) {
+          return false;
+        }
+
+        if (id && p.uid !== id) {
+          return false;
+        }
+
+        return true;
+      });
+
+      loadedPeople = filtered;
+
+      const { totalDays } = getMonthParts(monthValue);
+
+      if (!filtered.length) {
+        renderTableHeader(totalDays);
+        setEmptyMessage("No Supervisor / AS Found Under This SI", totalDays + 2);
+        return;
+      }
+
+      const attendanceMap = await getAttendanceMap(filtered, monthValue);
+      renderTable(filtered, attendanceMap, monthValue, totalDays);
+    } catch (err) {
+      console.error("Attendance Load Error:", err);
+      alert("Error loading attendance");
+    } finally {
+      attendanceSubmitBtn.disabled = false;
+      attendanceSubmitBtn.innerText = "Submit";
+    }
+  });
+
+  resetBtn.addEventListener("click", () => {
+    employeeNameInput.value = "";
+    employeeIdSelect.innerHTML = `<option value="">All IDs</option>`;
+    loadedPeople = [];
+    tableHead.innerHTML = `
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+      </tr>
+    `;
+    tableBody.innerHTML = `
+      <tr>
+        <td colspan="2">Please select month and click submit.</td>
+      </tr>
+    `;
+  });
+
+  employeeNameInput.addEventListener("input", async () => {
+    activeSuggestionIndex = -1;
+    renderNameSuggestions(employeeNameInput.value);
+    await syncEmployeeIdDropdown();
+  });
+
+  employeeNameInput.addEventListener("focus", () => {
+    renderNameSuggestions(employeeNameInput.value);
+  });
+
+  employeeNameInput.addEventListener("keydown", (event) => {
+    const items = [...nameSuggestionsBox.querySelectorAll(".name-suggestion-item")];
+    if (!items.length || !nameSuggestionsBox.classList.contains("show")) return;
+
+    if (event.key === "ArrowDown") {
+      event.preventDefault();
+      activeSuggestionIndex = Math.min(activeSuggestionIndex + 1, items.length - 1);
+      renderNameSuggestions(employeeNameInput.value);
+      const active = nameSuggestionsBox.querySelector(".name-suggestion-item.active");
+      active?.scrollIntoView({ block: "nearest" });
+    } else if (event.key === "ArrowUp") {
+      event.preventDefault();
+      activeSuggestionIndex = Math.max(activeSuggestionIndex - 1, 0);
+      renderNameSuggestions(employeeNameInput.value);
+      const active = nameSuggestionsBox.querySelector(".name-suggestion-item.active");
+      active?.scrollIntoView({ block: "nearest" });
+    } else if (event.key === "Enter") {
+      const active = nameSuggestionsBox.querySelector(".name-suggestion-item.active") || items[0];
+      if (active) {
+        event.preventDefault();
+        employeeNameInput.value = active.dataset.name || active.textContent.trim();
+        hideNameSuggestions();
+        syncEmployeeIdDropdown();
+      }
+    } else if (event.key === "Escape") {
+      hideNameSuggestions();
+    }
+  });
+
+  nameSuggestionsBox.addEventListener("mousedown", (event) => {
+    const item = event.target.closest(".name-suggestion-item");
+    if (!item) return;
+    event.preventDefault();
+    employeeNameInput.value = item.dataset.name || item.textContent.trim();
+    hideNameSuggestions();
+    syncEmployeeIdDropdown();
+  });
+
+  employeeNameInput.addEventListener("blur", () => {
+    suggestionHideTimer = setTimeout(() => hideNameSuggestions(), 180);
+  });
+
+  document.addEventListener("click", (event) => {
+    if (!event.target.closest(".name-field-wrap")) {
+      hideNameSuggestions();
+    }
+  });
+
+  document.addEventListener("DOMContentLoaded", async () => {
+    await loadSI();
+    await buildNameSuggestions();
+    employeeNameInput.addEventListener("change", syncEmployeeIdDropdown);
+  });
+</script>
+</body>
+</html>

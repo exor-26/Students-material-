@@ -1,0 +1,2000 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <title>HR Dashboard - Store Equipments</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="stylesheet" type="text/css" href="Hrstoreequipment.css" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap-theme.min.css" />
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --topbar-height: 78px;
+      --sidebar-width: 280px;
+      --bg-dark: #081523;
+      --bg-mid: #0e2238;
+      --card-bg: rgba(12, 25, 45, 0.85);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --text-main: #ffffff;
+      --text-soft: #b8c9df;
+      --text-muted: #8ea4c5;
+      --accent: #ff7a2f;
+      --accent-2: #1f77ff;
+      --success: #14b86a;
+      --danger: #ef4d4d;
+      --shadow: 0 18px 40px rgba(0, 0, 0, 0.25);
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      background:
+        linear-gradient(135deg, rgba(7, 16, 30, 0.95), rgba(14, 34, 56, 0.92)),
+        url("https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1600&q=80") center/cover no-repeat fixed;
+      color: var(--text-main);
+    }
+
+    .app-shell {
+      height: 100vh;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    .topbar {
+      height: var(--topbar-height);
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(7, 16, 30, 0.88);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 2000;
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      min-width: 0;
+    }
+
+    .menu-toggle {
+      width: 46px;
+      height: 46px;
+      border: none;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
+      color: #fff;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: 0.25s ease;
+      flex-shrink: 0;
+    }
+
+    .menu-toggle:hover {
+      background: linear-gradient(135deg, rgba(255,122,47,0.18), rgba(31,119,255,0.16));
+      transform: translateY(-1px);
+    }
+
+    .brand-wrap {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-width: 0;
+    }
+
+    .brand-title {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 700;
+      color: #fff;
+      text-decoration: none !important;
+      line-height: 1.1;
+    }
+
+    .brand-subtitle {
+      margin: 2px 0 0;
+      color: var(--text-soft);
+      font-size: 13px;
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    #bellContainer {
+      position: relative;
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.07);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: 0.25s ease;
+      color: #fff;
+    }
+
+    #bellContainer:hover {
+      background: rgba(255, 255, 255, 0.14);
+      transform: translateY(-1px);
+    }
+
+    #bellBadge {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      background: #ff4d4f;
+      color: #fff;
+      font-size: 10px;
+      min-width: 18px;
+      height: 18px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 5px;
+    }
+
+    .logout {
+      text-decoration: none !important;
+      color: #fff !important;
+      background: linear-gradient(135deg, #ff8a3c, #ff5a1f);
+      padding: 11px 18px;
+      border-radius: 12px;
+      font-weight: 700;
+      transition: 0.25s ease;
+      box-shadow: 0 10px 24px rgba(255, 90, 31, 0.24);
+      white-space: nowrap;
+    }
+
+    .logout:hover {
+      transform: translateY(-1px);
+      text-decoration: none !important;
+      color: #fff !important;
+    }
+
+    #notificationBox {
+      display: none;
+      position: fixed;
+      top: 70px;
+      right: 85px;
+      width: 320px;
+      max-height: 320px;
+      overflow-y: auto;
+      background: rgba(10, 22, 40, 0.98);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 18px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      padding: 14px;
+      z-index: 2500;
+    }
+
+    .notification-item {
+      padding: 12px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      margin-bottom: 10px;
+    }
+
+    .notification-item p {
+      margin: 0 0 6px;
+      color: #dce8ff;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .notification-item p:last-child {
+      margin-bottom: 0;
+    }
+
+    .dashboard-layout {
+      display: block;
+      width: 100%;
+      height: 100vh;
+    }
+
+    nav.sidebar {
+      width: var(--sidebar-width);
+      min-width: var(--sidebar-width);
+      max-width: var(--sidebar-width);
+      position: fixed;
+      top: var(--topbar-height);
+      left: 0;
+      bottom: 0;
+      padding: 20px 16px 22px;
+      background: linear-gradient(180deg, rgba(6, 16, 30, 0.98), rgba(8, 22, 40, 0.96));
+      backdrop-filter: blur(16px);
+      border-right: 1px solid rgba(255,255,255,0.06);
+      overflow-y: auto;
+      overflow-x: hidden;
+      z-index: 1500;
+      box-shadow: 18px 0 45px rgba(0, 0, 0, 0.24);
+    }
+
+    nav.sidebar::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    nav.sidebar::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,0.14);
+      border-radius: 999px;
+    }
+
+    .sidebar-top-card {
+      position: relative;
+      padding: 20px 18px 18px;
+      border-radius: 24px;
+      background:
+        linear-gradient(135deg, rgba(255,122,47,0.16), rgba(31,119,255,0.14)),
+        rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow:
+        0 16px 32px rgba(0,0,0,0.20),
+        inset 0 1px 0 rgba(255,255,255,0.06);
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+
+    .sidebar-top-card::after {
+      content: "";
+      position: absolute;
+      right: -30px;
+      top: -30px;
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,255,255,0.16), transparent 70%);
+    }
+
+    .sidebar-mini-label {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.4px;
+      color: #ffd8c2;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: 5px 10px;
+      border-radius: 999px;
+      margin-bottom: 12px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .sidebar-main-title {
+      font-size: 19px;
+      font-weight: 800;
+      color: #ffffff;
+      margin: 0 0 6px;
+      line-height: 1.2;
+      position: relative;
+      z-index: 1;
+    }
+
+    .sidebar-main-subtitle {
+      font-size: 13px;
+      color: #d5e2f1;
+      line-height: 1.7;
+      margin: 0 0 14px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .sidebar-status-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      position: relative;
+      z-index: 1;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .sidebar-status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #dfffe9;
+      background: rgba(20,184,106,0.14);
+      border: 1px solid rgba(20,184,106,0.22);
+    }
+
+    .sidebar-status-badge::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #4df39b;
+      box-shadow: 0 0 10px rgba(77,243,155,0.7);
+    }
+
+    .sidebar-status-text {
+      font-size: 11px;
+      color: #c6d8ec;
+      text-align: right;
+      line-height: 1.4;
+    }
+
+    .sidebar-section-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #8ea4c5;
+      margin: 0 8px 16px;
+      font-weight: 700;
+    }
+
+    #side-bar {
+      list-style: none;
+      padding-left: 0;
+      margin-bottom: 0;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    #side-bar li {
+      width: 100%;
+      margin: 0;
+    }
+
+    #side-bar a,
+    #side-bar summary {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      width: 100%;
+      padding: 15px 15px;
+      border-radius: 20px;
+      text-decoration: none !important;
+      color: #edf4ff !important;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.055), rgba(255,255,255,0.025));
+      border: 1px solid rgba(255,255,255,0.06);
+      transition: all 0.28s ease;
+      position: relative;
+      overflow: hidden;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+    }
+
+    #side-bar a::before,
+    #side-bar summary::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, rgba(255,122,47,0.13), rgba(31,119,255,0.11));
+      opacity: 0;
+      transition: opacity 0.28s ease;
+    }
+
+    #side-bar a::after,
+    #side-bar summary::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 18%;
+      width: 4px;
+      height: 64%;
+      border-radius: 999px;
+      background: linear-gradient(180deg, #ff8a3c, #1f77ff);
+      opacity: 0;
+      transition: opacity 0.28s ease;
+    }
+
+    #side-bar a:hover,
+    #side-bar summary:hover {
+      transform: translateX(6px);
+      border-color: rgba(255,255,255,0.10);
+      box-shadow: 0 14px 28px rgba(0,0,0,0.20);
+    }
+
+    #side-bar a:hover::before,
+    #side-bar summary:hover::before,
+    #side-bar a:hover::after,
+    #side-bar summary:hover::after {
+      opacity: 1;
+    }
+
+    #side-bar a.active,
+    #side-bar summary.active {
+      background: linear-gradient(135deg, rgba(255,122,47,0.18), rgba(31,119,255,0.16));
+      border-color: rgba(255,255,255,0.12);
+      box-shadow: 0 16px 30px rgba(0,0,0,0.24);
+    }
+
+    #side-bar a.active::before,
+    #side-bar summary.active::before,
+    #side-bar a.active::after,
+    #side-bar summary.active::after {
+      opacity: 1;
+    }
+
+    .nav-icon {
+      width: 44px;
+      height: 44px;
+      min-width: 44px;
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, rgba(255,255,255,0.13), rgba(255,255,255,0.05));
+      border: 1px solid rgba(255,255,255,0.08);
+      color: #fff;
+      font-size: 17px;
+      position: relative;
+      z-index: 1;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+    }
+
+    .nav-text {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .nav-text strong {
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.2;
+    }
+
+    .nav-text span {
+      margin-top: 4px;
+      font-size: 11px;
+      line-height: 1.45;
+      color: #aabed8;
+    }
+
+    .nav-arrow {
+      margin-left: auto;
+      font-size: 16px;
+      color: #93b2d8;
+      position: relative;
+      z-index: 1;
+      transition: transform 0.25s ease;
+    }
+
+    #side-bar a:hover .nav-arrow,
+    #side-bar summary:hover .nav-arrow {
+      transform: translateX(4px);
+    }
+
+    main {
+      position: fixed;
+      top: var(--topbar-height);
+      left: var(--sidebar-width);
+      right: 0;
+      bottom: 0;
+      min-width: 0;
+      padding: 28px 30px;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    .hero-card {
+      background: linear-gradient(135deg, rgba(22, 61, 112, 0.88), rgba(12, 27, 53, 0.92));
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 24px;
+      padding: 30px 34px;
+      box-shadow: var(--shadow);
+      margin-bottom: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-card::after {
+      content: "";
+      position: absolute;
+      right: -80px;
+      top: -80px;
+      width: 220px;
+      height: 220px;
+      background: radial-gradient(circle, rgba(255, 122, 47, 0.18), transparent 70%);
+      border-radius: 50%;
+    }
+
+    .page-tag {
+      display: inline-block;
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      color: #ffb88f;
+      background: rgba(255, 122, 47, 0.16);
+      border: 1px solid rgba(255, 122, 47, 0.2);
+      margin-bottom: 14px;
+    }
+
+    .hero-card h1 {
+      margin: 0 0 10px;
+      font-size: 32px;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.15;
+    }
+
+    .hero-card p {
+      margin: 0;
+      max-width: 900px;
+      font-size: 15px;
+      line-height: 1.8;
+      color: #d0def0;
+    }
+
+    .panel-card {
+      background: var(--card-bg);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+      margin-bottom: 24px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .section-header h2,
+    .section-header h3 {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .section-badge {
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #9ec3ff;
+      background: rgba(31, 119, 255, 0.14);
+      border: 1px solid rgba(31, 119, 255, 0.22);
+      white-space: nowrap;
+    }
+
+    .details-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(180px, 1fr));
+      gap: 18px;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #9db4d0;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+    }
+
+    .value-box{
+    width:100%;
+
+    height:52px !important;
+    min-height:52px !important;
+
+    border-radius:16px !important;
+
+    border:1px solid rgba(255,255,255,0.10) !important;
+
+    background:rgba(255,255,255,0.06) !important;
+
+    color:#fff !important;
+
+    padding:0 18px !important;
+
+    font-size:15px !important;
+    font-weight:500;
+
+    display:flex;
+    align-items:center;
+
+    box-sizing:border-box;
+
+    transition:0.25s ease;
+}
+
+
+/* INPUT + DROPDOWN */
+.field input,
+.field select{
+
+    width:100%;
+
+    height:52px !important;
+    min-height:52px !important;
+
+    border-radius:16px !important;
+
+    border:1px solid rgba(255,255,255,0.10) !important;
+
+    background:rgba(255,255,255,0.06) !important;
+
+    color:#fff !important;
+
+    padding:0 16px !important;
+
+    font-size:15px !important;
+    font-weight:500;
+
+    outline:none;
+
+    box-shadow:none !important;
+
+    transition:all 0.25s ease;
+
+    box-sizing:border-box;
+
+    -webkit-appearance:none;
+    appearance:none;
+}
+
+
+/* DROPDOWN UI */
+.field select{
+
+    padding-right:42px !important;
+
+    background-image:
+        linear-gradient(45deg, transparent 50%, #9fb4cf 50%),
+        linear-gradient(135deg, #9fb4cf 50%, transparent 50%);
+
+    background-position:
+        calc(100% - 20px) calc(50% - 3px),
+        calc(100% - 14px) calc(50% - 3px);
+
+    background-size:6px 6px;
+
+    background-repeat:no-repeat;
+
+    cursor:pointer;
+}
+
+
+/* OPTION COLOR */
+.field select option{
+    color:#000 !important;
+    background:#fff !important;
+}
+
+
+/* FOCUS EFFECT */
+.field input:focus,
+.field select:focus{
+
+    border-color:rgba(31,119,255,0.65) !important;
+
+    box-shadow:
+        0 0 0 4px rgba(31,119,255,0.10) !important;
+
+    background:rgba(255,255,255,0.08) !important;
+}
+
+
+/* PLACEHOLDER */
+.field input::placeholder{
+    color:#9fb4cf !important;
+}
+
+
+/* iPad Safari Fix */
+@supports (-webkit-touch-callout: none){
+
+    .field select,
+    .field input{
+
+        height:52px !important;
+
+        line-height:normal !important;
+
+        padding-top:0 !important;
+        padding-bottom:0 !important;
+
+        -webkit-appearance:none;
+        appearance:none;
+    }
+}
+
+    .field input:focus,
+    .field select:focus {
+      border-color: rgba(31, 119, 255, 0.55) !important;
+      box-shadow: 0 0 0 4px rgba(31, 119, 255, 0.12) !important;
+    }
+
+    .field input::placeholder {
+      color: #9fb4cf;
+    }
+
+    .field select option {
+      color: #000;
+    }
+
+    .equipment-form-card,
+    .equipment-record-card {
+      background: rgba(10, 24, 42, 0.82);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 26px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+      margin-bottom: 24px;
+    }
+
+    .form-row-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .form-row-grid.two-col {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .equipmentContainer {
+      margin-top: 8px;
+    }
+
+    .equip-row {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr auto;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 12px;
+      padding: 14px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .equip-row select,
+    .equip-row input {
+      width: 100% !important;
+      min-height: 46px;
+      margin-right: 0 !important;
+      border-radius: 12px !important;
+      border: 1px solid rgba(255, 255, 255, 0.08) !important;
+      background: rgba(255, 255, 255, 0.05) !important;
+      color: #fff !important;
+      padding: 10px 12px !important;
+    }
+
+    .equip-row select option {
+      color: #000;
+    }
+
+    .form-action-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 18px;
+    }
+
+    .btn-theme-primary {
+      border: none;
+      border-radius: 14px;
+      padding: 12px 22px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      cursor: pointer;
+      background: linear-gradient(135deg, #2d7dff, #1657cc);
+      box-shadow: 0 12px 26px rgba(45, 125, 255, 0.25);
+      transition: 0.25s ease;
+    }
+
+    .btn-theme-primary:hover {
+      transform: translateY(-1px);
+      color: #fff;
+    }
+
+    .btn-theme-secondary {
+      border: none;
+      border-radius: 14px;
+      padding: 12px 22px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      cursor: pointer;
+      background: linear-gradient(135deg, #ff8a3c, #ff5a1f);
+      box-shadow: 0 12px 26px rgba(255, 90, 31, 0.22);
+      transition: 0.25s ease;
+    }
+
+    .btn-theme-secondary:hover {
+      transform: translateY(-1px);
+      color: #fff;
+    }
+
+    .btn-theme-muted {
+      border: none;
+      border-radius: 14px;
+      padding: 12px 22px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      cursor: pointer;
+      background: linear-gradient(135deg, #536b8d, #3e5470);
+      box-shadow: 0 12px 26px rgba(62, 84, 112, 0.22);
+      transition: 0.25s ease;
+    }
+
+    .btn-theme-muted:hover {
+      transform: translateY(-1px);
+      color: #fff;
+    }
+
+    .filters-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr auto auto;
+      gap: 16px;
+      margin-bottom: 18px;
+      align-items: end;
+    }
+
+    .table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      border-radius: 18px;
+      padding-bottom: 6px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    #equipmentTable {
+      width: 100%;
+      min-width: 980px;
+      border-collapse: collapse !important;
+      border-spacing: 0;
+      margin: 0 !important;
+      background: transparent !important;
+      color: #eaf2ff !important;
+      overflow: hidden;
+      border-radius: 18px;
+    }
+
+    #equipmentTable thead tr {
+      background: linear-gradient(135deg, #2d7dff, #1657cc) !important;
+    }
+
+    #equipmentTable thead th {
+      padding: 16px 14px !important;
+      color: #ffffff !important;
+      font-size: 12px !important;
+      font-weight: 800 !important;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border: none !important;
+      text-align: center;
+      vertical-align: middle;
+      white-space: nowrap;
+      background: transparent !important;
+    }
+
+    #equipmentTable tbody tr td {
+      background: rgba(20, 50, 88, 0.65) !important;
+      color: #d9e9ff !important;
+    }
+
+    #equipmentTable tbody tr:hover td {
+      background: rgba(45, 125, 255, 0.25) !important;
+      color: #ffffff !important;
+      transition: 0.2s ease;
+    }
+
+    #equipmentTable tbody td {
+      padding: 15px 14px !important;
+      border-top: 1px solid rgba(255, 255, 255, 0.06) !important;
+      border-left: none !important;
+      border-right: none !important;
+      border-bottom: none !important;
+      vertical-align: middle;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 28px !important;
+      color: #a8bdd8 !important;
+      font-style: italic;
+      background: rgba(20, 50, 88, 0.65) !important;
+    }
+
+    @media (max-width: 991px) {
+  html,
+  body {
+    width: 100%;
+    min-height: 100%;
+    height: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .app-shell {
+    width: 100%;
+    height: auto;
+    min-height: 100vh;
+    overflow: visible;
+  }
+
+  .dashboard-layout {
+    width: 100%;
+    height: auto;
+    min-height: 100vh;
+    padding-top: var(--topbar-height);
+  }
+
+  nav.sidebar {
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+
+    /* FIX: Command Center scroll ke saath upar jayega */
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    bottom: auto;
+
+    height: auto;
+    max-height: none;
+    overflow: visible;
+
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 0 0 24px 24px;
+    z-index: 100;
+    padding: 14px;
+  }
+
+  .sidebar-top-card {
+    margin-bottom: 18px;
+  }
+
+  .sidebar-section-title {
+    margin: 18px 8px 14px;
+  }
+
+  #side-bar {
+    display: none;
+    gap: 10px;
+  }
+
+  #side-bar.active {
+    display: flex;
+    flex-direction: column;
+    margin-top: 12px;
+  }
+
+  .sidebar-status-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .sidebar-status-text {
+    text-align: left;
+  }
+
+  main {
+    /* FIX: main normal page scroll mein rahega */
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    bottom: auto;
+
+    width: 100%;
+    padding: 18px;
+    overflow: visible;
+  }
+
+  .hero-card h1 {
+    font-size: 24px;
+  }
+
+  .details-grid,
+  .form-row-grid,
+  .filters-grid,
+  .equip-row,
+  .form-row-grid.two-col {
+    grid-template-columns: 1fr;
+  }
+
+  .brand-subtitle {
+    display: none;
+  }
+}
+    @media (max-width: 600px) {
+      .topbar {
+        padding: 0 14px;
+      }
+
+      .logout {
+        padding: 9px 14px;
+        font-size: 13px;
+      }
+
+      .hero-card,
+      .panel-card,
+      .equipment-form-card,
+      .equipment-record-card {
+        padding: 18px;
+        border-radius: 18px;
+      }
+
+      #notificationBox {
+        width: 280px;
+        right: 16px;
+      }
+
+      .form-action-row {
+        flex-direction: column;
+      }
+
+      .btn-theme-primary,
+      .btn-theme-secondary,
+      .btn-theme-muted {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="topbar-left">
+        <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+        <div class="brand-wrap">
+          <a href="#" class="brand-title">HR Dashboard</a>
+          <p class="brand-subtitle">Store Equipment & Issue Records Control Panel</p>
+        </div>
+      </div>
+
+      <div class="topbar-right">
+        <div id="bellContainer">
+          <span class="glyphicon glyphicon-bell" style="font-size:24px;"></span>
+          <span id="bellBadge" class="badge" style="display:none;">0</span>
+        </div>
+       <a href="#" class="logout" onclick="logoutUser()">Logout</a>
+      </div>
+    </header>
+
+    <div id="notificationBox"></div>
+
+    <div class="dashboard-layout">
+      <nav class="sidebar">
+        <div class="sidebar-top-card">
+          <div class="sidebar-mini-label">HR Panel</div>
+          <h3 class="sidebar-main-title">Command Center</h3>
+          <p class="sidebar-main-subtitle">
+            Access equipment issue records, store controls, and important HR sections from one clean navigation area.
+          </p>
+
+          <div class="sidebar-status-row">
+            <span class="sidebar-status-badge">Store Active</span>
+            <div class="sidebar-status-text">
+              Secure access<br />
+              Quick navigation
+            </div>
+          </div>
+        </div>
+
+        <div class="sidebar-section-title">Navigation</div>
+        <ul id="side-bar"></ul>
+      </nav>
+
+      <main>
+        <section class="hero-card">
+          <span class="page-tag">STORE EQUIPMENT PANEL</span>
+          <h1>Store Equipments</h1>
+          <p>
+            Issue safety equipment to employees or supervisors, track ID-wise records,
+            and filter distributed items from the HR equipment management dashboard.
+          </p>
+        </section>
+
+        <section class="panel-card">
+          <div class="section-header">
+            <h2>HR Details</h2>
+            <span class="section-badge">Profile Overview</span>
+          </div>
+
+          <div class="details-grid">
+            <div class="field">
+              <label>HR Name</label>
+              <div class="value-box" id="hrNameDisplay">Loading...</div>
+            </div>
+
+            <div class="field">
+              <label>HR ID</label>
+              <div class="value-box" id="hrIdDisplay">Loading...</div>
+            </div>
+
+            <div class="field">
+              <label>Site</label>
+              <div class="value-box" id="hrSiteDisplay">Loading...</div>
+            </div>
+
+            <div class="field">
+              <label>Joining Year</label>
+              <div class="value-box" id="hrJoiningYearDisplay">Loading...</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="equipment-form-card">
+          <div class="section-header">
+            <h3>Equipment Issue</h3>
+            <span class="section-badge">Issue Entry Form</span>
+          </div>
+
+          <form id="equipForm">
+            <div class="form-row-grid">
+              <div class="field">
+                <label>Date</label>
+                <input type="date" id="equipDate" class="form-control" required />
+              </div>
+
+              <div class="field">
+                <label>ID Type</label>
+                <select id="issueTargetType" class="form-control" required>
+                  <option value="employee" selected>Employee ID</option>
+                  <option value="supervisor">Supervisor ID</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label>Employee ID</label>
+                <input type="text" id="equipEmpId" class="form-control" placeholder="Enter employee UID" />
+              </div>
+            </div>
+
+            <div class="form-row-grid two-col">
+              <div class="field">
+                <label>Supervisor ID</label>
+                <input type="text" id="equipSupId" class="form-control" placeholder="Enter supervisor UID" disabled />
+              </div>
+
+              <div></div>
+            </div>
+
+            <div id="equipmentContainer" class="equipmentContainer"></div>
+
+            <div class="form-action-row">
+              <button id="addEquip" type="button" class="btn-theme-secondary">Add Equipment</button>
+              <button type="submit" class="btn-theme-primary">Submit</button>
+            </div>
+          </form>
+        </section>
+
+        <section class="equipment-record-card">
+          <div class="section-header">
+            <h3 id="recordTableTitle">Equipment Records</h3>
+            <span class="section-badge">History & Filters</span>
+          </div>
+
+          <div class="filters-grid">
+            <div class="field">
+              <label>Filter Type</label>
+              <select id="filterType" class="form-control">
+                <option value="employee" selected>Employee ID</option>
+                <option value="supervisor">Supervisor ID</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>ID</label>
+              <input type="text" id="filterUid" class="form-control" placeholder="Enter UID" />
+            </div>
+
+            <div class="field">
+              <label>Status</label>
+              <div class="value-box" id="filterStatus">Default table showing current HR issued records</div>
+            </div>
+
+            <button type="button" id="searchBtn" class="btn-theme-primary">Search</button>
+            <button type="button" id="clearBtn" class="btn-theme-muted">Remove</button>
+          </div>
+
+          <div class="table-wrap">
+            <table id="equipmentTable">
+              <thead>
+                <tr>
+                  <th>ID Type</th>
+                  <th>UID</th>
+                  <th>Name</th>
+                  <th>Date</th>
+                  <th>Equipment</th>
+                  <th>Quantity</th>
+                  <th>Received From</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td colspan="7" class="empty-state">Loading equipment records...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    function toggleMenu() {
+      const sidebar = document.getElementById("side-bar");
+      sidebar.classList.toggle("active");
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const currentPage = window.location.pathname.split("/").pop();
+      const navLinks = document.querySelectorAll("#side-bar a");
+
+      navLinks.forEach(link => {
+        const href = link.getAttribute("href");
+        if (href === currentPage) {
+          link.classList.add("active");
+        }
+      });
+    });
+  </script>
+
+  <script type="module" src="/public/control.js"></script>
+
+  <script type="module">
+    import {
+      getFirestore,
+      collectionGroup,
+      doc,
+      getDoc,
+      collection,
+      query,
+      where,
+      getDocs,
+      setDoc
+    } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+
+    import { app } from "/public/firebase-config.js";
+
+    const db = getFirestore(app);
+
+    const bell = document.getElementById("bellContainer");
+    const badge = document.getElementById("bellBadge");
+    const box = document.getElementById("notificationBox");
+
+    const equipmentTbody = document.querySelector("#equipmentTable tbody");
+    const recordTableTitle = document.getElementById("recordTableTitle");
+    const filterStatus = document.getElementById("filterStatus");
+
+    let allRecordsCache = [];
+
+    let currentHrData = {
+      uid: "",
+      name: "",
+      site: "",
+      department: ""
+    };
+
+    function firstValue(...values) {
+      for (const value of values) {
+        if (value !== undefined && value !== null && String(value).trim() !== "") {
+          return String(value).trim();
+        }
+      }
+      return "";
+    }
+
+    async function refreshNotifications() {
+      try {
+        const snap = await getDocs(collection(db, "Employee"));
+        const today = new Date();
+        const soon = new Date();
+
+        soon.setDate(today.getDate() + 3);
+
+        const items = [];
+
+        snap.forEach(docSnap => {
+          const d = docSnap.data();
+
+          if (!d.passes_end) return;
+
+          const end = new Date(d.passes_end);
+
+          if (end >= today && end <= soon) {
+            items.push({
+              name: d.fullName || d.Name || "N/A",
+              uid: d.uid || "N/A",
+              pass: d.passes || "N/A",
+              renew: d.passes_end
+            });
+          }
+        });
+
+        if (items.length) {
+          badge.innerText = items.length;
+          badge.style.display = "";
+        } else {
+          badge.style.display = "none";
+        }
+
+        box.innerHTML = "";
+
+        if (!items.length) {
+          box.innerHTML = "<p>No passes expiring in 3 days.</p>";
+        } else {
+          for (const it of items) {
+            const div = document.createElement("div");
+            div.className = "notification-item";
+
+            div.innerHTML = `
+              <p><strong>Name:</strong> ${it.name}</p>
+              <p><strong>User ID:</strong> ${it.uid}</p>
+              <p><strong>Pass Type:</strong> ${it.pass}</p>
+              <p><strong>Renew Date:</strong> ${it.renew}</p>
+            `;
+
+            box.appendChild(div);
+          }
+        }
+      } catch (e) {
+        console.error("Notification load error:", e);
+      }
+    }
+
+    bell.addEventListener("click", () => {
+      box.style.display = box.style.display === "none" ? "block" : "none";
+    });
+
+    async function loadHRDetails() {
+      try {
+        const hrEmail = localStorage.getItem("hrEmail");
+
+        if (!hrEmail) {
+          document.getElementById("hrNameDisplay").innerText = "HR login not found";
+          document.getElementById("hrIdDisplay").innerText = "N/A";
+          document.getElementById("hrSiteDisplay").innerText = "N/A";
+          document.getElementById("hrJoiningYearDisplay").innerText = "N/A";
+          return;
+        }
+
+        const snap = await getDoc(doc(db, "HR", hrEmail));
+
+        if (!snap.exists()) {
+          throw new Error("HR not found");
+        }
+
+        const d = snap.data();
+
+        currentHrData.uid = firstValue(
+          d.uid,
+          d.UID,
+          d.hrId,
+          d.HRId,
+          d.HRID,
+          d.id
+        );
+
+        currentHrData.name = firstValue(
+          d.Name,
+          d.fullName,
+          d.name,
+          d.hrName,
+          d.HRName
+        ) || "HR";
+
+        currentHrData.site = firstValue(
+          d.site,
+          d.Site,
+          d.siteName,
+          d.SiteName,
+          d.industry,
+          d.Industry,
+          d.industryName,
+          d.IndustryName
+        );
+
+        currentHrData.department = firstValue(
+          d.department,
+          d.Department,
+          d.dept,
+          d.Dept,
+          d.jobDepartment,
+          d.JobDepartment
+        ) || "HR";
+
+        document.getElementById("hrNameDisplay").innerText = currentHrData.name || "N/A";
+        document.getElementById("hrIdDisplay").innerText = currentHrData.uid || "N/A";
+        document.getElementById("hrSiteDisplay").innerText = currentHrData.site || "N/A";
+
+        document.getElementById("hrJoiningYearDisplay").innerText =
+          firstValue(
+            d.joiningYear,
+            d.JoiningYear,
+            d.joiningyear,
+            d.year
+          ) || "N/A";
+
+      } catch (err) {
+        console.error("Error fetching HR details:", err);
+
+        document.getElementById("hrNameDisplay").innerText = "Not Found";
+        document.getElementById("hrIdDisplay").innerText = "Not Found";
+        document.getElementById("hrSiteDisplay").innerText = "Not Found";
+        document.getElementById("hrJoiningYearDisplay").innerText = "Not Found";
+      }
+    }
+
+    const issueTargetType = document.getElementById("issueTargetType");
+    const equipEmpId = document.getElementById("equipEmpId");
+    const equipSupId = document.getElementById("equipSupId");
+
+    function toggleIssueIdInputs() {
+      if (issueTargetType.value === "employee") {
+        equipEmpId.disabled = false;
+        equipEmpId.required = true;
+
+        equipSupId.disabled = true;
+        equipSupId.required = false;
+        equipSupId.value = "";
+
+      } else {
+        equipSupId.disabled = false;
+        equipSupId.required = true;
+
+        equipEmpId.disabled = true;
+        equipEmpId.required = false;
+        equipEmpId.value = "";
+      }
+    }
+
+    issueTargetType.addEventListener("change", toggleIssueIdInputs);
+    toggleIssueIdInputs();
+
+    const equipmentItems = [
+      "Helmet",
+      "Rubber handgloves",
+      "Normal handgloves",
+      "Uniform",
+      "Goggles",
+      "Face shield",
+      "Safety shoes",
+      "Ear plug",
+      "Mask",
+      "Reflective jacket"
+    ];
+
+    const maxRows = 6;
+    const container = document.getElementById("equipmentContainer");
+    const addBtn = document.getElementById("addEquip");
+
+    function createRow() {
+      const row = document.createElement("div");
+      row.className = "equip-row";
+
+      const select = document.createElement("select");
+      select.className = "form-control equipmentSelect";
+      select.innerHTML =
+        `<option value="" disabled selected>Select Equipment</option>` +
+        equipmentItems.map(it => `<option value="${it}">${it}</option>`).join("");
+
+      row.appendChild(select);
+
+      const qty = document.createElement("input");
+      qty.type = "number";
+      qty.min = "1";
+      qty.className = "form-control quantityInput";
+      qty.placeholder = "Qty";
+
+      row.appendChild(qty);
+
+      const remove = document.createElement("button");
+      remove.type = "button";
+      remove.className = "btn btn-danger removeEquip";
+      remove.innerText = "Remove";
+
+      remove.addEventListener("click", () => {
+        row.remove();
+        updateAddButton();
+      });
+
+      row.appendChild(remove);
+
+      return row;
+    }
+
+    function updateAddButton() {
+      addBtn.disabled = container.children.length >= maxRows;
+    }
+
+    addBtn.addEventListener("click", () => {
+      if (container.children.length < maxRows) {
+        container.appendChild(createRow());
+        updateAddButton();
+      }
+    });
+
+    container.appendChild(createRow());
+    updateAddButton();
+
+    async function findEmployeeByUid(uid) {
+      const q = query(collection(db, "Employee"), where("uid", "==", uid));
+      const snap = await getDocs(q);
+
+      if (snap.empty) return null;
+
+      return snap.docs[0].data();
+    }
+
+    async function findSupervisorByUid(uid) {
+      const q = query(collection(db, "Supervisor"), where("uid", "==", uid));
+      const snap = await getDocs(q);
+
+      if (snap.empty) return null;
+
+      return snap.docs[0].data();
+    }
+
+    function makeUniqueId(prefix = "REC") {
+      return `${prefix}_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+    }
+
+    function normalizeRole(role) {
+      const value = String(role || "").trim().toLowerCase();
+
+      if (value === "hr") return "HR";
+      if (value === "supervisor") return "Supervisor";
+      if (value === "asst. supervisor") return "Asst. Supervisor";
+      if (value === "assistant supervisor") return "Asst. Supervisor";
+
+      return role || "Unknown";
+    }
+
+    function getReceivedFrom(item, docData) {
+      return normalizeRole(
+        item?.receivedFrom ||
+        item?.issuedByRole ||
+        docData?.receivedFrom ||
+        docData?.issuedByRole ||
+        "Unknown"
+      );
+    }
+
+    function getIssuedByRole(item, docData) {
+      return normalizeRole(
+        item?.issuedByRole ||
+        docData?.issuedByRole ||
+        ""
+      );
+    }
+
+    function getIssuedById(item, docData) {
+      return String(
+        item?.issuedById ||
+        docData?.issuedById ||
+        ""
+      ).trim();
+    }
+
+    function renderTable(rows) {
+      equipmentTbody.innerHTML = "";
+
+      if (!rows.length) {
+        equipmentTbody.innerHTML = `
+          <tr>
+            <td colspan="7" class="empty-state">No equipment records found.</td>
+          </tr>
+        `;
+        return;
+      }
+
+      rows.forEach(row => {
+        const tr = document.createElement("tr");
+
+        tr.innerHTML = `
+          <td>${row.idType}</td>
+          <td>${row.uid}</td>
+          <td>${row.name}</td>
+          <td>${row.date}</td>
+          <td>${row.equipment}</td>
+          <td>${row.quantity}</td>
+          <td>${row.receivedFrom}</td>
+        `;
+
+        equipmentTbody.appendChild(tr);
+      });
+    }
+
+    async function loadDefaultHRRecords() {
+      try {
+        if (!currentHrData.uid) {
+          equipmentTbody.innerHTML = `
+            <tr>
+              <td colspan="7" class="empty-state">HR ID not found.</td>
+            </tr>
+          `;
+          return;
+        }
+
+        equipmentTbody.innerHTML = `
+          <tr>
+            <td colspan="7" class="empty-state">Loading equipment records...</td>
+          </tr>
+        `;
+
+        const hrLogSnap = await getDocs(
+          collection(db, "HR-Issue-Logs", currentHrData.uid, "IssueRecords")
+        );
+
+        const rows = [];
+
+        hrLogSnap.forEach(docSnap => {
+          const data = docSnap.data();
+          const equipments = Array.isArray(data.equipments) ? data.equipments : [];
+
+          equipments.forEach(item => {
+            rows.push({
+              idType: data.idType === "supervisor" ? "Supervisor ID" : "Employee ID",
+              rawType: data.idType || "employee",
+              uid: data.uid || "-",
+              name: data.fullName || "N/A",
+              date: data.date || "-",
+              createdAt: data.createdAt || "",
+              equipment: item.equipment || "-",
+              quantity: item.quantity || item.qty || "-",
+              receivedFrom: normalizeRole(item.receivedFrom || data.receivedFrom || "HR"),
+              site: data.site || item.site || "-",
+              department: data.department || item.department || "-"
+            });
+          });
+        });
+
+        rows.sort((a, b) => {
+          const aTime = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+          const bTime = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+          return bTime - aTime;
+        });
+
+        renderTable(rows);
+
+        recordTableTitle.innerText = "Equipment Records";
+        filterStatus.innerText = "Default table showing current HR issued records";
+
+      } catch (error) {
+        console.error("Error loading default HR records:", error);
+
+        equipmentTbody.innerHTML = `
+          <tr>
+            <td colspan="7" class="empty-state">Error loading equipment records.</td>
+          </tr>
+        `;
+      }
+    }
+
+    async function loadAllRecordsForSearch() {
+      try {
+        const snap = await getDocs(collectionGroup(db, "Records"));
+        const rows = [];
+
+        snap.forEach(docSnap => {
+          const data = docSnap.data();
+          const recordRef = docSnap.ref;
+          const parentDocRef = recordRef.parent.parent;
+
+          if (!parentDocRef) return;
+
+          const topLevelCollection = parentDocRef.parent.id;
+
+          if (topLevelCollection !== "Store" && topLevelCollection !== "Sup-Store") return;
+
+          const uid = parentDocRef.id;
+          const idType = topLevelCollection === "Sup-Store" ? "Supervisor ID" : "Employee ID";
+          const rawType = topLevelCollection === "Sup-Store" ? "supervisor" : "employee";
+
+          const name = data.fullName || data.Name || "N/A";
+          const date = data.date || "-";
+          const createdAt = data.createdAt || "";
+          const equipments = Array.isArray(data.equipments) ? data.equipments : [];
+
+          equipments.forEach(item => {
+            rows.push({
+              idType,
+              rawType,
+              uid,
+              name,
+              date,
+              createdAt,
+              equipment: item.equipment || "-",
+              quantity: item.quantity || item.qty || "-",
+              issuedByRole: getIssuedByRole(item, data),
+              issuedById: getIssuedById(item, data),
+              receivedFrom: getReceivedFrom(item, data),
+              site: data.site || item.site || "-",
+              department: data.department || item.department || "-"
+            });
+          });
+        });
+
+        rows.sort((a, b) => {
+          const aTime = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+          const bTime = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+          return bTime - aTime;
+        });
+
+        allRecordsCache = rows;
+
+      } catch (error) {
+        console.error("Error loading search records:", error);
+        allRecordsCache = [];
+      }
+    }
+
+    async function saveIssueRecord() {
+      const date = document.getElementById("equipDate").value;
+      const targetType = issueTargetType.value;
+
+      const employeeId = equipEmpId.value.trim();
+      const supervisorId = equipSupId.value.trim();
+
+      const finalUid = targetType === "employee" ? employeeId : supervisorId;
+
+      if (!date || !finalUid) {
+        alert("Date and selected ID are required.");
+        return false;
+      }
+
+      if (!currentHrData.uid) {
+        alert("HR ID not found. Please login again.");
+        return false;
+      }
+
+      if (!currentHrData.site) {
+        alert("HR site not found. Please check HR database site field.");
+        return false;
+      }
+
+      const rawEntries = Array.from(container.children)
+        .map(r => ({
+          equipment: r.querySelector(".equipmentSelect").value,
+          quantity: r.querySelector(".quantityInput").value
+        }))
+        .filter(item => item.equipment && item.quantity);
+
+      if (!rawEntries.length) {
+        alert("Add at least one equipment.");
+        return false;
+      }
+
+      try {
+        let personData = null;
+        let personName = "N/A";
+        let targetCollection = "";
+
+        if (targetType === "employee") {
+          personData = await findEmployeeByUid(finalUid);
+
+          if (!personData) {
+            alert("Invalid Employee ID");
+            return false;
+          }
+
+          personName = firstValue(
+            personData.fullName,
+            personData.Name,
+            personData.name
+          ) || "N/A";
+
+          targetCollection = "Store";
+
+        } else {
+          personData = await findSupervisorByUid(finalUid);
+
+          if (!personData) {
+            alert("Invalid Supervisor ID");
+            return false;
+          }
+
+          personName = firstValue(
+            personData.Name,
+            personData.fullName,
+            personData.name
+          ) || "N/A";
+
+          targetCollection = "Sup-Store";
+        }
+
+        const targetDepartment = firstValue(
+          personData.department,
+          personData.Department,
+          personData.dept,
+          personData.Dept,
+          personData.jobDepartment,
+          personData.JobDepartment
+        );
+
+        const finalSite = currentHrData.site;
+        const finalDepartment = currentHrData.department || targetDepartment || "HR";
+
+        const recordId = makeUniqueId("ISSUE");
+        const createdAt = new Date().toISOString();
+
+        const equipments = rawEntries.map(item => ({
+          equipment: item.equipment,
+          quantity: item.quantity,
+
+          site: finalSite,
+          department: finalDepartment,
+
+          issuedByRole: "HR",
+          issuedById: currentHrData.uid || "",
+          issuedByName: currentHrData.name || "HR",
+
+          receivedFrom: "HR"
+        }));
+
+        const commonRecordData = {
+          uid: finalUid,
+          idType: targetType,
+          fullName: personName,
+
+          date,
+          createdAt,
+
+          site: finalSite,
+          department: finalDepartment,
+
+          hrId: currentHrData.uid || "",
+          hrName: currentHrData.name || "HR",
+          hrSite: finalSite,
+          hrDepartment: finalDepartment,
+
+          issuedByRole: "HR",
+          issuedById: currentHrData.uid || "",
+          issuedByName: currentHrData.name || "HR",
+
+          receivedFrom: "HR",
+
+          equipments
+        };
+
+        const sharedRecordRef = doc(db, targetCollection, finalUid, "Records", recordId);
+
+        await setDoc(sharedRecordRef, commonRecordData);
+
+        const hrLogRef = doc(db, "HR-Issue-Logs", currentHrData.uid, "IssueRecords", recordId);
+
+        await setDoc(hrLogRef, commonRecordData);
+
+        alert(`Recorded ${rawEntries.length} item(s) for ${finalUid} on ${date}`);
+        return true;
+
+      } catch (err) {
+        console.error("Error storing equipment:", err);
+        alert("Error: " + err.message);
+        return false;
+      }
+    }
+
+    document.getElementById("equipForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const ok = await saveIssueRecord();
+
+      if (!ok) return;
+
+      document.getElementById("equipForm").reset();
+      document.getElementById("equipDate").value = new Date().toISOString().split("T")[0];
+
+      issueTargetType.value = "employee";
+      toggleIssueIdInputs();
+
+      container.innerHTML = "";
+      container.appendChild(createRow());
+      updateAddButton();
+
+      await loadAllRecordsForSearch();
+      await loadDefaultHRRecords();
+    });
+
+    function searchRecords() {
+      const filterType = document.getElementById("filterType").value;
+      const filterUid = document.getElementById("filterUid").value.trim().toLowerCase();
+
+      if (!filterUid) {
+        alert("Please enter ID.");
+        return;
+      }
+
+      const filtered = allRecordsCache.filter(item => {
+        return item.rawType === filterType &&
+          String(item.uid).trim().toLowerCase() === filterUid;
+      });
+
+      renderTable(filtered);
+
+      recordTableTitle.innerText = `Record Table - ${filterUid.toUpperCase()}`;
+      filterStatus.innerText = `${filterType === "employee" ? "Employee" : "Supervisor"} ID filtered records`;
+    }
+
+    async function clearFilter() {
+      document.getElementById("filterType").value = "employee";
+      document.getElementById("filterUid").value = "";
+
+      recordTableTitle.innerText = "Equipment Records";
+      filterStatus.innerText = "Default table showing current HR issued records";
+
+      await loadDefaultHRRecords();
+    }
+
+    document.getElementById("searchBtn").addEventListener("click", searchRecords);
+    document.getElementById("clearBtn").addEventListener("click", clearFilter);
+
+    document.getElementById("filterUid").addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        searchRecords();
+      }
+    });
+
+    document.addEventListener("DOMContentLoaded", async () => {
+      document.getElementById("equipDate").value = new Date().toISOString().split("T")[0];
+
+      await refreshNotifications();
+      await loadHRDetails();
+      await loadAllRecordsForSearch();
+      await loadDefaultHRRecords();
+    });
+  </script>
+</body>
+
+</html>

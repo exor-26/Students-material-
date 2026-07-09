@@ -1,0 +1,1657 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <title>AS Dashboard - Attendance</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/x-icon" href="logo2.ico" />
+
+  <link rel="stylesheet" type="text/css" href="supAttendance.css" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap-theme.min.css" />
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --topbar-height: 78px;
+      --sidebar-width: 280px;
+      --bg-dark: #081523;
+      --bg-mid: #0e2238;
+      --card-bg: rgba(12, 25, 45, 0.88);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --text-main: #ffffff;
+      --text-soft: #c9d9ee;
+      --text-muted: #8ea4c5;
+      --orange-1: #ff8a3c;
+      --orange-2: #ff5a1f;
+      --blue-1: #2d7dff;
+      --blue-2: #1657cc;
+      --shadow: 0 18px 40px rgba(0, 0, 0, 0.25);
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background:
+        linear-gradient(135deg, rgba(7, 16, 30, 0.95), rgba(14, 34, 56, 0.92)),
+        url("https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1600&q=80") center/cover no-repeat fixed;
+      color: var(--text-main);
+      overflow: hidden;
+    }
+
+    .app-shell {
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .topbar {
+      height: var(--topbar-height);
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(7, 16, 30, 0.88);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 2000;
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      min-width: 0;
+    }
+
+    .menu-toggle-top {
+      width: 46px;
+      height: 46px;
+      border: none;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
+      color: #fff;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: 0.25s ease;
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+
+    .menu-toggle-top:hover {
+      background: linear-gradient(135deg, rgba(255,122,47,0.18), rgba(31,119,255,0.16));
+      transform: translateY(-1px);
+    }
+
+    .brand-wrap {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-width: 0;
+    }
+
+    .brand-title {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 700;
+      color: #fff;
+      text-decoration: none !important;
+    }
+
+    .brand-title:hover,
+    .brand-title:focus {
+      color: #fff;
+      text-decoration: none !important;
+    }
+
+    .brand-subtitle {
+      margin: 2px 0 0;
+      color: var(--text-soft);
+      font-size: 13px;
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    #bellContainer {
+      position: relative;
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.07);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: 0.25s ease;
+    }
+
+    #bellContainer:hover {
+      background: rgba(255, 255, 255, 0.14);
+      transform: translateY(-1px);
+    }
+
+    #bellBadge {
+      position: absolute;
+      top: 3px;
+      right: 3px;
+      min-width: 18px;
+      height: 18px;
+      padding: 0 5px;
+      border-radius: 999px;
+      background: #ff4d4f;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .logout {
+      text-decoration: none !important;
+      color: #fff !important;
+      background: linear-gradient(135deg, var(--orange-1), var(--orange-2));
+      padding: 11px 18px;
+      border-radius: 12px;
+      font-weight: 700;
+      transition: 0.25s ease;
+      box-shadow: 0 10px 24px rgba(255, 90, 31, 0.24);
+      white-space: nowrap;
+    }
+
+    .logout:hover {
+      transform: translateY(-1px);
+      color: #fff !important;
+      text-decoration: none !important;
+    }
+
+    #notificationBox {
+      display: none;
+      position: fixed;
+      top: calc(var(--topbar-height) - 8px);
+      right: 85px;
+      width: 320px;
+      max-height: 330px;
+      overflow-y: auto;
+      background: rgba(8, 21, 39, 0.98);
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      padding: 14px;
+      box-shadow: 0 22px 46px rgba(0, 0, 0, 0.32);
+      z-index: 2200;
+    }
+
+    .notification-item {
+      padding: 12px 14px;
+      margin-bottom: 10px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .notification-item p {
+      margin: 0 0 6px;
+      color: var(--text-soft);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .notification-item p:last-child {
+      margin-bottom: 0;
+    }
+
+    .dashboard-layout {
+      width: 100%;
+      height: 100vh;
+    }
+
+    /* ===== ONLY NAVBAR / SIDEBAR CHANGED ===== */
+    nav.sidebar {
+      width: var(--sidebar-width);
+      min-width: var(--sidebar-width);
+      max-width: var(--sidebar-width);
+      position: fixed;
+      top: var(--topbar-height);
+      left: 0;
+      bottom: 0;
+      padding: 20px 16px 22px;
+      background: linear-gradient(180deg, rgba(6, 16, 30, 0.98), rgba(8, 22, 40, 0.96));
+      backdrop-filter: blur(16px);
+      border-right: 1px solid rgba(255, 255, 255, 0.06);
+      overflow-y: auto;
+      overflow-x: hidden;
+      z-index: 1500;
+      box-shadow: 18px 0 45px rgba(0, 0, 0, 0.24);
+    }
+
+    nav.sidebar::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    nav.sidebar::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,0.14);
+      border-radius: 999px;
+    }
+
+    .sidebar-top-card {
+      position: relative;
+      padding: 20px 18px 18px;
+      border-radius: 24px;
+      background:
+        linear-gradient(135deg, rgba(255,122,47,0.16), rgba(31,119,255,0.14)),
+        rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow:
+        0 16px 32px rgba(0,0,0,0.20),
+        inset 0 1px 0 rgba(255,255,255,0.06);
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+
+    .sidebar-top-card::after {
+      content: "";
+      position: absolute;
+      right: -30px;
+      top: -30px;
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,255,255,0.16), transparent 70%);
+    }
+
+    .sidebar-mini-label {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.4px;
+      color: #ffd8c2;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: 5px 10px;
+      border-radius: 999px;
+      margin-bottom: 12px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .sidebar-main-title {
+      font-size: 19px;
+      font-weight: 800;
+      color: #ffffff;
+      margin: 0 0 6px;
+      line-height: 1.2;
+      position: relative;
+      z-index: 1;
+    }
+
+    .sidebar-main-subtitle {
+      font-size: 13px;
+      color: #d5e2f1;
+      line-height: 1.7;
+      margin: 0 0 14px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .sidebar-status-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      position: relative;
+      z-index: 1;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .sidebar-status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #dfffe9;
+      background: rgba(20,184,106,0.14);
+      border: 1px solid rgba(20,184,106,0.22);
+    }
+
+    .sidebar-status-badge::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #4df39b;
+      box-shadow: 0 0 10px rgba(77,243,155,0.7);
+    }
+
+    .sidebar-status-text {
+      font-size: 11px;
+      color: #c6d8ec;
+      text-align: right;
+      line-height: 1.4;
+    }
+
+    .sidebar-section-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #8ea4c5;
+      margin: 0 8px 16px;
+      font-weight: 700;
+    }
+
+    #side-bar {
+      list-style: none;
+      padding-left: 0;
+      margin-bottom: 0;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    #side-bar li {
+      width: 100%;
+      margin: 0;
+    }
+
+    #side-bar a,
+    #side-bar summary {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      width: 100%;
+      padding: 15px 15px;
+      border-radius: 20px;
+      text-decoration: none !important;
+      color: #edf4ff !important;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.055), rgba(255,255,255,0.025));
+      border: 1px solid rgba(255,255,255,0.06);
+      transition: all 0.28s ease;
+      position: relative;
+      overflow: hidden;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+    }
+
+    #side-bar a::before,
+    #side-bar summary::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, rgba(255,122,47,0.13), rgba(31,119,255,0.11));
+      opacity: 0;
+      transition: opacity 0.28s ease;
+    }
+
+    #side-bar a::after,
+    #side-bar summary::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 18%;
+      width: 4px;
+      height: 64%;
+      border-radius: 999px;
+      background: linear-gradient(180deg, #ff8a3c, #1f77ff);
+      opacity: 0;
+      transition: opacity 0.28s ease;
+    }
+
+    #side-bar a:hover,
+    #side-bar summary:hover {
+      transform: translateX(6px);
+      border-color: rgba(255,255,255,0.10);
+      box-shadow: 0 14px 28px rgba(0,0,0,0.20);
+    }
+
+    #side-bar a:hover::before,
+    #side-bar summary:hover::before,
+    #side-bar a:hover::after,
+    #side-bar summary:hover::after {
+      opacity: 1;
+    }
+
+    #side-bar a.active,
+    #side-bar summary.active {
+      background: linear-gradient(135deg, rgba(255,122,47,0.18), rgba(31,119,255,0.16));
+      border-color: rgba(255,255,255,0.12);
+      box-shadow: 0 16px 30px rgba(0,0,0,0.24);
+    }
+
+    #side-bar a.active::before,
+    #side-bar summary.active::before,
+    #side-bar a.active::after,
+    #side-bar summary.active::after {
+      opacity: 1;
+    }
+
+    .nav-icon {
+      width: 44px;
+      height: 44px;
+      min-width: 44px;
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, rgba(255,255,255,0.13), rgba(255,255,255,0.05));
+      border: 1px solid rgba(255,255,255,0.08);
+      color: #fff;
+      font-size: 17px;
+      position: relative;
+      z-index: 1;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+    }
+
+    .nav-text {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .nav-text strong {
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.2;
+    }
+
+    .nav-text span {
+      margin-top: 4px;
+      font-size: 11px;
+      line-height: 1.45;
+      color: #aabed8;
+    }
+
+    .nav-arrow {
+      margin-left: auto;
+      font-size: 16px;
+      color: #93b2d8;
+      position: relative;
+      z-index: 1;
+      transition: transform 0.25s ease;
+    }
+
+    #side-bar a:hover .nav-arrow,
+    #side-bar summary:hover .nav-arrow {
+      transform: translateX(4px);
+    }
+    /* ===== END NAVBAR / SIDEBAR CHANGED ===== */
+
+    main {
+      position: fixed;
+      top: var(--topbar-height);
+      left: var(--sidebar-width);
+      right: 0;
+      bottom: 0;
+      padding: 28px 30px;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    .hero-card {
+      background: linear-gradient(135deg, rgba(22, 61, 112, 0.88), rgba(12, 27, 53, 0.92));
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 24px;
+      padding: 30px 34px;
+      box-shadow: var(--shadow);
+      margin-bottom: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-card::after {
+      content: "";
+      position: absolute;
+      right: -80px;
+      top: -80px;
+      width: 220px;
+      height: 220px;
+      background: radial-gradient(circle, rgba(255, 122, 47, 0.18), transparent 70%);
+      border-radius: 50%;
+    }
+
+    .page-tag {
+      display: inline-block;
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      color: #ffb88f;
+      background: rgba(255, 122, 47, 0.16);
+      border: 1px solid rgba(255, 122, 47, 0.2);
+      margin-bottom: 14px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-card h1 {
+      margin: 0 0 10px;
+      font-size: 32px;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.15;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-card p {
+      margin: 0;
+      max-width: 900px;
+      font-size: 15px;
+      line-height: 1.8;
+      color: #d0def0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .panel-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+      margin-bottom: 24px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .section-header h2 {
+      margin: 0;
+      font-size: 26px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .section-badge {
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #9ec3ff;
+      background: rgba(31, 119, 255, 0.14);
+      border: 1px solid rgba(31, 119, 255, 0.22);
+      white-space: nowrap;
+    }
+
+    .details-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .filter-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr 1fr auto;
+      gap: 16px;
+      align-items: end;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+    }
+
+    .value-box,
+    .field input,
+    .field select {
+      width: 100%;
+      min-height: 48px;
+      border-radius: 14px !important;
+      border: 1px solid rgba(255, 255, 255, 0.08) !important;
+      background: rgba(255, 255, 255, 0.05) !important;
+      color: #fff !important;
+      padding: 12px 14px !important;
+      font-size: 14px;
+      outline: none;
+      box-shadow: none !important;
+      transition: 0.25s ease;
+    }
+
+    .field input:focus,
+    .field select:focus {
+      border-color: rgba(31, 119, 255, 0.55) !important;
+      box-shadow: 0 0 0 4px rgba(31, 119, 255, 0.12) !important;
+    }
+
+    .field input::placeholder {
+      color: #9fb4cf;
+    }
+
+    .field select option {
+      color: #000;
+    }
+
+    #attendanceSubmit {
+      min-height: 48px;
+      border: none;
+      border-radius: 14px !important;
+      background: linear-gradient(135deg, var(--orange-1), var(--orange-2)) !important;
+      color: #fff !important;
+      font-size: 15px;
+      font-weight: 700;
+      padding: 12px 22px !important;
+      box-shadow: 0 10px 24px rgba(255, 90, 31, 0.24);
+      transition: 0.25s ease;
+      margin-left: 0 !important;
+    }
+
+    #attendanceSubmit:hover {
+      transform: translateY(-1px);
+      color: #fff !important;
+    }
+
+    .table-card {
+      background: rgba(10, 24, 42, 0.82);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 26px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .table-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .table-header h3 {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      border-radius: 18px;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .table-wrap table {
+      width: 100%;
+      min-width: 1100px;
+      margin: 0;
+      border-collapse: collapse;
+      overflow: hidden;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .table-wrap thead tr {
+      background: linear-gradient(135deg, #183b6f, #102849);
+    }
+
+    .table-wrap th {
+      color: #fff4cc;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      text-align: center;
+      vertical-align: middle;
+      padding: 16px 14px !important;
+      border: none !important;
+      white-space: nowrap;
+    }
+
+    .table-wrap td {
+      padding: 16px 14px !important;
+      text-align: center;
+      vertical-align: middle;
+      color: #dce9f7;
+      border-top: 1px solid rgba(255, 255, 255, 0.05) !important;
+      background: rgba(255, 255, 255, 0.02);
+      white-space: nowrap;
+    }
+
+    .table-wrap tbody tr:hover td {
+      background: rgba(63, 131, 248, 0.08);
+    }
+
+    .request-btn-disabled {
+      opacity: 0.6;
+      cursor: not-allowed !important;
+      pointer-events: none;
+    }
+
+    .empty-row td {
+      color: #9fb4cf;
+      font-style: italic;
+    }
+
+    @media (max-width: 991px) {
+  html,
+  body {
+    width: 100%;
+    min-height: 100%;
+    height: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .app-shell {
+    width: 100%;
+    height: auto;
+    min-height: 100vh;
+    overflow: visible;
+  }
+
+  .dashboard-layout {
+    width: 100%;
+    height: auto;
+    min-height: 100vh;
+    padding-top: var(--topbar-height);
+  }
+
+  nav.sidebar {
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+
+    /* FIX: Command Center scroll ke saath upar jayega */
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    bottom: auto;
+
+    height: auto;
+    max-height: none;
+    overflow: visible;
+
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 0 0 24px 24px;
+    z-index: 100;
+    padding: 14px;
+  }
+
+  .sidebar-top-card {
+    margin-bottom: 18px;
+  }
+
+  .sidebar-section-title {
+    margin: 18px 8px 14px;
+  }
+
+  #side-bar {
+    display: none;
+    gap: 10px;
+  }
+
+  #side-bar.active {
+    display: flex;
+    flex-direction: column;
+    margin-top: 12px;
+  }
+
+  .sidebar-status-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .sidebar-status-text {
+    text-align: left;
+  }
+
+  main {
+    /* FIX: main normal page scroll mein rahega */
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    bottom: auto;
+
+    width: 100%;
+    padding: 18px;
+    overflow: visible;
+  }
+
+  .details-grid,
+  .filter-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .brand-subtitle {
+    display: none;
+  }
+}
+
+    @media (max-width: 600px) {
+      .topbar {
+        padding: 0 14px;
+      }
+
+      .brand-title {
+        font-size: 21px;
+      }
+
+      .logout {
+        padding: 9px 14px;
+        font-size: 13px;
+      }
+
+      #notificationBox {
+        width: 280px;
+        right: 16px;
+      }
+
+      .hero-card,
+      .panel-card,
+      .table-card {
+        padding: 18px;
+        border-radius: 18px;
+      }
+
+      .table-wrap table {
+        min-width: 1020px;
+      }
+
+      .hero-card h1 {
+        font-size: 26px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="menu-toggle-top" onclick="toggleMenu()">☰</button>
+        <div class="brand-wrap">
+          <a href="#" class="brand-title">AS Dashboard</a>
+          <p class="brand-subtitle">Attendance & Request Overview</p>
+        </div>
+      </div>
+
+      <div class="topbar-right">
+        <div id="bellContainer">
+          <span class="glyphicon glyphicon-bell" style="font-size:24px;"></span>
+          <span id="bellBadge" class="badge" style="display:none;">0</span>
+        </div>
+        <a href="#" class="logout" onclick="logoutUser()">Logout</a>
+      </div>
+    </header>
+
+    <div id="notificationBox"></div>
+
+    <div class="dashboard-layout">
+      <nav class="sidebar">
+        <div class="sidebar-top-card">
+          <div class="sidebar-mini-label">AS Panel</div>
+          <h3 class="sidebar-main-title">Command Center</h3>
+          <p class="sidebar-main-subtitle">
+            Access attendance requests, employee-wise records, and important assistant supervisor sections from one clean navigation area.
+          </p>
+
+          <div class="sidebar-status-row">
+            <span class="sidebar-status-badge">Attendance Active</span>
+            <div class="sidebar-status-text">
+              Secure access<br />
+              Quick navigation
+            </div>
+          </div>
+        </div>
+
+        <div class="sidebar-section-title">Navigation</div>
+        <ul id="side-bar"></ul>
+      </nav>
+
+      <main>
+        <section class="hero-card">
+          <span class="page-tag">ATTENDANCE PANEL</span>
+          <h1>Attendance</h1>
+          <p>
+            Select date to load all employees under the selected department.
+            You can also search by employee name. If same name exists multiple times,
+            the employee ID dropdown will automatically appear.
+          </p>
+        </section>
+
+        <section class="panel-card">
+          <div class="section-header">
+            <h2>Asst. Supervisor Details</h2>
+            <span class="section-badge">Profile Information</span>
+          </div>
+
+          <div class="details-grid">
+            <div class="field">
+              <label>AS Name</label>
+              <div class="value-box" id="supNameDisplay">Loading...</div>
+            </div>
+
+            <div class="field">
+              <label>AS ID</label>
+              <div class="value-box" id="supIdDisplay">Loading...</div>
+            </div>
+
+            <div class="field">
+              <label>Department</label>
+              <select id="supDepartmentSelect" class="form-control">
+                <option>Loading…</option>
+              </select>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel-card">
+          <div class="section-header">
+            <h2>Filter Attendance</h2>
+            <span class="section-badge">Date / Name / ID</span>
+          </div>
+
+          <div class="filter-grid">
+            <div class="field">
+              <label>Date</label>
+              <input type="date" id="supDate" />
+            </div>
+
+            <div class="field">
+              <label>Employee Name</label>
+              <input type="text" id="employeeNameInput" list="employeeNameList" placeholder="Optional" autocomplete="off" />
+              <datalist id="employeeNameList"></datalist>
+            </div>
+
+            <div class="field">
+              <label>Employee ID</label>
+              <select id="employeeIdSelect" class="form-control">
+                <option value="">All Employee IDs</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>&nbsp;</label>
+              <button type="button" id="attendanceSubmit" class="btn btn-primary">Submit</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="table-card">
+          <div class="table-header">
+            <h3>Attendance Summary</h3>
+            <span class="section-badge">Live Attendance Table</span>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>No. of Absent</th>
+                  <th>No. of Present</th>
+                  <th>Total Days</th>
+                  <th>Employee ID</th>
+                  <th>Employee Name</th>
+                  <th>Mark Attendance</th>
+                  <th>Request</th>
+                </tr>
+              </thead>
+              <tbody id="attendanceTableBody">
+                <tr class="empty-row">
+                  <td colspan="7">Please select a date and click submit.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    function toggleMenu() {
+      const sidebar = document.getElementById("side-bar");
+      sidebar.classList.toggle("active");
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const currentPage = window.location.pathname.split("/").pop();
+      const navLinks = document.querySelectorAll("#side-bar a");
+
+      navLinks.forEach(link => {
+        const href = link.getAttribute("href");
+        if (href === currentPage) {
+          link.classList.add("active");
+        }
+      });
+    });
+  </script>
+
+  <script type="module" src="/public/control.js"></script>
+</body>
+</html>
+
+  <script type="module">
+    import {
+      getFirestore,
+      doc,
+      getDoc,
+      setDoc,
+      updateDoc,
+      collection,
+      getDocs,
+      query,
+      where,
+      collectionGroup
+    } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+    import { app } from "/public/firebase-config.js";
+
+    const db = getFirestore(app);
+
+    let CURRENT_DEPARTMENT = "";
+    let AS_JOB_CODE = null;
+
+    const employeeCacheByDepartment = new Map();
+    const employeeNameIndexByDepartment = new Map();
+
+    const bell = document.getElementById("bellContainer");
+    const badge = document.getElementById("bellBadge");
+    const box = document.getElementById("notificationBox");
+
+    const supNameDisplay = document.getElementById("supNameDisplay");
+    const supIdDisplay = document.getElementById("supIdDisplay");
+    const supDepartmentSelect = document.getElementById("supDepartmentSelect");
+
+    const supDateInput = document.getElementById("supDate");
+    const employeeNameInput = document.getElementById("employeeNameInput");
+    const employeeIdSelect = document.getElementById("employeeIdSelect");
+    const employeeNameList = document.getElementById("employeeNameList");
+    const attendanceSubmitBtn = document.getElementById("attendanceSubmit");
+    const tableBody = document.getElementById("attendanceTableBody");
+
+    function extractJobCode(jobStr = "") {
+      if (!jobStr) return null;
+      const s = jobStr.toString();
+      const m = s.match(/\((\d+)\)/);
+      if (m) return m[1];
+
+      const groups = s.match(/(\d{4,})/g);
+      if (groups && groups.length) return groups[groups.length - 1];
+
+      return null;
+    }
+
+    function normalizeText(val = "") {
+      return val.toString().trim().toLowerCase();
+    }
+
+    function formatDate(inputDate) {
+      const dateObj = new Date(inputDate);
+      const day = ("0" + dateObj.getDate()).slice(-2);
+      const month = ("0" + (dateObj.getMonth() + 1)).slice(-2);
+      const year = dateObj.getFullYear().toString().substr(-2);
+      return `${day}-${month}-${year}`;
+    }
+
+    function setEmptyMessage(message) {
+      tableBody.innerHTML = `<tr class="empty-row"><td colspan="7">${message}</td></tr>`;
+    }
+
+    function createRequestButton(refPath, isEditable, requestPending) {
+      if (isEditable) {
+        return `<button class="btn btn-warning requestBtn" data-ref="${refPath}" disabled>Request</button>`;
+      }
+
+      if (requestPending) {
+        return `<button class="btn btn-warning requestBtn request-btn-disabled" data-ref="${refPath}" disabled>Requested</button>`;
+      }
+
+      return `<button class="btn btn-warning requestBtn" data-ref="${refPath}">Request</button>`;
+    }
+
+    async function refreshNotifications() {
+      try {
+        const snap = await getDocs(collection(db, "Employee"));
+        const today = new Date();
+        const soon = new Date();
+        soon.setDate(today.getDate() + 3);
+
+        const items = [];
+        snap.forEach(docSnap => {
+          const d = docSnap.data();
+          if (!d.passes_end) return;
+          const end = new Date(d.passes_end);
+          if (end >= today && end <= soon) {
+            items.push({
+              name: d.fullName,
+              uid: d.uid,
+              pass: d.passes,
+              renew: d.passes_end
+            });
+          }
+        });
+
+        if (items.length) {
+          badge.innerText = items.length;
+          badge.style.display = "";
+        } else {
+          badge.style.display = "none";
+        }
+
+        box.innerHTML = "";
+        if (!items.length) {
+          box.innerHTML = "<p>No passes expiring in 3 days.</p>";
+        } else {
+          for (const it of items) {
+            const div = document.createElement("div");
+            div.className = "notification-item";
+            div.innerHTML = `
+              <p><strong>Name:</strong> ${it.name}</p>
+              <p><strong>User ID:</strong> ${it.uid}</p>
+              <p><strong>Pass Type:</strong> ${it.pass}</p>
+              <p><strong>Renew Date:</strong> ${it.renew}</p>
+            `;
+            box.appendChild(div);
+          }
+        }
+      } catch (e) {
+        console.error("Notification load error:", e);
+      }
+    }
+
+    bell.addEventListener("click", () => {
+      box.style.display = box.style.display === "none" ? "block" : "none";
+    });
+
+    document.addEventListener("DOMContentLoaded", refreshNotifications);
+
+    const today = new Date();
+    const todayStr = today.toISOString().split("T")[0];
+    supDateInput.max = todayStr;
+
+    const past62 = new Date(today);
+    past62.setDate(past62.getDate() - 62);
+    supDateInput.min = past62.toISOString().split("T")[0];
+    supDateInput.value = todayStr;
+
+    const todayFormatted = formatDate(new Date());
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yesterdayFormatted = formatDate(yesterday);
+
+
+    function getKieplAccessScope() {
+      try {
+        return JSON.parse(localStorage.getItem("kieplAccessScope") || "{}") || {};
+      } catch {
+        return {};
+      }
+    }
+
+    function normalizeDepartmentList(values = []) {
+      const list = Array.isArray(values) ? values : [values];
+      return [...new Set(
+        list
+          .map(value => (value || "").toString().trim())
+          .filter(Boolean)
+      )];
+    }
+
+    function getAllowedDepartmentsForAS(fallbackJobs = []) {
+      const scope = getKieplAccessScope();
+      const activeDepartments = normalizeDepartmentList(scope.activeDepartments);
+      const fallback = normalizeDepartmentList(fallbackJobs);
+
+      if (!activeDepartments.length) return [];
+      if (!fallback.length) return activeDepartments;
+
+      return fallback.filter(job =>
+        activeDepartments.some(activeJob => normalizeText(activeJob) === normalizeText(job))
+      );
+    }
+
+    function isActiveDepartmentForAS(departmentValue, fallbackJobs = []) {
+      const allowed = getAllowedDepartmentsForAS(fallbackJobs);
+      if (!allowed.length) return false;
+
+      return allowed.some(job => normalizeText(job) === normalizeText(departmentValue));
+    }
+
+    async function loadEmployeesForDepartment(departmentValue) {
+      const allowedDepartments = normalizeDepartmentList(getAllowedDepartmentsForAS());
+
+      if (!departmentValue) return [];
+      if (!allowedDepartments.length) return [];
+      if (!allowedDepartments.some(job => normalizeText(job) === normalizeText(departmentValue))) return [];
+
+      if (employeeCacheByDepartment.has(departmentValue)) {
+        return employeeCacheByDepartment.get(departmentValue);
+      }
+
+      const q = query(
+        collection(db, "Employee"),
+        where("departmentSelect", "==", departmentValue)
+      );
+
+      const snap = await getDocs(q);
+
+      const employees = snap.docs.map(docSnap => {
+        const d = docSnap.data();
+        return {
+          uid: (d.uid || "").toString().trim(),
+          fullName: (d.fullName || "").toString().trim(),
+          departmentSelect: d.departmentSelect || "",
+          jobSelect: d.jobSelect || "",
+          Status: d.Status || ""
+        };
+      });
+
+      employeeCacheByDepartment.set(departmentValue, employees);
+
+      const nameMap = new Map();
+      employees.forEach(emp => {
+        if (!emp.fullName || !emp.uid) return;
+        const key = normalizeText(emp.fullName);
+        if (!nameMap.has(key)) nameMap.set(key, []);
+        nameMap.get(key).push(emp);
+      });
+
+      employeeNameIndexByDepartment.set(departmentValue, nameMap);
+
+      return employees;
+    }
+
+    async function buildNameSuggestions(departmentValue) {
+      const employees = await loadEmployeesForDepartment(departmentValue);
+      const uniqueNames = [...new Set(
+        employees
+          .map(emp => emp.fullName)
+          .filter(Boolean)
+          .sort((a, b) => a.localeCompare(b))
+      )];
+
+      employeeNameList.innerHTML = uniqueNames
+        .map(name => `<option value="${name.replace(/"/g, "&quot;")}"></option>`)
+        .join("");
+    }
+
+    async function syncEmployeeIdDropdown() {
+      const departmentValue = supDepartmentSelect.value;
+      const typedName = employeeNameInput.value.trim();
+
+      employeeIdSelect.innerHTML = `<option value="">All Employee IDs</option>`;
+
+      if (!departmentValue || !typedName) return;
+
+      await loadEmployeesForDepartment(departmentValue);
+      const nameMap = employeeNameIndexByDepartment.get(departmentValue) || new Map();
+      const matches = nameMap.get(normalizeText(typedName)) || [];
+
+      if (!matches.length) return;
+
+      if (matches.length === 1) {
+        employeeIdSelect.innerHTML = `
+          <option value="${matches[0].uid}" selected>${matches[0].uid}</option>
+        `;
+        return;
+      }
+
+      employeeIdSelect.innerHTML = `
+        <option value="">Select Employee ID</option>
+        ${matches.map(emp => `<option value="${emp.uid}">${emp.uid}</option>`).join("")}
+      `;
+    }
+
+    async function initializeAS() {
+      const asEmail = localStorage.getItem("asEmail");
+
+      if (!asEmail) {
+        console.error("No AS email found in localStorage.");
+        setEmptyMessage("AS login data not found.");
+        return;
+      }
+
+      try {
+        const asDocRef = doc(db, "AS", asEmail);
+        const docSnap = await getDoc(asDocRef);
+
+        if (!docSnap.exists()) {
+          console.error("No AS document found for email:", asEmail);
+          setEmptyMessage("AS record not found.");
+          return;
+        }
+
+        const asData = docSnap.data();
+        const activeDepartments = getAllowedDepartmentsForAS(asData.jobs);
+
+        supNameDisplay.innerText = asData.Name || "N/A";
+        supIdDisplay.innerText = asData.uid || "N/A";
+
+        if (activeDepartments.length) {
+          supDepartmentSelect.innerHTML = activeDepartments
+            .map(job => `<option value="${job}">${job}</option>`)
+            .join("");
+        } else {
+          supDepartmentSelect.innerHTML = `<option value="">No Active Department Available</option>`;
+        }
+
+        CURRENT_DEPARTMENT = supDepartmentSelect.value || "";
+        AS_JOB_CODE = extractJobCode(CURRENT_DEPARTMENT);
+
+        await buildNameSuggestions(CURRENT_DEPARTMENT);
+
+        supDepartmentSelect.addEventListener("change", async () => {
+          CURRENT_DEPARTMENT = supDepartmentSelect.value || "";
+          AS_JOB_CODE = extractJobCode(CURRENT_DEPARTMENT);
+
+          employeeNameInput.value = "";
+          employeeIdSelect.innerHTML = `<option value="">All Employee IDs</option>`;
+
+          await buildNameSuggestions(CURRENT_DEPARTMENT);
+          setEmptyMessage("Department changed. Please select date and click submit.");
+        });
+      } catch (err) {
+        console.error("Error fetching AS details:", err);
+        setEmptyMessage("Error fetching AS details.");
+      }
+    }
+
+    employeeNameInput.addEventListener("input", async () => {
+      await syncEmployeeIdDropdown();
+    });
+
+    attendanceSubmitBtn.addEventListener("click", async () => {
+      try {
+        const selectedDate = supDateInput.value;
+        const selectedDepartment = supDepartmentSelect.value;
+        const typedEmployeeName = employeeNameInput.value.trim();
+        const selectedEmployeeId = employeeIdSelect.value.trim();
+
+        if (!selectedDate) {
+          alert("Please select a date.");
+          return;
+        }
+
+        if (!selectedDepartment) {
+          alert("Please select a department.");
+          return;
+        }
+
+        const formattedDate = formatDate(selectedDate);
+        const monthSuffix = formattedDate.slice(3);
+
+        tableBody.innerHTML = "";
+        attendanceSubmitBtn.disabled = true;
+        attendanceSubmitBtn.innerText = "Loading...";
+
+        AS_JOB_CODE = extractJobCode(selectedDepartment);
+
+        const employees = await loadEmployeesForDepartment(selectedDepartment);
+        const validEmployees = employees.filter(emp => {
+          if (!emp.uid) return false;
+          if (emp.Status === "Irregular") return false;
+
+          const firstChar = emp.uid.charAt(0);
+          if (firstChar === "3" || firstChar === "5" || firstChar === "6") return false;
+
+          const empJobStr = (emp.jobSelect || emp.departmentSelect || "").toString().trim();
+          const employeeJobCode = extractJobCode(empJobStr);
+
+          if (AS_JOB_CODE && employeeJobCode && employeeJobCode !== AS_JOB_CODE) {
+            return false;
+          }
+
+          return true;
+        });
+
+        let targetEmployees = validEmployees;
+
+        if (typedEmployeeName) {
+          targetEmployees = targetEmployees.filter(emp =>
+            normalizeText(emp.fullName) === normalizeText(typedEmployeeName)
+          );
+        }
+
+        if (selectedEmployeeId) {
+          targetEmployees = targetEmployees.filter(emp => emp.uid === selectedEmployeeId);
+        }
+
+        if (!targetEmployees.length) {
+          setEmptyMessage("No matching employees found for the selected filters.");
+          return;
+        }
+
+        const singleDayQ = query(
+          collectionGroup(db, "Records"),
+          where("date", "==", formattedDate),
+          where("departmentSelect", "==", selectedDepartment)
+        );
+        const singleSnap = await getDocs(singleDayQ);
+
+        const existingTodayMap = new Map();
+        singleSnap.forEach(docSnap => {
+          const d = docSnap.data();
+          if (d.uid) {
+            existingTodayMap.set(d.uid, {
+              ...d,
+              refPath: docSnap.ref.path
+            });
+          }
+        });
+
+        const missingEmployees = targetEmployees.filter(emp => !existingTodayMap.has(emp.uid));
+
+        if (missingEmployees.length) {
+          await Promise.all(
+            missingEmployees.map(async emp => {
+              const recRef = doc(db, "Attendance", emp.uid, "Records", formattedDate);
+              await setDoc(recRef, {
+                fullName: emp.fullName,
+                departmentSelect: selectedDepartment,
+                supUid: supIdDisplay.innerText,
+                Marking: "Absent",
+                date: formattedDate,
+                uid: emp.uid,
+                Request: ""
+              });
+            })
+          );
+        }
+
+        const allRecsQ = query(
+          collectionGroup(db, "Records"),
+          where("departmentSelect", "==", selectedDepartment)
+        );
+        const allRecsSnap = await getDocs(allRecsQ);
+
+        const groups = {};
+
+        allRecsSnap.forEach(docSnap => {
+          const d = docSnap.data();
+          const uid = d.uid;
+          if (!uid) return;
+
+          if (!targetEmployees.some(emp => emp.uid === uid)) return;
+
+          const dateId = d.date || "";
+          if (!dateId || dateId.slice(3) !== monthSuffix) return;
+
+          if (!groups[uid]) {
+            groups[uid] = {
+              fullName: d.fullName || "",
+              present: 0,
+              absent: 0,
+              requestPending: false,
+              todayMarking: null,
+              refPaths: []
+            };
+          }
+
+          groups[uid].refPaths.push(docSnap.ref.path);
+
+          if (d.Marking === "Present") {
+            groups[uid].present++;
+          } else {
+            groups[uid].absent++;
+          }
+
+          if (dateId === formattedDate && d.Request === "pending") {
+            groups[uid].requestPending = true;
+          }
+
+          if (dateId === formattedDate) {
+            groups[uid].todayMarking = d.Marking;
+          }
+        });
+
+        targetEmployees.forEach(emp => {
+          if (!groups[emp.uid]) {
+            groups[emp.uid] = {
+              fullName: emp.fullName,
+              present: 0,
+              absent: 1,
+              requestPending: false,
+              todayMarking: "Absent",
+              refPaths: [`Attendance/${emp.uid}/Records/${formattedDate}`]
+            };
+          } else if (groups[emp.uid].todayMarking === null) {
+            groups[emp.uid].todayMarking = "Absent";
+          }
+        });
+
+        const rows = Object.entries(groups)
+          .sort((a, b) => (a[1].fullName || "").localeCompare(b[1].fullName || ""))
+          .map(([uid, info]) => {
+            const total = info.present + info.absent;
+            const specificRef = info.refPaths.find(p => p.endsWith(`/${formattedDate}`)) || `Attendance/${uid}/Records/${formattedDate}`;
+
+            const isEditable = (
+              formattedDate === todayFormatted ||
+              formattedDate === yesterdayFormatted
+            );
+
+            const mark = info.todayMarking || "Absent";
+
+            return {
+              uid,
+              info,
+              total,
+              specificRef,
+              isEditable,
+              mark
+            };
+          });
+
+        if (!rows.length) {
+          setEmptyMessage("No attendance records found.");
+          return;
+        }
+
+        tableBody.innerHTML = "";
+
+        rows.forEach(row => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${row.info.absent}</td>
+            <td>${row.info.present}</td>
+            <td>${row.total}</td>
+            <td>${row.uid}</td>
+            <td>${row.info.fullName}</td>
+            <td>
+              <input
+                type="checkbox"
+                class="attendanceCheckbox"
+                data-ref="${row.specificRef}"
+                ${row.mark === "Present" ? "checked" : ""}
+                ${row.isEditable ? "" : "disabled"}>
+            </td>
+            <td>
+              ${createRequestButton(row.specificRef, row.isEditable, row.info.requestPending)}
+            </td>
+          `;
+          tableBody.appendChild(tr);
+
+          const checkbox = tr.querySelector(".attendanceCheckbox");
+          const requestBtn = tr.querySelector(".requestBtn");
+
+          if (row.isEditable && checkbox) {
+            checkbox.addEventListener("change", async e => {
+              try {
+                await updateDoc(doc(db, e.target.dataset.ref), {
+                  Marking: e.target.checked ? "Present" : "Absent"
+                });
+              } catch (err) {
+                console.error("Error updating attendance:", err);
+                alert("Attendance update failed.");
+              }
+            });
+          }
+
+          if (!row.isEditable && requestBtn && !row.info.requestPending) {
+            requestBtn.addEventListener("click", async e => {
+              try {
+                await updateDoc(doc(db, e.target.dataset.ref), {
+                  Request: "pending"
+                });
+                e.target.disabled = true;
+                e.target.innerText = "Requested";
+                e.target.classList.add("request-btn-disabled");
+              } catch (err) {
+                console.error("Error submitting request:", err);
+                alert("Request failed.");
+              }
+            });
+          }
+        });
+
+      } catch (err) {
+        console.error("AS attendance load error:", err);
+        alert("Attendance system mein error aa raha hai. Console check karo.");
+      } finally {
+        attendanceSubmitBtn.disabled = false;
+        attendanceSubmitBtn.innerText = "Submit";
+      }
+    });
+
+    initializeAS();
+  </script>
+</body>
+
+</html>
